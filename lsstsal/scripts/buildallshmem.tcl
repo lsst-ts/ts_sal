@@ -1,4 +1,4 @@
-#!/usr/bin/tclsh
+#!/usr/bin/env tclsh
 
 set scriptdir /usr/local/scripts/tcl
 set start [clock seconds]

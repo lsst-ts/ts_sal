@@ -1,4 +1,4 @@
-#!/usr/bin/tclsh
+#!/usr/bin/env tclsh
 
 load /usr/lib64/tcl8.5/mysqltcl-3.052/libmysqltcl3.052.so
 set efd [mysqlconnect -host localhost -user efduser -password lssttest -socket /data/mysql/mysql.sock -db EFD]

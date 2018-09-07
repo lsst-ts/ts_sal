@@ -1,4 +1,4 @@
-#!/usr/bin/tclsh
+#!/usr/bin/env tclsh
 
 proc doddsgen { sublist publist } {
 global scriptdir

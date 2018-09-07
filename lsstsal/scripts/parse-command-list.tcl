@@ -1,4 +1,4 @@
-#!/usr/bin/tclsh
+#!/usr/bin/env tclsh
 
 set fin [open commands-list r]
 set fout [open commands-list.html w]

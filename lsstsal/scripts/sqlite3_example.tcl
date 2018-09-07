@@ -1,4 +1,4 @@
-#!/usr/bin/tclsh
+#!/usr/bin/env tclsh
 #
 set schema(ObsHistory) "obsHistID INTEGER PRIMARY KEY,Session_sessionID INTEGER,filter TEXT,expDate INTEGER,expMJD REAL, night INTEGER, visitTime REAL, visitExpTime REAL, finRank REAL, finSeeing REAL, transparency REAL, airmass REAL, vSkyBright REAL, filtSkyBrightness REAL, rotSkyPos REAL, lst REAL, altitude REAL, azimuth REAL, dist2Moon REAL, solarElong REAL, moonRA REAL, moonDec REAL, moonAlt REAL, moonAZ REAL, moonPhase REAL, sunAlt REAL, sunAZ REAL, phaseAngle REAL, rScatter REAL, mieScatter REAL, moonIllum REAL, moonBright REAL, darkBright REAL, rawSeeing REAL, wind REAL, humidity REAL, fiveSigmaDepth REAL, ditheredRA REAL, ditheredDec REAL, Field_fieldID INTEGER"
 set s2 [split $schema(ObsHistory) ,]

@@ -4,7 +4,7 @@
 //  
 //  File name: sal_m2msDcps.h
 //  Source: sal_m2msDcps.idl
-//  Generated: Thu Apr  9 15:48:41 2015
+//  Generated: Thu Aug 23 17:36:53 2018
 //  OpenSplice V6.4.140320OSS
 //  
 //******************************************************************
@@ -20,564 +20,704 @@
 namespace m2ms
 {
 
-   class ActuatorsTypeSupportInterface;
+   class ActuatorLimitSwitchesTypeSupportInterface;
 
-   typedef ActuatorsTypeSupportInterface * ActuatorsTypeSupportInterface_ptr;
-   typedef DDS_DCPSInterface_var < ActuatorsTypeSupportInterface> ActuatorsTypeSupportInterface_var;
-   typedef DDS_DCPSInterface_out < ActuatorsTypeSupportInterface> ActuatorsTypeSupportInterface_out;
+   typedef ActuatorLimitSwitchesTypeSupportInterface * ActuatorLimitSwitchesTypeSupportInterface_ptr;
+   typedef DDS_DCPSInterface_var < ActuatorLimitSwitchesTypeSupportInterface> ActuatorLimitSwitchesTypeSupportInterface_var;
+   typedef DDS_DCPSInterface_out < ActuatorLimitSwitchesTypeSupportInterface> ActuatorLimitSwitchesTypeSupportInterface_out;
 
 
-   class ActuatorsDataWriter;
+   class ActuatorLimitSwitchesDataWriter;
 
-   typedef ActuatorsDataWriter * ActuatorsDataWriter_ptr;
-   typedef DDS_DCPSInterface_var < ActuatorsDataWriter> ActuatorsDataWriter_var;
-   typedef DDS_DCPSInterface_out < ActuatorsDataWriter> ActuatorsDataWriter_out;
+   typedef ActuatorLimitSwitchesDataWriter * ActuatorLimitSwitchesDataWriter_ptr;
+   typedef DDS_DCPSInterface_var < ActuatorLimitSwitchesDataWriter> ActuatorLimitSwitchesDataWriter_var;
+   typedef DDS_DCPSInterface_out < ActuatorLimitSwitchesDataWriter> ActuatorLimitSwitchesDataWriter_out;
 
 
-   class ActuatorsDataReader;
+   class ActuatorLimitSwitchesDataReader;
 
-   typedef ActuatorsDataReader * ActuatorsDataReader_ptr;
-   typedef DDS_DCPSInterface_var < ActuatorsDataReader> ActuatorsDataReader_var;
-   typedef DDS_DCPSInterface_out < ActuatorsDataReader> ActuatorsDataReader_out;
+   typedef ActuatorLimitSwitchesDataReader * ActuatorLimitSwitchesDataReader_ptr;
+   typedef DDS_DCPSInterface_var < ActuatorLimitSwitchesDataReader> ActuatorLimitSwitchesDataReader_var;
+   typedef DDS_DCPSInterface_out < ActuatorLimitSwitchesDataReader> ActuatorLimitSwitchesDataReader_out;
 
 
-   class ActuatorsDataReaderView;
+   class ActuatorLimitSwitchesDataReaderView;
 
-   typedef ActuatorsDataReaderView * ActuatorsDataReaderView_ptr;
-   typedef DDS_DCPSInterface_var < ActuatorsDataReaderView> ActuatorsDataReaderView_var;
-   typedef DDS_DCPSInterface_out < ActuatorsDataReaderView> ActuatorsDataReaderView_out;
+   typedef ActuatorLimitSwitchesDataReaderView * ActuatorLimitSwitchesDataReaderView_ptr;
+   typedef DDS_DCPSInterface_var < ActuatorLimitSwitchesDataReaderView> ActuatorLimitSwitchesDataReaderView_var;
+   typedef DDS_DCPSInterface_out < ActuatorLimitSwitchesDataReaderView> ActuatorLimitSwitchesDataReaderView_out;
 
 
-   class ApplicationTypeSupportInterface;
+   class AxialActuatorAbsolutePositionStepsTypeSupportInterface;
 
-   typedef ApplicationTypeSupportInterface * ApplicationTypeSupportInterface_ptr;
-   typedef DDS_DCPSInterface_var < ApplicationTypeSupportInterface> ApplicationTypeSupportInterface_var;
-   typedef DDS_DCPSInterface_out < ApplicationTypeSupportInterface> ApplicationTypeSupportInterface_out;
+   typedef AxialActuatorAbsolutePositionStepsTypeSupportInterface * AxialActuatorAbsolutePositionStepsTypeSupportInterface_ptr;
+   typedef DDS_DCPSInterface_var < AxialActuatorAbsolutePositionStepsTypeSupportInterface> AxialActuatorAbsolutePositionStepsTypeSupportInterface_var;
+   typedef DDS_DCPSInterface_out < AxialActuatorAbsolutePositionStepsTypeSupportInterface> AxialActuatorAbsolutePositionStepsTypeSupportInterface_out;
 
 
-   class ApplicationDataWriter;
+   class AxialActuatorAbsolutePositionStepsDataWriter;
 
-   typedef ApplicationDataWriter * ApplicationDataWriter_ptr;
-   typedef DDS_DCPSInterface_var < ApplicationDataWriter> ApplicationDataWriter_var;
-   typedef DDS_DCPSInterface_out < ApplicationDataWriter> ApplicationDataWriter_out;
+   typedef AxialActuatorAbsolutePositionStepsDataWriter * AxialActuatorAbsolutePositionStepsDataWriter_ptr;
+   typedef DDS_DCPSInterface_var < AxialActuatorAbsolutePositionStepsDataWriter> AxialActuatorAbsolutePositionStepsDataWriter_var;
+   typedef DDS_DCPSInterface_out < AxialActuatorAbsolutePositionStepsDataWriter> AxialActuatorAbsolutePositionStepsDataWriter_out;
 
 
-   class ApplicationDataReader;
+   class AxialActuatorAbsolutePositionStepsDataReader;
 
-   typedef ApplicationDataReader * ApplicationDataReader_ptr;
-   typedef DDS_DCPSInterface_var < ApplicationDataReader> ApplicationDataReader_var;
-   typedef DDS_DCPSInterface_out < ApplicationDataReader> ApplicationDataReader_out;
+   typedef AxialActuatorAbsolutePositionStepsDataReader * AxialActuatorAbsolutePositionStepsDataReader_ptr;
+   typedef DDS_DCPSInterface_var < AxialActuatorAbsolutePositionStepsDataReader> AxialActuatorAbsolutePositionStepsDataReader_var;
+   typedef DDS_DCPSInterface_out < AxialActuatorAbsolutePositionStepsDataReader> AxialActuatorAbsolutePositionStepsDataReader_out;
 
 
-   class ApplicationDataReaderView;
+   class AxialActuatorAbsolutePositionStepsDataReaderView;
 
-   typedef ApplicationDataReaderView * ApplicationDataReaderView_ptr;
-   typedef DDS_DCPSInterface_var < ApplicationDataReaderView> ApplicationDataReaderView_var;
-   typedef DDS_DCPSInterface_out < ApplicationDataReaderView> ApplicationDataReaderView_out;
+   typedef AxialActuatorAbsolutePositionStepsDataReaderView * AxialActuatorAbsolutePositionStepsDataReaderView_ptr;
+   typedef DDS_DCPSInterface_var < AxialActuatorAbsolutePositionStepsDataReaderView> AxialActuatorAbsolutePositionStepsDataReaderView_var;
+   typedef DDS_DCPSInterface_out < AxialActuatorAbsolutePositionStepsDataReaderView> AxialActuatorAbsolutePositionStepsDataReaderView_out;
 
 
-   class ElectricalTypeSupportInterface;
+   class AxialActuatorPositionAbsoluteEncoderPositionMeasuredTypeSupportInterface;
 
-   typedef ElectricalTypeSupportInterface * ElectricalTypeSupportInterface_ptr;
-   typedef DDS_DCPSInterface_var < ElectricalTypeSupportInterface> ElectricalTypeSupportInterface_var;
-   typedef DDS_DCPSInterface_out < ElectricalTypeSupportInterface> ElectricalTypeSupportInterface_out;
+   typedef AxialActuatorPositionAbsoluteEncoderPositionMeasuredTypeSupportInterface * AxialActuatorPositionAbsoluteEncoderPositionMeasuredTypeSupportInterface_ptr;
+   typedef DDS_DCPSInterface_var < AxialActuatorPositionAbsoluteEncoderPositionMeasuredTypeSupportInterface> AxialActuatorPositionAbsoluteEncoderPositionMeasuredTypeSupportInterface_var;
+   typedef DDS_DCPSInterface_out < AxialActuatorPositionAbsoluteEncoderPositionMeasuredTypeSupportInterface> AxialActuatorPositionAbsoluteEncoderPositionMeasuredTypeSupportInterface_out;
 
 
-   class ElectricalDataWriter;
+   class AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataWriter;
 
-   typedef ElectricalDataWriter * ElectricalDataWriter_ptr;
-   typedef DDS_DCPSInterface_var < ElectricalDataWriter> ElectricalDataWriter_var;
-   typedef DDS_DCPSInterface_out < ElectricalDataWriter> ElectricalDataWriter_out;
+   typedef AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataWriter * AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataWriter_ptr;
+   typedef DDS_DCPSInterface_var < AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataWriter> AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataWriter_var;
+   typedef DDS_DCPSInterface_out < AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataWriter> AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataWriter_out;
 
 
-   class ElectricalDataReader;
+   class AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataReader;
 
-   typedef ElectricalDataReader * ElectricalDataReader_ptr;
-   typedef DDS_DCPSInterface_var < ElectricalDataReader> ElectricalDataReader_var;
-   typedef DDS_DCPSInterface_out < ElectricalDataReader> ElectricalDataReader_out;
+   typedef AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataReader * AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataReader_ptr;
+   typedef DDS_DCPSInterface_var < AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataReader> AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataReader_var;
+   typedef DDS_DCPSInterface_out < AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataReader> AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataReader_out;
 
 
-   class ElectricalDataReaderView;
+   class AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataReaderView;
 
-   typedef ElectricalDataReaderView * ElectricalDataReaderView_ptr;
-   typedef DDS_DCPSInterface_var < ElectricalDataReaderView> ElectricalDataReaderView_var;
-   typedef DDS_DCPSInterface_out < ElectricalDataReaderView> ElectricalDataReaderView_out;
+   typedef AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataReaderView * AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataReaderView_ptr;
+   typedef DDS_DCPSInterface_var < AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataReaderView> AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataReaderView_var;
+   typedef DDS_DCPSInterface_out < AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataReaderView> AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataReaderView_out;
 
 
-   class LimitSensorsTypeSupportInterface;
+   class AxialForcesMeasuredTypeSupportInterface;
 
-   typedef LimitSensorsTypeSupportInterface * LimitSensorsTypeSupportInterface_ptr;
-   typedef DDS_DCPSInterface_var < LimitSensorsTypeSupportInterface> LimitSensorsTypeSupportInterface_var;
-   typedef DDS_DCPSInterface_out < LimitSensorsTypeSupportInterface> LimitSensorsTypeSupportInterface_out;
+   typedef AxialForcesMeasuredTypeSupportInterface * AxialForcesMeasuredTypeSupportInterface_ptr;
+   typedef DDS_DCPSInterface_var < AxialForcesMeasuredTypeSupportInterface> AxialForcesMeasuredTypeSupportInterface_var;
+   typedef DDS_DCPSInterface_out < AxialForcesMeasuredTypeSupportInterface> AxialForcesMeasuredTypeSupportInterface_out;
 
 
-   class LimitSensorsDataWriter;
+   class AxialForcesMeasuredDataWriter;
 
-   typedef LimitSensorsDataWriter * LimitSensorsDataWriter_ptr;
-   typedef DDS_DCPSInterface_var < LimitSensorsDataWriter> LimitSensorsDataWriter_var;
-   typedef DDS_DCPSInterface_out < LimitSensorsDataWriter> LimitSensorsDataWriter_out;
+   typedef AxialForcesMeasuredDataWriter * AxialForcesMeasuredDataWriter_ptr;
+   typedef DDS_DCPSInterface_var < AxialForcesMeasuredDataWriter> AxialForcesMeasuredDataWriter_var;
+   typedef DDS_DCPSInterface_out < AxialForcesMeasuredDataWriter> AxialForcesMeasuredDataWriter_out;
 
 
-   class LimitSensorsDataReader;
+   class AxialForcesMeasuredDataReader;
 
-   typedef LimitSensorsDataReader * LimitSensorsDataReader_ptr;
-   typedef DDS_DCPSInterface_var < LimitSensorsDataReader> LimitSensorsDataReader_var;
-   typedef DDS_DCPSInterface_out < LimitSensorsDataReader> LimitSensorsDataReader_out;
+   typedef AxialForcesMeasuredDataReader * AxialForcesMeasuredDataReader_ptr;
+   typedef DDS_DCPSInterface_var < AxialForcesMeasuredDataReader> AxialForcesMeasuredDataReader_var;
+   typedef DDS_DCPSInterface_out < AxialForcesMeasuredDataReader> AxialForcesMeasuredDataReader_out;
 
 
-   class LimitSensorsDataReaderView;
+   class AxialForcesMeasuredDataReaderView;
 
-   typedef LimitSensorsDataReaderView * LimitSensorsDataReaderView_ptr;
-   typedef DDS_DCPSInterface_var < LimitSensorsDataReaderView> LimitSensorsDataReaderView_var;
-   typedef DDS_DCPSInterface_out < LimitSensorsDataReaderView> LimitSensorsDataReaderView_out;
+   typedef AxialForcesMeasuredDataReaderView * AxialForcesMeasuredDataReaderView_ptr;
+   typedef DDS_DCPSInterface_var < AxialForcesMeasuredDataReaderView> AxialForcesMeasuredDataReaderView_var;
+   typedef DDS_DCPSInterface_out < AxialForcesMeasuredDataReaderView> AxialForcesMeasuredDataReaderView_out;
 
 
-   class MetrologyTypeSupportInterface;
+   class MirrorPositionMeasuredTypeSupportInterface;
 
-   typedef MetrologyTypeSupportInterface * MetrologyTypeSupportInterface_ptr;
-   typedef DDS_DCPSInterface_var < MetrologyTypeSupportInterface> MetrologyTypeSupportInterface_var;
-   typedef DDS_DCPSInterface_out < MetrologyTypeSupportInterface> MetrologyTypeSupportInterface_out;
+   typedef MirrorPositionMeasuredTypeSupportInterface * MirrorPositionMeasuredTypeSupportInterface_ptr;
+   typedef DDS_DCPSInterface_var < MirrorPositionMeasuredTypeSupportInterface> MirrorPositionMeasuredTypeSupportInterface_var;
+   typedef DDS_DCPSInterface_out < MirrorPositionMeasuredTypeSupportInterface> MirrorPositionMeasuredTypeSupportInterface_out;
 
 
-   class MetrologyDataWriter;
+   class MirrorPositionMeasuredDataWriter;
 
-   typedef MetrologyDataWriter * MetrologyDataWriter_ptr;
-   typedef DDS_DCPSInterface_var < MetrologyDataWriter> MetrologyDataWriter_var;
-   typedef DDS_DCPSInterface_out < MetrologyDataWriter> MetrologyDataWriter_out;
+   typedef MirrorPositionMeasuredDataWriter * MirrorPositionMeasuredDataWriter_ptr;
+   typedef DDS_DCPSInterface_var < MirrorPositionMeasuredDataWriter> MirrorPositionMeasuredDataWriter_var;
+   typedef DDS_DCPSInterface_out < MirrorPositionMeasuredDataWriter> MirrorPositionMeasuredDataWriter_out;
 
 
-   class MetrologyDataReader;
+   class MirrorPositionMeasuredDataReader;
 
-   typedef MetrologyDataReader * MetrologyDataReader_ptr;
-   typedef DDS_DCPSInterface_var < MetrologyDataReader> MetrologyDataReader_var;
-   typedef DDS_DCPSInterface_out < MetrologyDataReader> MetrologyDataReader_out;
+   typedef MirrorPositionMeasuredDataReader * MirrorPositionMeasuredDataReader_ptr;
+   typedef DDS_DCPSInterface_var < MirrorPositionMeasuredDataReader> MirrorPositionMeasuredDataReader_var;
+   typedef DDS_DCPSInterface_out < MirrorPositionMeasuredDataReader> MirrorPositionMeasuredDataReader_out;
 
 
-   class MetrologyDataReaderView;
+   class MirrorPositionMeasuredDataReaderView;
 
-   typedef MetrologyDataReaderView * MetrologyDataReaderView_ptr;
-   typedef DDS_DCPSInterface_var < MetrologyDataReaderView> MetrologyDataReaderView_var;
-   typedef DDS_DCPSInterface_out < MetrologyDataReaderView> MetrologyDataReaderView_out;
+   typedef MirrorPositionMeasuredDataReaderView * MirrorPositionMeasuredDataReaderView_ptr;
+   typedef DDS_DCPSInterface_var < MirrorPositionMeasuredDataReaderView> MirrorPositionMeasuredDataReaderView_var;
+   typedef DDS_DCPSInterface_out < MirrorPositionMeasuredDataReaderView> MirrorPositionMeasuredDataReaderView_out;
 
 
-   class SurfaceTypeSupportInterface;
+   class PowerStatusTypeSupportInterface;
 
-   typedef SurfaceTypeSupportInterface * SurfaceTypeSupportInterface_ptr;
-   typedef DDS_DCPSInterface_var < SurfaceTypeSupportInterface> SurfaceTypeSupportInterface_var;
-   typedef DDS_DCPSInterface_out < SurfaceTypeSupportInterface> SurfaceTypeSupportInterface_out;
+   typedef PowerStatusTypeSupportInterface * PowerStatusTypeSupportInterface_ptr;
+   typedef DDS_DCPSInterface_var < PowerStatusTypeSupportInterface> PowerStatusTypeSupportInterface_var;
+   typedef DDS_DCPSInterface_out < PowerStatusTypeSupportInterface> PowerStatusTypeSupportInterface_out;
 
 
-   class SurfaceDataWriter;
+   class PowerStatusDataWriter;
 
-   typedef SurfaceDataWriter * SurfaceDataWriter_ptr;
-   typedef DDS_DCPSInterface_var < SurfaceDataWriter> SurfaceDataWriter_var;
-   typedef DDS_DCPSInterface_out < SurfaceDataWriter> SurfaceDataWriter_out;
+   typedef PowerStatusDataWriter * PowerStatusDataWriter_ptr;
+   typedef DDS_DCPSInterface_var < PowerStatusDataWriter> PowerStatusDataWriter_var;
+   typedef DDS_DCPSInterface_out < PowerStatusDataWriter> PowerStatusDataWriter_out;
 
 
-   class SurfaceDataReader;
+   class PowerStatusDataReader;
 
-   typedef SurfaceDataReader * SurfaceDataReader_ptr;
-   typedef DDS_DCPSInterface_var < SurfaceDataReader> SurfaceDataReader_var;
-   typedef DDS_DCPSInterface_out < SurfaceDataReader> SurfaceDataReader_out;
+   typedef PowerStatusDataReader * PowerStatusDataReader_ptr;
+   typedef DDS_DCPSInterface_var < PowerStatusDataReader> PowerStatusDataReader_var;
+   typedef DDS_DCPSInterface_out < PowerStatusDataReader> PowerStatusDataReader_out;
 
 
-   class SurfaceDataReaderView;
+   class PowerStatusDataReaderView;
 
-   typedef SurfaceDataReaderView * SurfaceDataReaderView_ptr;
-   typedef DDS_DCPSInterface_var < SurfaceDataReaderView> SurfaceDataReaderView_var;
-   typedef DDS_DCPSInterface_out < SurfaceDataReaderView> SurfaceDataReaderView_out;
+   typedef PowerStatusDataReaderView * PowerStatusDataReaderView_ptr;
+   typedef DDS_DCPSInterface_var < PowerStatusDataReaderView> PowerStatusDataReaderView_var;
+   typedef DDS_DCPSInterface_out < PowerStatusDataReaderView> PowerStatusDataReaderView_out;
 
 
-   class TCTypeSupportInterface;
+   class RawDisplacementTypeSupportInterface;
 
-   typedef TCTypeSupportInterface * TCTypeSupportInterface_ptr;
-   typedef DDS_DCPSInterface_var < TCTypeSupportInterface> TCTypeSupportInterface_var;
-   typedef DDS_DCPSInterface_out < TCTypeSupportInterface> TCTypeSupportInterface_out;
+   typedef RawDisplacementTypeSupportInterface * RawDisplacementTypeSupportInterface_ptr;
+   typedef DDS_DCPSInterface_var < RawDisplacementTypeSupportInterface> RawDisplacementTypeSupportInterface_var;
+   typedef DDS_DCPSInterface_out < RawDisplacementTypeSupportInterface> RawDisplacementTypeSupportInterface_out;
 
 
-   class TCDataWriter;
+   class RawDisplacementDataWriter;
 
-   typedef TCDataWriter * TCDataWriter_ptr;
-   typedef DDS_DCPSInterface_var < TCDataWriter> TCDataWriter_var;
-   typedef DDS_DCPSInterface_out < TCDataWriter> TCDataWriter_out;
+   typedef RawDisplacementDataWriter * RawDisplacementDataWriter_ptr;
+   typedef DDS_DCPSInterface_var < RawDisplacementDataWriter> RawDisplacementDataWriter_var;
+   typedef DDS_DCPSInterface_out < RawDisplacementDataWriter> RawDisplacementDataWriter_out;
 
 
-   class TCDataReader;
+   class RawDisplacementDataReader;
 
-   typedef TCDataReader * TCDataReader_ptr;
-   typedef DDS_DCPSInterface_var < TCDataReader> TCDataReader_var;
-   typedef DDS_DCPSInterface_out < TCDataReader> TCDataReader_out;
+   typedef RawDisplacementDataReader * RawDisplacementDataReader_ptr;
+   typedef DDS_DCPSInterface_var < RawDisplacementDataReader> RawDisplacementDataReader_var;
+   typedef DDS_DCPSInterface_out < RawDisplacementDataReader> RawDisplacementDataReader_out;
 
 
-   class TCDataReaderView;
+   class RawDisplacementDataReaderView;
 
-   typedef TCDataReaderView * TCDataReaderView_ptr;
-   typedef DDS_DCPSInterface_var < TCDataReaderView> TCDataReaderView_var;
-   typedef DDS_DCPSInterface_out < TCDataReaderView> TCDataReaderView_out;
+   typedef RawDisplacementDataReaderView * RawDisplacementDataReaderView_ptr;
+   typedef DDS_DCPSInterface_var < RawDisplacementDataReaderView> RawDisplacementDataReaderView_var;
+   typedef DDS_DCPSInterface_out < RawDisplacementDataReaderView> RawDisplacementDataReaderView_out;
 
 
-   class command_abortTypeSupportInterface;
+   class RawTelemetryTypeSupportInterface;
 
-   typedef command_abortTypeSupportInterface * command_abortTypeSupportInterface_ptr;
-   typedef DDS_DCPSInterface_var < command_abortTypeSupportInterface> command_abortTypeSupportInterface_var;
-   typedef DDS_DCPSInterface_out < command_abortTypeSupportInterface> command_abortTypeSupportInterface_out;
+   typedef RawTelemetryTypeSupportInterface * RawTelemetryTypeSupportInterface_ptr;
+   typedef DDS_DCPSInterface_var < RawTelemetryTypeSupportInterface> RawTelemetryTypeSupportInterface_var;
+   typedef DDS_DCPSInterface_out < RawTelemetryTypeSupportInterface> RawTelemetryTypeSupportInterface_out;
 
 
-   class command_abortDataWriter;
+   class RawTelemetryDataWriter;
 
-   typedef command_abortDataWriter * command_abortDataWriter_ptr;
-   typedef DDS_DCPSInterface_var < command_abortDataWriter> command_abortDataWriter_var;
-   typedef DDS_DCPSInterface_out < command_abortDataWriter> command_abortDataWriter_out;
+   typedef RawTelemetryDataWriter * RawTelemetryDataWriter_ptr;
+   typedef DDS_DCPSInterface_var < RawTelemetryDataWriter> RawTelemetryDataWriter_var;
+   typedef DDS_DCPSInterface_out < RawTelemetryDataWriter> RawTelemetryDataWriter_out;
 
 
-   class command_abortDataReader;
+   class RawTelemetryDataReader;
 
-   typedef command_abortDataReader * command_abortDataReader_ptr;
-   typedef DDS_DCPSInterface_var < command_abortDataReader> command_abortDataReader_var;
-   typedef DDS_DCPSInterface_out < command_abortDataReader> command_abortDataReader_out;
+   typedef RawTelemetryDataReader * RawTelemetryDataReader_ptr;
+   typedef DDS_DCPSInterface_var < RawTelemetryDataReader> RawTelemetryDataReader_var;
+   typedef DDS_DCPSInterface_out < RawTelemetryDataReader> RawTelemetryDataReader_out;
 
 
-   class command_abortDataReaderView;
+   class RawTelemetryDataReaderView;
 
-   typedef command_abortDataReaderView * command_abortDataReaderView_ptr;
-   typedef DDS_DCPSInterface_var < command_abortDataReaderView> command_abortDataReaderView_var;
-   typedef DDS_DCPSInterface_out < command_abortDataReaderView> command_abortDataReaderView_out;
+   typedef RawTelemetryDataReaderView * RawTelemetryDataReaderView_ptr;
+   typedef DDS_DCPSInterface_var < RawTelemetryDataReaderView> RawTelemetryDataReaderView_var;
+   typedef DDS_DCPSInterface_out < RawTelemetryDataReaderView> RawTelemetryDataReaderView_out;
 
 
-   class command_configureTypeSupportInterface;
+   class StepVectorUpdateTypeSupportInterface;
 
-   typedef command_configureTypeSupportInterface * command_configureTypeSupportInterface_ptr;
-   typedef DDS_DCPSInterface_var < command_configureTypeSupportInterface> command_configureTypeSupportInterface_var;
-   typedef DDS_DCPSInterface_out < command_configureTypeSupportInterface> command_configureTypeSupportInterface_out;
+   typedef StepVectorUpdateTypeSupportInterface * StepVectorUpdateTypeSupportInterface_ptr;
+   typedef DDS_DCPSInterface_var < StepVectorUpdateTypeSupportInterface> StepVectorUpdateTypeSupportInterface_var;
+   typedef DDS_DCPSInterface_out < StepVectorUpdateTypeSupportInterface> StepVectorUpdateTypeSupportInterface_out;
 
 
-   class command_configureDataWriter;
+   class StepVectorUpdateDataWriter;
 
-   typedef command_configureDataWriter * command_configureDataWriter_ptr;
-   typedef DDS_DCPSInterface_var < command_configureDataWriter> command_configureDataWriter_var;
-   typedef DDS_DCPSInterface_out < command_configureDataWriter> command_configureDataWriter_out;
+   typedef StepVectorUpdateDataWriter * StepVectorUpdateDataWriter_ptr;
+   typedef DDS_DCPSInterface_var < StepVectorUpdateDataWriter> StepVectorUpdateDataWriter_var;
+   typedef DDS_DCPSInterface_out < StepVectorUpdateDataWriter> StepVectorUpdateDataWriter_out;
 
 
-   class command_configureDataReader;
+   class StepVectorUpdateDataReader;
 
-   typedef command_configureDataReader * command_configureDataReader_ptr;
-   typedef DDS_DCPSInterface_var < command_configureDataReader> command_configureDataReader_var;
-   typedef DDS_DCPSInterface_out < command_configureDataReader> command_configureDataReader_out;
+   typedef StepVectorUpdateDataReader * StepVectorUpdateDataReader_ptr;
+   typedef DDS_DCPSInterface_var < StepVectorUpdateDataReader> StepVectorUpdateDataReader_var;
+   typedef DDS_DCPSInterface_out < StepVectorUpdateDataReader> StepVectorUpdateDataReader_out;
 
 
-   class command_configureDataReaderView;
+   class StepVectorUpdateDataReaderView;
 
-   typedef command_configureDataReaderView * command_configureDataReaderView_ptr;
-   typedef DDS_DCPSInterface_var < command_configureDataReaderView> command_configureDataReaderView_var;
-   typedef DDS_DCPSInterface_out < command_configureDataReaderView> command_configureDataReaderView_out;
+   typedef StepVectorUpdateDataReaderView * StepVectorUpdateDataReaderView_ptr;
+   typedef DDS_DCPSInterface_var < StepVectorUpdateDataReaderView> StepVectorUpdateDataReaderView_var;
+   typedef DDS_DCPSInterface_out < StepVectorUpdateDataReaderView> StepVectorUpdateDataReaderView_out;
 
 
-   class command_statusTypeSupportInterface;
+   class SystemStatusTypeSupportInterface;
 
-   typedef command_statusTypeSupportInterface * command_statusTypeSupportInterface_ptr;
-   typedef DDS_DCPSInterface_var < command_statusTypeSupportInterface> command_statusTypeSupportInterface_var;
-   typedef DDS_DCPSInterface_out < command_statusTypeSupportInterface> command_statusTypeSupportInterface_out;
+   typedef SystemStatusTypeSupportInterface * SystemStatusTypeSupportInterface_ptr;
+   typedef DDS_DCPSInterface_var < SystemStatusTypeSupportInterface> SystemStatusTypeSupportInterface_var;
+   typedef DDS_DCPSInterface_out < SystemStatusTypeSupportInterface> SystemStatusTypeSupportInterface_out;
 
 
-   class command_statusDataWriter;
+   class SystemStatusDataWriter;
 
-   typedef command_statusDataWriter * command_statusDataWriter_ptr;
-   typedef DDS_DCPSInterface_var < command_statusDataWriter> command_statusDataWriter_var;
-   typedef DDS_DCPSInterface_out < command_statusDataWriter> command_statusDataWriter_out;
+   typedef SystemStatusDataWriter * SystemStatusDataWriter_ptr;
+   typedef DDS_DCPSInterface_var < SystemStatusDataWriter> SystemStatusDataWriter_var;
+   typedef DDS_DCPSInterface_out < SystemStatusDataWriter> SystemStatusDataWriter_out;
 
 
-   class command_statusDataReader;
+   class SystemStatusDataReader;
 
-   typedef command_statusDataReader * command_statusDataReader_ptr;
-   typedef DDS_DCPSInterface_var < command_statusDataReader> command_statusDataReader_var;
-   typedef DDS_DCPSInterface_out < command_statusDataReader> command_statusDataReader_out;
+   typedef SystemStatusDataReader * SystemStatusDataReader_ptr;
+   typedef DDS_DCPSInterface_var < SystemStatusDataReader> SystemStatusDataReader_var;
+   typedef DDS_DCPSInterface_out < SystemStatusDataReader> SystemStatusDataReader_out;
 
 
-   class command_statusDataReaderView;
+   class SystemStatusDataReaderView;
 
-   typedef command_statusDataReaderView * command_statusDataReaderView_ptr;
-   typedef DDS_DCPSInterface_var < command_statusDataReaderView> command_statusDataReaderView_var;
-   typedef DDS_DCPSInterface_out < command_statusDataReaderView> command_statusDataReaderView_out;
+   typedef SystemStatusDataReaderView * SystemStatusDataReaderView_ptr;
+   typedef DDS_DCPSInterface_var < SystemStatusDataReaderView> SystemStatusDataReaderView_var;
+   typedef DDS_DCPSInterface_out < SystemStatusDataReaderView> SystemStatusDataReaderView_out;
 
 
-   class command_stopTypeSupportInterface;
+   class TangentActuatorAbsolutePositionStepsTypeSupportInterface;
 
-   typedef command_stopTypeSupportInterface * command_stopTypeSupportInterface_ptr;
-   typedef DDS_DCPSInterface_var < command_stopTypeSupportInterface> command_stopTypeSupportInterface_var;
-   typedef DDS_DCPSInterface_out < command_stopTypeSupportInterface> command_stopTypeSupportInterface_out;
+   typedef TangentActuatorAbsolutePositionStepsTypeSupportInterface * TangentActuatorAbsolutePositionStepsTypeSupportInterface_ptr;
+   typedef DDS_DCPSInterface_var < TangentActuatorAbsolutePositionStepsTypeSupportInterface> TangentActuatorAbsolutePositionStepsTypeSupportInterface_var;
+   typedef DDS_DCPSInterface_out < TangentActuatorAbsolutePositionStepsTypeSupportInterface> TangentActuatorAbsolutePositionStepsTypeSupportInterface_out;
 
 
-   class command_stopDataWriter;
+   class TangentActuatorAbsolutePositionStepsDataWriter;
 
-   typedef command_stopDataWriter * command_stopDataWriter_ptr;
-   typedef DDS_DCPSInterface_var < command_stopDataWriter> command_stopDataWriter_var;
-   typedef DDS_DCPSInterface_out < command_stopDataWriter> command_stopDataWriter_out;
+   typedef TangentActuatorAbsolutePositionStepsDataWriter * TangentActuatorAbsolutePositionStepsDataWriter_ptr;
+   typedef DDS_DCPSInterface_var < TangentActuatorAbsolutePositionStepsDataWriter> TangentActuatorAbsolutePositionStepsDataWriter_var;
+   typedef DDS_DCPSInterface_out < TangentActuatorAbsolutePositionStepsDataWriter> TangentActuatorAbsolutePositionStepsDataWriter_out;
 
 
-   class command_stopDataReader;
+   class TangentActuatorAbsolutePositionStepsDataReader;
 
-   typedef command_stopDataReader * command_stopDataReader_ptr;
-   typedef DDS_DCPSInterface_var < command_stopDataReader> command_stopDataReader_var;
-   typedef DDS_DCPSInterface_out < command_stopDataReader> command_stopDataReader_out;
+   typedef TangentActuatorAbsolutePositionStepsDataReader * TangentActuatorAbsolutePositionStepsDataReader_ptr;
+   typedef DDS_DCPSInterface_var < TangentActuatorAbsolutePositionStepsDataReader> TangentActuatorAbsolutePositionStepsDataReader_var;
+   typedef DDS_DCPSInterface_out < TangentActuatorAbsolutePositionStepsDataReader> TangentActuatorAbsolutePositionStepsDataReader_out;
 
 
-   class command_stopDataReaderView;
+   class TangentActuatorAbsolutePositionStepsDataReaderView;
 
-   typedef command_stopDataReaderView * command_stopDataReaderView_ptr;
-   typedef DDS_DCPSInterface_var < command_stopDataReaderView> command_stopDataReaderView_var;
-   typedef DDS_DCPSInterface_out < command_stopDataReaderView> command_stopDataReaderView_out;
+   typedef TangentActuatorAbsolutePositionStepsDataReaderView * TangentActuatorAbsolutePositionStepsDataReaderView_ptr;
+   typedef DDS_DCPSInterface_var < TangentActuatorAbsolutePositionStepsDataReaderView> TangentActuatorAbsolutePositionStepsDataReaderView_var;
+   typedef DDS_DCPSInterface_out < TangentActuatorAbsolutePositionStepsDataReaderView> TangentActuatorAbsolutePositionStepsDataReaderView_out;
 
 
-   class command_targetTypeSupportInterface;
+   class TangentActuatorPositionAbsoluteEncoderPositionMeasuredTypeSupportInterface;
 
-   typedef command_targetTypeSupportInterface * command_targetTypeSupportInterface_ptr;
-   typedef DDS_DCPSInterface_var < command_targetTypeSupportInterface> command_targetTypeSupportInterface_var;
-   typedef DDS_DCPSInterface_out < command_targetTypeSupportInterface> command_targetTypeSupportInterface_out;
+   typedef TangentActuatorPositionAbsoluteEncoderPositionMeasuredTypeSupportInterface * TangentActuatorPositionAbsoluteEncoderPositionMeasuredTypeSupportInterface_ptr;
+   typedef DDS_DCPSInterface_var < TangentActuatorPositionAbsoluteEncoderPositionMeasuredTypeSupportInterface> TangentActuatorPositionAbsoluteEncoderPositionMeasuredTypeSupportInterface_var;
+   typedef DDS_DCPSInterface_out < TangentActuatorPositionAbsoluteEncoderPositionMeasuredTypeSupportInterface> TangentActuatorPositionAbsoluteEncoderPositionMeasuredTypeSupportInterface_out;
 
 
-   class command_targetDataWriter;
+   class TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataWriter;
 
-   typedef command_targetDataWriter * command_targetDataWriter_ptr;
-   typedef DDS_DCPSInterface_var < command_targetDataWriter> command_targetDataWriter_var;
-   typedef DDS_DCPSInterface_out < command_targetDataWriter> command_targetDataWriter_out;
+   typedef TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataWriter * TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataWriter_ptr;
+   typedef DDS_DCPSInterface_var < TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataWriter> TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataWriter_var;
+   typedef DDS_DCPSInterface_out < TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataWriter> TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataWriter_out;
 
 
-   class command_targetDataReader;
+   class TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataReader;
 
-   typedef command_targetDataReader * command_targetDataReader_ptr;
-   typedef DDS_DCPSInterface_var < command_targetDataReader> command_targetDataReader_var;
-   typedef DDS_DCPSInterface_out < command_targetDataReader> command_targetDataReader_out;
+   typedef TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataReader * TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataReader_ptr;
+   typedef DDS_DCPSInterface_var < TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataReader> TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataReader_var;
+   typedef DDS_DCPSInterface_out < TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataReader> TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataReader_out;
 
 
-   class command_targetDataReaderView;
+   class TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataReaderView;
 
-   typedef command_targetDataReaderView * command_targetDataReaderView_ptr;
-   typedef DDS_DCPSInterface_var < command_targetDataReaderView> command_targetDataReaderView_var;
-   typedef DDS_DCPSInterface_out < command_targetDataReaderView> command_targetDataReaderView_out;
+   typedef TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataReaderView * TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataReaderView_ptr;
+   typedef DDS_DCPSInterface_var < TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataReaderView> TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataReaderView_var;
+   typedef DDS_DCPSInterface_out < TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataReaderView> TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataReaderView_out;
 
 
-   class command_updateTypeSupportInterface;
+   class TangentForcesMeasuredTypeSupportInterface;
 
-   typedef command_updateTypeSupportInterface * command_updateTypeSupportInterface_ptr;
-   typedef DDS_DCPSInterface_var < command_updateTypeSupportInterface> command_updateTypeSupportInterface_var;
-   typedef DDS_DCPSInterface_out < command_updateTypeSupportInterface> command_updateTypeSupportInterface_out;
+   typedef TangentForcesMeasuredTypeSupportInterface * TangentForcesMeasuredTypeSupportInterface_ptr;
+   typedef DDS_DCPSInterface_var < TangentForcesMeasuredTypeSupportInterface> TangentForcesMeasuredTypeSupportInterface_var;
+   typedef DDS_DCPSInterface_out < TangentForcesMeasuredTypeSupportInterface> TangentForcesMeasuredTypeSupportInterface_out;
 
 
-   class command_updateDataWriter;
+   class TangentForcesMeasuredDataWriter;
 
-   typedef command_updateDataWriter * command_updateDataWriter_ptr;
-   typedef DDS_DCPSInterface_var < command_updateDataWriter> command_updateDataWriter_var;
-   typedef DDS_DCPSInterface_out < command_updateDataWriter> command_updateDataWriter_out;
+   typedef TangentForcesMeasuredDataWriter * TangentForcesMeasuredDataWriter_ptr;
+   typedef DDS_DCPSInterface_var < TangentForcesMeasuredDataWriter> TangentForcesMeasuredDataWriter_var;
+   typedef DDS_DCPSInterface_out < TangentForcesMeasuredDataWriter> TangentForcesMeasuredDataWriter_out;
 
 
-   class command_updateDataReader;
+   class TangentForcesMeasuredDataReader;
 
-   typedef command_updateDataReader * command_updateDataReader_ptr;
-   typedef DDS_DCPSInterface_var < command_updateDataReader> command_updateDataReader_var;
-   typedef DDS_DCPSInterface_out < command_updateDataReader> command_updateDataReader_out;
+   typedef TangentForcesMeasuredDataReader * TangentForcesMeasuredDataReader_ptr;
+   typedef DDS_DCPSInterface_var < TangentForcesMeasuredDataReader> TangentForcesMeasuredDataReader_var;
+   typedef DDS_DCPSInterface_out < TangentForcesMeasuredDataReader> TangentForcesMeasuredDataReader_out;
 
 
-   class command_updateDataReaderView;
+   class TangentForcesMeasuredDataReaderView;
 
-   typedef command_updateDataReaderView * command_updateDataReaderView_ptr;
-   typedef DDS_DCPSInterface_var < command_updateDataReaderView> command_updateDataReaderView_var;
-   typedef DDS_DCPSInterface_out < command_updateDataReaderView> command_updateDataReaderView_out;
+   typedef TangentForcesMeasuredDataReaderView * TangentForcesMeasuredDataReaderView_ptr;
+   typedef DDS_DCPSInterface_var < TangentForcesMeasuredDataReaderView> TangentForcesMeasuredDataReaderView_var;
+   typedef DDS_DCPSInterface_out < TangentForcesMeasuredDataReaderView> TangentForcesMeasuredDataReaderView_out;
 
 
-   class logevent_interlockTypeSupportInterface;
+   class TargetForcesTypeSupportInterface;
 
-   typedef logevent_interlockTypeSupportInterface * logevent_interlockTypeSupportInterface_ptr;
-   typedef DDS_DCPSInterface_var < logevent_interlockTypeSupportInterface> logevent_interlockTypeSupportInterface_var;
-   typedef DDS_DCPSInterface_out < logevent_interlockTypeSupportInterface> logevent_interlockTypeSupportInterface_out;
+   typedef TargetForcesTypeSupportInterface * TargetForcesTypeSupportInterface_ptr;
+   typedef DDS_DCPSInterface_var < TargetForcesTypeSupportInterface> TargetForcesTypeSupportInterface_var;
+   typedef DDS_DCPSInterface_out < TargetForcesTypeSupportInterface> TargetForcesTypeSupportInterface_out;
 
 
-   class logevent_interlockDataWriter;
+   class TargetForcesDataWriter;
 
-   typedef logevent_interlockDataWriter * logevent_interlockDataWriter_ptr;
-   typedef DDS_DCPSInterface_var < logevent_interlockDataWriter> logevent_interlockDataWriter_var;
-   typedef DDS_DCPSInterface_out < logevent_interlockDataWriter> logevent_interlockDataWriter_out;
+   typedef TargetForcesDataWriter * TargetForcesDataWriter_ptr;
+   typedef DDS_DCPSInterface_var < TargetForcesDataWriter> TargetForcesDataWriter_var;
+   typedef DDS_DCPSInterface_out < TargetForcesDataWriter> TargetForcesDataWriter_out;
 
 
-   class logevent_interlockDataReader;
+   class TargetForcesDataReader;
 
-   typedef logevent_interlockDataReader * logevent_interlockDataReader_ptr;
-   typedef DDS_DCPSInterface_var < logevent_interlockDataReader> logevent_interlockDataReader_var;
-   typedef DDS_DCPSInterface_out < logevent_interlockDataReader> logevent_interlockDataReader_out;
+   typedef TargetForcesDataReader * TargetForcesDataReader_ptr;
+   typedef DDS_DCPSInterface_var < TargetForcesDataReader> TargetForcesDataReader_var;
+   typedef DDS_DCPSInterface_out < TargetForcesDataReader> TargetForcesDataReader_out;
 
 
-   class logevent_interlockDataReaderView;
+   class TargetForcesDataReaderView;
 
-   typedef logevent_interlockDataReaderView * logevent_interlockDataReaderView_ptr;
-   typedef DDS_DCPSInterface_var < logevent_interlockDataReaderView> logevent_interlockDataReaderView_var;
-   typedef DDS_DCPSInterface_out < logevent_interlockDataReaderView> logevent_interlockDataReaderView_out;
+   typedef TargetForcesDataReaderView * TargetForcesDataReaderView_ptr;
+   typedef DDS_DCPSInterface_var < TargetForcesDataReaderView> TargetForcesDataReaderView_var;
+   typedef DDS_DCPSInterface_out < TargetForcesDataReaderView> TargetForcesDataReaderView_out;
 
 
-   class logevent_limitErrorTypeSupportInterface;
+   class TemperaturesMeasuredTypeSupportInterface;
 
-   typedef logevent_limitErrorTypeSupportInterface * logevent_limitErrorTypeSupportInterface_ptr;
-   typedef DDS_DCPSInterface_var < logevent_limitErrorTypeSupportInterface> logevent_limitErrorTypeSupportInterface_var;
-   typedef DDS_DCPSInterface_out < logevent_limitErrorTypeSupportInterface> logevent_limitErrorTypeSupportInterface_out;
+   typedef TemperaturesMeasuredTypeSupportInterface * TemperaturesMeasuredTypeSupportInterface_ptr;
+   typedef DDS_DCPSInterface_var < TemperaturesMeasuredTypeSupportInterface> TemperaturesMeasuredTypeSupportInterface_var;
+   typedef DDS_DCPSInterface_out < TemperaturesMeasuredTypeSupportInterface> TemperaturesMeasuredTypeSupportInterface_out;
 
 
-   class logevent_limitErrorDataWriter;
+   class TemperaturesMeasuredDataWriter;
 
-   typedef logevent_limitErrorDataWriter * logevent_limitErrorDataWriter_ptr;
-   typedef DDS_DCPSInterface_var < logevent_limitErrorDataWriter> logevent_limitErrorDataWriter_var;
-   typedef DDS_DCPSInterface_out < logevent_limitErrorDataWriter> logevent_limitErrorDataWriter_out;
+   typedef TemperaturesMeasuredDataWriter * TemperaturesMeasuredDataWriter_ptr;
+   typedef DDS_DCPSInterface_var < TemperaturesMeasuredDataWriter> TemperaturesMeasuredDataWriter_var;
+   typedef DDS_DCPSInterface_out < TemperaturesMeasuredDataWriter> TemperaturesMeasuredDataWriter_out;
 
 
-   class logevent_limitErrorDataReader;
+   class TemperaturesMeasuredDataReader;
 
-   typedef logevent_limitErrorDataReader * logevent_limitErrorDataReader_ptr;
-   typedef DDS_DCPSInterface_var < logevent_limitErrorDataReader> logevent_limitErrorDataReader_var;
-   typedef DDS_DCPSInterface_out < logevent_limitErrorDataReader> logevent_limitErrorDataReader_out;
+   typedef TemperaturesMeasuredDataReader * TemperaturesMeasuredDataReader_ptr;
+   typedef DDS_DCPSInterface_var < TemperaturesMeasuredDataReader> TemperaturesMeasuredDataReader_var;
+   typedef DDS_DCPSInterface_out < TemperaturesMeasuredDataReader> TemperaturesMeasuredDataReader_out;
 
 
-   class logevent_limitErrorDataReaderView;
+   class TemperaturesMeasuredDataReaderView;
 
-   typedef logevent_limitErrorDataReaderView * logevent_limitErrorDataReaderView_ptr;
-   typedef DDS_DCPSInterface_var < logevent_limitErrorDataReaderView> logevent_limitErrorDataReaderView_var;
-   typedef DDS_DCPSInterface_out < logevent_limitErrorDataReaderView> logevent_limitErrorDataReaderView_out;
+   typedef TemperaturesMeasuredDataReaderView * TemperaturesMeasuredDataReaderView_ptr;
+   typedef DDS_DCPSInterface_var < TemperaturesMeasuredDataReaderView> TemperaturesMeasuredDataReaderView_var;
+   typedef DDS_DCPSInterface_out < TemperaturesMeasuredDataReaderView> TemperaturesMeasuredDataReaderView_out;
 
 
-   class logevent_targetDoneTypeSupportInterface;
+   class ZenithAngleMeasuredTypeSupportInterface;
 
-   typedef logevent_targetDoneTypeSupportInterface * logevent_targetDoneTypeSupportInterface_ptr;
-   typedef DDS_DCPSInterface_var < logevent_targetDoneTypeSupportInterface> logevent_targetDoneTypeSupportInterface_var;
-   typedef DDS_DCPSInterface_out < logevent_targetDoneTypeSupportInterface> logevent_targetDoneTypeSupportInterface_out;
+   typedef ZenithAngleMeasuredTypeSupportInterface * ZenithAngleMeasuredTypeSupportInterface_ptr;
+   typedef DDS_DCPSInterface_var < ZenithAngleMeasuredTypeSupportInterface> ZenithAngleMeasuredTypeSupportInterface_var;
+   typedef DDS_DCPSInterface_out < ZenithAngleMeasuredTypeSupportInterface> ZenithAngleMeasuredTypeSupportInterface_out;
 
 
-   class logevent_targetDoneDataWriter;
+   class ZenithAngleMeasuredDataWriter;
 
-   typedef logevent_targetDoneDataWriter * logevent_targetDoneDataWriter_ptr;
-   typedef DDS_DCPSInterface_var < logevent_targetDoneDataWriter> logevent_targetDoneDataWriter_var;
-   typedef DDS_DCPSInterface_out < logevent_targetDoneDataWriter> logevent_targetDoneDataWriter_out;
+   typedef ZenithAngleMeasuredDataWriter * ZenithAngleMeasuredDataWriter_ptr;
+   typedef DDS_DCPSInterface_var < ZenithAngleMeasuredDataWriter> ZenithAngleMeasuredDataWriter_var;
+   typedef DDS_DCPSInterface_out < ZenithAngleMeasuredDataWriter> ZenithAngleMeasuredDataWriter_out;
 
 
-   class logevent_targetDoneDataReader;
+   class ZenithAngleMeasuredDataReader;
 
-   typedef logevent_targetDoneDataReader * logevent_targetDoneDataReader_ptr;
-   typedef DDS_DCPSInterface_var < logevent_targetDoneDataReader> logevent_targetDoneDataReader_var;
-   typedef DDS_DCPSInterface_out < logevent_targetDoneDataReader> logevent_targetDoneDataReader_out;
+   typedef ZenithAngleMeasuredDataReader * ZenithAngleMeasuredDataReader_ptr;
+   typedef DDS_DCPSInterface_var < ZenithAngleMeasuredDataReader> ZenithAngleMeasuredDataReader_var;
+   typedef DDS_DCPSInterface_out < ZenithAngleMeasuredDataReader> ZenithAngleMeasuredDataReader_out;
 
 
-   class logevent_targetDoneDataReaderView;
+   class ZenithAngleMeasuredDataReaderView;
 
-   typedef logevent_targetDoneDataReaderView * logevent_targetDoneDataReaderView_ptr;
-   typedef DDS_DCPSInterface_var < logevent_targetDoneDataReaderView> logevent_targetDoneDataReaderView_var;
-   typedef DDS_DCPSInterface_out < logevent_targetDoneDataReaderView> logevent_targetDoneDataReaderView_out;
+   typedef ZenithAngleMeasuredDataReaderView * ZenithAngleMeasuredDataReaderView_ptr;
+   typedef DDS_DCPSInterface_var < ZenithAngleMeasuredDataReaderView> ZenithAngleMeasuredDataReaderView_var;
+   typedef DDS_DCPSInterface_out < ZenithAngleMeasuredDataReaderView> ZenithAngleMeasuredDataReaderView_out;
 
 
-   class logevent_targetErrorTypeSupportInterface;
+   class command_ApplyBendingModeTypeSupportInterface;
 
-   typedef logevent_targetErrorTypeSupportInterface * logevent_targetErrorTypeSupportInterface_ptr;
-   typedef DDS_DCPSInterface_var < logevent_targetErrorTypeSupportInterface> logevent_targetErrorTypeSupportInterface_var;
-   typedef DDS_DCPSInterface_out < logevent_targetErrorTypeSupportInterface> logevent_targetErrorTypeSupportInterface_out;
+   typedef command_ApplyBendingModeTypeSupportInterface * command_ApplyBendingModeTypeSupportInterface_ptr;
+   typedef DDS_DCPSInterface_var < command_ApplyBendingModeTypeSupportInterface> command_ApplyBendingModeTypeSupportInterface_var;
+   typedef DDS_DCPSInterface_out < command_ApplyBendingModeTypeSupportInterface> command_ApplyBendingModeTypeSupportInterface_out;
 
 
-   class logevent_targetErrorDataWriter;
+   class command_ApplyBendingModeDataWriter;
 
-   typedef logevent_targetErrorDataWriter * logevent_targetErrorDataWriter_ptr;
-   typedef DDS_DCPSInterface_var < logevent_targetErrorDataWriter> logevent_targetErrorDataWriter_var;
-   typedef DDS_DCPSInterface_out < logevent_targetErrorDataWriter> logevent_targetErrorDataWriter_out;
+   typedef command_ApplyBendingModeDataWriter * command_ApplyBendingModeDataWriter_ptr;
+   typedef DDS_DCPSInterface_var < command_ApplyBendingModeDataWriter> command_ApplyBendingModeDataWriter_var;
+   typedef DDS_DCPSInterface_out < command_ApplyBendingModeDataWriter> command_ApplyBendingModeDataWriter_out;
 
 
-   class logevent_targetErrorDataReader;
+   class command_ApplyBendingModeDataReader;
 
-   typedef logevent_targetErrorDataReader * logevent_targetErrorDataReader_ptr;
-   typedef DDS_DCPSInterface_var < logevent_targetErrorDataReader> logevent_targetErrorDataReader_var;
-   typedef DDS_DCPSInterface_out < logevent_targetErrorDataReader> logevent_targetErrorDataReader_out;
+   typedef command_ApplyBendingModeDataReader * command_ApplyBendingModeDataReader_ptr;
+   typedef DDS_DCPSInterface_var < command_ApplyBendingModeDataReader> command_ApplyBendingModeDataReader_var;
+   typedef DDS_DCPSInterface_out < command_ApplyBendingModeDataReader> command_ApplyBendingModeDataReader_out;
 
 
-   class logevent_targetErrorDataReaderView;
+   class command_ApplyBendingModeDataReaderView;
 
-   typedef logevent_targetErrorDataReaderView * logevent_targetErrorDataReaderView_ptr;
-   typedef DDS_DCPSInterface_var < logevent_targetErrorDataReaderView> logevent_targetErrorDataReaderView_var;
-   typedef DDS_DCPSInterface_out < logevent_targetErrorDataReaderView> logevent_targetErrorDataReaderView_out;
+   typedef command_ApplyBendingModeDataReaderView * command_ApplyBendingModeDataReaderView_ptr;
+   typedef DDS_DCPSInterface_var < command_ApplyBendingModeDataReaderView> command_ApplyBendingModeDataReaderView_var;
+   typedef DDS_DCPSInterface_out < command_ApplyBendingModeDataReaderView> command_ApplyBendingModeDataReaderView_out;
 
 
-   class logevent_tempErrorTypeSupportInterface;
+   class command_ApplyForceTypeSupportInterface;
 
-   typedef logevent_tempErrorTypeSupportInterface * logevent_tempErrorTypeSupportInterface_ptr;
-   typedef DDS_DCPSInterface_var < logevent_tempErrorTypeSupportInterface> logevent_tempErrorTypeSupportInterface_var;
-   typedef DDS_DCPSInterface_out < logevent_tempErrorTypeSupportInterface> logevent_tempErrorTypeSupportInterface_out;
+   typedef command_ApplyForceTypeSupportInterface * command_ApplyForceTypeSupportInterface_ptr;
+   typedef DDS_DCPSInterface_var < command_ApplyForceTypeSupportInterface> command_ApplyForceTypeSupportInterface_var;
+   typedef DDS_DCPSInterface_out < command_ApplyForceTypeSupportInterface> command_ApplyForceTypeSupportInterface_out;
 
 
-   class logevent_tempErrorDataWriter;
+   class command_ApplyForceDataWriter;
 
-   typedef logevent_tempErrorDataWriter * logevent_tempErrorDataWriter_ptr;
-   typedef DDS_DCPSInterface_var < logevent_tempErrorDataWriter> logevent_tempErrorDataWriter_var;
-   typedef DDS_DCPSInterface_out < logevent_tempErrorDataWriter> logevent_tempErrorDataWriter_out;
+   typedef command_ApplyForceDataWriter * command_ApplyForceDataWriter_ptr;
+   typedef DDS_DCPSInterface_var < command_ApplyForceDataWriter> command_ApplyForceDataWriter_var;
+   typedef DDS_DCPSInterface_out < command_ApplyForceDataWriter> command_ApplyForceDataWriter_out;
 
 
-   class logevent_tempErrorDataReader;
+   class command_ApplyForceDataReader;
 
-   typedef logevent_tempErrorDataReader * logevent_tempErrorDataReader_ptr;
-   typedef DDS_DCPSInterface_var < logevent_tempErrorDataReader> logevent_tempErrorDataReader_var;
-   typedef DDS_DCPSInterface_out < logevent_tempErrorDataReader> logevent_tempErrorDataReader_out;
+   typedef command_ApplyForceDataReader * command_ApplyForceDataReader_ptr;
+   typedef DDS_DCPSInterface_var < command_ApplyForceDataReader> command_ApplyForceDataReader_var;
+   typedef DDS_DCPSInterface_out < command_ApplyForceDataReader> command_ApplyForceDataReader_out;
 
 
-   class logevent_tempErrorDataReaderView;
+   class command_ApplyForceDataReaderView;
 
-   typedef logevent_tempErrorDataReaderView * logevent_tempErrorDataReaderView_ptr;
-   typedef DDS_DCPSInterface_var < logevent_tempErrorDataReaderView> logevent_tempErrorDataReaderView_var;
-   typedef DDS_DCPSInterface_out < logevent_tempErrorDataReaderView> logevent_tempErrorDataReaderView_out;
+   typedef command_ApplyForceDataReaderView * command_ApplyForceDataReaderView_ptr;
+   typedef DDS_DCPSInterface_var < command_ApplyForceDataReaderView> command_ApplyForceDataReaderView_var;
+   typedef DDS_DCPSInterface_out < command_ApplyForceDataReaderView> command_ApplyForceDataReaderView_out;
 
 
-   class logevent_updateDoneTypeSupportInterface;
+   class command_MoveAxialActuatorTypeSupportInterface;
 
-   typedef logevent_updateDoneTypeSupportInterface * logevent_updateDoneTypeSupportInterface_ptr;
-   typedef DDS_DCPSInterface_var < logevent_updateDoneTypeSupportInterface> logevent_updateDoneTypeSupportInterface_var;
-   typedef DDS_DCPSInterface_out < logevent_updateDoneTypeSupportInterface> logevent_updateDoneTypeSupportInterface_out;
+   typedef command_MoveAxialActuatorTypeSupportInterface * command_MoveAxialActuatorTypeSupportInterface_ptr;
+   typedef DDS_DCPSInterface_var < command_MoveAxialActuatorTypeSupportInterface> command_MoveAxialActuatorTypeSupportInterface_var;
+   typedef DDS_DCPSInterface_out < command_MoveAxialActuatorTypeSupportInterface> command_MoveAxialActuatorTypeSupportInterface_out;
 
 
-   class logevent_updateDoneDataWriter;
+   class command_MoveAxialActuatorDataWriter;
 
-   typedef logevent_updateDoneDataWriter * logevent_updateDoneDataWriter_ptr;
-   typedef DDS_DCPSInterface_var < logevent_updateDoneDataWriter> logevent_updateDoneDataWriter_var;
-   typedef DDS_DCPSInterface_out < logevent_updateDoneDataWriter> logevent_updateDoneDataWriter_out;
+   typedef command_MoveAxialActuatorDataWriter * command_MoveAxialActuatorDataWriter_ptr;
+   typedef DDS_DCPSInterface_var < command_MoveAxialActuatorDataWriter> command_MoveAxialActuatorDataWriter_var;
+   typedef DDS_DCPSInterface_out < command_MoveAxialActuatorDataWriter> command_MoveAxialActuatorDataWriter_out;
 
 
-   class logevent_updateDoneDataReader;
+   class command_MoveAxialActuatorDataReader;
 
-   typedef logevent_updateDoneDataReader * logevent_updateDoneDataReader_ptr;
-   typedef DDS_DCPSInterface_var < logevent_updateDoneDataReader> logevent_updateDoneDataReader_var;
-   typedef DDS_DCPSInterface_out < logevent_updateDoneDataReader> logevent_updateDoneDataReader_out;
+   typedef command_MoveAxialActuatorDataReader * command_MoveAxialActuatorDataReader_ptr;
+   typedef DDS_DCPSInterface_var < command_MoveAxialActuatorDataReader> command_MoveAxialActuatorDataReader_var;
+   typedef DDS_DCPSInterface_out < command_MoveAxialActuatorDataReader> command_MoveAxialActuatorDataReader_out;
 
 
-   class logevent_updateDoneDataReaderView;
+   class command_MoveAxialActuatorDataReaderView;
 
-   typedef logevent_updateDoneDataReaderView * logevent_updateDoneDataReaderView_ptr;
-   typedef DDS_DCPSInterface_var < logevent_updateDoneDataReaderView> logevent_updateDoneDataReaderView_var;
-   typedef DDS_DCPSInterface_out < logevent_updateDoneDataReaderView> logevent_updateDoneDataReaderView_out;
+   typedef command_MoveAxialActuatorDataReaderView * command_MoveAxialActuatorDataReaderView_ptr;
+   typedef DDS_DCPSInterface_var < command_MoveAxialActuatorDataReaderView> command_MoveAxialActuatorDataReaderView_var;
+   typedef DDS_DCPSInterface_out < command_MoveAxialActuatorDataReaderView> command_MoveAxialActuatorDataReaderView_out;
 
 
-   class logevent_updateErrorTypeSupportInterface;
+   class command_PositionMirrorTypeSupportInterface;
 
-   typedef logevent_updateErrorTypeSupportInterface * logevent_updateErrorTypeSupportInterface_ptr;
-   typedef DDS_DCPSInterface_var < logevent_updateErrorTypeSupportInterface> logevent_updateErrorTypeSupportInterface_var;
-   typedef DDS_DCPSInterface_out < logevent_updateErrorTypeSupportInterface> logevent_updateErrorTypeSupportInterface_out;
+   typedef command_PositionMirrorTypeSupportInterface * command_PositionMirrorTypeSupportInterface_ptr;
+   typedef DDS_DCPSInterface_var < command_PositionMirrorTypeSupportInterface> command_PositionMirrorTypeSupportInterface_var;
+   typedef DDS_DCPSInterface_out < command_PositionMirrorTypeSupportInterface> command_PositionMirrorTypeSupportInterface_out;
 
 
-   class logevent_updateErrorDataWriter;
+   class command_PositionMirrorDataWriter;
 
-   typedef logevent_updateErrorDataWriter * logevent_updateErrorDataWriter_ptr;
-   typedef DDS_DCPSInterface_var < logevent_updateErrorDataWriter> logevent_updateErrorDataWriter_var;
-   typedef DDS_DCPSInterface_out < logevent_updateErrorDataWriter> logevent_updateErrorDataWriter_out;
+   typedef command_PositionMirrorDataWriter * command_PositionMirrorDataWriter_ptr;
+   typedef DDS_DCPSInterface_var < command_PositionMirrorDataWriter> command_PositionMirrorDataWriter_var;
+   typedef DDS_DCPSInterface_out < command_PositionMirrorDataWriter> command_PositionMirrorDataWriter_out;
 
 
-   class logevent_updateErrorDataReader;
+   class command_PositionMirrorDataReader;
 
-   typedef logevent_updateErrorDataReader * logevent_updateErrorDataReader_ptr;
-   typedef DDS_DCPSInterface_var < logevent_updateErrorDataReader> logevent_updateErrorDataReader_var;
-   typedef DDS_DCPSInterface_out < logevent_updateErrorDataReader> logevent_updateErrorDataReader_out;
+   typedef command_PositionMirrorDataReader * command_PositionMirrorDataReader_ptr;
+   typedef DDS_DCPSInterface_var < command_PositionMirrorDataReader> command_PositionMirrorDataReader_var;
+   typedef DDS_DCPSInterface_out < command_PositionMirrorDataReader> command_PositionMirrorDataReader_out;
 
 
-   class logevent_updateErrorDataReaderView;
+   class command_PositionMirrorDataReaderView;
 
-   typedef logevent_updateErrorDataReaderView * logevent_updateErrorDataReaderView_ptr;
-   typedef DDS_DCPSInterface_var < logevent_updateErrorDataReaderView> logevent_updateErrorDataReaderView_var;
-   typedef DDS_DCPSInterface_out < logevent_updateErrorDataReaderView> logevent_updateErrorDataReaderView_out;
+   typedef command_PositionMirrorDataReaderView * command_PositionMirrorDataReaderView_ptr;
+   typedef DDS_DCPSInterface_var < command_PositionMirrorDataReaderView> command_PositionMirrorDataReaderView_var;
+   typedef DDS_DCPSInterface_out < command_PositionMirrorDataReaderView> command_PositionMirrorDataReaderView_out;
+
+
+   class command_SetCorrectionModeTypeSupportInterface;
+
+   typedef command_SetCorrectionModeTypeSupportInterface * command_SetCorrectionModeTypeSupportInterface_ptr;
+   typedef DDS_DCPSInterface_var < command_SetCorrectionModeTypeSupportInterface> command_SetCorrectionModeTypeSupportInterface_var;
+   typedef DDS_DCPSInterface_out < command_SetCorrectionModeTypeSupportInterface> command_SetCorrectionModeTypeSupportInterface_out;
+
+
+   class command_SetCorrectionModeDataWriter;
+
+   typedef command_SetCorrectionModeDataWriter * command_SetCorrectionModeDataWriter_ptr;
+   typedef DDS_DCPSInterface_var < command_SetCorrectionModeDataWriter> command_SetCorrectionModeDataWriter_var;
+   typedef DDS_DCPSInterface_out < command_SetCorrectionModeDataWriter> command_SetCorrectionModeDataWriter_out;
+
+
+   class command_SetCorrectionModeDataReader;
+
+   typedef command_SetCorrectionModeDataReader * command_SetCorrectionModeDataReader_ptr;
+   typedef DDS_DCPSInterface_var < command_SetCorrectionModeDataReader> command_SetCorrectionModeDataReader_var;
+   typedef DDS_DCPSInterface_out < command_SetCorrectionModeDataReader> command_SetCorrectionModeDataReader_out;
+
+
+   class command_SetCorrectionModeDataReaderView;
+
+   typedef command_SetCorrectionModeDataReaderView * command_SetCorrectionModeDataReaderView_ptr;
+   typedef DDS_DCPSInterface_var < command_SetCorrectionModeDataReaderView> command_SetCorrectionModeDataReaderView_var;
+   typedef DDS_DCPSInterface_out < command_SetCorrectionModeDataReaderView> command_SetCorrectionModeDataReaderView_out;
+
+
+   class logevent_M2AssemblyInPositionTypeSupportInterface;
+
+   typedef logevent_M2AssemblyInPositionTypeSupportInterface * logevent_M2AssemblyInPositionTypeSupportInterface_ptr;
+   typedef DDS_DCPSInterface_var < logevent_M2AssemblyInPositionTypeSupportInterface> logevent_M2AssemblyInPositionTypeSupportInterface_var;
+   typedef DDS_DCPSInterface_out < logevent_M2AssemblyInPositionTypeSupportInterface> logevent_M2AssemblyInPositionTypeSupportInterface_out;
+
+
+   class logevent_M2AssemblyInPositionDataWriter;
+
+   typedef logevent_M2AssemblyInPositionDataWriter * logevent_M2AssemblyInPositionDataWriter_ptr;
+   typedef DDS_DCPSInterface_var < logevent_M2AssemblyInPositionDataWriter> logevent_M2AssemblyInPositionDataWriter_var;
+   typedef DDS_DCPSInterface_out < logevent_M2AssemblyInPositionDataWriter> logevent_M2AssemblyInPositionDataWriter_out;
+
+
+   class logevent_M2AssemblyInPositionDataReader;
+
+   typedef logevent_M2AssemblyInPositionDataReader * logevent_M2AssemblyInPositionDataReader_ptr;
+   typedef DDS_DCPSInterface_var < logevent_M2AssemblyInPositionDataReader> logevent_M2AssemblyInPositionDataReader_var;
+   typedef DDS_DCPSInterface_out < logevent_M2AssemblyInPositionDataReader> logevent_M2AssemblyInPositionDataReader_out;
+
+
+   class logevent_M2AssemblyInPositionDataReaderView;
+
+   typedef logevent_M2AssemblyInPositionDataReaderView * logevent_M2AssemblyInPositionDataReaderView_ptr;
+   typedef DDS_DCPSInterface_var < logevent_M2AssemblyInPositionDataReaderView> logevent_M2AssemblyInPositionDataReaderView_var;
+   typedef DDS_DCPSInterface_out < logevent_M2AssemblyInPositionDataReaderView> logevent_M2AssemblyInPositionDataReaderView_out;
+
+
+   class logevent_M2DetailedStateTypeSupportInterface;
+
+   typedef logevent_M2DetailedStateTypeSupportInterface * logevent_M2DetailedStateTypeSupportInterface_ptr;
+   typedef DDS_DCPSInterface_var < logevent_M2DetailedStateTypeSupportInterface> logevent_M2DetailedStateTypeSupportInterface_var;
+   typedef DDS_DCPSInterface_out < logevent_M2DetailedStateTypeSupportInterface> logevent_M2DetailedStateTypeSupportInterface_out;
+
+
+   class logevent_M2DetailedStateDataWriter;
+
+   typedef logevent_M2DetailedStateDataWriter * logevent_M2DetailedStateDataWriter_ptr;
+   typedef DDS_DCPSInterface_var < logevent_M2DetailedStateDataWriter> logevent_M2DetailedStateDataWriter_var;
+   typedef DDS_DCPSInterface_out < logevent_M2DetailedStateDataWriter> logevent_M2DetailedStateDataWriter_out;
+
+
+   class logevent_M2DetailedStateDataReader;
+
+   typedef logevent_M2DetailedStateDataReader * logevent_M2DetailedStateDataReader_ptr;
+   typedef DDS_DCPSInterface_var < logevent_M2DetailedStateDataReader> logevent_M2DetailedStateDataReader_var;
+   typedef DDS_DCPSInterface_out < logevent_M2DetailedStateDataReader> logevent_M2DetailedStateDataReader_out;
+
+
+   class logevent_M2DetailedStateDataReaderView;
+
+   typedef logevent_M2DetailedStateDataReaderView * logevent_M2DetailedStateDataReaderView_ptr;
+   typedef DDS_DCPSInterface_var < logevent_M2DetailedStateDataReaderView> logevent_M2DetailedStateDataReaderView_var;
+   typedef DDS_DCPSInterface_out < logevent_M2DetailedStateDataReaderView> logevent_M2DetailedStateDataReaderView_out;
+
+
+   class logevent_M2FaultStateTypeSupportInterface;
+
+   typedef logevent_M2FaultStateTypeSupportInterface * logevent_M2FaultStateTypeSupportInterface_ptr;
+   typedef DDS_DCPSInterface_var < logevent_M2FaultStateTypeSupportInterface> logevent_M2FaultStateTypeSupportInterface_var;
+   typedef DDS_DCPSInterface_out < logevent_M2FaultStateTypeSupportInterface> logevent_M2FaultStateTypeSupportInterface_out;
+
+
+   class logevent_M2FaultStateDataWriter;
+
+   typedef logevent_M2FaultStateDataWriter * logevent_M2FaultStateDataWriter_ptr;
+   typedef DDS_DCPSInterface_var < logevent_M2FaultStateDataWriter> logevent_M2FaultStateDataWriter_var;
+   typedef DDS_DCPSInterface_out < logevent_M2FaultStateDataWriter> logevent_M2FaultStateDataWriter_out;
+
+
+   class logevent_M2FaultStateDataReader;
+
+   typedef logevent_M2FaultStateDataReader * logevent_M2FaultStateDataReader_ptr;
+   typedef DDS_DCPSInterface_var < logevent_M2FaultStateDataReader> logevent_M2FaultStateDataReader_var;
+   typedef DDS_DCPSInterface_out < logevent_M2FaultStateDataReader> logevent_M2FaultStateDataReader_out;
+
+
+   class logevent_M2FaultStateDataReaderView;
+
+   typedef logevent_M2FaultStateDataReaderView * logevent_M2FaultStateDataReaderView_ptr;
+   typedef DDS_DCPSInterface_var < logevent_M2FaultStateDataReaderView> logevent_M2FaultStateDataReaderView_var;
+   typedef DDS_DCPSInterface_out < logevent_M2FaultStateDataReaderView> logevent_M2FaultStateDataReaderView_out;
+
+
+   class logevent_M2SummaryStateTypeSupportInterface;
+
+   typedef logevent_M2SummaryStateTypeSupportInterface * logevent_M2SummaryStateTypeSupportInterface_ptr;
+   typedef DDS_DCPSInterface_var < logevent_M2SummaryStateTypeSupportInterface> logevent_M2SummaryStateTypeSupportInterface_var;
+   typedef DDS_DCPSInterface_out < logevent_M2SummaryStateTypeSupportInterface> logevent_M2SummaryStateTypeSupportInterface_out;
+
+
+   class logevent_M2SummaryStateDataWriter;
+
+   typedef logevent_M2SummaryStateDataWriter * logevent_M2SummaryStateDataWriter_ptr;
+   typedef DDS_DCPSInterface_var < logevent_M2SummaryStateDataWriter> logevent_M2SummaryStateDataWriter_var;
+   typedef DDS_DCPSInterface_out < logevent_M2SummaryStateDataWriter> logevent_M2SummaryStateDataWriter_out;
+
+
+   class logevent_M2SummaryStateDataReader;
+
+   typedef logevent_M2SummaryStateDataReader * logevent_M2SummaryStateDataReader_ptr;
+   typedef DDS_DCPSInterface_var < logevent_M2SummaryStateDataReader> logevent_M2SummaryStateDataReader_var;
+   typedef DDS_DCPSInterface_out < logevent_M2SummaryStateDataReader> logevent_M2SummaryStateDataReader_out;
+
+
+   class logevent_M2SummaryStateDataReaderView;
+
+   typedef logevent_M2SummaryStateDataReaderView * logevent_M2SummaryStateDataReaderView_ptr;
+   typedef DDS_DCPSInterface_var < logevent_M2SummaryStateDataReaderView> logevent_M2SummaryStateDataReaderView_var;
+   typedef DDS_DCPSInterface_out < logevent_M2SummaryStateDataReaderView> logevent_M2SummaryStateDataReaderView_out;
 
 
    class commandTypeSupportInterface;
@@ -663,3004 +803,3754 @@ namespace m2ms
    typedef DDS_DCPSInterface_var < logeventDataReaderView> logeventDataReaderView_var;
    typedef DDS_DCPSInterface_out < logeventDataReaderView> logeventDataReaderView_out;
 
-   struct ActuatorsSeq_uniq_ {};
-   typedef DDS_DCPSUVLSeq < Actuators, struct ActuatorsSeq_uniq_> ActuatorsSeq;
-   typedef DDS_DCPSSequence_var < ActuatorsSeq> ActuatorsSeq_var;
-   typedef DDS_DCPSSequence_out < ActuatorsSeq> ActuatorsSeq_out;
-   class ActuatorsTypeSupportInterface
+   struct ActuatorLimitSwitchesSeq_uniq_ {};
+   typedef DDS_DCPSUVLSeq < ActuatorLimitSwitches, struct ActuatorLimitSwitchesSeq_uniq_> ActuatorLimitSwitchesSeq;
+   typedef DDS_DCPSSequence_var < ActuatorLimitSwitchesSeq> ActuatorLimitSwitchesSeq_var;
+   typedef DDS_DCPSSequence_out < ActuatorLimitSwitchesSeq> ActuatorLimitSwitchesSeq_out;
+   class ActuatorLimitSwitchesTypeSupportInterface
    :
       virtual public DDS::TypeSupport
    { 
    public:
-      typedef ActuatorsTypeSupportInterface_ptr _ptr_type;
-      typedef ActuatorsTypeSupportInterface_var _var_type;
+      typedef ActuatorLimitSwitchesTypeSupportInterface_ptr _ptr_type;
+      typedef ActuatorLimitSwitchesTypeSupportInterface_var _var_type;
 
-      static ActuatorsTypeSupportInterface_ptr _duplicate (ActuatorsTypeSupportInterface_ptr obj);
+      static ActuatorLimitSwitchesTypeSupportInterface_ptr _duplicate (ActuatorLimitSwitchesTypeSupportInterface_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static ActuatorsTypeSupportInterface_ptr _narrow (DDS::Object_ptr obj);
-      static ActuatorsTypeSupportInterface_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static ActuatorsTypeSupportInterface_ptr _nil () { return 0; }
+      static ActuatorLimitSwitchesTypeSupportInterface_ptr _narrow (DDS::Object_ptr obj);
+      static ActuatorLimitSwitchesTypeSupportInterface_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static ActuatorLimitSwitchesTypeSupportInterface_ptr _nil () { return 0; }
       static const char * _local_id;
-      ActuatorsTypeSupportInterface_ptr _this () { return this; }
+      ActuatorLimitSwitchesTypeSupportInterface_ptr _this () { return this; }
 
 
    protected:
-      ActuatorsTypeSupportInterface () {};
-      ~ActuatorsTypeSupportInterface () {};
+      ActuatorLimitSwitchesTypeSupportInterface () {};
+      ~ActuatorLimitSwitchesTypeSupportInterface () {};
    private:
-      ActuatorsTypeSupportInterface (const ActuatorsTypeSupportInterface &);
-      ActuatorsTypeSupportInterface & operator = (const ActuatorsTypeSupportInterface &);
+      ActuatorLimitSwitchesTypeSupportInterface (const ActuatorLimitSwitchesTypeSupportInterface &);
+      ActuatorLimitSwitchesTypeSupportInterface & operator = (const ActuatorLimitSwitchesTypeSupportInterface &);
    };
 
-   class ActuatorsDataWriter
+   class ActuatorLimitSwitchesDataWriter
    :
       virtual public DDS::DataWriter
    { 
    public:
-      typedef ActuatorsDataWriter_ptr _ptr_type;
-      typedef ActuatorsDataWriter_var _var_type;
+      typedef ActuatorLimitSwitchesDataWriter_ptr _ptr_type;
+      typedef ActuatorLimitSwitchesDataWriter_var _var_type;
 
-      static ActuatorsDataWriter_ptr _duplicate (ActuatorsDataWriter_ptr obj);
+      static ActuatorLimitSwitchesDataWriter_ptr _duplicate (ActuatorLimitSwitchesDataWriter_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static ActuatorsDataWriter_ptr _narrow (DDS::Object_ptr obj);
-      static ActuatorsDataWriter_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static ActuatorsDataWriter_ptr _nil () { return 0; }
+      static ActuatorLimitSwitchesDataWriter_ptr _narrow (DDS::Object_ptr obj);
+      static ActuatorLimitSwitchesDataWriter_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static ActuatorLimitSwitchesDataWriter_ptr _nil () { return 0; }
       static const char * _local_id;
-      ActuatorsDataWriter_ptr _this () { return this; }
+      ActuatorLimitSwitchesDataWriter_ptr _this () { return this; }
 
-      virtual DDS::LongLong register_instance (const Actuators& instance_data) = 0;
-      virtual DDS::LongLong register_instance_w_timestamp (const Actuators& instance_data, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long unregister_instance (const Actuators& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long unregister_instance_w_timestamp (const Actuators& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long write (const Actuators& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long write_w_timestamp (const Actuators& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long dispose (const Actuators& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long dispose_w_timestamp (const Actuators& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long writedispose (const Actuators& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long writedispose_w_timestamp (const Actuators& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long get_key_value (Actuators& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const Actuators& instance_data) = 0;
+      virtual DDS::LongLong register_instance (const ActuatorLimitSwitches& instance_data) = 0;
+      virtual DDS::LongLong register_instance_w_timestamp (const ActuatorLimitSwitches& instance_data, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long unregister_instance (const ActuatorLimitSwitches& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long unregister_instance_w_timestamp (const ActuatorLimitSwitches& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long write (const ActuatorLimitSwitches& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long write_w_timestamp (const ActuatorLimitSwitches& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long dispose (const ActuatorLimitSwitches& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long dispose_w_timestamp (const ActuatorLimitSwitches& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long writedispose (const ActuatorLimitSwitches& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long writedispose_w_timestamp (const ActuatorLimitSwitches& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long get_key_value (ActuatorLimitSwitches& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const ActuatorLimitSwitches& instance_data) = 0;
 
    protected:
-      ActuatorsDataWriter () {};
-      ~ActuatorsDataWriter () {};
+      ActuatorLimitSwitchesDataWriter () {};
+      ~ActuatorLimitSwitchesDataWriter () {};
    private:
-      ActuatorsDataWriter (const ActuatorsDataWriter &);
-      ActuatorsDataWriter & operator = (const ActuatorsDataWriter &);
+      ActuatorLimitSwitchesDataWriter (const ActuatorLimitSwitchesDataWriter &);
+      ActuatorLimitSwitchesDataWriter & operator = (const ActuatorLimitSwitchesDataWriter &);
    };
 
-   class ActuatorsDataReader
+   class ActuatorLimitSwitchesDataReader
    :
       virtual public DDS::DataReader
    { 
    public:
-      typedef ActuatorsDataReader_ptr _ptr_type;
-      typedef ActuatorsDataReader_var _var_type;
+      typedef ActuatorLimitSwitchesDataReader_ptr _ptr_type;
+      typedef ActuatorLimitSwitchesDataReader_var _var_type;
 
-      static ActuatorsDataReader_ptr _duplicate (ActuatorsDataReader_ptr obj);
+      static ActuatorLimitSwitchesDataReader_ptr _duplicate (ActuatorLimitSwitchesDataReader_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static ActuatorsDataReader_ptr _narrow (DDS::Object_ptr obj);
-      static ActuatorsDataReader_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static ActuatorsDataReader_ptr _nil () { return 0; }
+      static ActuatorLimitSwitchesDataReader_ptr _narrow (DDS::Object_ptr obj);
+      static ActuatorLimitSwitchesDataReader_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static ActuatorLimitSwitchesDataReader_ptr _nil () { return 0; }
       static const char * _local_id;
-      ActuatorsDataReader_ptr _this () { return this; }
+      ActuatorLimitSwitchesDataReader_ptr _this () { return this; }
 
-      virtual DDS::Long read (ActuatorsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take (ActuatorsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_w_condition (ActuatorsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_w_condition (ActuatorsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long read_next_sample (Actuators& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long take_next_sample (Actuators& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long read_instance (ActuatorsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_instance (ActuatorsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance (ActuatorsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_next_instance (ActuatorsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance_w_condition (ActuatorsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_next_instance_w_condition (ActuatorsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long return_loan (ActuatorsSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
-      virtual DDS::Long get_key_value (Actuators& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const Actuators& instance) = 0;
+      virtual DDS::Long read (ActuatorLimitSwitchesSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (ActuatorLimitSwitchesSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (ActuatorLimitSwitchesSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (ActuatorLimitSwitchesSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (ActuatorLimitSwitches& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (ActuatorLimitSwitches& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (ActuatorLimitSwitchesSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (ActuatorLimitSwitchesSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (ActuatorLimitSwitchesSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (ActuatorLimitSwitchesSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (ActuatorLimitSwitchesSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (ActuatorLimitSwitchesSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (ActuatorLimitSwitchesSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (ActuatorLimitSwitches& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const ActuatorLimitSwitches& instance) = 0;
 
    protected:
-      ActuatorsDataReader () {};
-      ~ActuatorsDataReader () {};
+      ActuatorLimitSwitchesDataReader () {};
+      ~ActuatorLimitSwitchesDataReader () {};
    private:
-      ActuatorsDataReader (const ActuatorsDataReader &);
-      ActuatorsDataReader & operator = (const ActuatorsDataReader &);
+      ActuatorLimitSwitchesDataReader (const ActuatorLimitSwitchesDataReader &);
+      ActuatorLimitSwitchesDataReader & operator = (const ActuatorLimitSwitchesDataReader &);
    };
 
-   class ActuatorsDataReaderView
+   class ActuatorLimitSwitchesDataReaderView
    :
       virtual public DDS::DataReaderView
    { 
    public:
-      typedef ActuatorsDataReaderView_ptr _ptr_type;
-      typedef ActuatorsDataReaderView_var _var_type;
+      typedef ActuatorLimitSwitchesDataReaderView_ptr _ptr_type;
+      typedef ActuatorLimitSwitchesDataReaderView_var _var_type;
 
-      static ActuatorsDataReaderView_ptr _duplicate (ActuatorsDataReaderView_ptr obj);
+      static ActuatorLimitSwitchesDataReaderView_ptr _duplicate (ActuatorLimitSwitchesDataReaderView_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static ActuatorsDataReaderView_ptr _narrow (DDS::Object_ptr obj);
-      static ActuatorsDataReaderView_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static ActuatorsDataReaderView_ptr _nil () { return 0; }
+      static ActuatorLimitSwitchesDataReaderView_ptr _narrow (DDS::Object_ptr obj);
+      static ActuatorLimitSwitchesDataReaderView_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static ActuatorLimitSwitchesDataReaderView_ptr _nil () { return 0; }
       static const char * _local_id;
-      ActuatorsDataReaderView_ptr _this () { return this; }
+      ActuatorLimitSwitchesDataReaderView_ptr _this () { return this; }
 
-      virtual DDS::Long read (ActuatorsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take (ActuatorsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_w_condition (ActuatorsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_w_condition (ActuatorsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long read_next_sample (Actuators& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long take_next_sample (Actuators& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long read_instance (ActuatorsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_instance (ActuatorsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance (ActuatorsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_next_instance (ActuatorsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance_w_condition (ActuatorsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_next_instance_w_condition (ActuatorsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long return_loan (ActuatorsSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
-      virtual DDS::Long get_key_value (Actuators& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const Actuators& instance) = 0;
+      virtual DDS::Long read (ActuatorLimitSwitchesSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (ActuatorLimitSwitchesSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (ActuatorLimitSwitchesSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (ActuatorLimitSwitchesSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (ActuatorLimitSwitches& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (ActuatorLimitSwitches& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (ActuatorLimitSwitchesSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (ActuatorLimitSwitchesSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (ActuatorLimitSwitchesSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (ActuatorLimitSwitchesSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (ActuatorLimitSwitchesSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (ActuatorLimitSwitchesSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (ActuatorLimitSwitchesSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (ActuatorLimitSwitches& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const ActuatorLimitSwitches& instance) = 0;
 
    protected:
-      ActuatorsDataReaderView () {};
-      ~ActuatorsDataReaderView () {};
+      ActuatorLimitSwitchesDataReaderView () {};
+      ~ActuatorLimitSwitchesDataReaderView () {};
    private:
-      ActuatorsDataReaderView (const ActuatorsDataReaderView &);
-      ActuatorsDataReaderView & operator = (const ActuatorsDataReaderView &);
+      ActuatorLimitSwitchesDataReaderView (const ActuatorLimitSwitchesDataReaderView &);
+      ActuatorLimitSwitchesDataReaderView & operator = (const ActuatorLimitSwitchesDataReaderView &);
    };
 
-   struct ApplicationSeq_uniq_ {};
-   typedef DDS_DCPSUVLSeq < Application, struct ApplicationSeq_uniq_> ApplicationSeq;
-   typedef DDS_DCPSSequence_var < ApplicationSeq> ApplicationSeq_var;
-   typedef DDS_DCPSSequence_out < ApplicationSeq> ApplicationSeq_out;
-   class ApplicationTypeSupportInterface
+   struct AxialActuatorAbsolutePositionStepsSeq_uniq_ {};
+   typedef DDS_DCPSUVLSeq < AxialActuatorAbsolutePositionSteps, struct AxialActuatorAbsolutePositionStepsSeq_uniq_> AxialActuatorAbsolutePositionStepsSeq;
+   typedef DDS_DCPSSequence_var < AxialActuatorAbsolutePositionStepsSeq> AxialActuatorAbsolutePositionStepsSeq_var;
+   typedef DDS_DCPSSequence_out < AxialActuatorAbsolutePositionStepsSeq> AxialActuatorAbsolutePositionStepsSeq_out;
+   class AxialActuatorAbsolutePositionStepsTypeSupportInterface
    :
       virtual public DDS::TypeSupport
    { 
    public:
-      typedef ApplicationTypeSupportInterface_ptr _ptr_type;
-      typedef ApplicationTypeSupportInterface_var _var_type;
+      typedef AxialActuatorAbsolutePositionStepsTypeSupportInterface_ptr _ptr_type;
+      typedef AxialActuatorAbsolutePositionStepsTypeSupportInterface_var _var_type;
 
-      static ApplicationTypeSupportInterface_ptr _duplicate (ApplicationTypeSupportInterface_ptr obj);
+      static AxialActuatorAbsolutePositionStepsTypeSupportInterface_ptr _duplicate (AxialActuatorAbsolutePositionStepsTypeSupportInterface_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static ApplicationTypeSupportInterface_ptr _narrow (DDS::Object_ptr obj);
-      static ApplicationTypeSupportInterface_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static ApplicationTypeSupportInterface_ptr _nil () { return 0; }
+      static AxialActuatorAbsolutePositionStepsTypeSupportInterface_ptr _narrow (DDS::Object_ptr obj);
+      static AxialActuatorAbsolutePositionStepsTypeSupportInterface_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static AxialActuatorAbsolutePositionStepsTypeSupportInterface_ptr _nil () { return 0; }
       static const char * _local_id;
-      ApplicationTypeSupportInterface_ptr _this () { return this; }
+      AxialActuatorAbsolutePositionStepsTypeSupportInterface_ptr _this () { return this; }
 
 
    protected:
-      ApplicationTypeSupportInterface () {};
-      ~ApplicationTypeSupportInterface () {};
+      AxialActuatorAbsolutePositionStepsTypeSupportInterface () {};
+      ~AxialActuatorAbsolutePositionStepsTypeSupportInterface () {};
    private:
-      ApplicationTypeSupportInterface (const ApplicationTypeSupportInterface &);
-      ApplicationTypeSupportInterface & operator = (const ApplicationTypeSupportInterface &);
+      AxialActuatorAbsolutePositionStepsTypeSupportInterface (const AxialActuatorAbsolutePositionStepsTypeSupportInterface &);
+      AxialActuatorAbsolutePositionStepsTypeSupportInterface & operator = (const AxialActuatorAbsolutePositionStepsTypeSupportInterface &);
    };
 
-   class ApplicationDataWriter
+   class AxialActuatorAbsolutePositionStepsDataWriter
    :
       virtual public DDS::DataWriter
    { 
    public:
-      typedef ApplicationDataWriter_ptr _ptr_type;
-      typedef ApplicationDataWriter_var _var_type;
+      typedef AxialActuatorAbsolutePositionStepsDataWriter_ptr _ptr_type;
+      typedef AxialActuatorAbsolutePositionStepsDataWriter_var _var_type;
 
-      static ApplicationDataWriter_ptr _duplicate (ApplicationDataWriter_ptr obj);
+      static AxialActuatorAbsolutePositionStepsDataWriter_ptr _duplicate (AxialActuatorAbsolutePositionStepsDataWriter_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static ApplicationDataWriter_ptr _narrow (DDS::Object_ptr obj);
-      static ApplicationDataWriter_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static ApplicationDataWriter_ptr _nil () { return 0; }
+      static AxialActuatorAbsolutePositionStepsDataWriter_ptr _narrow (DDS::Object_ptr obj);
+      static AxialActuatorAbsolutePositionStepsDataWriter_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static AxialActuatorAbsolutePositionStepsDataWriter_ptr _nil () { return 0; }
       static const char * _local_id;
-      ApplicationDataWriter_ptr _this () { return this; }
+      AxialActuatorAbsolutePositionStepsDataWriter_ptr _this () { return this; }
 
-      virtual DDS::LongLong register_instance (const Application& instance_data) = 0;
-      virtual DDS::LongLong register_instance_w_timestamp (const Application& instance_data, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long unregister_instance (const Application& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long unregister_instance_w_timestamp (const Application& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long write (const Application& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long write_w_timestamp (const Application& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long dispose (const Application& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long dispose_w_timestamp (const Application& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long writedispose (const Application& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long writedispose_w_timestamp (const Application& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long get_key_value (Application& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const Application& instance_data) = 0;
+      virtual DDS::LongLong register_instance (const AxialActuatorAbsolutePositionSteps& instance_data) = 0;
+      virtual DDS::LongLong register_instance_w_timestamp (const AxialActuatorAbsolutePositionSteps& instance_data, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long unregister_instance (const AxialActuatorAbsolutePositionSteps& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long unregister_instance_w_timestamp (const AxialActuatorAbsolutePositionSteps& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long write (const AxialActuatorAbsolutePositionSteps& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long write_w_timestamp (const AxialActuatorAbsolutePositionSteps& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long dispose (const AxialActuatorAbsolutePositionSteps& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long dispose_w_timestamp (const AxialActuatorAbsolutePositionSteps& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long writedispose (const AxialActuatorAbsolutePositionSteps& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long writedispose_w_timestamp (const AxialActuatorAbsolutePositionSteps& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long get_key_value (AxialActuatorAbsolutePositionSteps& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const AxialActuatorAbsolutePositionSteps& instance_data) = 0;
 
    protected:
-      ApplicationDataWriter () {};
-      ~ApplicationDataWriter () {};
+      AxialActuatorAbsolutePositionStepsDataWriter () {};
+      ~AxialActuatorAbsolutePositionStepsDataWriter () {};
    private:
-      ApplicationDataWriter (const ApplicationDataWriter &);
-      ApplicationDataWriter & operator = (const ApplicationDataWriter &);
+      AxialActuatorAbsolutePositionStepsDataWriter (const AxialActuatorAbsolutePositionStepsDataWriter &);
+      AxialActuatorAbsolutePositionStepsDataWriter & operator = (const AxialActuatorAbsolutePositionStepsDataWriter &);
    };
 
-   class ApplicationDataReader
+   class AxialActuatorAbsolutePositionStepsDataReader
    :
       virtual public DDS::DataReader
    { 
    public:
-      typedef ApplicationDataReader_ptr _ptr_type;
-      typedef ApplicationDataReader_var _var_type;
+      typedef AxialActuatorAbsolutePositionStepsDataReader_ptr _ptr_type;
+      typedef AxialActuatorAbsolutePositionStepsDataReader_var _var_type;
 
-      static ApplicationDataReader_ptr _duplicate (ApplicationDataReader_ptr obj);
+      static AxialActuatorAbsolutePositionStepsDataReader_ptr _duplicate (AxialActuatorAbsolutePositionStepsDataReader_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static ApplicationDataReader_ptr _narrow (DDS::Object_ptr obj);
-      static ApplicationDataReader_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static ApplicationDataReader_ptr _nil () { return 0; }
+      static AxialActuatorAbsolutePositionStepsDataReader_ptr _narrow (DDS::Object_ptr obj);
+      static AxialActuatorAbsolutePositionStepsDataReader_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static AxialActuatorAbsolutePositionStepsDataReader_ptr _nil () { return 0; }
       static const char * _local_id;
-      ApplicationDataReader_ptr _this () { return this; }
+      AxialActuatorAbsolutePositionStepsDataReader_ptr _this () { return this; }
 
-      virtual DDS::Long read (ApplicationSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take (ApplicationSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_w_condition (ApplicationSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_w_condition (ApplicationSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long read_next_sample (Application& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long take_next_sample (Application& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long read_instance (ApplicationSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_instance (ApplicationSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance (ApplicationSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_next_instance (ApplicationSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance_w_condition (ApplicationSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_next_instance_w_condition (ApplicationSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long return_loan (ApplicationSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
-      virtual DDS::Long get_key_value (Application& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const Application& instance) = 0;
+      virtual DDS::Long read (AxialActuatorAbsolutePositionStepsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (AxialActuatorAbsolutePositionStepsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (AxialActuatorAbsolutePositionStepsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (AxialActuatorAbsolutePositionStepsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (AxialActuatorAbsolutePositionSteps& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (AxialActuatorAbsolutePositionSteps& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (AxialActuatorAbsolutePositionStepsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (AxialActuatorAbsolutePositionStepsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (AxialActuatorAbsolutePositionStepsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (AxialActuatorAbsolutePositionStepsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (AxialActuatorAbsolutePositionStepsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (AxialActuatorAbsolutePositionStepsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (AxialActuatorAbsolutePositionStepsSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (AxialActuatorAbsolutePositionSteps& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const AxialActuatorAbsolutePositionSteps& instance) = 0;
 
    protected:
-      ApplicationDataReader () {};
-      ~ApplicationDataReader () {};
+      AxialActuatorAbsolutePositionStepsDataReader () {};
+      ~AxialActuatorAbsolutePositionStepsDataReader () {};
    private:
-      ApplicationDataReader (const ApplicationDataReader &);
-      ApplicationDataReader & operator = (const ApplicationDataReader &);
+      AxialActuatorAbsolutePositionStepsDataReader (const AxialActuatorAbsolutePositionStepsDataReader &);
+      AxialActuatorAbsolutePositionStepsDataReader & operator = (const AxialActuatorAbsolutePositionStepsDataReader &);
    };
 
-   class ApplicationDataReaderView
+   class AxialActuatorAbsolutePositionStepsDataReaderView
    :
       virtual public DDS::DataReaderView
    { 
    public:
-      typedef ApplicationDataReaderView_ptr _ptr_type;
-      typedef ApplicationDataReaderView_var _var_type;
+      typedef AxialActuatorAbsolutePositionStepsDataReaderView_ptr _ptr_type;
+      typedef AxialActuatorAbsolutePositionStepsDataReaderView_var _var_type;
 
-      static ApplicationDataReaderView_ptr _duplicate (ApplicationDataReaderView_ptr obj);
+      static AxialActuatorAbsolutePositionStepsDataReaderView_ptr _duplicate (AxialActuatorAbsolutePositionStepsDataReaderView_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static ApplicationDataReaderView_ptr _narrow (DDS::Object_ptr obj);
-      static ApplicationDataReaderView_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static ApplicationDataReaderView_ptr _nil () { return 0; }
+      static AxialActuatorAbsolutePositionStepsDataReaderView_ptr _narrow (DDS::Object_ptr obj);
+      static AxialActuatorAbsolutePositionStepsDataReaderView_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static AxialActuatorAbsolutePositionStepsDataReaderView_ptr _nil () { return 0; }
       static const char * _local_id;
-      ApplicationDataReaderView_ptr _this () { return this; }
+      AxialActuatorAbsolutePositionStepsDataReaderView_ptr _this () { return this; }
 
-      virtual DDS::Long read (ApplicationSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take (ApplicationSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_w_condition (ApplicationSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_w_condition (ApplicationSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long read_next_sample (Application& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long take_next_sample (Application& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long read_instance (ApplicationSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_instance (ApplicationSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance (ApplicationSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_next_instance (ApplicationSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance_w_condition (ApplicationSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_next_instance_w_condition (ApplicationSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long return_loan (ApplicationSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
-      virtual DDS::Long get_key_value (Application& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const Application& instance) = 0;
+      virtual DDS::Long read (AxialActuatorAbsolutePositionStepsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (AxialActuatorAbsolutePositionStepsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (AxialActuatorAbsolutePositionStepsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (AxialActuatorAbsolutePositionStepsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (AxialActuatorAbsolutePositionSteps& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (AxialActuatorAbsolutePositionSteps& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (AxialActuatorAbsolutePositionStepsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (AxialActuatorAbsolutePositionStepsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (AxialActuatorAbsolutePositionStepsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (AxialActuatorAbsolutePositionStepsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (AxialActuatorAbsolutePositionStepsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (AxialActuatorAbsolutePositionStepsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (AxialActuatorAbsolutePositionStepsSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (AxialActuatorAbsolutePositionSteps& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const AxialActuatorAbsolutePositionSteps& instance) = 0;
 
    protected:
-      ApplicationDataReaderView () {};
-      ~ApplicationDataReaderView () {};
+      AxialActuatorAbsolutePositionStepsDataReaderView () {};
+      ~AxialActuatorAbsolutePositionStepsDataReaderView () {};
    private:
-      ApplicationDataReaderView (const ApplicationDataReaderView &);
-      ApplicationDataReaderView & operator = (const ApplicationDataReaderView &);
+      AxialActuatorAbsolutePositionStepsDataReaderView (const AxialActuatorAbsolutePositionStepsDataReaderView &);
+      AxialActuatorAbsolutePositionStepsDataReaderView & operator = (const AxialActuatorAbsolutePositionStepsDataReaderView &);
    };
 
-   struct ElectricalSeq_uniq_ {};
-   typedef DDS_DCPSUVLSeq < Electrical, struct ElectricalSeq_uniq_> ElectricalSeq;
-   typedef DDS_DCPSSequence_var < ElectricalSeq> ElectricalSeq_var;
-   typedef DDS_DCPSSequence_out < ElectricalSeq> ElectricalSeq_out;
-   class ElectricalTypeSupportInterface
+   struct AxialActuatorPositionAbsoluteEncoderPositionMeasuredSeq_uniq_ {};
+   typedef DDS_DCPSUVLSeq < AxialActuatorPositionAbsoluteEncoderPositionMeasured, struct AxialActuatorPositionAbsoluteEncoderPositionMeasuredSeq_uniq_> AxialActuatorPositionAbsoluteEncoderPositionMeasuredSeq;
+   typedef DDS_DCPSSequence_var < AxialActuatorPositionAbsoluteEncoderPositionMeasuredSeq> AxialActuatorPositionAbsoluteEncoderPositionMeasuredSeq_var;
+   typedef DDS_DCPSSequence_out < AxialActuatorPositionAbsoluteEncoderPositionMeasuredSeq> AxialActuatorPositionAbsoluteEncoderPositionMeasuredSeq_out;
+   class AxialActuatorPositionAbsoluteEncoderPositionMeasuredTypeSupportInterface
    :
       virtual public DDS::TypeSupport
    { 
    public:
-      typedef ElectricalTypeSupportInterface_ptr _ptr_type;
-      typedef ElectricalTypeSupportInterface_var _var_type;
+      typedef AxialActuatorPositionAbsoluteEncoderPositionMeasuredTypeSupportInterface_ptr _ptr_type;
+      typedef AxialActuatorPositionAbsoluteEncoderPositionMeasuredTypeSupportInterface_var _var_type;
 
-      static ElectricalTypeSupportInterface_ptr _duplicate (ElectricalTypeSupportInterface_ptr obj);
+      static AxialActuatorPositionAbsoluteEncoderPositionMeasuredTypeSupportInterface_ptr _duplicate (AxialActuatorPositionAbsoluteEncoderPositionMeasuredTypeSupportInterface_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static ElectricalTypeSupportInterface_ptr _narrow (DDS::Object_ptr obj);
-      static ElectricalTypeSupportInterface_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static ElectricalTypeSupportInterface_ptr _nil () { return 0; }
+      static AxialActuatorPositionAbsoluteEncoderPositionMeasuredTypeSupportInterface_ptr _narrow (DDS::Object_ptr obj);
+      static AxialActuatorPositionAbsoluteEncoderPositionMeasuredTypeSupportInterface_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static AxialActuatorPositionAbsoluteEncoderPositionMeasuredTypeSupportInterface_ptr _nil () { return 0; }
       static const char * _local_id;
-      ElectricalTypeSupportInterface_ptr _this () { return this; }
+      AxialActuatorPositionAbsoluteEncoderPositionMeasuredTypeSupportInterface_ptr _this () { return this; }
 
 
    protected:
-      ElectricalTypeSupportInterface () {};
-      ~ElectricalTypeSupportInterface () {};
+      AxialActuatorPositionAbsoluteEncoderPositionMeasuredTypeSupportInterface () {};
+      ~AxialActuatorPositionAbsoluteEncoderPositionMeasuredTypeSupportInterface () {};
    private:
-      ElectricalTypeSupportInterface (const ElectricalTypeSupportInterface &);
-      ElectricalTypeSupportInterface & operator = (const ElectricalTypeSupportInterface &);
+      AxialActuatorPositionAbsoluteEncoderPositionMeasuredTypeSupportInterface (const AxialActuatorPositionAbsoluteEncoderPositionMeasuredTypeSupportInterface &);
+      AxialActuatorPositionAbsoluteEncoderPositionMeasuredTypeSupportInterface & operator = (const AxialActuatorPositionAbsoluteEncoderPositionMeasuredTypeSupportInterface &);
    };
 
-   class ElectricalDataWriter
+   class AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataWriter
    :
       virtual public DDS::DataWriter
    { 
    public:
-      typedef ElectricalDataWriter_ptr _ptr_type;
-      typedef ElectricalDataWriter_var _var_type;
+      typedef AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataWriter_ptr _ptr_type;
+      typedef AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataWriter_var _var_type;
 
-      static ElectricalDataWriter_ptr _duplicate (ElectricalDataWriter_ptr obj);
+      static AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataWriter_ptr _duplicate (AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataWriter_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static ElectricalDataWriter_ptr _narrow (DDS::Object_ptr obj);
-      static ElectricalDataWriter_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static ElectricalDataWriter_ptr _nil () { return 0; }
+      static AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataWriter_ptr _narrow (DDS::Object_ptr obj);
+      static AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataWriter_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataWriter_ptr _nil () { return 0; }
       static const char * _local_id;
-      ElectricalDataWriter_ptr _this () { return this; }
+      AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataWriter_ptr _this () { return this; }
 
-      virtual DDS::LongLong register_instance (const Electrical& instance_data) = 0;
-      virtual DDS::LongLong register_instance_w_timestamp (const Electrical& instance_data, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long unregister_instance (const Electrical& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long unregister_instance_w_timestamp (const Electrical& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long write (const Electrical& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long write_w_timestamp (const Electrical& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long dispose (const Electrical& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long dispose_w_timestamp (const Electrical& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long writedispose (const Electrical& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long writedispose_w_timestamp (const Electrical& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long get_key_value (Electrical& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const Electrical& instance_data) = 0;
+      virtual DDS::LongLong register_instance (const AxialActuatorPositionAbsoluteEncoderPositionMeasured& instance_data) = 0;
+      virtual DDS::LongLong register_instance_w_timestamp (const AxialActuatorPositionAbsoluteEncoderPositionMeasured& instance_data, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long unregister_instance (const AxialActuatorPositionAbsoluteEncoderPositionMeasured& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long unregister_instance_w_timestamp (const AxialActuatorPositionAbsoluteEncoderPositionMeasured& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long write (const AxialActuatorPositionAbsoluteEncoderPositionMeasured& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long write_w_timestamp (const AxialActuatorPositionAbsoluteEncoderPositionMeasured& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long dispose (const AxialActuatorPositionAbsoluteEncoderPositionMeasured& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long dispose_w_timestamp (const AxialActuatorPositionAbsoluteEncoderPositionMeasured& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long writedispose (const AxialActuatorPositionAbsoluteEncoderPositionMeasured& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long writedispose_w_timestamp (const AxialActuatorPositionAbsoluteEncoderPositionMeasured& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long get_key_value (AxialActuatorPositionAbsoluteEncoderPositionMeasured& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const AxialActuatorPositionAbsoluteEncoderPositionMeasured& instance_data) = 0;
 
    protected:
-      ElectricalDataWriter () {};
-      ~ElectricalDataWriter () {};
+      AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataWriter () {};
+      ~AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataWriter () {};
    private:
-      ElectricalDataWriter (const ElectricalDataWriter &);
-      ElectricalDataWriter & operator = (const ElectricalDataWriter &);
+      AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataWriter (const AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataWriter &);
+      AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataWriter & operator = (const AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataWriter &);
    };
 
-   class ElectricalDataReader
+   class AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataReader
    :
       virtual public DDS::DataReader
    { 
    public:
-      typedef ElectricalDataReader_ptr _ptr_type;
-      typedef ElectricalDataReader_var _var_type;
+      typedef AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataReader_ptr _ptr_type;
+      typedef AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataReader_var _var_type;
 
-      static ElectricalDataReader_ptr _duplicate (ElectricalDataReader_ptr obj);
+      static AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataReader_ptr _duplicate (AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataReader_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static ElectricalDataReader_ptr _narrow (DDS::Object_ptr obj);
-      static ElectricalDataReader_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static ElectricalDataReader_ptr _nil () { return 0; }
+      static AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataReader_ptr _narrow (DDS::Object_ptr obj);
+      static AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataReader_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataReader_ptr _nil () { return 0; }
       static const char * _local_id;
-      ElectricalDataReader_ptr _this () { return this; }
+      AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataReader_ptr _this () { return this; }
 
-      virtual DDS::Long read (ElectricalSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take (ElectricalSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_w_condition (ElectricalSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_w_condition (ElectricalSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long read_next_sample (Electrical& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long take_next_sample (Electrical& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long read_instance (ElectricalSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_instance (ElectricalSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance (ElectricalSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_next_instance (ElectricalSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance_w_condition (ElectricalSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_next_instance_w_condition (ElectricalSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long return_loan (ElectricalSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
-      virtual DDS::Long get_key_value (Electrical& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const Electrical& instance) = 0;
+      virtual DDS::Long read (AxialActuatorPositionAbsoluteEncoderPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (AxialActuatorPositionAbsoluteEncoderPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (AxialActuatorPositionAbsoluteEncoderPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (AxialActuatorPositionAbsoluteEncoderPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (AxialActuatorPositionAbsoluteEncoderPositionMeasured& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (AxialActuatorPositionAbsoluteEncoderPositionMeasured& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (AxialActuatorPositionAbsoluteEncoderPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (AxialActuatorPositionAbsoluteEncoderPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (AxialActuatorPositionAbsoluteEncoderPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (AxialActuatorPositionAbsoluteEncoderPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (AxialActuatorPositionAbsoluteEncoderPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (AxialActuatorPositionAbsoluteEncoderPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (AxialActuatorPositionAbsoluteEncoderPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (AxialActuatorPositionAbsoluteEncoderPositionMeasured& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const AxialActuatorPositionAbsoluteEncoderPositionMeasured& instance) = 0;
 
    protected:
-      ElectricalDataReader () {};
-      ~ElectricalDataReader () {};
+      AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataReader () {};
+      ~AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataReader () {};
    private:
-      ElectricalDataReader (const ElectricalDataReader &);
-      ElectricalDataReader & operator = (const ElectricalDataReader &);
+      AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataReader (const AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataReader &);
+      AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataReader & operator = (const AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataReader &);
    };
 
-   class ElectricalDataReaderView
+   class AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataReaderView
    :
       virtual public DDS::DataReaderView
    { 
    public:
-      typedef ElectricalDataReaderView_ptr _ptr_type;
-      typedef ElectricalDataReaderView_var _var_type;
+      typedef AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataReaderView_ptr _ptr_type;
+      typedef AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataReaderView_var _var_type;
 
-      static ElectricalDataReaderView_ptr _duplicate (ElectricalDataReaderView_ptr obj);
+      static AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataReaderView_ptr _duplicate (AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataReaderView_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static ElectricalDataReaderView_ptr _narrow (DDS::Object_ptr obj);
-      static ElectricalDataReaderView_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static ElectricalDataReaderView_ptr _nil () { return 0; }
+      static AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataReaderView_ptr _narrow (DDS::Object_ptr obj);
+      static AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataReaderView_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataReaderView_ptr _nil () { return 0; }
       static const char * _local_id;
-      ElectricalDataReaderView_ptr _this () { return this; }
+      AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataReaderView_ptr _this () { return this; }
 
-      virtual DDS::Long read (ElectricalSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take (ElectricalSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_w_condition (ElectricalSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_w_condition (ElectricalSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long read_next_sample (Electrical& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long take_next_sample (Electrical& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long read_instance (ElectricalSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_instance (ElectricalSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance (ElectricalSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_next_instance (ElectricalSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance_w_condition (ElectricalSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_next_instance_w_condition (ElectricalSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long return_loan (ElectricalSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
-      virtual DDS::Long get_key_value (Electrical& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const Electrical& instance) = 0;
+      virtual DDS::Long read (AxialActuatorPositionAbsoluteEncoderPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (AxialActuatorPositionAbsoluteEncoderPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (AxialActuatorPositionAbsoluteEncoderPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (AxialActuatorPositionAbsoluteEncoderPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (AxialActuatorPositionAbsoluteEncoderPositionMeasured& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (AxialActuatorPositionAbsoluteEncoderPositionMeasured& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (AxialActuatorPositionAbsoluteEncoderPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (AxialActuatorPositionAbsoluteEncoderPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (AxialActuatorPositionAbsoluteEncoderPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (AxialActuatorPositionAbsoluteEncoderPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (AxialActuatorPositionAbsoluteEncoderPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (AxialActuatorPositionAbsoluteEncoderPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (AxialActuatorPositionAbsoluteEncoderPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (AxialActuatorPositionAbsoluteEncoderPositionMeasured& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const AxialActuatorPositionAbsoluteEncoderPositionMeasured& instance) = 0;
 
    protected:
-      ElectricalDataReaderView () {};
-      ~ElectricalDataReaderView () {};
+      AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataReaderView () {};
+      ~AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataReaderView () {};
    private:
-      ElectricalDataReaderView (const ElectricalDataReaderView &);
-      ElectricalDataReaderView & operator = (const ElectricalDataReaderView &);
+      AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataReaderView (const AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataReaderView &);
+      AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataReaderView & operator = (const AxialActuatorPositionAbsoluteEncoderPositionMeasuredDataReaderView &);
    };
 
-   struct LimitSensorsSeq_uniq_ {};
-   typedef DDS_DCPSUVLSeq < LimitSensors, struct LimitSensorsSeq_uniq_> LimitSensorsSeq;
-   typedef DDS_DCPSSequence_var < LimitSensorsSeq> LimitSensorsSeq_var;
-   typedef DDS_DCPSSequence_out < LimitSensorsSeq> LimitSensorsSeq_out;
-   class LimitSensorsTypeSupportInterface
+   struct AxialForcesMeasuredSeq_uniq_ {};
+   typedef DDS_DCPSUVLSeq < AxialForcesMeasured, struct AxialForcesMeasuredSeq_uniq_> AxialForcesMeasuredSeq;
+   typedef DDS_DCPSSequence_var < AxialForcesMeasuredSeq> AxialForcesMeasuredSeq_var;
+   typedef DDS_DCPSSequence_out < AxialForcesMeasuredSeq> AxialForcesMeasuredSeq_out;
+   class AxialForcesMeasuredTypeSupportInterface
    :
       virtual public DDS::TypeSupport
    { 
    public:
-      typedef LimitSensorsTypeSupportInterface_ptr _ptr_type;
-      typedef LimitSensorsTypeSupportInterface_var _var_type;
+      typedef AxialForcesMeasuredTypeSupportInterface_ptr _ptr_type;
+      typedef AxialForcesMeasuredTypeSupportInterface_var _var_type;
 
-      static LimitSensorsTypeSupportInterface_ptr _duplicate (LimitSensorsTypeSupportInterface_ptr obj);
+      static AxialForcesMeasuredTypeSupportInterface_ptr _duplicate (AxialForcesMeasuredTypeSupportInterface_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static LimitSensorsTypeSupportInterface_ptr _narrow (DDS::Object_ptr obj);
-      static LimitSensorsTypeSupportInterface_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static LimitSensorsTypeSupportInterface_ptr _nil () { return 0; }
+      static AxialForcesMeasuredTypeSupportInterface_ptr _narrow (DDS::Object_ptr obj);
+      static AxialForcesMeasuredTypeSupportInterface_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static AxialForcesMeasuredTypeSupportInterface_ptr _nil () { return 0; }
       static const char * _local_id;
-      LimitSensorsTypeSupportInterface_ptr _this () { return this; }
+      AxialForcesMeasuredTypeSupportInterface_ptr _this () { return this; }
 
 
    protected:
-      LimitSensorsTypeSupportInterface () {};
-      ~LimitSensorsTypeSupportInterface () {};
+      AxialForcesMeasuredTypeSupportInterface () {};
+      ~AxialForcesMeasuredTypeSupportInterface () {};
    private:
-      LimitSensorsTypeSupportInterface (const LimitSensorsTypeSupportInterface &);
-      LimitSensorsTypeSupportInterface & operator = (const LimitSensorsTypeSupportInterface &);
+      AxialForcesMeasuredTypeSupportInterface (const AxialForcesMeasuredTypeSupportInterface &);
+      AxialForcesMeasuredTypeSupportInterface & operator = (const AxialForcesMeasuredTypeSupportInterface &);
    };
 
-   class LimitSensorsDataWriter
+   class AxialForcesMeasuredDataWriter
    :
       virtual public DDS::DataWriter
    { 
    public:
-      typedef LimitSensorsDataWriter_ptr _ptr_type;
-      typedef LimitSensorsDataWriter_var _var_type;
+      typedef AxialForcesMeasuredDataWriter_ptr _ptr_type;
+      typedef AxialForcesMeasuredDataWriter_var _var_type;
 
-      static LimitSensorsDataWriter_ptr _duplicate (LimitSensorsDataWriter_ptr obj);
+      static AxialForcesMeasuredDataWriter_ptr _duplicate (AxialForcesMeasuredDataWriter_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static LimitSensorsDataWriter_ptr _narrow (DDS::Object_ptr obj);
-      static LimitSensorsDataWriter_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static LimitSensorsDataWriter_ptr _nil () { return 0; }
+      static AxialForcesMeasuredDataWriter_ptr _narrow (DDS::Object_ptr obj);
+      static AxialForcesMeasuredDataWriter_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static AxialForcesMeasuredDataWriter_ptr _nil () { return 0; }
       static const char * _local_id;
-      LimitSensorsDataWriter_ptr _this () { return this; }
+      AxialForcesMeasuredDataWriter_ptr _this () { return this; }
 
-      virtual DDS::LongLong register_instance (const LimitSensors& instance_data) = 0;
-      virtual DDS::LongLong register_instance_w_timestamp (const LimitSensors& instance_data, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long unregister_instance (const LimitSensors& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long unregister_instance_w_timestamp (const LimitSensors& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long write (const LimitSensors& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long write_w_timestamp (const LimitSensors& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long dispose (const LimitSensors& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long dispose_w_timestamp (const LimitSensors& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long writedispose (const LimitSensors& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long writedispose_w_timestamp (const LimitSensors& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long get_key_value (LimitSensors& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const LimitSensors& instance_data) = 0;
+      virtual DDS::LongLong register_instance (const AxialForcesMeasured& instance_data) = 0;
+      virtual DDS::LongLong register_instance_w_timestamp (const AxialForcesMeasured& instance_data, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long unregister_instance (const AxialForcesMeasured& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long unregister_instance_w_timestamp (const AxialForcesMeasured& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long write (const AxialForcesMeasured& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long write_w_timestamp (const AxialForcesMeasured& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long dispose (const AxialForcesMeasured& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long dispose_w_timestamp (const AxialForcesMeasured& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long writedispose (const AxialForcesMeasured& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long writedispose_w_timestamp (const AxialForcesMeasured& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long get_key_value (AxialForcesMeasured& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const AxialForcesMeasured& instance_data) = 0;
 
    protected:
-      LimitSensorsDataWriter () {};
-      ~LimitSensorsDataWriter () {};
+      AxialForcesMeasuredDataWriter () {};
+      ~AxialForcesMeasuredDataWriter () {};
    private:
-      LimitSensorsDataWriter (const LimitSensorsDataWriter &);
-      LimitSensorsDataWriter & operator = (const LimitSensorsDataWriter &);
+      AxialForcesMeasuredDataWriter (const AxialForcesMeasuredDataWriter &);
+      AxialForcesMeasuredDataWriter & operator = (const AxialForcesMeasuredDataWriter &);
    };
 
-   class LimitSensorsDataReader
+   class AxialForcesMeasuredDataReader
    :
       virtual public DDS::DataReader
    { 
    public:
-      typedef LimitSensorsDataReader_ptr _ptr_type;
-      typedef LimitSensorsDataReader_var _var_type;
+      typedef AxialForcesMeasuredDataReader_ptr _ptr_type;
+      typedef AxialForcesMeasuredDataReader_var _var_type;
 
-      static LimitSensorsDataReader_ptr _duplicate (LimitSensorsDataReader_ptr obj);
+      static AxialForcesMeasuredDataReader_ptr _duplicate (AxialForcesMeasuredDataReader_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static LimitSensorsDataReader_ptr _narrow (DDS::Object_ptr obj);
-      static LimitSensorsDataReader_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static LimitSensorsDataReader_ptr _nil () { return 0; }
+      static AxialForcesMeasuredDataReader_ptr _narrow (DDS::Object_ptr obj);
+      static AxialForcesMeasuredDataReader_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static AxialForcesMeasuredDataReader_ptr _nil () { return 0; }
       static const char * _local_id;
-      LimitSensorsDataReader_ptr _this () { return this; }
+      AxialForcesMeasuredDataReader_ptr _this () { return this; }
 
-      virtual DDS::Long read (LimitSensorsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take (LimitSensorsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_w_condition (LimitSensorsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_w_condition (LimitSensorsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long read_next_sample (LimitSensors& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long take_next_sample (LimitSensors& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long read_instance (LimitSensorsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_instance (LimitSensorsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance (LimitSensorsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_next_instance (LimitSensorsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance_w_condition (LimitSensorsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_next_instance_w_condition (LimitSensorsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long return_loan (LimitSensorsSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
-      virtual DDS::Long get_key_value (LimitSensors& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const LimitSensors& instance) = 0;
+      virtual DDS::Long read (AxialForcesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (AxialForcesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (AxialForcesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (AxialForcesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (AxialForcesMeasured& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (AxialForcesMeasured& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (AxialForcesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (AxialForcesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (AxialForcesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (AxialForcesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (AxialForcesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (AxialForcesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (AxialForcesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (AxialForcesMeasured& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const AxialForcesMeasured& instance) = 0;
 
    protected:
-      LimitSensorsDataReader () {};
-      ~LimitSensorsDataReader () {};
+      AxialForcesMeasuredDataReader () {};
+      ~AxialForcesMeasuredDataReader () {};
    private:
-      LimitSensorsDataReader (const LimitSensorsDataReader &);
-      LimitSensorsDataReader & operator = (const LimitSensorsDataReader &);
+      AxialForcesMeasuredDataReader (const AxialForcesMeasuredDataReader &);
+      AxialForcesMeasuredDataReader & operator = (const AxialForcesMeasuredDataReader &);
    };
 
-   class LimitSensorsDataReaderView
+   class AxialForcesMeasuredDataReaderView
    :
       virtual public DDS::DataReaderView
    { 
    public:
-      typedef LimitSensorsDataReaderView_ptr _ptr_type;
-      typedef LimitSensorsDataReaderView_var _var_type;
+      typedef AxialForcesMeasuredDataReaderView_ptr _ptr_type;
+      typedef AxialForcesMeasuredDataReaderView_var _var_type;
 
-      static LimitSensorsDataReaderView_ptr _duplicate (LimitSensorsDataReaderView_ptr obj);
+      static AxialForcesMeasuredDataReaderView_ptr _duplicate (AxialForcesMeasuredDataReaderView_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static LimitSensorsDataReaderView_ptr _narrow (DDS::Object_ptr obj);
-      static LimitSensorsDataReaderView_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static LimitSensorsDataReaderView_ptr _nil () { return 0; }
+      static AxialForcesMeasuredDataReaderView_ptr _narrow (DDS::Object_ptr obj);
+      static AxialForcesMeasuredDataReaderView_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static AxialForcesMeasuredDataReaderView_ptr _nil () { return 0; }
       static const char * _local_id;
-      LimitSensorsDataReaderView_ptr _this () { return this; }
+      AxialForcesMeasuredDataReaderView_ptr _this () { return this; }
 
-      virtual DDS::Long read (LimitSensorsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take (LimitSensorsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_w_condition (LimitSensorsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_w_condition (LimitSensorsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long read_next_sample (LimitSensors& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long take_next_sample (LimitSensors& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long read_instance (LimitSensorsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_instance (LimitSensorsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance (LimitSensorsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_next_instance (LimitSensorsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance_w_condition (LimitSensorsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_next_instance_w_condition (LimitSensorsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long return_loan (LimitSensorsSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
-      virtual DDS::Long get_key_value (LimitSensors& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const LimitSensors& instance) = 0;
+      virtual DDS::Long read (AxialForcesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (AxialForcesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (AxialForcesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (AxialForcesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (AxialForcesMeasured& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (AxialForcesMeasured& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (AxialForcesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (AxialForcesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (AxialForcesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (AxialForcesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (AxialForcesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (AxialForcesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (AxialForcesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (AxialForcesMeasured& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const AxialForcesMeasured& instance) = 0;
 
    protected:
-      LimitSensorsDataReaderView () {};
-      ~LimitSensorsDataReaderView () {};
+      AxialForcesMeasuredDataReaderView () {};
+      ~AxialForcesMeasuredDataReaderView () {};
    private:
-      LimitSensorsDataReaderView (const LimitSensorsDataReaderView &);
-      LimitSensorsDataReaderView & operator = (const LimitSensorsDataReaderView &);
+      AxialForcesMeasuredDataReaderView (const AxialForcesMeasuredDataReaderView &);
+      AxialForcesMeasuredDataReaderView & operator = (const AxialForcesMeasuredDataReaderView &);
    };
 
-   struct MetrologySeq_uniq_ {};
-   typedef DDS_DCPSUVLSeq < Metrology, struct MetrologySeq_uniq_> MetrologySeq;
-   typedef DDS_DCPSSequence_var < MetrologySeq> MetrologySeq_var;
-   typedef DDS_DCPSSequence_out < MetrologySeq> MetrologySeq_out;
-   class MetrologyTypeSupportInterface
+   struct MirrorPositionMeasuredSeq_uniq_ {};
+   typedef DDS_DCPSUVLSeq < MirrorPositionMeasured, struct MirrorPositionMeasuredSeq_uniq_> MirrorPositionMeasuredSeq;
+   typedef DDS_DCPSSequence_var < MirrorPositionMeasuredSeq> MirrorPositionMeasuredSeq_var;
+   typedef DDS_DCPSSequence_out < MirrorPositionMeasuredSeq> MirrorPositionMeasuredSeq_out;
+   class MirrorPositionMeasuredTypeSupportInterface
    :
       virtual public DDS::TypeSupport
    { 
    public:
-      typedef MetrologyTypeSupportInterface_ptr _ptr_type;
-      typedef MetrologyTypeSupportInterface_var _var_type;
+      typedef MirrorPositionMeasuredTypeSupportInterface_ptr _ptr_type;
+      typedef MirrorPositionMeasuredTypeSupportInterface_var _var_type;
 
-      static MetrologyTypeSupportInterface_ptr _duplicate (MetrologyTypeSupportInterface_ptr obj);
+      static MirrorPositionMeasuredTypeSupportInterface_ptr _duplicate (MirrorPositionMeasuredTypeSupportInterface_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static MetrologyTypeSupportInterface_ptr _narrow (DDS::Object_ptr obj);
-      static MetrologyTypeSupportInterface_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static MetrologyTypeSupportInterface_ptr _nil () { return 0; }
+      static MirrorPositionMeasuredTypeSupportInterface_ptr _narrow (DDS::Object_ptr obj);
+      static MirrorPositionMeasuredTypeSupportInterface_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static MirrorPositionMeasuredTypeSupportInterface_ptr _nil () { return 0; }
       static const char * _local_id;
-      MetrologyTypeSupportInterface_ptr _this () { return this; }
+      MirrorPositionMeasuredTypeSupportInterface_ptr _this () { return this; }
 
 
    protected:
-      MetrologyTypeSupportInterface () {};
-      ~MetrologyTypeSupportInterface () {};
+      MirrorPositionMeasuredTypeSupportInterface () {};
+      ~MirrorPositionMeasuredTypeSupportInterface () {};
    private:
-      MetrologyTypeSupportInterface (const MetrologyTypeSupportInterface &);
-      MetrologyTypeSupportInterface & operator = (const MetrologyTypeSupportInterface &);
+      MirrorPositionMeasuredTypeSupportInterface (const MirrorPositionMeasuredTypeSupportInterface &);
+      MirrorPositionMeasuredTypeSupportInterface & operator = (const MirrorPositionMeasuredTypeSupportInterface &);
    };
 
-   class MetrologyDataWriter
+   class MirrorPositionMeasuredDataWriter
    :
       virtual public DDS::DataWriter
    { 
    public:
-      typedef MetrologyDataWriter_ptr _ptr_type;
-      typedef MetrologyDataWriter_var _var_type;
+      typedef MirrorPositionMeasuredDataWriter_ptr _ptr_type;
+      typedef MirrorPositionMeasuredDataWriter_var _var_type;
 
-      static MetrologyDataWriter_ptr _duplicate (MetrologyDataWriter_ptr obj);
+      static MirrorPositionMeasuredDataWriter_ptr _duplicate (MirrorPositionMeasuredDataWriter_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static MetrologyDataWriter_ptr _narrow (DDS::Object_ptr obj);
-      static MetrologyDataWriter_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static MetrologyDataWriter_ptr _nil () { return 0; }
+      static MirrorPositionMeasuredDataWriter_ptr _narrow (DDS::Object_ptr obj);
+      static MirrorPositionMeasuredDataWriter_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static MirrorPositionMeasuredDataWriter_ptr _nil () { return 0; }
       static const char * _local_id;
-      MetrologyDataWriter_ptr _this () { return this; }
+      MirrorPositionMeasuredDataWriter_ptr _this () { return this; }
 
-      virtual DDS::LongLong register_instance (const Metrology& instance_data) = 0;
-      virtual DDS::LongLong register_instance_w_timestamp (const Metrology& instance_data, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long unregister_instance (const Metrology& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long unregister_instance_w_timestamp (const Metrology& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long write (const Metrology& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long write_w_timestamp (const Metrology& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long dispose (const Metrology& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long dispose_w_timestamp (const Metrology& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long writedispose (const Metrology& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long writedispose_w_timestamp (const Metrology& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long get_key_value (Metrology& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const Metrology& instance_data) = 0;
+      virtual DDS::LongLong register_instance (const MirrorPositionMeasured& instance_data) = 0;
+      virtual DDS::LongLong register_instance_w_timestamp (const MirrorPositionMeasured& instance_data, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long unregister_instance (const MirrorPositionMeasured& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long unregister_instance_w_timestamp (const MirrorPositionMeasured& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long write (const MirrorPositionMeasured& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long write_w_timestamp (const MirrorPositionMeasured& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long dispose (const MirrorPositionMeasured& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long dispose_w_timestamp (const MirrorPositionMeasured& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long writedispose (const MirrorPositionMeasured& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long writedispose_w_timestamp (const MirrorPositionMeasured& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long get_key_value (MirrorPositionMeasured& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const MirrorPositionMeasured& instance_data) = 0;
 
    protected:
-      MetrologyDataWriter () {};
-      ~MetrologyDataWriter () {};
+      MirrorPositionMeasuredDataWriter () {};
+      ~MirrorPositionMeasuredDataWriter () {};
    private:
-      MetrologyDataWriter (const MetrologyDataWriter &);
-      MetrologyDataWriter & operator = (const MetrologyDataWriter &);
+      MirrorPositionMeasuredDataWriter (const MirrorPositionMeasuredDataWriter &);
+      MirrorPositionMeasuredDataWriter & operator = (const MirrorPositionMeasuredDataWriter &);
    };
 
-   class MetrologyDataReader
+   class MirrorPositionMeasuredDataReader
    :
       virtual public DDS::DataReader
    { 
    public:
-      typedef MetrologyDataReader_ptr _ptr_type;
-      typedef MetrologyDataReader_var _var_type;
+      typedef MirrorPositionMeasuredDataReader_ptr _ptr_type;
+      typedef MirrorPositionMeasuredDataReader_var _var_type;
 
-      static MetrologyDataReader_ptr _duplicate (MetrologyDataReader_ptr obj);
+      static MirrorPositionMeasuredDataReader_ptr _duplicate (MirrorPositionMeasuredDataReader_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static MetrologyDataReader_ptr _narrow (DDS::Object_ptr obj);
-      static MetrologyDataReader_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static MetrologyDataReader_ptr _nil () { return 0; }
+      static MirrorPositionMeasuredDataReader_ptr _narrow (DDS::Object_ptr obj);
+      static MirrorPositionMeasuredDataReader_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static MirrorPositionMeasuredDataReader_ptr _nil () { return 0; }
       static const char * _local_id;
-      MetrologyDataReader_ptr _this () { return this; }
+      MirrorPositionMeasuredDataReader_ptr _this () { return this; }
 
-      virtual DDS::Long read (MetrologySeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take (MetrologySeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_w_condition (MetrologySeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_w_condition (MetrologySeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long read_next_sample (Metrology& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long take_next_sample (Metrology& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long read_instance (MetrologySeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_instance (MetrologySeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance (MetrologySeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_next_instance (MetrologySeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance_w_condition (MetrologySeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_next_instance_w_condition (MetrologySeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long return_loan (MetrologySeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
-      virtual DDS::Long get_key_value (Metrology& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const Metrology& instance) = 0;
+      virtual DDS::Long read (MirrorPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (MirrorPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (MirrorPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (MirrorPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (MirrorPositionMeasured& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (MirrorPositionMeasured& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (MirrorPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (MirrorPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (MirrorPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (MirrorPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (MirrorPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (MirrorPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (MirrorPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (MirrorPositionMeasured& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const MirrorPositionMeasured& instance) = 0;
 
    protected:
-      MetrologyDataReader () {};
-      ~MetrologyDataReader () {};
+      MirrorPositionMeasuredDataReader () {};
+      ~MirrorPositionMeasuredDataReader () {};
    private:
-      MetrologyDataReader (const MetrologyDataReader &);
-      MetrologyDataReader & operator = (const MetrologyDataReader &);
+      MirrorPositionMeasuredDataReader (const MirrorPositionMeasuredDataReader &);
+      MirrorPositionMeasuredDataReader & operator = (const MirrorPositionMeasuredDataReader &);
    };
 
-   class MetrologyDataReaderView
+   class MirrorPositionMeasuredDataReaderView
    :
       virtual public DDS::DataReaderView
    { 
    public:
-      typedef MetrologyDataReaderView_ptr _ptr_type;
-      typedef MetrologyDataReaderView_var _var_type;
+      typedef MirrorPositionMeasuredDataReaderView_ptr _ptr_type;
+      typedef MirrorPositionMeasuredDataReaderView_var _var_type;
 
-      static MetrologyDataReaderView_ptr _duplicate (MetrologyDataReaderView_ptr obj);
+      static MirrorPositionMeasuredDataReaderView_ptr _duplicate (MirrorPositionMeasuredDataReaderView_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static MetrologyDataReaderView_ptr _narrow (DDS::Object_ptr obj);
-      static MetrologyDataReaderView_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static MetrologyDataReaderView_ptr _nil () { return 0; }
+      static MirrorPositionMeasuredDataReaderView_ptr _narrow (DDS::Object_ptr obj);
+      static MirrorPositionMeasuredDataReaderView_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static MirrorPositionMeasuredDataReaderView_ptr _nil () { return 0; }
       static const char * _local_id;
-      MetrologyDataReaderView_ptr _this () { return this; }
+      MirrorPositionMeasuredDataReaderView_ptr _this () { return this; }
 
-      virtual DDS::Long read (MetrologySeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take (MetrologySeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_w_condition (MetrologySeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_w_condition (MetrologySeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long read_next_sample (Metrology& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long take_next_sample (Metrology& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long read_instance (MetrologySeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_instance (MetrologySeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance (MetrologySeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_next_instance (MetrologySeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance_w_condition (MetrologySeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_next_instance_w_condition (MetrologySeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long return_loan (MetrologySeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
-      virtual DDS::Long get_key_value (Metrology& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const Metrology& instance) = 0;
+      virtual DDS::Long read (MirrorPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (MirrorPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (MirrorPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (MirrorPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (MirrorPositionMeasured& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (MirrorPositionMeasured& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (MirrorPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (MirrorPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (MirrorPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (MirrorPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (MirrorPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (MirrorPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (MirrorPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (MirrorPositionMeasured& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const MirrorPositionMeasured& instance) = 0;
 
    protected:
-      MetrologyDataReaderView () {};
-      ~MetrologyDataReaderView () {};
+      MirrorPositionMeasuredDataReaderView () {};
+      ~MirrorPositionMeasuredDataReaderView () {};
    private:
-      MetrologyDataReaderView (const MetrologyDataReaderView &);
-      MetrologyDataReaderView & operator = (const MetrologyDataReaderView &);
+      MirrorPositionMeasuredDataReaderView (const MirrorPositionMeasuredDataReaderView &);
+      MirrorPositionMeasuredDataReaderView & operator = (const MirrorPositionMeasuredDataReaderView &);
    };
 
-   struct SurfaceSeq_uniq_ {};
-   typedef DDS_DCPSUVLSeq < Surface, struct SurfaceSeq_uniq_> SurfaceSeq;
-   typedef DDS_DCPSSequence_var < SurfaceSeq> SurfaceSeq_var;
-   typedef DDS_DCPSSequence_out < SurfaceSeq> SurfaceSeq_out;
-   class SurfaceTypeSupportInterface
+   struct PowerStatusSeq_uniq_ {};
+   typedef DDS_DCPSUVLSeq < PowerStatus, struct PowerStatusSeq_uniq_> PowerStatusSeq;
+   typedef DDS_DCPSSequence_var < PowerStatusSeq> PowerStatusSeq_var;
+   typedef DDS_DCPSSequence_out < PowerStatusSeq> PowerStatusSeq_out;
+   class PowerStatusTypeSupportInterface
    :
       virtual public DDS::TypeSupport
    { 
    public:
-      typedef SurfaceTypeSupportInterface_ptr _ptr_type;
-      typedef SurfaceTypeSupportInterface_var _var_type;
+      typedef PowerStatusTypeSupportInterface_ptr _ptr_type;
+      typedef PowerStatusTypeSupportInterface_var _var_type;
 
-      static SurfaceTypeSupportInterface_ptr _duplicate (SurfaceTypeSupportInterface_ptr obj);
+      static PowerStatusTypeSupportInterface_ptr _duplicate (PowerStatusTypeSupportInterface_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static SurfaceTypeSupportInterface_ptr _narrow (DDS::Object_ptr obj);
-      static SurfaceTypeSupportInterface_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static SurfaceTypeSupportInterface_ptr _nil () { return 0; }
+      static PowerStatusTypeSupportInterface_ptr _narrow (DDS::Object_ptr obj);
+      static PowerStatusTypeSupportInterface_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static PowerStatusTypeSupportInterface_ptr _nil () { return 0; }
       static const char * _local_id;
-      SurfaceTypeSupportInterface_ptr _this () { return this; }
+      PowerStatusTypeSupportInterface_ptr _this () { return this; }
 
 
    protected:
-      SurfaceTypeSupportInterface () {};
-      ~SurfaceTypeSupportInterface () {};
+      PowerStatusTypeSupportInterface () {};
+      ~PowerStatusTypeSupportInterface () {};
    private:
-      SurfaceTypeSupportInterface (const SurfaceTypeSupportInterface &);
-      SurfaceTypeSupportInterface & operator = (const SurfaceTypeSupportInterface &);
+      PowerStatusTypeSupportInterface (const PowerStatusTypeSupportInterface &);
+      PowerStatusTypeSupportInterface & operator = (const PowerStatusTypeSupportInterface &);
    };
 
-   class SurfaceDataWriter
+   class PowerStatusDataWriter
    :
       virtual public DDS::DataWriter
    { 
    public:
-      typedef SurfaceDataWriter_ptr _ptr_type;
-      typedef SurfaceDataWriter_var _var_type;
+      typedef PowerStatusDataWriter_ptr _ptr_type;
+      typedef PowerStatusDataWriter_var _var_type;
 
-      static SurfaceDataWriter_ptr _duplicate (SurfaceDataWriter_ptr obj);
+      static PowerStatusDataWriter_ptr _duplicate (PowerStatusDataWriter_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static SurfaceDataWriter_ptr _narrow (DDS::Object_ptr obj);
-      static SurfaceDataWriter_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static SurfaceDataWriter_ptr _nil () { return 0; }
+      static PowerStatusDataWriter_ptr _narrow (DDS::Object_ptr obj);
+      static PowerStatusDataWriter_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static PowerStatusDataWriter_ptr _nil () { return 0; }
       static const char * _local_id;
-      SurfaceDataWriter_ptr _this () { return this; }
+      PowerStatusDataWriter_ptr _this () { return this; }
 
-      virtual DDS::LongLong register_instance (const Surface& instance_data) = 0;
-      virtual DDS::LongLong register_instance_w_timestamp (const Surface& instance_data, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long unregister_instance (const Surface& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long unregister_instance_w_timestamp (const Surface& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long write (const Surface& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long write_w_timestamp (const Surface& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long dispose (const Surface& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long dispose_w_timestamp (const Surface& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long writedispose (const Surface& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long writedispose_w_timestamp (const Surface& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long get_key_value (Surface& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const Surface& instance_data) = 0;
+      virtual DDS::LongLong register_instance (const PowerStatus& instance_data) = 0;
+      virtual DDS::LongLong register_instance_w_timestamp (const PowerStatus& instance_data, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long unregister_instance (const PowerStatus& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long unregister_instance_w_timestamp (const PowerStatus& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long write (const PowerStatus& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long write_w_timestamp (const PowerStatus& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long dispose (const PowerStatus& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long dispose_w_timestamp (const PowerStatus& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long writedispose (const PowerStatus& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long writedispose_w_timestamp (const PowerStatus& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long get_key_value (PowerStatus& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const PowerStatus& instance_data) = 0;
 
    protected:
-      SurfaceDataWriter () {};
-      ~SurfaceDataWriter () {};
+      PowerStatusDataWriter () {};
+      ~PowerStatusDataWriter () {};
    private:
-      SurfaceDataWriter (const SurfaceDataWriter &);
-      SurfaceDataWriter & operator = (const SurfaceDataWriter &);
+      PowerStatusDataWriter (const PowerStatusDataWriter &);
+      PowerStatusDataWriter & operator = (const PowerStatusDataWriter &);
    };
 
-   class SurfaceDataReader
+   class PowerStatusDataReader
    :
       virtual public DDS::DataReader
    { 
    public:
-      typedef SurfaceDataReader_ptr _ptr_type;
-      typedef SurfaceDataReader_var _var_type;
+      typedef PowerStatusDataReader_ptr _ptr_type;
+      typedef PowerStatusDataReader_var _var_type;
 
-      static SurfaceDataReader_ptr _duplicate (SurfaceDataReader_ptr obj);
+      static PowerStatusDataReader_ptr _duplicate (PowerStatusDataReader_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static SurfaceDataReader_ptr _narrow (DDS::Object_ptr obj);
-      static SurfaceDataReader_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static SurfaceDataReader_ptr _nil () { return 0; }
+      static PowerStatusDataReader_ptr _narrow (DDS::Object_ptr obj);
+      static PowerStatusDataReader_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static PowerStatusDataReader_ptr _nil () { return 0; }
       static const char * _local_id;
-      SurfaceDataReader_ptr _this () { return this; }
+      PowerStatusDataReader_ptr _this () { return this; }
 
-      virtual DDS::Long read (SurfaceSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take (SurfaceSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_w_condition (SurfaceSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_w_condition (SurfaceSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long read_next_sample (Surface& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long take_next_sample (Surface& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long read_instance (SurfaceSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_instance (SurfaceSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance (SurfaceSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_next_instance (SurfaceSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance_w_condition (SurfaceSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_next_instance_w_condition (SurfaceSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long return_loan (SurfaceSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
-      virtual DDS::Long get_key_value (Surface& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const Surface& instance) = 0;
+      virtual DDS::Long read (PowerStatusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (PowerStatusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (PowerStatusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (PowerStatusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (PowerStatus& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (PowerStatus& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (PowerStatusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (PowerStatusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (PowerStatusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (PowerStatusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (PowerStatusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (PowerStatusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (PowerStatusSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (PowerStatus& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const PowerStatus& instance) = 0;
 
    protected:
-      SurfaceDataReader () {};
-      ~SurfaceDataReader () {};
+      PowerStatusDataReader () {};
+      ~PowerStatusDataReader () {};
    private:
-      SurfaceDataReader (const SurfaceDataReader &);
-      SurfaceDataReader & operator = (const SurfaceDataReader &);
+      PowerStatusDataReader (const PowerStatusDataReader &);
+      PowerStatusDataReader & operator = (const PowerStatusDataReader &);
    };
 
-   class SurfaceDataReaderView
+   class PowerStatusDataReaderView
    :
       virtual public DDS::DataReaderView
    { 
    public:
-      typedef SurfaceDataReaderView_ptr _ptr_type;
-      typedef SurfaceDataReaderView_var _var_type;
+      typedef PowerStatusDataReaderView_ptr _ptr_type;
+      typedef PowerStatusDataReaderView_var _var_type;
 
-      static SurfaceDataReaderView_ptr _duplicate (SurfaceDataReaderView_ptr obj);
+      static PowerStatusDataReaderView_ptr _duplicate (PowerStatusDataReaderView_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static SurfaceDataReaderView_ptr _narrow (DDS::Object_ptr obj);
-      static SurfaceDataReaderView_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static SurfaceDataReaderView_ptr _nil () { return 0; }
+      static PowerStatusDataReaderView_ptr _narrow (DDS::Object_ptr obj);
+      static PowerStatusDataReaderView_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static PowerStatusDataReaderView_ptr _nil () { return 0; }
       static const char * _local_id;
-      SurfaceDataReaderView_ptr _this () { return this; }
+      PowerStatusDataReaderView_ptr _this () { return this; }
 
-      virtual DDS::Long read (SurfaceSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take (SurfaceSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_w_condition (SurfaceSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_w_condition (SurfaceSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long read_next_sample (Surface& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long take_next_sample (Surface& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long read_instance (SurfaceSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_instance (SurfaceSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance (SurfaceSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_next_instance (SurfaceSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance_w_condition (SurfaceSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_next_instance_w_condition (SurfaceSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long return_loan (SurfaceSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
-      virtual DDS::Long get_key_value (Surface& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const Surface& instance) = 0;
+      virtual DDS::Long read (PowerStatusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (PowerStatusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (PowerStatusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (PowerStatusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (PowerStatus& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (PowerStatus& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (PowerStatusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (PowerStatusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (PowerStatusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (PowerStatusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (PowerStatusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (PowerStatusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (PowerStatusSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (PowerStatus& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const PowerStatus& instance) = 0;
 
    protected:
-      SurfaceDataReaderView () {};
-      ~SurfaceDataReaderView () {};
+      PowerStatusDataReaderView () {};
+      ~PowerStatusDataReaderView () {};
    private:
-      SurfaceDataReaderView (const SurfaceDataReaderView &);
-      SurfaceDataReaderView & operator = (const SurfaceDataReaderView &);
+      PowerStatusDataReaderView (const PowerStatusDataReaderView &);
+      PowerStatusDataReaderView & operator = (const PowerStatusDataReaderView &);
    };
 
-   struct TCSeq_uniq_ {};
-   typedef DDS_DCPSUVLSeq < TC, struct TCSeq_uniq_> TCSeq;
-   typedef DDS_DCPSSequence_var < TCSeq> TCSeq_var;
-   typedef DDS_DCPSSequence_out < TCSeq> TCSeq_out;
-   class TCTypeSupportInterface
+   struct RawDisplacementSeq_uniq_ {};
+   typedef DDS_DCPSUVLSeq < RawDisplacement, struct RawDisplacementSeq_uniq_> RawDisplacementSeq;
+   typedef DDS_DCPSSequence_var < RawDisplacementSeq> RawDisplacementSeq_var;
+   typedef DDS_DCPSSequence_out < RawDisplacementSeq> RawDisplacementSeq_out;
+   class RawDisplacementTypeSupportInterface
    :
       virtual public DDS::TypeSupport
    { 
    public:
-      typedef TCTypeSupportInterface_ptr _ptr_type;
-      typedef TCTypeSupportInterface_var _var_type;
+      typedef RawDisplacementTypeSupportInterface_ptr _ptr_type;
+      typedef RawDisplacementTypeSupportInterface_var _var_type;
 
-      static TCTypeSupportInterface_ptr _duplicate (TCTypeSupportInterface_ptr obj);
+      static RawDisplacementTypeSupportInterface_ptr _duplicate (RawDisplacementTypeSupportInterface_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static TCTypeSupportInterface_ptr _narrow (DDS::Object_ptr obj);
-      static TCTypeSupportInterface_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static TCTypeSupportInterface_ptr _nil () { return 0; }
+      static RawDisplacementTypeSupportInterface_ptr _narrow (DDS::Object_ptr obj);
+      static RawDisplacementTypeSupportInterface_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static RawDisplacementTypeSupportInterface_ptr _nil () { return 0; }
       static const char * _local_id;
-      TCTypeSupportInterface_ptr _this () { return this; }
+      RawDisplacementTypeSupportInterface_ptr _this () { return this; }
 
 
    protected:
-      TCTypeSupportInterface () {};
-      ~TCTypeSupportInterface () {};
+      RawDisplacementTypeSupportInterface () {};
+      ~RawDisplacementTypeSupportInterface () {};
    private:
-      TCTypeSupportInterface (const TCTypeSupportInterface &);
-      TCTypeSupportInterface & operator = (const TCTypeSupportInterface &);
+      RawDisplacementTypeSupportInterface (const RawDisplacementTypeSupportInterface &);
+      RawDisplacementTypeSupportInterface & operator = (const RawDisplacementTypeSupportInterface &);
    };
 
-   class TCDataWriter
+   class RawDisplacementDataWriter
    :
       virtual public DDS::DataWriter
    { 
    public:
-      typedef TCDataWriter_ptr _ptr_type;
-      typedef TCDataWriter_var _var_type;
+      typedef RawDisplacementDataWriter_ptr _ptr_type;
+      typedef RawDisplacementDataWriter_var _var_type;
 
-      static TCDataWriter_ptr _duplicate (TCDataWriter_ptr obj);
+      static RawDisplacementDataWriter_ptr _duplicate (RawDisplacementDataWriter_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static TCDataWriter_ptr _narrow (DDS::Object_ptr obj);
-      static TCDataWriter_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static TCDataWriter_ptr _nil () { return 0; }
+      static RawDisplacementDataWriter_ptr _narrow (DDS::Object_ptr obj);
+      static RawDisplacementDataWriter_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static RawDisplacementDataWriter_ptr _nil () { return 0; }
       static const char * _local_id;
-      TCDataWriter_ptr _this () { return this; }
+      RawDisplacementDataWriter_ptr _this () { return this; }
 
-      virtual DDS::LongLong register_instance (const TC& instance_data) = 0;
-      virtual DDS::LongLong register_instance_w_timestamp (const TC& instance_data, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long unregister_instance (const TC& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long unregister_instance_w_timestamp (const TC& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long write (const TC& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long write_w_timestamp (const TC& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long dispose (const TC& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long dispose_w_timestamp (const TC& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long writedispose (const TC& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long writedispose_w_timestamp (const TC& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long get_key_value (TC& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const TC& instance_data) = 0;
+      virtual DDS::LongLong register_instance (const RawDisplacement& instance_data) = 0;
+      virtual DDS::LongLong register_instance_w_timestamp (const RawDisplacement& instance_data, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long unregister_instance (const RawDisplacement& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long unregister_instance_w_timestamp (const RawDisplacement& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long write (const RawDisplacement& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long write_w_timestamp (const RawDisplacement& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long dispose (const RawDisplacement& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long dispose_w_timestamp (const RawDisplacement& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long writedispose (const RawDisplacement& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long writedispose_w_timestamp (const RawDisplacement& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long get_key_value (RawDisplacement& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const RawDisplacement& instance_data) = 0;
 
    protected:
-      TCDataWriter () {};
-      ~TCDataWriter () {};
+      RawDisplacementDataWriter () {};
+      ~RawDisplacementDataWriter () {};
    private:
-      TCDataWriter (const TCDataWriter &);
-      TCDataWriter & operator = (const TCDataWriter &);
+      RawDisplacementDataWriter (const RawDisplacementDataWriter &);
+      RawDisplacementDataWriter & operator = (const RawDisplacementDataWriter &);
    };
 
-   class TCDataReader
+   class RawDisplacementDataReader
    :
       virtual public DDS::DataReader
    { 
    public:
-      typedef TCDataReader_ptr _ptr_type;
-      typedef TCDataReader_var _var_type;
+      typedef RawDisplacementDataReader_ptr _ptr_type;
+      typedef RawDisplacementDataReader_var _var_type;
 
-      static TCDataReader_ptr _duplicate (TCDataReader_ptr obj);
+      static RawDisplacementDataReader_ptr _duplicate (RawDisplacementDataReader_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static TCDataReader_ptr _narrow (DDS::Object_ptr obj);
-      static TCDataReader_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static TCDataReader_ptr _nil () { return 0; }
+      static RawDisplacementDataReader_ptr _narrow (DDS::Object_ptr obj);
+      static RawDisplacementDataReader_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static RawDisplacementDataReader_ptr _nil () { return 0; }
       static const char * _local_id;
-      TCDataReader_ptr _this () { return this; }
+      RawDisplacementDataReader_ptr _this () { return this; }
 
-      virtual DDS::Long read (TCSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take (TCSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_w_condition (TCSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_w_condition (TCSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long read_next_sample (TC& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long take_next_sample (TC& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long read_instance (TCSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_instance (TCSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance (TCSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_next_instance (TCSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance_w_condition (TCSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_next_instance_w_condition (TCSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long return_loan (TCSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
-      virtual DDS::Long get_key_value (TC& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const TC& instance) = 0;
+      virtual DDS::Long read (RawDisplacementSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (RawDisplacementSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (RawDisplacementSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (RawDisplacementSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (RawDisplacement& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (RawDisplacement& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (RawDisplacementSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (RawDisplacementSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (RawDisplacementSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (RawDisplacementSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (RawDisplacementSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (RawDisplacementSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (RawDisplacementSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (RawDisplacement& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const RawDisplacement& instance) = 0;
 
    protected:
-      TCDataReader () {};
-      ~TCDataReader () {};
+      RawDisplacementDataReader () {};
+      ~RawDisplacementDataReader () {};
    private:
-      TCDataReader (const TCDataReader &);
-      TCDataReader & operator = (const TCDataReader &);
+      RawDisplacementDataReader (const RawDisplacementDataReader &);
+      RawDisplacementDataReader & operator = (const RawDisplacementDataReader &);
    };
 
-   class TCDataReaderView
+   class RawDisplacementDataReaderView
    :
       virtual public DDS::DataReaderView
    { 
    public:
-      typedef TCDataReaderView_ptr _ptr_type;
-      typedef TCDataReaderView_var _var_type;
+      typedef RawDisplacementDataReaderView_ptr _ptr_type;
+      typedef RawDisplacementDataReaderView_var _var_type;
 
-      static TCDataReaderView_ptr _duplicate (TCDataReaderView_ptr obj);
+      static RawDisplacementDataReaderView_ptr _duplicate (RawDisplacementDataReaderView_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static TCDataReaderView_ptr _narrow (DDS::Object_ptr obj);
-      static TCDataReaderView_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static TCDataReaderView_ptr _nil () { return 0; }
+      static RawDisplacementDataReaderView_ptr _narrow (DDS::Object_ptr obj);
+      static RawDisplacementDataReaderView_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static RawDisplacementDataReaderView_ptr _nil () { return 0; }
       static const char * _local_id;
-      TCDataReaderView_ptr _this () { return this; }
+      RawDisplacementDataReaderView_ptr _this () { return this; }
 
-      virtual DDS::Long read (TCSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take (TCSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_w_condition (TCSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_w_condition (TCSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long read_next_sample (TC& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long take_next_sample (TC& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long read_instance (TCSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_instance (TCSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance (TCSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_next_instance (TCSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance_w_condition (TCSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_next_instance_w_condition (TCSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long return_loan (TCSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
-      virtual DDS::Long get_key_value (TC& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const TC& instance) = 0;
+      virtual DDS::Long read (RawDisplacementSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (RawDisplacementSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (RawDisplacementSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (RawDisplacementSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (RawDisplacement& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (RawDisplacement& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (RawDisplacementSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (RawDisplacementSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (RawDisplacementSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (RawDisplacementSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (RawDisplacementSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (RawDisplacementSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (RawDisplacementSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (RawDisplacement& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const RawDisplacement& instance) = 0;
 
    protected:
-      TCDataReaderView () {};
-      ~TCDataReaderView () {};
+      RawDisplacementDataReaderView () {};
+      ~RawDisplacementDataReaderView () {};
    private:
-      TCDataReaderView (const TCDataReaderView &);
-      TCDataReaderView & operator = (const TCDataReaderView &);
+      RawDisplacementDataReaderView (const RawDisplacementDataReaderView &);
+      RawDisplacementDataReaderView & operator = (const RawDisplacementDataReaderView &);
    };
 
-   struct command_abortSeq_uniq_ {};
-   typedef DDS_DCPSUVLSeq < command_abort, struct command_abortSeq_uniq_> command_abortSeq;
-   typedef DDS_DCPSSequence_var < command_abortSeq> command_abortSeq_var;
-   typedef DDS_DCPSSequence_out < command_abortSeq> command_abortSeq_out;
-   class command_abortTypeSupportInterface
+   struct RawTelemetrySeq_uniq_ {};
+   typedef DDS_DCPSUVLSeq < RawTelemetry, struct RawTelemetrySeq_uniq_> RawTelemetrySeq;
+   typedef DDS_DCPSSequence_var < RawTelemetrySeq> RawTelemetrySeq_var;
+   typedef DDS_DCPSSequence_out < RawTelemetrySeq> RawTelemetrySeq_out;
+   class RawTelemetryTypeSupportInterface
    :
       virtual public DDS::TypeSupport
    { 
    public:
-      typedef command_abortTypeSupportInterface_ptr _ptr_type;
-      typedef command_abortTypeSupportInterface_var _var_type;
+      typedef RawTelemetryTypeSupportInterface_ptr _ptr_type;
+      typedef RawTelemetryTypeSupportInterface_var _var_type;
 
-      static command_abortTypeSupportInterface_ptr _duplicate (command_abortTypeSupportInterface_ptr obj);
+      static RawTelemetryTypeSupportInterface_ptr _duplicate (RawTelemetryTypeSupportInterface_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static command_abortTypeSupportInterface_ptr _narrow (DDS::Object_ptr obj);
-      static command_abortTypeSupportInterface_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static command_abortTypeSupportInterface_ptr _nil () { return 0; }
+      static RawTelemetryTypeSupportInterface_ptr _narrow (DDS::Object_ptr obj);
+      static RawTelemetryTypeSupportInterface_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static RawTelemetryTypeSupportInterface_ptr _nil () { return 0; }
       static const char * _local_id;
-      command_abortTypeSupportInterface_ptr _this () { return this; }
+      RawTelemetryTypeSupportInterface_ptr _this () { return this; }
 
 
    protected:
-      command_abortTypeSupportInterface () {};
-      ~command_abortTypeSupportInterface () {};
+      RawTelemetryTypeSupportInterface () {};
+      ~RawTelemetryTypeSupportInterface () {};
    private:
-      command_abortTypeSupportInterface (const command_abortTypeSupportInterface &);
-      command_abortTypeSupportInterface & operator = (const command_abortTypeSupportInterface &);
+      RawTelemetryTypeSupportInterface (const RawTelemetryTypeSupportInterface &);
+      RawTelemetryTypeSupportInterface & operator = (const RawTelemetryTypeSupportInterface &);
    };
 
-   class command_abortDataWriter
+   class RawTelemetryDataWriter
    :
       virtual public DDS::DataWriter
    { 
    public:
-      typedef command_abortDataWriter_ptr _ptr_type;
-      typedef command_abortDataWriter_var _var_type;
+      typedef RawTelemetryDataWriter_ptr _ptr_type;
+      typedef RawTelemetryDataWriter_var _var_type;
 
-      static command_abortDataWriter_ptr _duplicate (command_abortDataWriter_ptr obj);
+      static RawTelemetryDataWriter_ptr _duplicate (RawTelemetryDataWriter_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static command_abortDataWriter_ptr _narrow (DDS::Object_ptr obj);
-      static command_abortDataWriter_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static command_abortDataWriter_ptr _nil () { return 0; }
+      static RawTelemetryDataWriter_ptr _narrow (DDS::Object_ptr obj);
+      static RawTelemetryDataWriter_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static RawTelemetryDataWriter_ptr _nil () { return 0; }
       static const char * _local_id;
-      command_abortDataWriter_ptr _this () { return this; }
+      RawTelemetryDataWriter_ptr _this () { return this; }
 
-      virtual DDS::LongLong register_instance (const command_abort& instance_data) = 0;
-      virtual DDS::LongLong register_instance_w_timestamp (const command_abort& instance_data, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long unregister_instance (const command_abort& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long unregister_instance_w_timestamp (const command_abort& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long write (const command_abort& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long write_w_timestamp (const command_abort& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long dispose (const command_abort& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long dispose_w_timestamp (const command_abort& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long writedispose (const command_abort& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long writedispose_w_timestamp (const command_abort& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long get_key_value (command_abort& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const command_abort& instance_data) = 0;
+      virtual DDS::LongLong register_instance (const RawTelemetry& instance_data) = 0;
+      virtual DDS::LongLong register_instance_w_timestamp (const RawTelemetry& instance_data, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long unregister_instance (const RawTelemetry& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long unregister_instance_w_timestamp (const RawTelemetry& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long write (const RawTelemetry& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long write_w_timestamp (const RawTelemetry& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long dispose (const RawTelemetry& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long dispose_w_timestamp (const RawTelemetry& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long writedispose (const RawTelemetry& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long writedispose_w_timestamp (const RawTelemetry& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long get_key_value (RawTelemetry& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const RawTelemetry& instance_data) = 0;
 
    protected:
-      command_abortDataWriter () {};
-      ~command_abortDataWriter () {};
+      RawTelemetryDataWriter () {};
+      ~RawTelemetryDataWriter () {};
    private:
-      command_abortDataWriter (const command_abortDataWriter &);
-      command_abortDataWriter & operator = (const command_abortDataWriter &);
+      RawTelemetryDataWriter (const RawTelemetryDataWriter &);
+      RawTelemetryDataWriter & operator = (const RawTelemetryDataWriter &);
    };
 
-   class command_abortDataReader
+   class RawTelemetryDataReader
    :
       virtual public DDS::DataReader
    { 
    public:
-      typedef command_abortDataReader_ptr _ptr_type;
-      typedef command_abortDataReader_var _var_type;
+      typedef RawTelemetryDataReader_ptr _ptr_type;
+      typedef RawTelemetryDataReader_var _var_type;
 
-      static command_abortDataReader_ptr _duplicate (command_abortDataReader_ptr obj);
+      static RawTelemetryDataReader_ptr _duplicate (RawTelemetryDataReader_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static command_abortDataReader_ptr _narrow (DDS::Object_ptr obj);
-      static command_abortDataReader_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static command_abortDataReader_ptr _nil () { return 0; }
+      static RawTelemetryDataReader_ptr _narrow (DDS::Object_ptr obj);
+      static RawTelemetryDataReader_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static RawTelemetryDataReader_ptr _nil () { return 0; }
       static const char * _local_id;
-      command_abortDataReader_ptr _this () { return this; }
+      RawTelemetryDataReader_ptr _this () { return this; }
 
-      virtual DDS::Long read (command_abortSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take (command_abortSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_w_condition (command_abortSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_w_condition (command_abortSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long read_next_sample (command_abort& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long take_next_sample (command_abort& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long read_instance (command_abortSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_instance (command_abortSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance (command_abortSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_next_instance (command_abortSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance_w_condition (command_abortSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_next_instance_w_condition (command_abortSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long return_loan (command_abortSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
-      virtual DDS::Long get_key_value (command_abort& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const command_abort& instance) = 0;
+      virtual DDS::Long read (RawTelemetrySeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (RawTelemetrySeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (RawTelemetrySeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (RawTelemetrySeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (RawTelemetry& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (RawTelemetry& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (RawTelemetrySeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (RawTelemetrySeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (RawTelemetrySeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (RawTelemetrySeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (RawTelemetrySeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (RawTelemetrySeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (RawTelemetrySeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (RawTelemetry& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const RawTelemetry& instance) = 0;
 
    protected:
-      command_abortDataReader () {};
-      ~command_abortDataReader () {};
+      RawTelemetryDataReader () {};
+      ~RawTelemetryDataReader () {};
    private:
-      command_abortDataReader (const command_abortDataReader &);
-      command_abortDataReader & operator = (const command_abortDataReader &);
+      RawTelemetryDataReader (const RawTelemetryDataReader &);
+      RawTelemetryDataReader & operator = (const RawTelemetryDataReader &);
    };
 
-   class command_abortDataReaderView
+   class RawTelemetryDataReaderView
    :
       virtual public DDS::DataReaderView
    { 
    public:
-      typedef command_abortDataReaderView_ptr _ptr_type;
-      typedef command_abortDataReaderView_var _var_type;
+      typedef RawTelemetryDataReaderView_ptr _ptr_type;
+      typedef RawTelemetryDataReaderView_var _var_type;
 
-      static command_abortDataReaderView_ptr _duplicate (command_abortDataReaderView_ptr obj);
+      static RawTelemetryDataReaderView_ptr _duplicate (RawTelemetryDataReaderView_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static command_abortDataReaderView_ptr _narrow (DDS::Object_ptr obj);
-      static command_abortDataReaderView_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static command_abortDataReaderView_ptr _nil () { return 0; }
+      static RawTelemetryDataReaderView_ptr _narrow (DDS::Object_ptr obj);
+      static RawTelemetryDataReaderView_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static RawTelemetryDataReaderView_ptr _nil () { return 0; }
       static const char * _local_id;
-      command_abortDataReaderView_ptr _this () { return this; }
+      RawTelemetryDataReaderView_ptr _this () { return this; }
 
-      virtual DDS::Long read (command_abortSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take (command_abortSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_w_condition (command_abortSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_w_condition (command_abortSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long read_next_sample (command_abort& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long take_next_sample (command_abort& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long read_instance (command_abortSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_instance (command_abortSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance (command_abortSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_next_instance (command_abortSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance_w_condition (command_abortSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_next_instance_w_condition (command_abortSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long return_loan (command_abortSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
-      virtual DDS::Long get_key_value (command_abort& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const command_abort& instance) = 0;
+      virtual DDS::Long read (RawTelemetrySeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (RawTelemetrySeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (RawTelemetrySeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (RawTelemetrySeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (RawTelemetry& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (RawTelemetry& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (RawTelemetrySeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (RawTelemetrySeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (RawTelemetrySeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (RawTelemetrySeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (RawTelemetrySeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (RawTelemetrySeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (RawTelemetrySeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (RawTelemetry& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const RawTelemetry& instance) = 0;
 
    protected:
-      command_abortDataReaderView () {};
-      ~command_abortDataReaderView () {};
+      RawTelemetryDataReaderView () {};
+      ~RawTelemetryDataReaderView () {};
    private:
-      command_abortDataReaderView (const command_abortDataReaderView &);
-      command_abortDataReaderView & operator = (const command_abortDataReaderView &);
+      RawTelemetryDataReaderView (const RawTelemetryDataReaderView &);
+      RawTelemetryDataReaderView & operator = (const RawTelemetryDataReaderView &);
    };
 
-   struct command_configureSeq_uniq_ {};
-   typedef DDS_DCPSUVLSeq < command_configure, struct command_configureSeq_uniq_> command_configureSeq;
-   typedef DDS_DCPSSequence_var < command_configureSeq> command_configureSeq_var;
-   typedef DDS_DCPSSequence_out < command_configureSeq> command_configureSeq_out;
-   class command_configureTypeSupportInterface
+   struct StepVectorUpdateSeq_uniq_ {};
+   typedef DDS_DCPSUVLSeq < StepVectorUpdate, struct StepVectorUpdateSeq_uniq_> StepVectorUpdateSeq;
+   typedef DDS_DCPSSequence_var < StepVectorUpdateSeq> StepVectorUpdateSeq_var;
+   typedef DDS_DCPSSequence_out < StepVectorUpdateSeq> StepVectorUpdateSeq_out;
+   class StepVectorUpdateTypeSupportInterface
    :
       virtual public DDS::TypeSupport
    { 
    public:
-      typedef command_configureTypeSupportInterface_ptr _ptr_type;
-      typedef command_configureTypeSupportInterface_var _var_type;
+      typedef StepVectorUpdateTypeSupportInterface_ptr _ptr_type;
+      typedef StepVectorUpdateTypeSupportInterface_var _var_type;
 
-      static command_configureTypeSupportInterface_ptr _duplicate (command_configureTypeSupportInterface_ptr obj);
+      static StepVectorUpdateTypeSupportInterface_ptr _duplicate (StepVectorUpdateTypeSupportInterface_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static command_configureTypeSupportInterface_ptr _narrow (DDS::Object_ptr obj);
-      static command_configureTypeSupportInterface_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static command_configureTypeSupportInterface_ptr _nil () { return 0; }
+      static StepVectorUpdateTypeSupportInterface_ptr _narrow (DDS::Object_ptr obj);
+      static StepVectorUpdateTypeSupportInterface_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static StepVectorUpdateTypeSupportInterface_ptr _nil () { return 0; }
       static const char * _local_id;
-      command_configureTypeSupportInterface_ptr _this () { return this; }
+      StepVectorUpdateTypeSupportInterface_ptr _this () { return this; }
 
 
    protected:
-      command_configureTypeSupportInterface () {};
-      ~command_configureTypeSupportInterface () {};
+      StepVectorUpdateTypeSupportInterface () {};
+      ~StepVectorUpdateTypeSupportInterface () {};
    private:
-      command_configureTypeSupportInterface (const command_configureTypeSupportInterface &);
-      command_configureTypeSupportInterface & operator = (const command_configureTypeSupportInterface &);
+      StepVectorUpdateTypeSupportInterface (const StepVectorUpdateTypeSupportInterface &);
+      StepVectorUpdateTypeSupportInterface & operator = (const StepVectorUpdateTypeSupportInterface &);
    };
 
-   class command_configureDataWriter
+   class StepVectorUpdateDataWriter
    :
       virtual public DDS::DataWriter
    { 
    public:
-      typedef command_configureDataWriter_ptr _ptr_type;
-      typedef command_configureDataWriter_var _var_type;
+      typedef StepVectorUpdateDataWriter_ptr _ptr_type;
+      typedef StepVectorUpdateDataWriter_var _var_type;
 
-      static command_configureDataWriter_ptr _duplicate (command_configureDataWriter_ptr obj);
+      static StepVectorUpdateDataWriter_ptr _duplicate (StepVectorUpdateDataWriter_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static command_configureDataWriter_ptr _narrow (DDS::Object_ptr obj);
-      static command_configureDataWriter_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static command_configureDataWriter_ptr _nil () { return 0; }
+      static StepVectorUpdateDataWriter_ptr _narrow (DDS::Object_ptr obj);
+      static StepVectorUpdateDataWriter_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static StepVectorUpdateDataWriter_ptr _nil () { return 0; }
       static const char * _local_id;
-      command_configureDataWriter_ptr _this () { return this; }
+      StepVectorUpdateDataWriter_ptr _this () { return this; }
 
-      virtual DDS::LongLong register_instance (const command_configure& instance_data) = 0;
-      virtual DDS::LongLong register_instance_w_timestamp (const command_configure& instance_data, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long unregister_instance (const command_configure& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long unregister_instance_w_timestamp (const command_configure& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long write (const command_configure& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long write_w_timestamp (const command_configure& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long dispose (const command_configure& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long dispose_w_timestamp (const command_configure& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long writedispose (const command_configure& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long writedispose_w_timestamp (const command_configure& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long get_key_value (command_configure& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const command_configure& instance_data) = 0;
+      virtual DDS::LongLong register_instance (const StepVectorUpdate& instance_data) = 0;
+      virtual DDS::LongLong register_instance_w_timestamp (const StepVectorUpdate& instance_data, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long unregister_instance (const StepVectorUpdate& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long unregister_instance_w_timestamp (const StepVectorUpdate& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long write (const StepVectorUpdate& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long write_w_timestamp (const StepVectorUpdate& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long dispose (const StepVectorUpdate& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long dispose_w_timestamp (const StepVectorUpdate& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long writedispose (const StepVectorUpdate& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long writedispose_w_timestamp (const StepVectorUpdate& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long get_key_value (StepVectorUpdate& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const StepVectorUpdate& instance_data) = 0;
 
    protected:
-      command_configureDataWriter () {};
-      ~command_configureDataWriter () {};
+      StepVectorUpdateDataWriter () {};
+      ~StepVectorUpdateDataWriter () {};
    private:
-      command_configureDataWriter (const command_configureDataWriter &);
-      command_configureDataWriter & operator = (const command_configureDataWriter &);
+      StepVectorUpdateDataWriter (const StepVectorUpdateDataWriter &);
+      StepVectorUpdateDataWriter & operator = (const StepVectorUpdateDataWriter &);
    };
 
-   class command_configureDataReader
+   class StepVectorUpdateDataReader
    :
       virtual public DDS::DataReader
    { 
    public:
-      typedef command_configureDataReader_ptr _ptr_type;
-      typedef command_configureDataReader_var _var_type;
+      typedef StepVectorUpdateDataReader_ptr _ptr_type;
+      typedef StepVectorUpdateDataReader_var _var_type;
 
-      static command_configureDataReader_ptr _duplicate (command_configureDataReader_ptr obj);
+      static StepVectorUpdateDataReader_ptr _duplicate (StepVectorUpdateDataReader_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static command_configureDataReader_ptr _narrow (DDS::Object_ptr obj);
-      static command_configureDataReader_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static command_configureDataReader_ptr _nil () { return 0; }
+      static StepVectorUpdateDataReader_ptr _narrow (DDS::Object_ptr obj);
+      static StepVectorUpdateDataReader_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static StepVectorUpdateDataReader_ptr _nil () { return 0; }
       static const char * _local_id;
-      command_configureDataReader_ptr _this () { return this; }
+      StepVectorUpdateDataReader_ptr _this () { return this; }
 
-      virtual DDS::Long read (command_configureSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take (command_configureSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_w_condition (command_configureSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_w_condition (command_configureSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long read_next_sample (command_configure& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long take_next_sample (command_configure& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long read_instance (command_configureSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_instance (command_configureSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance (command_configureSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_next_instance (command_configureSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance_w_condition (command_configureSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_next_instance_w_condition (command_configureSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long return_loan (command_configureSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
-      virtual DDS::Long get_key_value (command_configure& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const command_configure& instance) = 0;
+      virtual DDS::Long read (StepVectorUpdateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (StepVectorUpdateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (StepVectorUpdateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (StepVectorUpdateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (StepVectorUpdate& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (StepVectorUpdate& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (StepVectorUpdateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (StepVectorUpdateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (StepVectorUpdateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (StepVectorUpdateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (StepVectorUpdateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (StepVectorUpdateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (StepVectorUpdateSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (StepVectorUpdate& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const StepVectorUpdate& instance) = 0;
 
    protected:
-      command_configureDataReader () {};
-      ~command_configureDataReader () {};
+      StepVectorUpdateDataReader () {};
+      ~StepVectorUpdateDataReader () {};
    private:
-      command_configureDataReader (const command_configureDataReader &);
-      command_configureDataReader & operator = (const command_configureDataReader &);
+      StepVectorUpdateDataReader (const StepVectorUpdateDataReader &);
+      StepVectorUpdateDataReader & operator = (const StepVectorUpdateDataReader &);
    };
 
-   class command_configureDataReaderView
+   class StepVectorUpdateDataReaderView
    :
       virtual public DDS::DataReaderView
    { 
    public:
-      typedef command_configureDataReaderView_ptr _ptr_type;
-      typedef command_configureDataReaderView_var _var_type;
+      typedef StepVectorUpdateDataReaderView_ptr _ptr_type;
+      typedef StepVectorUpdateDataReaderView_var _var_type;
 
-      static command_configureDataReaderView_ptr _duplicate (command_configureDataReaderView_ptr obj);
+      static StepVectorUpdateDataReaderView_ptr _duplicate (StepVectorUpdateDataReaderView_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static command_configureDataReaderView_ptr _narrow (DDS::Object_ptr obj);
-      static command_configureDataReaderView_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static command_configureDataReaderView_ptr _nil () { return 0; }
+      static StepVectorUpdateDataReaderView_ptr _narrow (DDS::Object_ptr obj);
+      static StepVectorUpdateDataReaderView_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static StepVectorUpdateDataReaderView_ptr _nil () { return 0; }
       static const char * _local_id;
-      command_configureDataReaderView_ptr _this () { return this; }
+      StepVectorUpdateDataReaderView_ptr _this () { return this; }
 
-      virtual DDS::Long read (command_configureSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take (command_configureSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_w_condition (command_configureSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_w_condition (command_configureSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long read_next_sample (command_configure& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long take_next_sample (command_configure& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long read_instance (command_configureSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_instance (command_configureSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance (command_configureSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_next_instance (command_configureSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance_w_condition (command_configureSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_next_instance_w_condition (command_configureSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long return_loan (command_configureSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
-      virtual DDS::Long get_key_value (command_configure& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const command_configure& instance) = 0;
+      virtual DDS::Long read (StepVectorUpdateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (StepVectorUpdateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (StepVectorUpdateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (StepVectorUpdateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (StepVectorUpdate& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (StepVectorUpdate& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (StepVectorUpdateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (StepVectorUpdateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (StepVectorUpdateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (StepVectorUpdateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (StepVectorUpdateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (StepVectorUpdateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (StepVectorUpdateSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (StepVectorUpdate& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const StepVectorUpdate& instance) = 0;
 
    protected:
-      command_configureDataReaderView () {};
-      ~command_configureDataReaderView () {};
+      StepVectorUpdateDataReaderView () {};
+      ~StepVectorUpdateDataReaderView () {};
    private:
-      command_configureDataReaderView (const command_configureDataReaderView &);
-      command_configureDataReaderView & operator = (const command_configureDataReaderView &);
+      StepVectorUpdateDataReaderView (const StepVectorUpdateDataReaderView &);
+      StepVectorUpdateDataReaderView & operator = (const StepVectorUpdateDataReaderView &);
    };
 
-   struct command_statusSeq_uniq_ {};
-   typedef DDS_DCPSUVLSeq < command_status, struct command_statusSeq_uniq_> command_statusSeq;
-   typedef DDS_DCPSSequence_var < command_statusSeq> command_statusSeq_var;
-   typedef DDS_DCPSSequence_out < command_statusSeq> command_statusSeq_out;
-   class command_statusTypeSupportInterface
+   struct SystemStatusSeq_uniq_ {};
+   typedef DDS_DCPSUVLSeq < SystemStatus, struct SystemStatusSeq_uniq_> SystemStatusSeq;
+   typedef DDS_DCPSSequence_var < SystemStatusSeq> SystemStatusSeq_var;
+   typedef DDS_DCPSSequence_out < SystemStatusSeq> SystemStatusSeq_out;
+   class SystemStatusTypeSupportInterface
    :
       virtual public DDS::TypeSupport
    { 
    public:
-      typedef command_statusTypeSupportInterface_ptr _ptr_type;
-      typedef command_statusTypeSupportInterface_var _var_type;
+      typedef SystemStatusTypeSupportInterface_ptr _ptr_type;
+      typedef SystemStatusTypeSupportInterface_var _var_type;
 
-      static command_statusTypeSupportInterface_ptr _duplicate (command_statusTypeSupportInterface_ptr obj);
+      static SystemStatusTypeSupportInterface_ptr _duplicate (SystemStatusTypeSupportInterface_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static command_statusTypeSupportInterface_ptr _narrow (DDS::Object_ptr obj);
-      static command_statusTypeSupportInterface_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static command_statusTypeSupportInterface_ptr _nil () { return 0; }
+      static SystemStatusTypeSupportInterface_ptr _narrow (DDS::Object_ptr obj);
+      static SystemStatusTypeSupportInterface_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static SystemStatusTypeSupportInterface_ptr _nil () { return 0; }
       static const char * _local_id;
-      command_statusTypeSupportInterface_ptr _this () { return this; }
+      SystemStatusTypeSupportInterface_ptr _this () { return this; }
 
 
    protected:
-      command_statusTypeSupportInterface () {};
-      ~command_statusTypeSupportInterface () {};
+      SystemStatusTypeSupportInterface () {};
+      ~SystemStatusTypeSupportInterface () {};
    private:
-      command_statusTypeSupportInterface (const command_statusTypeSupportInterface &);
-      command_statusTypeSupportInterface & operator = (const command_statusTypeSupportInterface &);
+      SystemStatusTypeSupportInterface (const SystemStatusTypeSupportInterface &);
+      SystemStatusTypeSupportInterface & operator = (const SystemStatusTypeSupportInterface &);
    };
 
-   class command_statusDataWriter
+   class SystemStatusDataWriter
    :
       virtual public DDS::DataWriter
    { 
    public:
-      typedef command_statusDataWriter_ptr _ptr_type;
-      typedef command_statusDataWriter_var _var_type;
+      typedef SystemStatusDataWriter_ptr _ptr_type;
+      typedef SystemStatusDataWriter_var _var_type;
 
-      static command_statusDataWriter_ptr _duplicate (command_statusDataWriter_ptr obj);
+      static SystemStatusDataWriter_ptr _duplicate (SystemStatusDataWriter_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static command_statusDataWriter_ptr _narrow (DDS::Object_ptr obj);
-      static command_statusDataWriter_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static command_statusDataWriter_ptr _nil () { return 0; }
+      static SystemStatusDataWriter_ptr _narrow (DDS::Object_ptr obj);
+      static SystemStatusDataWriter_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static SystemStatusDataWriter_ptr _nil () { return 0; }
       static const char * _local_id;
-      command_statusDataWriter_ptr _this () { return this; }
+      SystemStatusDataWriter_ptr _this () { return this; }
 
-      virtual DDS::LongLong register_instance (const command_status& instance_data) = 0;
-      virtual DDS::LongLong register_instance_w_timestamp (const command_status& instance_data, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long unregister_instance (const command_status& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long unregister_instance_w_timestamp (const command_status& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long write (const command_status& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long write_w_timestamp (const command_status& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long dispose (const command_status& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long dispose_w_timestamp (const command_status& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long writedispose (const command_status& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long writedispose_w_timestamp (const command_status& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long get_key_value (command_status& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const command_status& instance_data) = 0;
+      virtual DDS::LongLong register_instance (const SystemStatus& instance_data) = 0;
+      virtual DDS::LongLong register_instance_w_timestamp (const SystemStatus& instance_data, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long unregister_instance (const SystemStatus& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long unregister_instance_w_timestamp (const SystemStatus& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long write (const SystemStatus& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long write_w_timestamp (const SystemStatus& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long dispose (const SystemStatus& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long dispose_w_timestamp (const SystemStatus& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long writedispose (const SystemStatus& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long writedispose_w_timestamp (const SystemStatus& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long get_key_value (SystemStatus& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const SystemStatus& instance_data) = 0;
 
    protected:
-      command_statusDataWriter () {};
-      ~command_statusDataWriter () {};
+      SystemStatusDataWriter () {};
+      ~SystemStatusDataWriter () {};
    private:
-      command_statusDataWriter (const command_statusDataWriter &);
-      command_statusDataWriter & operator = (const command_statusDataWriter &);
+      SystemStatusDataWriter (const SystemStatusDataWriter &);
+      SystemStatusDataWriter & operator = (const SystemStatusDataWriter &);
    };
 
-   class command_statusDataReader
+   class SystemStatusDataReader
    :
       virtual public DDS::DataReader
    { 
    public:
-      typedef command_statusDataReader_ptr _ptr_type;
-      typedef command_statusDataReader_var _var_type;
+      typedef SystemStatusDataReader_ptr _ptr_type;
+      typedef SystemStatusDataReader_var _var_type;
 
-      static command_statusDataReader_ptr _duplicate (command_statusDataReader_ptr obj);
+      static SystemStatusDataReader_ptr _duplicate (SystemStatusDataReader_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static command_statusDataReader_ptr _narrow (DDS::Object_ptr obj);
-      static command_statusDataReader_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static command_statusDataReader_ptr _nil () { return 0; }
+      static SystemStatusDataReader_ptr _narrow (DDS::Object_ptr obj);
+      static SystemStatusDataReader_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static SystemStatusDataReader_ptr _nil () { return 0; }
       static const char * _local_id;
-      command_statusDataReader_ptr _this () { return this; }
+      SystemStatusDataReader_ptr _this () { return this; }
 
-      virtual DDS::Long read (command_statusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take (command_statusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_w_condition (command_statusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_w_condition (command_statusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long read_next_sample (command_status& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long take_next_sample (command_status& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long read_instance (command_statusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_instance (command_statusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance (command_statusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_next_instance (command_statusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance_w_condition (command_statusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_next_instance_w_condition (command_statusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long return_loan (command_statusSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
-      virtual DDS::Long get_key_value (command_status& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const command_status& instance) = 0;
+      virtual DDS::Long read (SystemStatusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (SystemStatusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (SystemStatusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (SystemStatusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (SystemStatus& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (SystemStatus& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (SystemStatusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (SystemStatusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (SystemStatusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (SystemStatusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (SystemStatusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (SystemStatusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (SystemStatusSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (SystemStatus& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const SystemStatus& instance) = 0;
 
    protected:
-      command_statusDataReader () {};
-      ~command_statusDataReader () {};
+      SystemStatusDataReader () {};
+      ~SystemStatusDataReader () {};
    private:
-      command_statusDataReader (const command_statusDataReader &);
-      command_statusDataReader & operator = (const command_statusDataReader &);
+      SystemStatusDataReader (const SystemStatusDataReader &);
+      SystemStatusDataReader & operator = (const SystemStatusDataReader &);
    };
 
-   class command_statusDataReaderView
+   class SystemStatusDataReaderView
    :
       virtual public DDS::DataReaderView
    { 
    public:
-      typedef command_statusDataReaderView_ptr _ptr_type;
-      typedef command_statusDataReaderView_var _var_type;
+      typedef SystemStatusDataReaderView_ptr _ptr_type;
+      typedef SystemStatusDataReaderView_var _var_type;
 
-      static command_statusDataReaderView_ptr _duplicate (command_statusDataReaderView_ptr obj);
+      static SystemStatusDataReaderView_ptr _duplicate (SystemStatusDataReaderView_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static command_statusDataReaderView_ptr _narrow (DDS::Object_ptr obj);
-      static command_statusDataReaderView_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static command_statusDataReaderView_ptr _nil () { return 0; }
+      static SystemStatusDataReaderView_ptr _narrow (DDS::Object_ptr obj);
+      static SystemStatusDataReaderView_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static SystemStatusDataReaderView_ptr _nil () { return 0; }
       static const char * _local_id;
-      command_statusDataReaderView_ptr _this () { return this; }
+      SystemStatusDataReaderView_ptr _this () { return this; }
 
-      virtual DDS::Long read (command_statusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take (command_statusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_w_condition (command_statusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_w_condition (command_statusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long read_next_sample (command_status& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long take_next_sample (command_status& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long read_instance (command_statusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_instance (command_statusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance (command_statusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_next_instance (command_statusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance_w_condition (command_statusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_next_instance_w_condition (command_statusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long return_loan (command_statusSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
-      virtual DDS::Long get_key_value (command_status& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const command_status& instance) = 0;
+      virtual DDS::Long read (SystemStatusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (SystemStatusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (SystemStatusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (SystemStatusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (SystemStatus& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (SystemStatus& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (SystemStatusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (SystemStatusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (SystemStatusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (SystemStatusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (SystemStatusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (SystemStatusSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (SystemStatusSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (SystemStatus& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const SystemStatus& instance) = 0;
 
    protected:
-      command_statusDataReaderView () {};
-      ~command_statusDataReaderView () {};
+      SystemStatusDataReaderView () {};
+      ~SystemStatusDataReaderView () {};
    private:
-      command_statusDataReaderView (const command_statusDataReaderView &);
-      command_statusDataReaderView & operator = (const command_statusDataReaderView &);
+      SystemStatusDataReaderView (const SystemStatusDataReaderView &);
+      SystemStatusDataReaderView & operator = (const SystemStatusDataReaderView &);
    };
 
-   struct command_stopSeq_uniq_ {};
-   typedef DDS_DCPSUVLSeq < command_stop, struct command_stopSeq_uniq_> command_stopSeq;
-   typedef DDS_DCPSSequence_var < command_stopSeq> command_stopSeq_var;
-   typedef DDS_DCPSSequence_out < command_stopSeq> command_stopSeq_out;
-   class command_stopTypeSupportInterface
+   struct TangentActuatorAbsolutePositionStepsSeq_uniq_ {};
+   typedef DDS_DCPSUVLSeq < TangentActuatorAbsolutePositionSteps, struct TangentActuatorAbsolutePositionStepsSeq_uniq_> TangentActuatorAbsolutePositionStepsSeq;
+   typedef DDS_DCPSSequence_var < TangentActuatorAbsolutePositionStepsSeq> TangentActuatorAbsolutePositionStepsSeq_var;
+   typedef DDS_DCPSSequence_out < TangentActuatorAbsolutePositionStepsSeq> TangentActuatorAbsolutePositionStepsSeq_out;
+   class TangentActuatorAbsolutePositionStepsTypeSupportInterface
    :
       virtual public DDS::TypeSupport
    { 
    public:
-      typedef command_stopTypeSupportInterface_ptr _ptr_type;
-      typedef command_stopTypeSupportInterface_var _var_type;
+      typedef TangentActuatorAbsolutePositionStepsTypeSupportInterface_ptr _ptr_type;
+      typedef TangentActuatorAbsolutePositionStepsTypeSupportInterface_var _var_type;
 
-      static command_stopTypeSupportInterface_ptr _duplicate (command_stopTypeSupportInterface_ptr obj);
+      static TangentActuatorAbsolutePositionStepsTypeSupportInterface_ptr _duplicate (TangentActuatorAbsolutePositionStepsTypeSupportInterface_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static command_stopTypeSupportInterface_ptr _narrow (DDS::Object_ptr obj);
-      static command_stopTypeSupportInterface_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static command_stopTypeSupportInterface_ptr _nil () { return 0; }
+      static TangentActuatorAbsolutePositionStepsTypeSupportInterface_ptr _narrow (DDS::Object_ptr obj);
+      static TangentActuatorAbsolutePositionStepsTypeSupportInterface_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static TangentActuatorAbsolutePositionStepsTypeSupportInterface_ptr _nil () { return 0; }
       static const char * _local_id;
-      command_stopTypeSupportInterface_ptr _this () { return this; }
+      TangentActuatorAbsolutePositionStepsTypeSupportInterface_ptr _this () { return this; }
 
 
    protected:
-      command_stopTypeSupportInterface () {};
-      ~command_stopTypeSupportInterface () {};
+      TangentActuatorAbsolutePositionStepsTypeSupportInterface () {};
+      ~TangentActuatorAbsolutePositionStepsTypeSupportInterface () {};
    private:
-      command_stopTypeSupportInterface (const command_stopTypeSupportInterface &);
-      command_stopTypeSupportInterface & operator = (const command_stopTypeSupportInterface &);
+      TangentActuatorAbsolutePositionStepsTypeSupportInterface (const TangentActuatorAbsolutePositionStepsTypeSupportInterface &);
+      TangentActuatorAbsolutePositionStepsTypeSupportInterface & operator = (const TangentActuatorAbsolutePositionStepsTypeSupportInterface &);
    };
 
-   class command_stopDataWriter
+   class TangentActuatorAbsolutePositionStepsDataWriter
    :
       virtual public DDS::DataWriter
    { 
    public:
-      typedef command_stopDataWriter_ptr _ptr_type;
-      typedef command_stopDataWriter_var _var_type;
+      typedef TangentActuatorAbsolutePositionStepsDataWriter_ptr _ptr_type;
+      typedef TangentActuatorAbsolutePositionStepsDataWriter_var _var_type;
 
-      static command_stopDataWriter_ptr _duplicate (command_stopDataWriter_ptr obj);
+      static TangentActuatorAbsolutePositionStepsDataWriter_ptr _duplicate (TangentActuatorAbsolutePositionStepsDataWriter_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static command_stopDataWriter_ptr _narrow (DDS::Object_ptr obj);
-      static command_stopDataWriter_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static command_stopDataWriter_ptr _nil () { return 0; }
+      static TangentActuatorAbsolutePositionStepsDataWriter_ptr _narrow (DDS::Object_ptr obj);
+      static TangentActuatorAbsolutePositionStepsDataWriter_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static TangentActuatorAbsolutePositionStepsDataWriter_ptr _nil () { return 0; }
       static const char * _local_id;
-      command_stopDataWriter_ptr _this () { return this; }
+      TangentActuatorAbsolutePositionStepsDataWriter_ptr _this () { return this; }
 
-      virtual DDS::LongLong register_instance (const command_stop& instance_data) = 0;
-      virtual DDS::LongLong register_instance_w_timestamp (const command_stop& instance_data, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long unregister_instance (const command_stop& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long unregister_instance_w_timestamp (const command_stop& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long write (const command_stop& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long write_w_timestamp (const command_stop& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long dispose (const command_stop& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long dispose_w_timestamp (const command_stop& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long writedispose (const command_stop& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long writedispose_w_timestamp (const command_stop& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long get_key_value (command_stop& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const command_stop& instance_data) = 0;
+      virtual DDS::LongLong register_instance (const TangentActuatorAbsolutePositionSteps& instance_data) = 0;
+      virtual DDS::LongLong register_instance_w_timestamp (const TangentActuatorAbsolutePositionSteps& instance_data, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long unregister_instance (const TangentActuatorAbsolutePositionSteps& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long unregister_instance_w_timestamp (const TangentActuatorAbsolutePositionSteps& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long write (const TangentActuatorAbsolutePositionSteps& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long write_w_timestamp (const TangentActuatorAbsolutePositionSteps& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long dispose (const TangentActuatorAbsolutePositionSteps& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long dispose_w_timestamp (const TangentActuatorAbsolutePositionSteps& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long writedispose (const TangentActuatorAbsolutePositionSteps& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long writedispose_w_timestamp (const TangentActuatorAbsolutePositionSteps& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long get_key_value (TangentActuatorAbsolutePositionSteps& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const TangentActuatorAbsolutePositionSteps& instance_data) = 0;
 
    protected:
-      command_stopDataWriter () {};
-      ~command_stopDataWriter () {};
+      TangentActuatorAbsolutePositionStepsDataWriter () {};
+      ~TangentActuatorAbsolutePositionStepsDataWriter () {};
    private:
-      command_stopDataWriter (const command_stopDataWriter &);
-      command_stopDataWriter & operator = (const command_stopDataWriter &);
+      TangentActuatorAbsolutePositionStepsDataWriter (const TangentActuatorAbsolutePositionStepsDataWriter &);
+      TangentActuatorAbsolutePositionStepsDataWriter & operator = (const TangentActuatorAbsolutePositionStepsDataWriter &);
    };
 
-   class command_stopDataReader
+   class TangentActuatorAbsolutePositionStepsDataReader
    :
       virtual public DDS::DataReader
    { 
    public:
-      typedef command_stopDataReader_ptr _ptr_type;
-      typedef command_stopDataReader_var _var_type;
+      typedef TangentActuatorAbsolutePositionStepsDataReader_ptr _ptr_type;
+      typedef TangentActuatorAbsolutePositionStepsDataReader_var _var_type;
 
-      static command_stopDataReader_ptr _duplicate (command_stopDataReader_ptr obj);
+      static TangentActuatorAbsolutePositionStepsDataReader_ptr _duplicate (TangentActuatorAbsolutePositionStepsDataReader_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static command_stopDataReader_ptr _narrow (DDS::Object_ptr obj);
-      static command_stopDataReader_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static command_stopDataReader_ptr _nil () { return 0; }
+      static TangentActuatorAbsolutePositionStepsDataReader_ptr _narrow (DDS::Object_ptr obj);
+      static TangentActuatorAbsolutePositionStepsDataReader_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static TangentActuatorAbsolutePositionStepsDataReader_ptr _nil () { return 0; }
       static const char * _local_id;
-      command_stopDataReader_ptr _this () { return this; }
+      TangentActuatorAbsolutePositionStepsDataReader_ptr _this () { return this; }
 
-      virtual DDS::Long read (command_stopSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take (command_stopSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_w_condition (command_stopSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_w_condition (command_stopSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long read_next_sample (command_stop& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long take_next_sample (command_stop& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long read_instance (command_stopSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_instance (command_stopSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance (command_stopSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_next_instance (command_stopSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance_w_condition (command_stopSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_next_instance_w_condition (command_stopSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long return_loan (command_stopSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
-      virtual DDS::Long get_key_value (command_stop& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const command_stop& instance) = 0;
+      virtual DDS::Long read (TangentActuatorAbsolutePositionStepsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (TangentActuatorAbsolutePositionStepsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (TangentActuatorAbsolutePositionStepsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (TangentActuatorAbsolutePositionStepsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (TangentActuatorAbsolutePositionSteps& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (TangentActuatorAbsolutePositionSteps& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (TangentActuatorAbsolutePositionStepsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (TangentActuatorAbsolutePositionStepsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (TangentActuatorAbsolutePositionStepsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (TangentActuatorAbsolutePositionStepsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (TangentActuatorAbsolutePositionStepsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (TangentActuatorAbsolutePositionStepsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (TangentActuatorAbsolutePositionStepsSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (TangentActuatorAbsolutePositionSteps& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const TangentActuatorAbsolutePositionSteps& instance) = 0;
 
    protected:
-      command_stopDataReader () {};
-      ~command_stopDataReader () {};
+      TangentActuatorAbsolutePositionStepsDataReader () {};
+      ~TangentActuatorAbsolutePositionStepsDataReader () {};
    private:
-      command_stopDataReader (const command_stopDataReader &);
-      command_stopDataReader & operator = (const command_stopDataReader &);
+      TangentActuatorAbsolutePositionStepsDataReader (const TangentActuatorAbsolutePositionStepsDataReader &);
+      TangentActuatorAbsolutePositionStepsDataReader & operator = (const TangentActuatorAbsolutePositionStepsDataReader &);
    };
 
-   class command_stopDataReaderView
+   class TangentActuatorAbsolutePositionStepsDataReaderView
    :
       virtual public DDS::DataReaderView
    { 
    public:
-      typedef command_stopDataReaderView_ptr _ptr_type;
-      typedef command_stopDataReaderView_var _var_type;
+      typedef TangentActuatorAbsolutePositionStepsDataReaderView_ptr _ptr_type;
+      typedef TangentActuatorAbsolutePositionStepsDataReaderView_var _var_type;
 
-      static command_stopDataReaderView_ptr _duplicate (command_stopDataReaderView_ptr obj);
+      static TangentActuatorAbsolutePositionStepsDataReaderView_ptr _duplicate (TangentActuatorAbsolutePositionStepsDataReaderView_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static command_stopDataReaderView_ptr _narrow (DDS::Object_ptr obj);
-      static command_stopDataReaderView_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static command_stopDataReaderView_ptr _nil () { return 0; }
+      static TangentActuatorAbsolutePositionStepsDataReaderView_ptr _narrow (DDS::Object_ptr obj);
+      static TangentActuatorAbsolutePositionStepsDataReaderView_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static TangentActuatorAbsolutePositionStepsDataReaderView_ptr _nil () { return 0; }
       static const char * _local_id;
-      command_stopDataReaderView_ptr _this () { return this; }
+      TangentActuatorAbsolutePositionStepsDataReaderView_ptr _this () { return this; }
 
-      virtual DDS::Long read (command_stopSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take (command_stopSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_w_condition (command_stopSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_w_condition (command_stopSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long read_next_sample (command_stop& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long take_next_sample (command_stop& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long read_instance (command_stopSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_instance (command_stopSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance (command_stopSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_next_instance (command_stopSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance_w_condition (command_stopSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_next_instance_w_condition (command_stopSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long return_loan (command_stopSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
-      virtual DDS::Long get_key_value (command_stop& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const command_stop& instance) = 0;
+      virtual DDS::Long read (TangentActuatorAbsolutePositionStepsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (TangentActuatorAbsolutePositionStepsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (TangentActuatorAbsolutePositionStepsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (TangentActuatorAbsolutePositionStepsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (TangentActuatorAbsolutePositionSteps& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (TangentActuatorAbsolutePositionSteps& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (TangentActuatorAbsolutePositionStepsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (TangentActuatorAbsolutePositionStepsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (TangentActuatorAbsolutePositionStepsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (TangentActuatorAbsolutePositionStepsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (TangentActuatorAbsolutePositionStepsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (TangentActuatorAbsolutePositionStepsSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (TangentActuatorAbsolutePositionStepsSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (TangentActuatorAbsolutePositionSteps& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const TangentActuatorAbsolutePositionSteps& instance) = 0;
 
    protected:
-      command_stopDataReaderView () {};
-      ~command_stopDataReaderView () {};
+      TangentActuatorAbsolutePositionStepsDataReaderView () {};
+      ~TangentActuatorAbsolutePositionStepsDataReaderView () {};
    private:
-      command_stopDataReaderView (const command_stopDataReaderView &);
-      command_stopDataReaderView & operator = (const command_stopDataReaderView &);
+      TangentActuatorAbsolutePositionStepsDataReaderView (const TangentActuatorAbsolutePositionStepsDataReaderView &);
+      TangentActuatorAbsolutePositionStepsDataReaderView & operator = (const TangentActuatorAbsolutePositionStepsDataReaderView &);
    };
 
-   struct command_targetSeq_uniq_ {};
-   typedef DDS_DCPSUVLSeq < command_target, struct command_targetSeq_uniq_> command_targetSeq;
-   typedef DDS_DCPSSequence_var < command_targetSeq> command_targetSeq_var;
-   typedef DDS_DCPSSequence_out < command_targetSeq> command_targetSeq_out;
-   class command_targetTypeSupportInterface
+   struct TangentActuatorPositionAbsoluteEncoderPositionMeasuredSeq_uniq_ {};
+   typedef DDS_DCPSUVLSeq < TangentActuatorPositionAbsoluteEncoderPositionMeasured, struct TangentActuatorPositionAbsoluteEncoderPositionMeasuredSeq_uniq_> TangentActuatorPositionAbsoluteEncoderPositionMeasuredSeq;
+   typedef DDS_DCPSSequence_var < TangentActuatorPositionAbsoluteEncoderPositionMeasuredSeq> TangentActuatorPositionAbsoluteEncoderPositionMeasuredSeq_var;
+   typedef DDS_DCPSSequence_out < TangentActuatorPositionAbsoluteEncoderPositionMeasuredSeq> TangentActuatorPositionAbsoluteEncoderPositionMeasuredSeq_out;
+   class TangentActuatorPositionAbsoluteEncoderPositionMeasuredTypeSupportInterface
    :
       virtual public DDS::TypeSupport
    { 
    public:
-      typedef command_targetTypeSupportInterface_ptr _ptr_type;
-      typedef command_targetTypeSupportInterface_var _var_type;
+      typedef TangentActuatorPositionAbsoluteEncoderPositionMeasuredTypeSupportInterface_ptr _ptr_type;
+      typedef TangentActuatorPositionAbsoluteEncoderPositionMeasuredTypeSupportInterface_var _var_type;
 
-      static command_targetTypeSupportInterface_ptr _duplicate (command_targetTypeSupportInterface_ptr obj);
+      static TangentActuatorPositionAbsoluteEncoderPositionMeasuredTypeSupportInterface_ptr _duplicate (TangentActuatorPositionAbsoluteEncoderPositionMeasuredTypeSupportInterface_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static command_targetTypeSupportInterface_ptr _narrow (DDS::Object_ptr obj);
-      static command_targetTypeSupportInterface_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static command_targetTypeSupportInterface_ptr _nil () { return 0; }
+      static TangentActuatorPositionAbsoluteEncoderPositionMeasuredTypeSupportInterface_ptr _narrow (DDS::Object_ptr obj);
+      static TangentActuatorPositionAbsoluteEncoderPositionMeasuredTypeSupportInterface_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static TangentActuatorPositionAbsoluteEncoderPositionMeasuredTypeSupportInterface_ptr _nil () { return 0; }
       static const char * _local_id;
-      command_targetTypeSupportInterface_ptr _this () { return this; }
+      TangentActuatorPositionAbsoluteEncoderPositionMeasuredTypeSupportInterface_ptr _this () { return this; }
 
 
    protected:
-      command_targetTypeSupportInterface () {};
-      ~command_targetTypeSupportInterface () {};
+      TangentActuatorPositionAbsoluteEncoderPositionMeasuredTypeSupportInterface () {};
+      ~TangentActuatorPositionAbsoluteEncoderPositionMeasuredTypeSupportInterface () {};
    private:
-      command_targetTypeSupportInterface (const command_targetTypeSupportInterface &);
-      command_targetTypeSupportInterface & operator = (const command_targetTypeSupportInterface &);
+      TangentActuatorPositionAbsoluteEncoderPositionMeasuredTypeSupportInterface (const TangentActuatorPositionAbsoluteEncoderPositionMeasuredTypeSupportInterface &);
+      TangentActuatorPositionAbsoluteEncoderPositionMeasuredTypeSupportInterface & operator = (const TangentActuatorPositionAbsoluteEncoderPositionMeasuredTypeSupportInterface &);
    };
 
-   class command_targetDataWriter
+   class TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataWriter
    :
       virtual public DDS::DataWriter
    { 
    public:
-      typedef command_targetDataWriter_ptr _ptr_type;
-      typedef command_targetDataWriter_var _var_type;
+      typedef TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataWriter_ptr _ptr_type;
+      typedef TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataWriter_var _var_type;
 
-      static command_targetDataWriter_ptr _duplicate (command_targetDataWriter_ptr obj);
+      static TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataWriter_ptr _duplicate (TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataWriter_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static command_targetDataWriter_ptr _narrow (DDS::Object_ptr obj);
-      static command_targetDataWriter_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static command_targetDataWriter_ptr _nil () { return 0; }
+      static TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataWriter_ptr _narrow (DDS::Object_ptr obj);
+      static TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataWriter_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataWriter_ptr _nil () { return 0; }
       static const char * _local_id;
-      command_targetDataWriter_ptr _this () { return this; }
+      TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataWriter_ptr _this () { return this; }
 
-      virtual DDS::LongLong register_instance (const command_target& instance_data) = 0;
-      virtual DDS::LongLong register_instance_w_timestamp (const command_target& instance_data, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long unregister_instance (const command_target& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long unregister_instance_w_timestamp (const command_target& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long write (const command_target& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long write_w_timestamp (const command_target& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long dispose (const command_target& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long dispose_w_timestamp (const command_target& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long writedispose (const command_target& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long writedispose_w_timestamp (const command_target& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long get_key_value (command_target& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const command_target& instance_data) = 0;
+      virtual DDS::LongLong register_instance (const TangentActuatorPositionAbsoluteEncoderPositionMeasured& instance_data) = 0;
+      virtual DDS::LongLong register_instance_w_timestamp (const TangentActuatorPositionAbsoluteEncoderPositionMeasured& instance_data, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long unregister_instance (const TangentActuatorPositionAbsoluteEncoderPositionMeasured& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long unregister_instance_w_timestamp (const TangentActuatorPositionAbsoluteEncoderPositionMeasured& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long write (const TangentActuatorPositionAbsoluteEncoderPositionMeasured& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long write_w_timestamp (const TangentActuatorPositionAbsoluteEncoderPositionMeasured& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long dispose (const TangentActuatorPositionAbsoluteEncoderPositionMeasured& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long dispose_w_timestamp (const TangentActuatorPositionAbsoluteEncoderPositionMeasured& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long writedispose (const TangentActuatorPositionAbsoluteEncoderPositionMeasured& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long writedispose_w_timestamp (const TangentActuatorPositionAbsoluteEncoderPositionMeasured& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long get_key_value (TangentActuatorPositionAbsoluteEncoderPositionMeasured& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const TangentActuatorPositionAbsoluteEncoderPositionMeasured& instance_data) = 0;
 
    protected:
-      command_targetDataWriter () {};
-      ~command_targetDataWriter () {};
+      TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataWriter () {};
+      ~TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataWriter () {};
    private:
-      command_targetDataWriter (const command_targetDataWriter &);
-      command_targetDataWriter & operator = (const command_targetDataWriter &);
+      TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataWriter (const TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataWriter &);
+      TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataWriter & operator = (const TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataWriter &);
    };
 
-   class command_targetDataReader
+   class TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataReader
    :
       virtual public DDS::DataReader
    { 
    public:
-      typedef command_targetDataReader_ptr _ptr_type;
-      typedef command_targetDataReader_var _var_type;
+      typedef TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataReader_ptr _ptr_type;
+      typedef TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataReader_var _var_type;
 
-      static command_targetDataReader_ptr _duplicate (command_targetDataReader_ptr obj);
+      static TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataReader_ptr _duplicate (TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataReader_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static command_targetDataReader_ptr _narrow (DDS::Object_ptr obj);
-      static command_targetDataReader_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static command_targetDataReader_ptr _nil () { return 0; }
+      static TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataReader_ptr _narrow (DDS::Object_ptr obj);
+      static TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataReader_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataReader_ptr _nil () { return 0; }
       static const char * _local_id;
-      command_targetDataReader_ptr _this () { return this; }
+      TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataReader_ptr _this () { return this; }
 
-      virtual DDS::Long read (command_targetSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take (command_targetSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_w_condition (command_targetSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_w_condition (command_targetSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long read_next_sample (command_target& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long take_next_sample (command_target& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long read_instance (command_targetSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_instance (command_targetSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance (command_targetSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_next_instance (command_targetSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance_w_condition (command_targetSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_next_instance_w_condition (command_targetSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long return_loan (command_targetSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
-      virtual DDS::Long get_key_value (command_target& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const command_target& instance) = 0;
+      virtual DDS::Long read (TangentActuatorPositionAbsoluteEncoderPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (TangentActuatorPositionAbsoluteEncoderPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (TangentActuatorPositionAbsoluteEncoderPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (TangentActuatorPositionAbsoluteEncoderPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (TangentActuatorPositionAbsoluteEncoderPositionMeasured& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (TangentActuatorPositionAbsoluteEncoderPositionMeasured& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (TangentActuatorPositionAbsoluteEncoderPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (TangentActuatorPositionAbsoluteEncoderPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (TangentActuatorPositionAbsoluteEncoderPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (TangentActuatorPositionAbsoluteEncoderPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (TangentActuatorPositionAbsoluteEncoderPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (TangentActuatorPositionAbsoluteEncoderPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (TangentActuatorPositionAbsoluteEncoderPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (TangentActuatorPositionAbsoluteEncoderPositionMeasured& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const TangentActuatorPositionAbsoluteEncoderPositionMeasured& instance) = 0;
 
    protected:
-      command_targetDataReader () {};
-      ~command_targetDataReader () {};
+      TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataReader () {};
+      ~TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataReader () {};
    private:
-      command_targetDataReader (const command_targetDataReader &);
-      command_targetDataReader & operator = (const command_targetDataReader &);
+      TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataReader (const TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataReader &);
+      TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataReader & operator = (const TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataReader &);
    };
 
-   class command_targetDataReaderView
+   class TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataReaderView
    :
       virtual public DDS::DataReaderView
    { 
    public:
-      typedef command_targetDataReaderView_ptr _ptr_type;
-      typedef command_targetDataReaderView_var _var_type;
+      typedef TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataReaderView_ptr _ptr_type;
+      typedef TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataReaderView_var _var_type;
 
-      static command_targetDataReaderView_ptr _duplicate (command_targetDataReaderView_ptr obj);
+      static TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataReaderView_ptr _duplicate (TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataReaderView_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static command_targetDataReaderView_ptr _narrow (DDS::Object_ptr obj);
-      static command_targetDataReaderView_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static command_targetDataReaderView_ptr _nil () { return 0; }
+      static TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataReaderView_ptr _narrow (DDS::Object_ptr obj);
+      static TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataReaderView_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataReaderView_ptr _nil () { return 0; }
       static const char * _local_id;
-      command_targetDataReaderView_ptr _this () { return this; }
+      TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataReaderView_ptr _this () { return this; }
 
-      virtual DDS::Long read (command_targetSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take (command_targetSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_w_condition (command_targetSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_w_condition (command_targetSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long read_next_sample (command_target& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long take_next_sample (command_target& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long read_instance (command_targetSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_instance (command_targetSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance (command_targetSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_next_instance (command_targetSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance_w_condition (command_targetSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_next_instance_w_condition (command_targetSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long return_loan (command_targetSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
-      virtual DDS::Long get_key_value (command_target& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const command_target& instance) = 0;
+      virtual DDS::Long read (TangentActuatorPositionAbsoluteEncoderPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (TangentActuatorPositionAbsoluteEncoderPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (TangentActuatorPositionAbsoluteEncoderPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (TangentActuatorPositionAbsoluteEncoderPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (TangentActuatorPositionAbsoluteEncoderPositionMeasured& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (TangentActuatorPositionAbsoluteEncoderPositionMeasured& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (TangentActuatorPositionAbsoluteEncoderPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (TangentActuatorPositionAbsoluteEncoderPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (TangentActuatorPositionAbsoluteEncoderPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (TangentActuatorPositionAbsoluteEncoderPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (TangentActuatorPositionAbsoluteEncoderPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (TangentActuatorPositionAbsoluteEncoderPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (TangentActuatorPositionAbsoluteEncoderPositionMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (TangentActuatorPositionAbsoluteEncoderPositionMeasured& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const TangentActuatorPositionAbsoluteEncoderPositionMeasured& instance) = 0;
 
    protected:
-      command_targetDataReaderView () {};
-      ~command_targetDataReaderView () {};
+      TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataReaderView () {};
+      ~TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataReaderView () {};
    private:
-      command_targetDataReaderView (const command_targetDataReaderView &);
-      command_targetDataReaderView & operator = (const command_targetDataReaderView &);
+      TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataReaderView (const TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataReaderView &);
+      TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataReaderView & operator = (const TangentActuatorPositionAbsoluteEncoderPositionMeasuredDataReaderView &);
    };
 
-   struct command_updateSeq_uniq_ {};
-   typedef DDS_DCPSUVLSeq < command_update, struct command_updateSeq_uniq_> command_updateSeq;
-   typedef DDS_DCPSSequence_var < command_updateSeq> command_updateSeq_var;
-   typedef DDS_DCPSSequence_out < command_updateSeq> command_updateSeq_out;
-   class command_updateTypeSupportInterface
+   struct TangentForcesMeasuredSeq_uniq_ {};
+   typedef DDS_DCPSUVLSeq < TangentForcesMeasured, struct TangentForcesMeasuredSeq_uniq_> TangentForcesMeasuredSeq;
+   typedef DDS_DCPSSequence_var < TangentForcesMeasuredSeq> TangentForcesMeasuredSeq_var;
+   typedef DDS_DCPSSequence_out < TangentForcesMeasuredSeq> TangentForcesMeasuredSeq_out;
+   class TangentForcesMeasuredTypeSupportInterface
    :
       virtual public DDS::TypeSupport
    { 
    public:
-      typedef command_updateTypeSupportInterface_ptr _ptr_type;
-      typedef command_updateTypeSupportInterface_var _var_type;
+      typedef TangentForcesMeasuredTypeSupportInterface_ptr _ptr_type;
+      typedef TangentForcesMeasuredTypeSupportInterface_var _var_type;
 
-      static command_updateTypeSupportInterface_ptr _duplicate (command_updateTypeSupportInterface_ptr obj);
+      static TangentForcesMeasuredTypeSupportInterface_ptr _duplicate (TangentForcesMeasuredTypeSupportInterface_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static command_updateTypeSupportInterface_ptr _narrow (DDS::Object_ptr obj);
-      static command_updateTypeSupportInterface_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static command_updateTypeSupportInterface_ptr _nil () { return 0; }
+      static TangentForcesMeasuredTypeSupportInterface_ptr _narrow (DDS::Object_ptr obj);
+      static TangentForcesMeasuredTypeSupportInterface_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static TangentForcesMeasuredTypeSupportInterface_ptr _nil () { return 0; }
       static const char * _local_id;
-      command_updateTypeSupportInterface_ptr _this () { return this; }
+      TangentForcesMeasuredTypeSupportInterface_ptr _this () { return this; }
 
 
    protected:
-      command_updateTypeSupportInterface () {};
-      ~command_updateTypeSupportInterface () {};
+      TangentForcesMeasuredTypeSupportInterface () {};
+      ~TangentForcesMeasuredTypeSupportInterface () {};
    private:
-      command_updateTypeSupportInterface (const command_updateTypeSupportInterface &);
-      command_updateTypeSupportInterface & operator = (const command_updateTypeSupportInterface &);
+      TangentForcesMeasuredTypeSupportInterface (const TangentForcesMeasuredTypeSupportInterface &);
+      TangentForcesMeasuredTypeSupportInterface & operator = (const TangentForcesMeasuredTypeSupportInterface &);
    };
 
-   class command_updateDataWriter
+   class TangentForcesMeasuredDataWriter
    :
       virtual public DDS::DataWriter
    { 
    public:
-      typedef command_updateDataWriter_ptr _ptr_type;
-      typedef command_updateDataWriter_var _var_type;
+      typedef TangentForcesMeasuredDataWriter_ptr _ptr_type;
+      typedef TangentForcesMeasuredDataWriter_var _var_type;
 
-      static command_updateDataWriter_ptr _duplicate (command_updateDataWriter_ptr obj);
+      static TangentForcesMeasuredDataWriter_ptr _duplicate (TangentForcesMeasuredDataWriter_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static command_updateDataWriter_ptr _narrow (DDS::Object_ptr obj);
-      static command_updateDataWriter_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static command_updateDataWriter_ptr _nil () { return 0; }
+      static TangentForcesMeasuredDataWriter_ptr _narrow (DDS::Object_ptr obj);
+      static TangentForcesMeasuredDataWriter_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static TangentForcesMeasuredDataWriter_ptr _nil () { return 0; }
       static const char * _local_id;
-      command_updateDataWriter_ptr _this () { return this; }
+      TangentForcesMeasuredDataWriter_ptr _this () { return this; }
 
-      virtual DDS::LongLong register_instance (const command_update& instance_data) = 0;
-      virtual DDS::LongLong register_instance_w_timestamp (const command_update& instance_data, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long unregister_instance (const command_update& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long unregister_instance_w_timestamp (const command_update& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long write (const command_update& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long write_w_timestamp (const command_update& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long dispose (const command_update& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long dispose_w_timestamp (const command_update& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long writedispose (const command_update& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long writedispose_w_timestamp (const command_update& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long get_key_value (command_update& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const command_update& instance_data) = 0;
+      virtual DDS::LongLong register_instance (const TangentForcesMeasured& instance_data) = 0;
+      virtual DDS::LongLong register_instance_w_timestamp (const TangentForcesMeasured& instance_data, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long unregister_instance (const TangentForcesMeasured& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long unregister_instance_w_timestamp (const TangentForcesMeasured& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long write (const TangentForcesMeasured& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long write_w_timestamp (const TangentForcesMeasured& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long dispose (const TangentForcesMeasured& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long dispose_w_timestamp (const TangentForcesMeasured& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long writedispose (const TangentForcesMeasured& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long writedispose_w_timestamp (const TangentForcesMeasured& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long get_key_value (TangentForcesMeasured& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const TangentForcesMeasured& instance_data) = 0;
 
    protected:
-      command_updateDataWriter () {};
-      ~command_updateDataWriter () {};
+      TangentForcesMeasuredDataWriter () {};
+      ~TangentForcesMeasuredDataWriter () {};
    private:
-      command_updateDataWriter (const command_updateDataWriter &);
-      command_updateDataWriter & operator = (const command_updateDataWriter &);
+      TangentForcesMeasuredDataWriter (const TangentForcesMeasuredDataWriter &);
+      TangentForcesMeasuredDataWriter & operator = (const TangentForcesMeasuredDataWriter &);
    };
 
-   class command_updateDataReader
+   class TangentForcesMeasuredDataReader
    :
       virtual public DDS::DataReader
    { 
    public:
-      typedef command_updateDataReader_ptr _ptr_type;
-      typedef command_updateDataReader_var _var_type;
+      typedef TangentForcesMeasuredDataReader_ptr _ptr_type;
+      typedef TangentForcesMeasuredDataReader_var _var_type;
 
-      static command_updateDataReader_ptr _duplicate (command_updateDataReader_ptr obj);
+      static TangentForcesMeasuredDataReader_ptr _duplicate (TangentForcesMeasuredDataReader_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static command_updateDataReader_ptr _narrow (DDS::Object_ptr obj);
-      static command_updateDataReader_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static command_updateDataReader_ptr _nil () { return 0; }
+      static TangentForcesMeasuredDataReader_ptr _narrow (DDS::Object_ptr obj);
+      static TangentForcesMeasuredDataReader_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static TangentForcesMeasuredDataReader_ptr _nil () { return 0; }
       static const char * _local_id;
-      command_updateDataReader_ptr _this () { return this; }
+      TangentForcesMeasuredDataReader_ptr _this () { return this; }
 
-      virtual DDS::Long read (command_updateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take (command_updateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_w_condition (command_updateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_w_condition (command_updateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long read_next_sample (command_update& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long take_next_sample (command_update& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long read_instance (command_updateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_instance (command_updateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance (command_updateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_next_instance (command_updateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance_w_condition (command_updateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_next_instance_w_condition (command_updateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long return_loan (command_updateSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
-      virtual DDS::Long get_key_value (command_update& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const command_update& instance) = 0;
+      virtual DDS::Long read (TangentForcesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (TangentForcesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (TangentForcesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (TangentForcesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (TangentForcesMeasured& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (TangentForcesMeasured& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (TangentForcesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (TangentForcesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (TangentForcesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (TangentForcesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (TangentForcesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (TangentForcesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (TangentForcesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (TangentForcesMeasured& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const TangentForcesMeasured& instance) = 0;
 
    protected:
-      command_updateDataReader () {};
-      ~command_updateDataReader () {};
+      TangentForcesMeasuredDataReader () {};
+      ~TangentForcesMeasuredDataReader () {};
    private:
-      command_updateDataReader (const command_updateDataReader &);
-      command_updateDataReader & operator = (const command_updateDataReader &);
+      TangentForcesMeasuredDataReader (const TangentForcesMeasuredDataReader &);
+      TangentForcesMeasuredDataReader & operator = (const TangentForcesMeasuredDataReader &);
    };
 
-   class command_updateDataReaderView
+   class TangentForcesMeasuredDataReaderView
    :
       virtual public DDS::DataReaderView
    { 
    public:
-      typedef command_updateDataReaderView_ptr _ptr_type;
-      typedef command_updateDataReaderView_var _var_type;
+      typedef TangentForcesMeasuredDataReaderView_ptr _ptr_type;
+      typedef TangentForcesMeasuredDataReaderView_var _var_type;
 
-      static command_updateDataReaderView_ptr _duplicate (command_updateDataReaderView_ptr obj);
+      static TangentForcesMeasuredDataReaderView_ptr _duplicate (TangentForcesMeasuredDataReaderView_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static command_updateDataReaderView_ptr _narrow (DDS::Object_ptr obj);
-      static command_updateDataReaderView_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static command_updateDataReaderView_ptr _nil () { return 0; }
+      static TangentForcesMeasuredDataReaderView_ptr _narrow (DDS::Object_ptr obj);
+      static TangentForcesMeasuredDataReaderView_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static TangentForcesMeasuredDataReaderView_ptr _nil () { return 0; }
       static const char * _local_id;
-      command_updateDataReaderView_ptr _this () { return this; }
+      TangentForcesMeasuredDataReaderView_ptr _this () { return this; }
 
-      virtual DDS::Long read (command_updateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take (command_updateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_w_condition (command_updateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_w_condition (command_updateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long read_next_sample (command_update& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long take_next_sample (command_update& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long read_instance (command_updateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_instance (command_updateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance (command_updateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_next_instance (command_updateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance_w_condition (command_updateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_next_instance_w_condition (command_updateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long return_loan (command_updateSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
-      virtual DDS::Long get_key_value (command_update& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const command_update& instance) = 0;
+      virtual DDS::Long read (TangentForcesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (TangentForcesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (TangentForcesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (TangentForcesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (TangentForcesMeasured& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (TangentForcesMeasured& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (TangentForcesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (TangentForcesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (TangentForcesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (TangentForcesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (TangentForcesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (TangentForcesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (TangentForcesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (TangentForcesMeasured& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const TangentForcesMeasured& instance) = 0;
 
    protected:
-      command_updateDataReaderView () {};
-      ~command_updateDataReaderView () {};
+      TangentForcesMeasuredDataReaderView () {};
+      ~TangentForcesMeasuredDataReaderView () {};
    private:
-      command_updateDataReaderView (const command_updateDataReaderView &);
-      command_updateDataReaderView & operator = (const command_updateDataReaderView &);
+      TangentForcesMeasuredDataReaderView (const TangentForcesMeasuredDataReaderView &);
+      TangentForcesMeasuredDataReaderView & operator = (const TangentForcesMeasuredDataReaderView &);
    };
 
-   struct logevent_interlockSeq_uniq_ {};
-   typedef DDS_DCPSUVLSeq < logevent_interlock, struct logevent_interlockSeq_uniq_> logevent_interlockSeq;
-   typedef DDS_DCPSSequence_var < logevent_interlockSeq> logevent_interlockSeq_var;
-   typedef DDS_DCPSSequence_out < logevent_interlockSeq> logevent_interlockSeq_out;
-   class logevent_interlockTypeSupportInterface
+   struct TargetForcesSeq_uniq_ {};
+   typedef DDS_DCPSUVLSeq < TargetForces, struct TargetForcesSeq_uniq_> TargetForcesSeq;
+   typedef DDS_DCPSSequence_var < TargetForcesSeq> TargetForcesSeq_var;
+   typedef DDS_DCPSSequence_out < TargetForcesSeq> TargetForcesSeq_out;
+   class TargetForcesTypeSupportInterface
    :
       virtual public DDS::TypeSupport
    { 
    public:
-      typedef logevent_interlockTypeSupportInterface_ptr _ptr_type;
-      typedef logevent_interlockTypeSupportInterface_var _var_type;
+      typedef TargetForcesTypeSupportInterface_ptr _ptr_type;
+      typedef TargetForcesTypeSupportInterface_var _var_type;
 
-      static logevent_interlockTypeSupportInterface_ptr _duplicate (logevent_interlockTypeSupportInterface_ptr obj);
+      static TargetForcesTypeSupportInterface_ptr _duplicate (TargetForcesTypeSupportInterface_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static logevent_interlockTypeSupportInterface_ptr _narrow (DDS::Object_ptr obj);
-      static logevent_interlockTypeSupportInterface_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static logevent_interlockTypeSupportInterface_ptr _nil () { return 0; }
+      static TargetForcesTypeSupportInterface_ptr _narrow (DDS::Object_ptr obj);
+      static TargetForcesTypeSupportInterface_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static TargetForcesTypeSupportInterface_ptr _nil () { return 0; }
       static const char * _local_id;
-      logevent_interlockTypeSupportInterface_ptr _this () { return this; }
+      TargetForcesTypeSupportInterface_ptr _this () { return this; }
 
 
    protected:
-      logevent_interlockTypeSupportInterface () {};
-      ~logevent_interlockTypeSupportInterface () {};
+      TargetForcesTypeSupportInterface () {};
+      ~TargetForcesTypeSupportInterface () {};
    private:
-      logevent_interlockTypeSupportInterface (const logevent_interlockTypeSupportInterface &);
-      logevent_interlockTypeSupportInterface & operator = (const logevent_interlockTypeSupportInterface &);
+      TargetForcesTypeSupportInterface (const TargetForcesTypeSupportInterface &);
+      TargetForcesTypeSupportInterface & operator = (const TargetForcesTypeSupportInterface &);
    };
 
-   class logevent_interlockDataWriter
+   class TargetForcesDataWriter
    :
       virtual public DDS::DataWriter
    { 
    public:
-      typedef logevent_interlockDataWriter_ptr _ptr_type;
-      typedef logevent_interlockDataWriter_var _var_type;
+      typedef TargetForcesDataWriter_ptr _ptr_type;
+      typedef TargetForcesDataWriter_var _var_type;
 
-      static logevent_interlockDataWriter_ptr _duplicate (logevent_interlockDataWriter_ptr obj);
+      static TargetForcesDataWriter_ptr _duplicate (TargetForcesDataWriter_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static logevent_interlockDataWriter_ptr _narrow (DDS::Object_ptr obj);
-      static logevent_interlockDataWriter_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static logevent_interlockDataWriter_ptr _nil () { return 0; }
+      static TargetForcesDataWriter_ptr _narrow (DDS::Object_ptr obj);
+      static TargetForcesDataWriter_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static TargetForcesDataWriter_ptr _nil () { return 0; }
       static const char * _local_id;
-      logevent_interlockDataWriter_ptr _this () { return this; }
+      TargetForcesDataWriter_ptr _this () { return this; }
 
-      virtual DDS::LongLong register_instance (const logevent_interlock& instance_data) = 0;
-      virtual DDS::LongLong register_instance_w_timestamp (const logevent_interlock& instance_data, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long unregister_instance (const logevent_interlock& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long unregister_instance_w_timestamp (const logevent_interlock& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long write (const logevent_interlock& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long write_w_timestamp (const logevent_interlock& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long dispose (const logevent_interlock& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long dispose_w_timestamp (const logevent_interlock& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long writedispose (const logevent_interlock& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long writedispose_w_timestamp (const logevent_interlock& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long get_key_value (logevent_interlock& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const logevent_interlock& instance_data) = 0;
+      virtual DDS::LongLong register_instance (const TargetForces& instance_data) = 0;
+      virtual DDS::LongLong register_instance_w_timestamp (const TargetForces& instance_data, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long unregister_instance (const TargetForces& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long unregister_instance_w_timestamp (const TargetForces& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long write (const TargetForces& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long write_w_timestamp (const TargetForces& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long dispose (const TargetForces& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long dispose_w_timestamp (const TargetForces& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long writedispose (const TargetForces& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long writedispose_w_timestamp (const TargetForces& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long get_key_value (TargetForces& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const TargetForces& instance_data) = 0;
 
    protected:
-      logevent_interlockDataWriter () {};
-      ~logevent_interlockDataWriter () {};
+      TargetForcesDataWriter () {};
+      ~TargetForcesDataWriter () {};
    private:
-      logevent_interlockDataWriter (const logevent_interlockDataWriter &);
-      logevent_interlockDataWriter & operator = (const logevent_interlockDataWriter &);
+      TargetForcesDataWriter (const TargetForcesDataWriter &);
+      TargetForcesDataWriter & operator = (const TargetForcesDataWriter &);
    };
 
-   class logevent_interlockDataReader
+   class TargetForcesDataReader
    :
       virtual public DDS::DataReader
    { 
    public:
-      typedef logevent_interlockDataReader_ptr _ptr_type;
-      typedef logevent_interlockDataReader_var _var_type;
+      typedef TargetForcesDataReader_ptr _ptr_type;
+      typedef TargetForcesDataReader_var _var_type;
 
-      static logevent_interlockDataReader_ptr _duplicate (logevent_interlockDataReader_ptr obj);
+      static TargetForcesDataReader_ptr _duplicate (TargetForcesDataReader_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static logevent_interlockDataReader_ptr _narrow (DDS::Object_ptr obj);
-      static logevent_interlockDataReader_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static logevent_interlockDataReader_ptr _nil () { return 0; }
+      static TargetForcesDataReader_ptr _narrow (DDS::Object_ptr obj);
+      static TargetForcesDataReader_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static TargetForcesDataReader_ptr _nil () { return 0; }
       static const char * _local_id;
-      logevent_interlockDataReader_ptr _this () { return this; }
+      TargetForcesDataReader_ptr _this () { return this; }
 
-      virtual DDS::Long read (logevent_interlockSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take (logevent_interlockSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_w_condition (logevent_interlockSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_w_condition (logevent_interlockSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long read_next_sample (logevent_interlock& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long take_next_sample (logevent_interlock& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long read_instance (logevent_interlockSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_instance (logevent_interlockSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance (logevent_interlockSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_next_instance (logevent_interlockSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance_w_condition (logevent_interlockSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_next_instance_w_condition (logevent_interlockSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long return_loan (logevent_interlockSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
-      virtual DDS::Long get_key_value (logevent_interlock& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const logevent_interlock& instance) = 0;
+      virtual DDS::Long read (TargetForcesSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (TargetForcesSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (TargetForcesSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (TargetForcesSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (TargetForces& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (TargetForces& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (TargetForcesSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (TargetForcesSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (TargetForcesSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (TargetForcesSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (TargetForcesSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (TargetForcesSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (TargetForcesSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (TargetForces& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const TargetForces& instance) = 0;
 
    protected:
-      logevent_interlockDataReader () {};
-      ~logevent_interlockDataReader () {};
+      TargetForcesDataReader () {};
+      ~TargetForcesDataReader () {};
    private:
-      logevent_interlockDataReader (const logevent_interlockDataReader &);
-      logevent_interlockDataReader & operator = (const logevent_interlockDataReader &);
+      TargetForcesDataReader (const TargetForcesDataReader &);
+      TargetForcesDataReader & operator = (const TargetForcesDataReader &);
    };
 
-   class logevent_interlockDataReaderView
+   class TargetForcesDataReaderView
    :
       virtual public DDS::DataReaderView
    { 
    public:
-      typedef logevent_interlockDataReaderView_ptr _ptr_type;
-      typedef logevent_interlockDataReaderView_var _var_type;
+      typedef TargetForcesDataReaderView_ptr _ptr_type;
+      typedef TargetForcesDataReaderView_var _var_type;
 
-      static logevent_interlockDataReaderView_ptr _duplicate (logevent_interlockDataReaderView_ptr obj);
+      static TargetForcesDataReaderView_ptr _duplicate (TargetForcesDataReaderView_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static logevent_interlockDataReaderView_ptr _narrow (DDS::Object_ptr obj);
-      static logevent_interlockDataReaderView_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static logevent_interlockDataReaderView_ptr _nil () { return 0; }
+      static TargetForcesDataReaderView_ptr _narrow (DDS::Object_ptr obj);
+      static TargetForcesDataReaderView_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static TargetForcesDataReaderView_ptr _nil () { return 0; }
       static const char * _local_id;
-      logevent_interlockDataReaderView_ptr _this () { return this; }
+      TargetForcesDataReaderView_ptr _this () { return this; }
 
-      virtual DDS::Long read (logevent_interlockSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take (logevent_interlockSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_w_condition (logevent_interlockSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_w_condition (logevent_interlockSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long read_next_sample (logevent_interlock& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long take_next_sample (logevent_interlock& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long read_instance (logevent_interlockSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_instance (logevent_interlockSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance (logevent_interlockSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_next_instance (logevent_interlockSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance_w_condition (logevent_interlockSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_next_instance_w_condition (logevent_interlockSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long return_loan (logevent_interlockSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
-      virtual DDS::Long get_key_value (logevent_interlock& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const logevent_interlock& instance) = 0;
+      virtual DDS::Long read (TargetForcesSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (TargetForcesSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (TargetForcesSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (TargetForcesSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (TargetForces& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (TargetForces& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (TargetForcesSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (TargetForcesSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (TargetForcesSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (TargetForcesSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (TargetForcesSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (TargetForcesSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (TargetForcesSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (TargetForces& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const TargetForces& instance) = 0;
 
    protected:
-      logevent_interlockDataReaderView () {};
-      ~logevent_interlockDataReaderView () {};
+      TargetForcesDataReaderView () {};
+      ~TargetForcesDataReaderView () {};
    private:
-      logevent_interlockDataReaderView (const logevent_interlockDataReaderView &);
-      logevent_interlockDataReaderView & operator = (const logevent_interlockDataReaderView &);
+      TargetForcesDataReaderView (const TargetForcesDataReaderView &);
+      TargetForcesDataReaderView & operator = (const TargetForcesDataReaderView &);
    };
 
-   struct logevent_limitErrorSeq_uniq_ {};
-   typedef DDS_DCPSUVLSeq < logevent_limitError, struct logevent_limitErrorSeq_uniq_> logevent_limitErrorSeq;
-   typedef DDS_DCPSSequence_var < logevent_limitErrorSeq> logevent_limitErrorSeq_var;
-   typedef DDS_DCPSSequence_out < logevent_limitErrorSeq> logevent_limitErrorSeq_out;
-   class logevent_limitErrorTypeSupportInterface
+   struct TemperaturesMeasuredSeq_uniq_ {};
+   typedef DDS_DCPSUVLSeq < TemperaturesMeasured, struct TemperaturesMeasuredSeq_uniq_> TemperaturesMeasuredSeq;
+   typedef DDS_DCPSSequence_var < TemperaturesMeasuredSeq> TemperaturesMeasuredSeq_var;
+   typedef DDS_DCPSSequence_out < TemperaturesMeasuredSeq> TemperaturesMeasuredSeq_out;
+   class TemperaturesMeasuredTypeSupportInterface
    :
       virtual public DDS::TypeSupport
    { 
    public:
-      typedef logevent_limitErrorTypeSupportInterface_ptr _ptr_type;
-      typedef logevent_limitErrorTypeSupportInterface_var _var_type;
+      typedef TemperaturesMeasuredTypeSupportInterface_ptr _ptr_type;
+      typedef TemperaturesMeasuredTypeSupportInterface_var _var_type;
 
-      static logevent_limitErrorTypeSupportInterface_ptr _duplicate (logevent_limitErrorTypeSupportInterface_ptr obj);
+      static TemperaturesMeasuredTypeSupportInterface_ptr _duplicate (TemperaturesMeasuredTypeSupportInterface_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static logevent_limitErrorTypeSupportInterface_ptr _narrow (DDS::Object_ptr obj);
-      static logevent_limitErrorTypeSupportInterface_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static logevent_limitErrorTypeSupportInterface_ptr _nil () { return 0; }
+      static TemperaturesMeasuredTypeSupportInterface_ptr _narrow (DDS::Object_ptr obj);
+      static TemperaturesMeasuredTypeSupportInterface_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static TemperaturesMeasuredTypeSupportInterface_ptr _nil () { return 0; }
       static const char * _local_id;
-      logevent_limitErrorTypeSupportInterface_ptr _this () { return this; }
+      TemperaturesMeasuredTypeSupportInterface_ptr _this () { return this; }
 
 
    protected:
-      logevent_limitErrorTypeSupportInterface () {};
-      ~logevent_limitErrorTypeSupportInterface () {};
+      TemperaturesMeasuredTypeSupportInterface () {};
+      ~TemperaturesMeasuredTypeSupportInterface () {};
    private:
-      logevent_limitErrorTypeSupportInterface (const logevent_limitErrorTypeSupportInterface &);
-      logevent_limitErrorTypeSupportInterface & operator = (const logevent_limitErrorTypeSupportInterface &);
+      TemperaturesMeasuredTypeSupportInterface (const TemperaturesMeasuredTypeSupportInterface &);
+      TemperaturesMeasuredTypeSupportInterface & operator = (const TemperaturesMeasuredTypeSupportInterface &);
    };
 
-   class logevent_limitErrorDataWriter
+   class TemperaturesMeasuredDataWriter
    :
       virtual public DDS::DataWriter
    { 
    public:
-      typedef logevent_limitErrorDataWriter_ptr _ptr_type;
-      typedef logevent_limitErrorDataWriter_var _var_type;
+      typedef TemperaturesMeasuredDataWriter_ptr _ptr_type;
+      typedef TemperaturesMeasuredDataWriter_var _var_type;
 
-      static logevent_limitErrorDataWriter_ptr _duplicate (logevent_limitErrorDataWriter_ptr obj);
+      static TemperaturesMeasuredDataWriter_ptr _duplicate (TemperaturesMeasuredDataWriter_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static logevent_limitErrorDataWriter_ptr _narrow (DDS::Object_ptr obj);
-      static logevent_limitErrorDataWriter_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static logevent_limitErrorDataWriter_ptr _nil () { return 0; }
+      static TemperaturesMeasuredDataWriter_ptr _narrow (DDS::Object_ptr obj);
+      static TemperaturesMeasuredDataWriter_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static TemperaturesMeasuredDataWriter_ptr _nil () { return 0; }
       static const char * _local_id;
-      logevent_limitErrorDataWriter_ptr _this () { return this; }
+      TemperaturesMeasuredDataWriter_ptr _this () { return this; }
 
-      virtual DDS::LongLong register_instance (const logevent_limitError& instance_data) = 0;
-      virtual DDS::LongLong register_instance_w_timestamp (const logevent_limitError& instance_data, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long unregister_instance (const logevent_limitError& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long unregister_instance_w_timestamp (const logevent_limitError& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long write (const logevent_limitError& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long write_w_timestamp (const logevent_limitError& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long dispose (const logevent_limitError& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long dispose_w_timestamp (const logevent_limitError& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long writedispose (const logevent_limitError& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long writedispose_w_timestamp (const logevent_limitError& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long get_key_value (logevent_limitError& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const logevent_limitError& instance_data) = 0;
+      virtual DDS::LongLong register_instance (const TemperaturesMeasured& instance_data) = 0;
+      virtual DDS::LongLong register_instance_w_timestamp (const TemperaturesMeasured& instance_data, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long unregister_instance (const TemperaturesMeasured& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long unregister_instance_w_timestamp (const TemperaturesMeasured& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long write (const TemperaturesMeasured& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long write_w_timestamp (const TemperaturesMeasured& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long dispose (const TemperaturesMeasured& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long dispose_w_timestamp (const TemperaturesMeasured& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long writedispose (const TemperaturesMeasured& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long writedispose_w_timestamp (const TemperaturesMeasured& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long get_key_value (TemperaturesMeasured& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const TemperaturesMeasured& instance_data) = 0;
 
    protected:
-      logevent_limitErrorDataWriter () {};
-      ~logevent_limitErrorDataWriter () {};
+      TemperaturesMeasuredDataWriter () {};
+      ~TemperaturesMeasuredDataWriter () {};
    private:
-      logevent_limitErrorDataWriter (const logevent_limitErrorDataWriter &);
-      logevent_limitErrorDataWriter & operator = (const logevent_limitErrorDataWriter &);
+      TemperaturesMeasuredDataWriter (const TemperaturesMeasuredDataWriter &);
+      TemperaturesMeasuredDataWriter & operator = (const TemperaturesMeasuredDataWriter &);
    };
 
-   class logevent_limitErrorDataReader
+   class TemperaturesMeasuredDataReader
    :
       virtual public DDS::DataReader
    { 
    public:
-      typedef logevent_limitErrorDataReader_ptr _ptr_type;
-      typedef logevent_limitErrorDataReader_var _var_type;
+      typedef TemperaturesMeasuredDataReader_ptr _ptr_type;
+      typedef TemperaturesMeasuredDataReader_var _var_type;
 
-      static logevent_limitErrorDataReader_ptr _duplicate (logevent_limitErrorDataReader_ptr obj);
+      static TemperaturesMeasuredDataReader_ptr _duplicate (TemperaturesMeasuredDataReader_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static logevent_limitErrorDataReader_ptr _narrow (DDS::Object_ptr obj);
-      static logevent_limitErrorDataReader_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static logevent_limitErrorDataReader_ptr _nil () { return 0; }
+      static TemperaturesMeasuredDataReader_ptr _narrow (DDS::Object_ptr obj);
+      static TemperaturesMeasuredDataReader_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static TemperaturesMeasuredDataReader_ptr _nil () { return 0; }
       static const char * _local_id;
-      logevent_limitErrorDataReader_ptr _this () { return this; }
+      TemperaturesMeasuredDataReader_ptr _this () { return this; }
 
-      virtual DDS::Long read (logevent_limitErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take (logevent_limitErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_w_condition (logevent_limitErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_w_condition (logevent_limitErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long read_next_sample (logevent_limitError& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long take_next_sample (logevent_limitError& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long read_instance (logevent_limitErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_instance (logevent_limitErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance (logevent_limitErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_next_instance (logevent_limitErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance_w_condition (logevent_limitErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_next_instance_w_condition (logevent_limitErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long return_loan (logevent_limitErrorSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
-      virtual DDS::Long get_key_value (logevent_limitError& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const logevent_limitError& instance) = 0;
+      virtual DDS::Long read (TemperaturesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (TemperaturesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (TemperaturesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (TemperaturesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (TemperaturesMeasured& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (TemperaturesMeasured& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (TemperaturesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (TemperaturesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (TemperaturesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (TemperaturesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (TemperaturesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (TemperaturesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (TemperaturesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (TemperaturesMeasured& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const TemperaturesMeasured& instance) = 0;
 
    protected:
-      logevent_limitErrorDataReader () {};
-      ~logevent_limitErrorDataReader () {};
+      TemperaturesMeasuredDataReader () {};
+      ~TemperaturesMeasuredDataReader () {};
    private:
-      logevent_limitErrorDataReader (const logevent_limitErrorDataReader &);
-      logevent_limitErrorDataReader & operator = (const logevent_limitErrorDataReader &);
+      TemperaturesMeasuredDataReader (const TemperaturesMeasuredDataReader &);
+      TemperaturesMeasuredDataReader & operator = (const TemperaturesMeasuredDataReader &);
    };
 
-   class logevent_limitErrorDataReaderView
+   class TemperaturesMeasuredDataReaderView
    :
       virtual public DDS::DataReaderView
    { 
    public:
-      typedef logevent_limitErrorDataReaderView_ptr _ptr_type;
-      typedef logevent_limitErrorDataReaderView_var _var_type;
+      typedef TemperaturesMeasuredDataReaderView_ptr _ptr_type;
+      typedef TemperaturesMeasuredDataReaderView_var _var_type;
 
-      static logevent_limitErrorDataReaderView_ptr _duplicate (logevent_limitErrorDataReaderView_ptr obj);
+      static TemperaturesMeasuredDataReaderView_ptr _duplicate (TemperaturesMeasuredDataReaderView_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static logevent_limitErrorDataReaderView_ptr _narrow (DDS::Object_ptr obj);
-      static logevent_limitErrorDataReaderView_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static logevent_limitErrorDataReaderView_ptr _nil () { return 0; }
+      static TemperaturesMeasuredDataReaderView_ptr _narrow (DDS::Object_ptr obj);
+      static TemperaturesMeasuredDataReaderView_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static TemperaturesMeasuredDataReaderView_ptr _nil () { return 0; }
       static const char * _local_id;
-      logevent_limitErrorDataReaderView_ptr _this () { return this; }
+      TemperaturesMeasuredDataReaderView_ptr _this () { return this; }
 
-      virtual DDS::Long read (logevent_limitErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take (logevent_limitErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_w_condition (logevent_limitErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_w_condition (logevent_limitErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long read_next_sample (logevent_limitError& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long take_next_sample (logevent_limitError& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long read_instance (logevent_limitErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_instance (logevent_limitErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance (logevent_limitErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_next_instance (logevent_limitErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance_w_condition (logevent_limitErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_next_instance_w_condition (logevent_limitErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long return_loan (logevent_limitErrorSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
-      virtual DDS::Long get_key_value (logevent_limitError& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const logevent_limitError& instance) = 0;
+      virtual DDS::Long read (TemperaturesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (TemperaturesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (TemperaturesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (TemperaturesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (TemperaturesMeasured& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (TemperaturesMeasured& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (TemperaturesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (TemperaturesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (TemperaturesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (TemperaturesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (TemperaturesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (TemperaturesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (TemperaturesMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (TemperaturesMeasured& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const TemperaturesMeasured& instance) = 0;
 
    protected:
-      logevent_limitErrorDataReaderView () {};
-      ~logevent_limitErrorDataReaderView () {};
+      TemperaturesMeasuredDataReaderView () {};
+      ~TemperaturesMeasuredDataReaderView () {};
    private:
-      logevent_limitErrorDataReaderView (const logevent_limitErrorDataReaderView &);
-      logevent_limitErrorDataReaderView & operator = (const logevent_limitErrorDataReaderView &);
+      TemperaturesMeasuredDataReaderView (const TemperaturesMeasuredDataReaderView &);
+      TemperaturesMeasuredDataReaderView & operator = (const TemperaturesMeasuredDataReaderView &);
    };
 
-   struct logevent_targetDoneSeq_uniq_ {};
-   typedef DDS_DCPSUVLSeq < logevent_targetDone, struct logevent_targetDoneSeq_uniq_> logevent_targetDoneSeq;
-   typedef DDS_DCPSSequence_var < logevent_targetDoneSeq> logevent_targetDoneSeq_var;
-   typedef DDS_DCPSSequence_out < logevent_targetDoneSeq> logevent_targetDoneSeq_out;
-   class logevent_targetDoneTypeSupportInterface
+   struct ZenithAngleMeasuredSeq_uniq_ {};
+   typedef DDS_DCPSUVLSeq < ZenithAngleMeasured, struct ZenithAngleMeasuredSeq_uniq_> ZenithAngleMeasuredSeq;
+   typedef DDS_DCPSSequence_var < ZenithAngleMeasuredSeq> ZenithAngleMeasuredSeq_var;
+   typedef DDS_DCPSSequence_out < ZenithAngleMeasuredSeq> ZenithAngleMeasuredSeq_out;
+   class ZenithAngleMeasuredTypeSupportInterface
    :
       virtual public DDS::TypeSupport
    { 
    public:
-      typedef logevent_targetDoneTypeSupportInterface_ptr _ptr_type;
-      typedef logevent_targetDoneTypeSupportInterface_var _var_type;
+      typedef ZenithAngleMeasuredTypeSupportInterface_ptr _ptr_type;
+      typedef ZenithAngleMeasuredTypeSupportInterface_var _var_type;
 
-      static logevent_targetDoneTypeSupportInterface_ptr _duplicate (logevent_targetDoneTypeSupportInterface_ptr obj);
+      static ZenithAngleMeasuredTypeSupportInterface_ptr _duplicate (ZenithAngleMeasuredTypeSupportInterface_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static logevent_targetDoneTypeSupportInterface_ptr _narrow (DDS::Object_ptr obj);
-      static logevent_targetDoneTypeSupportInterface_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static logevent_targetDoneTypeSupportInterface_ptr _nil () { return 0; }
+      static ZenithAngleMeasuredTypeSupportInterface_ptr _narrow (DDS::Object_ptr obj);
+      static ZenithAngleMeasuredTypeSupportInterface_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static ZenithAngleMeasuredTypeSupportInterface_ptr _nil () { return 0; }
       static const char * _local_id;
-      logevent_targetDoneTypeSupportInterface_ptr _this () { return this; }
+      ZenithAngleMeasuredTypeSupportInterface_ptr _this () { return this; }
 
 
    protected:
-      logevent_targetDoneTypeSupportInterface () {};
-      ~logevent_targetDoneTypeSupportInterface () {};
+      ZenithAngleMeasuredTypeSupportInterface () {};
+      ~ZenithAngleMeasuredTypeSupportInterface () {};
    private:
-      logevent_targetDoneTypeSupportInterface (const logevent_targetDoneTypeSupportInterface &);
-      logevent_targetDoneTypeSupportInterface & operator = (const logevent_targetDoneTypeSupportInterface &);
+      ZenithAngleMeasuredTypeSupportInterface (const ZenithAngleMeasuredTypeSupportInterface &);
+      ZenithAngleMeasuredTypeSupportInterface & operator = (const ZenithAngleMeasuredTypeSupportInterface &);
    };
 
-   class logevent_targetDoneDataWriter
+   class ZenithAngleMeasuredDataWriter
    :
       virtual public DDS::DataWriter
    { 
    public:
-      typedef logevent_targetDoneDataWriter_ptr _ptr_type;
-      typedef logevent_targetDoneDataWriter_var _var_type;
+      typedef ZenithAngleMeasuredDataWriter_ptr _ptr_type;
+      typedef ZenithAngleMeasuredDataWriter_var _var_type;
 
-      static logevent_targetDoneDataWriter_ptr _duplicate (logevent_targetDoneDataWriter_ptr obj);
+      static ZenithAngleMeasuredDataWriter_ptr _duplicate (ZenithAngleMeasuredDataWriter_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static logevent_targetDoneDataWriter_ptr _narrow (DDS::Object_ptr obj);
-      static logevent_targetDoneDataWriter_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static logevent_targetDoneDataWriter_ptr _nil () { return 0; }
+      static ZenithAngleMeasuredDataWriter_ptr _narrow (DDS::Object_ptr obj);
+      static ZenithAngleMeasuredDataWriter_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static ZenithAngleMeasuredDataWriter_ptr _nil () { return 0; }
       static const char * _local_id;
-      logevent_targetDoneDataWriter_ptr _this () { return this; }
+      ZenithAngleMeasuredDataWriter_ptr _this () { return this; }
 
-      virtual DDS::LongLong register_instance (const logevent_targetDone& instance_data) = 0;
-      virtual DDS::LongLong register_instance_w_timestamp (const logevent_targetDone& instance_data, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long unregister_instance (const logevent_targetDone& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long unregister_instance_w_timestamp (const logevent_targetDone& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long write (const logevent_targetDone& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long write_w_timestamp (const logevent_targetDone& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long dispose (const logevent_targetDone& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long dispose_w_timestamp (const logevent_targetDone& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long writedispose (const logevent_targetDone& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long writedispose_w_timestamp (const logevent_targetDone& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long get_key_value (logevent_targetDone& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const logevent_targetDone& instance_data) = 0;
+      virtual DDS::LongLong register_instance (const ZenithAngleMeasured& instance_data) = 0;
+      virtual DDS::LongLong register_instance_w_timestamp (const ZenithAngleMeasured& instance_data, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long unregister_instance (const ZenithAngleMeasured& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long unregister_instance_w_timestamp (const ZenithAngleMeasured& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long write (const ZenithAngleMeasured& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long write_w_timestamp (const ZenithAngleMeasured& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long dispose (const ZenithAngleMeasured& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long dispose_w_timestamp (const ZenithAngleMeasured& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long writedispose (const ZenithAngleMeasured& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long writedispose_w_timestamp (const ZenithAngleMeasured& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long get_key_value (ZenithAngleMeasured& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const ZenithAngleMeasured& instance_data) = 0;
 
    protected:
-      logevent_targetDoneDataWriter () {};
-      ~logevent_targetDoneDataWriter () {};
+      ZenithAngleMeasuredDataWriter () {};
+      ~ZenithAngleMeasuredDataWriter () {};
    private:
-      logevent_targetDoneDataWriter (const logevent_targetDoneDataWriter &);
-      logevent_targetDoneDataWriter & operator = (const logevent_targetDoneDataWriter &);
+      ZenithAngleMeasuredDataWriter (const ZenithAngleMeasuredDataWriter &);
+      ZenithAngleMeasuredDataWriter & operator = (const ZenithAngleMeasuredDataWriter &);
    };
 
-   class logevent_targetDoneDataReader
+   class ZenithAngleMeasuredDataReader
    :
       virtual public DDS::DataReader
    { 
    public:
-      typedef logevent_targetDoneDataReader_ptr _ptr_type;
-      typedef logevent_targetDoneDataReader_var _var_type;
+      typedef ZenithAngleMeasuredDataReader_ptr _ptr_type;
+      typedef ZenithAngleMeasuredDataReader_var _var_type;
 
-      static logevent_targetDoneDataReader_ptr _duplicate (logevent_targetDoneDataReader_ptr obj);
+      static ZenithAngleMeasuredDataReader_ptr _duplicate (ZenithAngleMeasuredDataReader_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static logevent_targetDoneDataReader_ptr _narrow (DDS::Object_ptr obj);
-      static logevent_targetDoneDataReader_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static logevent_targetDoneDataReader_ptr _nil () { return 0; }
+      static ZenithAngleMeasuredDataReader_ptr _narrow (DDS::Object_ptr obj);
+      static ZenithAngleMeasuredDataReader_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static ZenithAngleMeasuredDataReader_ptr _nil () { return 0; }
       static const char * _local_id;
-      logevent_targetDoneDataReader_ptr _this () { return this; }
+      ZenithAngleMeasuredDataReader_ptr _this () { return this; }
 
-      virtual DDS::Long read (logevent_targetDoneSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take (logevent_targetDoneSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_w_condition (logevent_targetDoneSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_w_condition (logevent_targetDoneSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long read_next_sample (logevent_targetDone& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long take_next_sample (logevent_targetDone& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long read_instance (logevent_targetDoneSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_instance (logevent_targetDoneSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance (logevent_targetDoneSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_next_instance (logevent_targetDoneSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance_w_condition (logevent_targetDoneSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_next_instance_w_condition (logevent_targetDoneSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long return_loan (logevent_targetDoneSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
-      virtual DDS::Long get_key_value (logevent_targetDone& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const logevent_targetDone& instance) = 0;
+      virtual DDS::Long read (ZenithAngleMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (ZenithAngleMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (ZenithAngleMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (ZenithAngleMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (ZenithAngleMeasured& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (ZenithAngleMeasured& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (ZenithAngleMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (ZenithAngleMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (ZenithAngleMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (ZenithAngleMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (ZenithAngleMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (ZenithAngleMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (ZenithAngleMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (ZenithAngleMeasured& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const ZenithAngleMeasured& instance) = 0;
 
    protected:
-      logevent_targetDoneDataReader () {};
-      ~logevent_targetDoneDataReader () {};
+      ZenithAngleMeasuredDataReader () {};
+      ~ZenithAngleMeasuredDataReader () {};
    private:
-      logevent_targetDoneDataReader (const logevent_targetDoneDataReader &);
-      logevent_targetDoneDataReader & operator = (const logevent_targetDoneDataReader &);
+      ZenithAngleMeasuredDataReader (const ZenithAngleMeasuredDataReader &);
+      ZenithAngleMeasuredDataReader & operator = (const ZenithAngleMeasuredDataReader &);
    };
 
-   class logevent_targetDoneDataReaderView
+   class ZenithAngleMeasuredDataReaderView
    :
       virtual public DDS::DataReaderView
    { 
    public:
-      typedef logevent_targetDoneDataReaderView_ptr _ptr_type;
-      typedef logevent_targetDoneDataReaderView_var _var_type;
+      typedef ZenithAngleMeasuredDataReaderView_ptr _ptr_type;
+      typedef ZenithAngleMeasuredDataReaderView_var _var_type;
 
-      static logevent_targetDoneDataReaderView_ptr _duplicate (logevent_targetDoneDataReaderView_ptr obj);
+      static ZenithAngleMeasuredDataReaderView_ptr _duplicate (ZenithAngleMeasuredDataReaderView_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static logevent_targetDoneDataReaderView_ptr _narrow (DDS::Object_ptr obj);
-      static logevent_targetDoneDataReaderView_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static logevent_targetDoneDataReaderView_ptr _nil () { return 0; }
+      static ZenithAngleMeasuredDataReaderView_ptr _narrow (DDS::Object_ptr obj);
+      static ZenithAngleMeasuredDataReaderView_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static ZenithAngleMeasuredDataReaderView_ptr _nil () { return 0; }
       static const char * _local_id;
-      logevent_targetDoneDataReaderView_ptr _this () { return this; }
+      ZenithAngleMeasuredDataReaderView_ptr _this () { return this; }
 
-      virtual DDS::Long read (logevent_targetDoneSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take (logevent_targetDoneSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_w_condition (logevent_targetDoneSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_w_condition (logevent_targetDoneSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long read_next_sample (logevent_targetDone& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long take_next_sample (logevent_targetDone& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long read_instance (logevent_targetDoneSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_instance (logevent_targetDoneSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance (logevent_targetDoneSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_next_instance (logevent_targetDoneSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance_w_condition (logevent_targetDoneSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_next_instance_w_condition (logevent_targetDoneSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long return_loan (logevent_targetDoneSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
-      virtual DDS::Long get_key_value (logevent_targetDone& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const logevent_targetDone& instance) = 0;
+      virtual DDS::Long read (ZenithAngleMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (ZenithAngleMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (ZenithAngleMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (ZenithAngleMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (ZenithAngleMeasured& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (ZenithAngleMeasured& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (ZenithAngleMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (ZenithAngleMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (ZenithAngleMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (ZenithAngleMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (ZenithAngleMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (ZenithAngleMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (ZenithAngleMeasuredSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (ZenithAngleMeasured& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const ZenithAngleMeasured& instance) = 0;
 
    protected:
-      logevent_targetDoneDataReaderView () {};
-      ~logevent_targetDoneDataReaderView () {};
+      ZenithAngleMeasuredDataReaderView () {};
+      ~ZenithAngleMeasuredDataReaderView () {};
    private:
-      logevent_targetDoneDataReaderView (const logevent_targetDoneDataReaderView &);
-      logevent_targetDoneDataReaderView & operator = (const logevent_targetDoneDataReaderView &);
+      ZenithAngleMeasuredDataReaderView (const ZenithAngleMeasuredDataReaderView &);
+      ZenithAngleMeasuredDataReaderView & operator = (const ZenithAngleMeasuredDataReaderView &);
    };
 
-   struct logevent_targetErrorSeq_uniq_ {};
-   typedef DDS_DCPSUVLSeq < logevent_targetError, struct logevent_targetErrorSeq_uniq_> logevent_targetErrorSeq;
-   typedef DDS_DCPSSequence_var < logevent_targetErrorSeq> logevent_targetErrorSeq_var;
-   typedef DDS_DCPSSequence_out < logevent_targetErrorSeq> logevent_targetErrorSeq_out;
-   class logevent_targetErrorTypeSupportInterface
+   struct command_ApplyBendingModeSeq_uniq_ {};
+   typedef DDS_DCPSUVLSeq < command_ApplyBendingMode, struct command_ApplyBendingModeSeq_uniq_> command_ApplyBendingModeSeq;
+   typedef DDS_DCPSSequence_var < command_ApplyBendingModeSeq> command_ApplyBendingModeSeq_var;
+   typedef DDS_DCPSSequence_out < command_ApplyBendingModeSeq> command_ApplyBendingModeSeq_out;
+   class command_ApplyBendingModeTypeSupportInterface
    :
       virtual public DDS::TypeSupport
    { 
    public:
-      typedef logevent_targetErrorTypeSupportInterface_ptr _ptr_type;
-      typedef logevent_targetErrorTypeSupportInterface_var _var_type;
+      typedef command_ApplyBendingModeTypeSupportInterface_ptr _ptr_type;
+      typedef command_ApplyBendingModeTypeSupportInterface_var _var_type;
 
-      static logevent_targetErrorTypeSupportInterface_ptr _duplicate (logevent_targetErrorTypeSupportInterface_ptr obj);
+      static command_ApplyBendingModeTypeSupportInterface_ptr _duplicate (command_ApplyBendingModeTypeSupportInterface_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static logevent_targetErrorTypeSupportInterface_ptr _narrow (DDS::Object_ptr obj);
-      static logevent_targetErrorTypeSupportInterface_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static logevent_targetErrorTypeSupportInterface_ptr _nil () { return 0; }
+      static command_ApplyBendingModeTypeSupportInterface_ptr _narrow (DDS::Object_ptr obj);
+      static command_ApplyBendingModeTypeSupportInterface_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static command_ApplyBendingModeTypeSupportInterface_ptr _nil () { return 0; }
       static const char * _local_id;
-      logevent_targetErrorTypeSupportInterface_ptr _this () { return this; }
+      command_ApplyBendingModeTypeSupportInterface_ptr _this () { return this; }
 
 
    protected:
-      logevent_targetErrorTypeSupportInterface () {};
-      ~logevent_targetErrorTypeSupportInterface () {};
+      command_ApplyBendingModeTypeSupportInterface () {};
+      ~command_ApplyBendingModeTypeSupportInterface () {};
    private:
-      logevent_targetErrorTypeSupportInterface (const logevent_targetErrorTypeSupportInterface &);
-      logevent_targetErrorTypeSupportInterface & operator = (const logevent_targetErrorTypeSupportInterface &);
+      command_ApplyBendingModeTypeSupportInterface (const command_ApplyBendingModeTypeSupportInterface &);
+      command_ApplyBendingModeTypeSupportInterface & operator = (const command_ApplyBendingModeTypeSupportInterface &);
    };
 
-   class logevent_targetErrorDataWriter
+   class command_ApplyBendingModeDataWriter
    :
       virtual public DDS::DataWriter
    { 
    public:
-      typedef logevent_targetErrorDataWriter_ptr _ptr_type;
-      typedef logevent_targetErrorDataWriter_var _var_type;
+      typedef command_ApplyBendingModeDataWriter_ptr _ptr_type;
+      typedef command_ApplyBendingModeDataWriter_var _var_type;
 
-      static logevent_targetErrorDataWriter_ptr _duplicate (logevent_targetErrorDataWriter_ptr obj);
+      static command_ApplyBendingModeDataWriter_ptr _duplicate (command_ApplyBendingModeDataWriter_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static logevent_targetErrorDataWriter_ptr _narrow (DDS::Object_ptr obj);
-      static logevent_targetErrorDataWriter_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static logevent_targetErrorDataWriter_ptr _nil () { return 0; }
+      static command_ApplyBendingModeDataWriter_ptr _narrow (DDS::Object_ptr obj);
+      static command_ApplyBendingModeDataWriter_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static command_ApplyBendingModeDataWriter_ptr _nil () { return 0; }
       static const char * _local_id;
-      logevent_targetErrorDataWriter_ptr _this () { return this; }
+      command_ApplyBendingModeDataWriter_ptr _this () { return this; }
 
-      virtual DDS::LongLong register_instance (const logevent_targetError& instance_data) = 0;
-      virtual DDS::LongLong register_instance_w_timestamp (const logevent_targetError& instance_data, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long unregister_instance (const logevent_targetError& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long unregister_instance_w_timestamp (const logevent_targetError& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long write (const logevent_targetError& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long write_w_timestamp (const logevent_targetError& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long dispose (const logevent_targetError& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long dispose_w_timestamp (const logevent_targetError& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long writedispose (const logevent_targetError& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long writedispose_w_timestamp (const logevent_targetError& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long get_key_value (logevent_targetError& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const logevent_targetError& instance_data) = 0;
+      virtual DDS::LongLong register_instance (const command_ApplyBendingMode& instance_data) = 0;
+      virtual DDS::LongLong register_instance_w_timestamp (const command_ApplyBendingMode& instance_data, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long unregister_instance (const command_ApplyBendingMode& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long unregister_instance_w_timestamp (const command_ApplyBendingMode& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long write (const command_ApplyBendingMode& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long write_w_timestamp (const command_ApplyBendingMode& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long dispose (const command_ApplyBendingMode& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long dispose_w_timestamp (const command_ApplyBendingMode& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long writedispose (const command_ApplyBendingMode& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long writedispose_w_timestamp (const command_ApplyBendingMode& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long get_key_value (command_ApplyBendingMode& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const command_ApplyBendingMode& instance_data) = 0;
 
    protected:
-      logevent_targetErrorDataWriter () {};
-      ~logevent_targetErrorDataWriter () {};
+      command_ApplyBendingModeDataWriter () {};
+      ~command_ApplyBendingModeDataWriter () {};
    private:
-      logevent_targetErrorDataWriter (const logevent_targetErrorDataWriter &);
-      logevent_targetErrorDataWriter & operator = (const logevent_targetErrorDataWriter &);
+      command_ApplyBendingModeDataWriter (const command_ApplyBendingModeDataWriter &);
+      command_ApplyBendingModeDataWriter & operator = (const command_ApplyBendingModeDataWriter &);
    };
 
-   class logevent_targetErrorDataReader
+   class command_ApplyBendingModeDataReader
    :
       virtual public DDS::DataReader
    { 
    public:
-      typedef logevent_targetErrorDataReader_ptr _ptr_type;
-      typedef logevent_targetErrorDataReader_var _var_type;
+      typedef command_ApplyBendingModeDataReader_ptr _ptr_type;
+      typedef command_ApplyBendingModeDataReader_var _var_type;
 
-      static logevent_targetErrorDataReader_ptr _duplicate (logevent_targetErrorDataReader_ptr obj);
+      static command_ApplyBendingModeDataReader_ptr _duplicate (command_ApplyBendingModeDataReader_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static logevent_targetErrorDataReader_ptr _narrow (DDS::Object_ptr obj);
-      static logevent_targetErrorDataReader_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static logevent_targetErrorDataReader_ptr _nil () { return 0; }
+      static command_ApplyBendingModeDataReader_ptr _narrow (DDS::Object_ptr obj);
+      static command_ApplyBendingModeDataReader_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static command_ApplyBendingModeDataReader_ptr _nil () { return 0; }
       static const char * _local_id;
-      logevent_targetErrorDataReader_ptr _this () { return this; }
+      command_ApplyBendingModeDataReader_ptr _this () { return this; }
 
-      virtual DDS::Long read (logevent_targetErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take (logevent_targetErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_w_condition (logevent_targetErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_w_condition (logevent_targetErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long read_next_sample (logevent_targetError& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long take_next_sample (logevent_targetError& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long read_instance (logevent_targetErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_instance (logevent_targetErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance (logevent_targetErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_next_instance (logevent_targetErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance_w_condition (logevent_targetErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_next_instance_w_condition (logevent_targetErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long return_loan (logevent_targetErrorSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
-      virtual DDS::Long get_key_value (logevent_targetError& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const logevent_targetError& instance) = 0;
+      virtual DDS::Long read (command_ApplyBendingModeSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (command_ApplyBendingModeSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (command_ApplyBendingModeSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (command_ApplyBendingModeSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (command_ApplyBendingMode& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (command_ApplyBendingMode& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (command_ApplyBendingModeSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (command_ApplyBendingModeSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (command_ApplyBendingModeSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (command_ApplyBendingModeSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (command_ApplyBendingModeSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (command_ApplyBendingModeSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (command_ApplyBendingModeSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (command_ApplyBendingMode& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const command_ApplyBendingMode& instance) = 0;
 
    protected:
-      logevent_targetErrorDataReader () {};
-      ~logevent_targetErrorDataReader () {};
+      command_ApplyBendingModeDataReader () {};
+      ~command_ApplyBendingModeDataReader () {};
    private:
-      logevent_targetErrorDataReader (const logevent_targetErrorDataReader &);
-      logevent_targetErrorDataReader & operator = (const logevent_targetErrorDataReader &);
+      command_ApplyBendingModeDataReader (const command_ApplyBendingModeDataReader &);
+      command_ApplyBendingModeDataReader & operator = (const command_ApplyBendingModeDataReader &);
    };
 
-   class logevent_targetErrorDataReaderView
+   class command_ApplyBendingModeDataReaderView
    :
       virtual public DDS::DataReaderView
    { 
    public:
-      typedef logevent_targetErrorDataReaderView_ptr _ptr_type;
-      typedef logevent_targetErrorDataReaderView_var _var_type;
+      typedef command_ApplyBendingModeDataReaderView_ptr _ptr_type;
+      typedef command_ApplyBendingModeDataReaderView_var _var_type;
 
-      static logevent_targetErrorDataReaderView_ptr _duplicate (logevent_targetErrorDataReaderView_ptr obj);
+      static command_ApplyBendingModeDataReaderView_ptr _duplicate (command_ApplyBendingModeDataReaderView_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static logevent_targetErrorDataReaderView_ptr _narrow (DDS::Object_ptr obj);
-      static logevent_targetErrorDataReaderView_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static logevent_targetErrorDataReaderView_ptr _nil () { return 0; }
+      static command_ApplyBendingModeDataReaderView_ptr _narrow (DDS::Object_ptr obj);
+      static command_ApplyBendingModeDataReaderView_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static command_ApplyBendingModeDataReaderView_ptr _nil () { return 0; }
       static const char * _local_id;
-      logevent_targetErrorDataReaderView_ptr _this () { return this; }
+      command_ApplyBendingModeDataReaderView_ptr _this () { return this; }
 
-      virtual DDS::Long read (logevent_targetErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take (logevent_targetErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_w_condition (logevent_targetErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_w_condition (logevent_targetErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long read_next_sample (logevent_targetError& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long take_next_sample (logevent_targetError& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long read_instance (logevent_targetErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_instance (logevent_targetErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance (logevent_targetErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_next_instance (logevent_targetErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance_w_condition (logevent_targetErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_next_instance_w_condition (logevent_targetErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long return_loan (logevent_targetErrorSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
-      virtual DDS::Long get_key_value (logevent_targetError& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const logevent_targetError& instance) = 0;
+      virtual DDS::Long read (command_ApplyBendingModeSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (command_ApplyBendingModeSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (command_ApplyBendingModeSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (command_ApplyBendingModeSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (command_ApplyBendingMode& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (command_ApplyBendingMode& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (command_ApplyBendingModeSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (command_ApplyBendingModeSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (command_ApplyBendingModeSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (command_ApplyBendingModeSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (command_ApplyBendingModeSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (command_ApplyBendingModeSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (command_ApplyBendingModeSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (command_ApplyBendingMode& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const command_ApplyBendingMode& instance) = 0;
 
    protected:
-      logevent_targetErrorDataReaderView () {};
-      ~logevent_targetErrorDataReaderView () {};
+      command_ApplyBendingModeDataReaderView () {};
+      ~command_ApplyBendingModeDataReaderView () {};
    private:
-      logevent_targetErrorDataReaderView (const logevent_targetErrorDataReaderView &);
-      logevent_targetErrorDataReaderView & operator = (const logevent_targetErrorDataReaderView &);
+      command_ApplyBendingModeDataReaderView (const command_ApplyBendingModeDataReaderView &);
+      command_ApplyBendingModeDataReaderView & operator = (const command_ApplyBendingModeDataReaderView &);
    };
 
-   struct logevent_tempErrorSeq_uniq_ {};
-   typedef DDS_DCPSUVLSeq < logevent_tempError, struct logevent_tempErrorSeq_uniq_> logevent_tempErrorSeq;
-   typedef DDS_DCPSSequence_var < logevent_tempErrorSeq> logevent_tempErrorSeq_var;
-   typedef DDS_DCPSSequence_out < logevent_tempErrorSeq> logevent_tempErrorSeq_out;
-   class logevent_tempErrorTypeSupportInterface
+   struct command_ApplyForceSeq_uniq_ {};
+   typedef DDS_DCPSUVLSeq < command_ApplyForce, struct command_ApplyForceSeq_uniq_> command_ApplyForceSeq;
+   typedef DDS_DCPSSequence_var < command_ApplyForceSeq> command_ApplyForceSeq_var;
+   typedef DDS_DCPSSequence_out < command_ApplyForceSeq> command_ApplyForceSeq_out;
+   class command_ApplyForceTypeSupportInterface
    :
       virtual public DDS::TypeSupport
    { 
    public:
-      typedef logevent_tempErrorTypeSupportInterface_ptr _ptr_type;
-      typedef logevent_tempErrorTypeSupportInterface_var _var_type;
+      typedef command_ApplyForceTypeSupportInterface_ptr _ptr_type;
+      typedef command_ApplyForceTypeSupportInterface_var _var_type;
 
-      static logevent_tempErrorTypeSupportInterface_ptr _duplicate (logevent_tempErrorTypeSupportInterface_ptr obj);
+      static command_ApplyForceTypeSupportInterface_ptr _duplicate (command_ApplyForceTypeSupportInterface_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static logevent_tempErrorTypeSupportInterface_ptr _narrow (DDS::Object_ptr obj);
-      static logevent_tempErrorTypeSupportInterface_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static logevent_tempErrorTypeSupportInterface_ptr _nil () { return 0; }
+      static command_ApplyForceTypeSupportInterface_ptr _narrow (DDS::Object_ptr obj);
+      static command_ApplyForceTypeSupportInterface_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static command_ApplyForceTypeSupportInterface_ptr _nil () { return 0; }
       static const char * _local_id;
-      logevent_tempErrorTypeSupportInterface_ptr _this () { return this; }
+      command_ApplyForceTypeSupportInterface_ptr _this () { return this; }
 
 
    protected:
-      logevent_tempErrorTypeSupportInterface () {};
-      ~logevent_tempErrorTypeSupportInterface () {};
+      command_ApplyForceTypeSupportInterface () {};
+      ~command_ApplyForceTypeSupportInterface () {};
    private:
-      logevent_tempErrorTypeSupportInterface (const logevent_tempErrorTypeSupportInterface &);
-      logevent_tempErrorTypeSupportInterface & operator = (const logevent_tempErrorTypeSupportInterface &);
+      command_ApplyForceTypeSupportInterface (const command_ApplyForceTypeSupportInterface &);
+      command_ApplyForceTypeSupportInterface & operator = (const command_ApplyForceTypeSupportInterface &);
    };
 
-   class logevent_tempErrorDataWriter
+   class command_ApplyForceDataWriter
    :
       virtual public DDS::DataWriter
    { 
    public:
-      typedef logevent_tempErrorDataWriter_ptr _ptr_type;
-      typedef logevent_tempErrorDataWriter_var _var_type;
+      typedef command_ApplyForceDataWriter_ptr _ptr_type;
+      typedef command_ApplyForceDataWriter_var _var_type;
 
-      static logevent_tempErrorDataWriter_ptr _duplicate (logevent_tempErrorDataWriter_ptr obj);
+      static command_ApplyForceDataWriter_ptr _duplicate (command_ApplyForceDataWriter_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static logevent_tempErrorDataWriter_ptr _narrow (DDS::Object_ptr obj);
-      static logevent_tempErrorDataWriter_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static logevent_tempErrorDataWriter_ptr _nil () { return 0; }
+      static command_ApplyForceDataWriter_ptr _narrow (DDS::Object_ptr obj);
+      static command_ApplyForceDataWriter_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static command_ApplyForceDataWriter_ptr _nil () { return 0; }
       static const char * _local_id;
-      logevent_tempErrorDataWriter_ptr _this () { return this; }
+      command_ApplyForceDataWriter_ptr _this () { return this; }
 
-      virtual DDS::LongLong register_instance (const logevent_tempError& instance_data) = 0;
-      virtual DDS::LongLong register_instance_w_timestamp (const logevent_tempError& instance_data, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long unregister_instance (const logevent_tempError& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long unregister_instance_w_timestamp (const logevent_tempError& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long write (const logevent_tempError& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long write_w_timestamp (const logevent_tempError& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long dispose (const logevent_tempError& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long dispose_w_timestamp (const logevent_tempError& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long writedispose (const logevent_tempError& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long writedispose_w_timestamp (const logevent_tempError& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long get_key_value (logevent_tempError& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const logevent_tempError& instance_data) = 0;
+      virtual DDS::LongLong register_instance (const command_ApplyForce& instance_data) = 0;
+      virtual DDS::LongLong register_instance_w_timestamp (const command_ApplyForce& instance_data, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long unregister_instance (const command_ApplyForce& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long unregister_instance_w_timestamp (const command_ApplyForce& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long write (const command_ApplyForce& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long write_w_timestamp (const command_ApplyForce& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long dispose (const command_ApplyForce& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long dispose_w_timestamp (const command_ApplyForce& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long writedispose (const command_ApplyForce& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long writedispose_w_timestamp (const command_ApplyForce& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long get_key_value (command_ApplyForce& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const command_ApplyForce& instance_data) = 0;
 
    protected:
-      logevent_tempErrorDataWriter () {};
-      ~logevent_tempErrorDataWriter () {};
+      command_ApplyForceDataWriter () {};
+      ~command_ApplyForceDataWriter () {};
    private:
-      logevent_tempErrorDataWriter (const logevent_tempErrorDataWriter &);
-      logevent_tempErrorDataWriter & operator = (const logevent_tempErrorDataWriter &);
+      command_ApplyForceDataWriter (const command_ApplyForceDataWriter &);
+      command_ApplyForceDataWriter & operator = (const command_ApplyForceDataWriter &);
    };
 
-   class logevent_tempErrorDataReader
+   class command_ApplyForceDataReader
    :
       virtual public DDS::DataReader
    { 
    public:
-      typedef logevent_tempErrorDataReader_ptr _ptr_type;
-      typedef logevent_tempErrorDataReader_var _var_type;
+      typedef command_ApplyForceDataReader_ptr _ptr_type;
+      typedef command_ApplyForceDataReader_var _var_type;
 
-      static logevent_tempErrorDataReader_ptr _duplicate (logevent_tempErrorDataReader_ptr obj);
+      static command_ApplyForceDataReader_ptr _duplicate (command_ApplyForceDataReader_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static logevent_tempErrorDataReader_ptr _narrow (DDS::Object_ptr obj);
-      static logevent_tempErrorDataReader_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static logevent_tempErrorDataReader_ptr _nil () { return 0; }
+      static command_ApplyForceDataReader_ptr _narrow (DDS::Object_ptr obj);
+      static command_ApplyForceDataReader_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static command_ApplyForceDataReader_ptr _nil () { return 0; }
       static const char * _local_id;
-      logevent_tempErrorDataReader_ptr _this () { return this; }
+      command_ApplyForceDataReader_ptr _this () { return this; }
 
-      virtual DDS::Long read (logevent_tempErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take (logevent_tempErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_w_condition (logevent_tempErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_w_condition (logevent_tempErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long read_next_sample (logevent_tempError& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long take_next_sample (logevent_tempError& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long read_instance (logevent_tempErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_instance (logevent_tempErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance (logevent_tempErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_next_instance (logevent_tempErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance_w_condition (logevent_tempErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_next_instance_w_condition (logevent_tempErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long return_loan (logevent_tempErrorSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
-      virtual DDS::Long get_key_value (logevent_tempError& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const logevent_tempError& instance) = 0;
+      virtual DDS::Long read (command_ApplyForceSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (command_ApplyForceSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (command_ApplyForceSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (command_ApplyForceSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (command_ApplyForce& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (command_ApplyForce& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (command_ApplyForceSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (command_ApplyForceSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (command_ApplyForceSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (command_ApplyForceSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (command_ApplyForceSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (command_ApplyForceSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (command_ApplyForceSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (command_ApplyForce& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const command_ApplyForce& instance) = 0;
 
    protected:
-      logevent_tempErrorDataReader () {};
-      ~logevent_tempErrorDataReader () {};
+      command_ApplyForceDataReader () {};
+      ~command_ApplyForceDataReader () {};
    private:
-      logevent_tempErrorDataReader (const logevent_tempErrorDataReader &);
-      logevent_tempErrorDataReader & operator = (const logevent_tempErrorDataReader &);
+      command_ApplyForceDataReader (const command_ApplyForceDataReader &);
+      command_ApplyForceDataReader & operator = (const command_ApplyForceDataReader &);
    };
 
-   class logevent_tempErrorDataReaderView
+   class command_ApplyForceDataReaderView
    :
       virtual public DDS::DataReaderView
    { 
    public:
-      typedef logevent_tempErrorDataReaderView_ptr _ptr_type;
-      typedef logevent_tempErrorDataReaderView_var _var_type;
+      typedef command_ApplyForceDataReaderView_ptr _ptr_type;
+      typedef command_ApplyForceDataReaderView_var _var_type;
 
-      static logevent_tempErrorDataReaderView_ptr _duplicate (logevent_tempErrorDataReaderView_ptr obj);
+      static command_ApplyForceDataReaderView_ptr _duplicate (command_ApplyForceDataReaderView_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static logevent_tempErrorDataReaderView_ptr _narrow (DDS::Object_ptr obj);
-      static logevent_tempErrorDataReaderView_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static logevent_tempErrorDataReaderView_ptr _nil () { return 0; }
+      static command_ApplyForceDataReaderView_ptr _narrow (DDS::Object_ptr obj);
+      static command_ApplyForceDataReaderView_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static command_ApplyForceDataReaderView_ptr _nil () { return 0; }
       static const char * _local_id;
-      logevent_tempErrorDataReaderView_ptr _this () { return this; }
+      command_ApplyForceDataReaderView_ptr _this () { return this; }
 
-      virtual DDS::Long read (logevent_tempErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take (logevent_tempErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_w_condition (logevent_tempErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_w_condition (logevent_tempErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long read_next_sample (logevent_tempError& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long take_next_sample (logevent_tempError& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long read_instance (logevent_tempErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_instance (logevent_tempErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance (logevent_tempErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_next_instance (logevent_tempErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance_w_condition (logevent_tempErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_next_instance_w_condition (logevent_tempErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long return_loan (logevent_tempErrorSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
-      virtual DDS::Long get_key_value (logevent_tempError& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const logevent_tempError& instance) = 0;
+      virtual DDS::Long read (command_ApplyForceSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (command_ApplyForceSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (command_ApplyForceSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (command_ApplyForceSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (command_ApplyForce& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (command_ApplyForce& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (command_ApplyForceSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (command_ApplyForceSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (command_ApplyForceSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (command_ApplyForceSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (command_ApplyForceSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (command_ApplyForceSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (command_ApplyForceSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (command_ApplyForce& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const command_ApplyForce& instance) = 0;
 
    protected:
-      logevent_tempErrorDataReaderView () {};
-      ~logevent_tempErrorDataReaderView () {};
+      command_ApplyForceDataReaderView () {};
+      ~command_ApplyForceDataReaderView () {};
    private:
-      logevent_tempErrorDataReaderView (const logevent_tempErrorDataReaderView &);
-      logevent_tempErrorDataReaderView & operator = (const logevent_tempErrorDataReaderView &);
+      command_ApplyForceDataReaderView (const command_ApplyForceDataReaderView &);
+      command_ApplyForceDataReaderView & operator = (const command_ApplyForceDataReaderView &);
    };
 
-   struct logevent_updateDoneSeq_uniq_ {};
-   typedef DDS_DCPSUVLSeq < logevent_updateDone, struct logevent_updateDoneSeq_uniq_> logevent_updateDoneSeq;
-   typedef DDS_DCPSSequence_var < logevent_updateDoneSeq> logevent_updateDoneSeq_var;
-   typedef DDS_DCPSSequence_out < logevent_updateDoneSeq> logevent_updateDoneSeq_out;
-   class logevent_updateDoneTypeSupportInterface
+   struct command_MoveAxialActuatorSeq_uniq_ {};
+   typedef DDS_DCPSUVLSeq < command_MoveAxialActuator, struct command_MoveAxialActuatorSeq_uniq_> command_MoveAxialActuatorSeq;
+   typedef DDS_DCPSSequence_var < command_MoveAxialActuatorSeq> command_MoveAxialActuatorSeq_var;
+   typedef DDS_DCPSSequence_out < command_MoveAxialActuatorSeq> command_MoveAxialActuatorSeq_out;
+   class command_MoveAxialActuatorTypeSupportInterface
    :
       virtual public DDS::TypeSupport
    { 
    public:
-      typedef logevent_updateDoneTypeSupportInterface_ptr _ptr_type;
-      typedef logevent_updateDoneTypeSupportInterface_var _var_type;
+      typedef command_MoveAxialActuatorTypeSupportInterface_ptr _ptr_type;
+      typedef command_MoveAxialActuatorTypeSupportInterface_var _var_type;
 
-      static logevent_updateDoneTypeSupportInterface_ptr _duplicate (logevent_updateDoneTypeSupportInterface_ptr obj);
+      static command_MoveAxialActuatorTypeSupportInterface_ptr _duplicate (command_MoveAxialActuatorTypeSupportInterface_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static logevent_updateDoneTypeSupportInterface_ptr _narrow (DDS::Object_ptr obj);
-      static logevent_updateDoneTypeSupportInterface_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static logevent_updateDoneTypeSupportInterface_ptr _nil () { return 0; }
+      static command_MoveAxialActuatorTypeSupportInterface_ptr _narrow (DDS::Object_ptr obj);
+      static command_MoveAxialActuatorTypeSupportInterface_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static command_MoveAxialActuatorTypeSupportInterface_ptr _nil () { return 0; }
       static const char * _local_id;
-      logevent_updateDoneTypeSupportInterface_ptr _this () { return this; }
+      command_MoveAxialActuatorTypeSupportInterface_ptr _this () { return this; }
 
 
    protected:
-      logevent_updateDoneTypeSupportInterface () {};
-      ~logevent_updateDoneTypeSupportInterface () {};
+      command_MoveAxialActuatorTypeSupportInterface () {};
+      ~command_MoveAxialActuatorTypeSupportInterface () {};
    private:
-      logevent_updateDoneTypeSupportInterface (const logevent_updateDoneTypeSupportInterface &);
-      logevent_updateDoneTypeSupportInterface & operator = (const logevent_updateDoneTypeSupportInterface &);
+      command_MoveAxialActuatorTypeSupportInterface (const command_MoveAxialActuatorTypeSupportInterface &);
+      command_MoveAxialActuatorTypeSupportInterface & operator = (const command_MoveAxialActuatorTypeSupportInterface &);
    };
 
-   class logevent_updateDoneDataWriter
+   class command_MoveAxialActuatorDataWriter
    :
       virtual public DDS::DataWriter
    { 
    public:
-      typedef logevent_updateDoneDataWriter_ptr _ptr_type;
-      typedef logevent_updateDoneDataWriter_var _var_type;
+      typedef command_MoveAxialActuatorDataWriter_ptr _ptr_type;
+      typedef command_MoveAxialActuatorDataWriter_var _var_type;
 
-      static logevent_updateDoneDataWriter_ptr _duplicate (logevent_updateDoneDataWriter_ptr obj);
+      static command_MoveAxialActuatorDataWriter_ptr _duplicate (command_MoveAxialActuatorDataWriter_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static logevent_updateDoneDataWriter_ptr _narrow (DDS::Object_ptr obj);
-      static logevent_updateDoneDataWriter_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static logevent_updateDoneDataWriter_ptr _nil () { return 0; }
+      static command_MoveAxialActuatorDataWriter_ptr _narrow (DDS::Object_ptr obj);
+      static command_MoveAxialActuatorDataWriter_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static command_MoveAxialActuatorDataWriter_ptr _nil () { return 0; }
       static const char * _local_id;
-      logevent_updateDoneDataWriter_ptr _this () { return this; }
+      command_MoveAxialActuatorDataWriter_ptr _this () { return this; }
 
-      virtual DDS::LongLong register_instance (const logevent_updateDone& instance_data) = 0;
-      virtual DDS::LongLong register_instance_w_timestamp (const logevent_updateDone& instance_data, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long unregister_instance (const logevent_updateDone& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long unregister_instance_w_timestamp (const logevent_updateDone& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long write (const logevent_updateDone& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long write_w_timestamp (const logevent_updateDone& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long dispose (const logevent_updateDone& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long dispose_w_timestamp (const logevent_updateDone& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long writedispose (const logevent_updateDone& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long writedispose_w_timestamp (const logevent_updateDone& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long get_key_value (logevent_updateDone& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const logevent_updateDone& instance_data) = 0;
+      virtual DDS::LongLong register_instance (const command_MoveAxialActuator& instance_data) = 0;
+      virtual DDS::LongLong register_instance_w_timestamp (const command_MoveAxialActuator& instance_data, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long unregister_instance (const command_MoveAxialActuator& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long unregister_instance_w_timestamp (const command_MoveAxialActuator& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long write (const command_MoveAxialActuator& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long write_w_timestamp (const command_MoveAxialActuator& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long dispose (const command_MoveAxialActuator& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long dispose_w_timestamp (const command_MoveAxialActuator& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long writedispose (const command_MoveAxialActuator& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long writedispose_w_timestamp (const command_MoveAxialActuator& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long get_key_value (command_MoveAxialActuator& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const command_MoveAxialActuator& instance_data) = 0;
 
    protected:
-      logevent_updateDoneDataWriter () {};
-      ~logevent_updateDoneDataWriter () {};
+      command_MoveAxialActuatorDataWriter () {};
+      ~command_MoveAxialActuatorDataWriter () {};
    private:
-      logevent_updateDoneDataWriter (const logevent_updateDoneDataWriter &);
-      logevent_updateDoneDataWriter & operator = (const logevent_updateDoneDataWriter &);
+      command_MoveAxialActuatorDataWriter (const command_MoveAxialActuatorDataWriter &);
+      command_MoveAxialActuatorDataWriter & operator = (const command_MoveAxialActuatorDataWriter &);
    };
 
-   class logevent_updateDoneDataReader
+   class command_MoveAxialActuatorDataReader
    :
       virtual public DDS::DataReader
    { 
    public:
-      typedef logevent_updateDoneDataReader_ptr _ptr_type;
-      typedef logevent_updateDoneDataReader_var _var_type;
+      typedef command_MoveAxialActuatorDataReader_ptr _ptr_type;
+      typedef command_MoveAxialActuatorDataReader_var _var_type;
 
-      static logevent_updateDoneDataReader_ptr _duplicate (logevent_updateDoneDataReader_ptr obj);
+      static command_MoveAxialActuatorDataReader_ptr _duplicate (command_MoveAxialActuatorDataReader_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static logevent_updateDoneDataReader_ptr _narrow (DDS::Object_ptr obj);
-      static logevent_updateDoneDataReader_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static logevent_updateDoneDataReader_ptr _nil () { return 0; }
+      static command_MoveAxialActuatorDataReader_ptr _narrow (DDS::Object_ptr obj);
+      static command_MoveAxialActuatorDataReader_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static command_MoveAxialActuatorDataReader_ptr _nil () { return 0; }
       static const char * _local_id;
-      logevent_updateDoneDataReader_ptr _this () { return this; }
+      command_MoveAxialActuatorDataReader_ptr _this () { return this; }
 
-      virtual DDS::Long read (logevent_updateDoneSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take (logevent_updateDoneSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_w_condition (logevent_updateDoneSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_w_condition (logevent_updateDoneSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long read_next_sample (logevent_updateDone& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long take_next_sample (logevent_updateDone& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long read_instance (logevent_updateDoneSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_instance (logevent_updateDoneSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance (logevent_updateDoneSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_next_instance (logevent_updateDoneSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance_w_condition (logevent_updateDoneSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_next_instance_w_condition (logevent_updateDoneSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long return_loan (logevent_updateDoneSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
-      virtual DDS::Long get_key_value (logevent_updateDone& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const logevent_updateDone& instance) = 0;
+      virtual DDS::Long read (command_MoveAxialActuatorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (command_MoveAxialActuatorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (command_MoveAxialActuatorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (command_MoveAxialActuatorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (command_MoveAxialActuator& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (command_MoveAxialActuator& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (command_MoveAxialActuatorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (command_MoveAxialActuatorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (command_MoveAxialActuatorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (command_MoveAxialActuatorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (command_MoveAxialActuatorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (command_MoveAxialActuatorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (command_MoveAxialActuatorSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (command_MoveAxialActuator& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const command_MoveAxialActuator& instance) = 0;
 
    protected:
-      logevent_updateDoneDataReader () {};
-      ~logevent_updateDoneDataReader () {};
+      command_MoveAxialActuatorDataReader () {};
+      ~command_MoveAxialActuatorDataReader () {};
    private:
-      logevent_updateDoneDataReader (const logevent_updateDoneDataReader &);
-      logevent_updateDoneDataReader & operator = (const logevent_updateDoneDataReader &);
+      command_MoveAxialActuatorDataReader (const command_MoveAxialActuatorDataReader &);
+      command_MoveAxialActuatorDataReader & operator = (const command_MoveAxialActuatorDataReader &);
    };
 
-   class logevent_updateDoneDataReaderView
+   class command_MoveAxialActuatorDataReaderView
    :
       virtual public DDS::DataReaderView
    { 
    public:
-      typedef logevent_updateDoneDataReaderView_ptr _ptr_type;
-      typedef logevent_updateDoneDataReaderView_var _var_type;
+      typedef command_MoveAxialActuatorDataReaderView_ptr _ptr_type;
+      typedef command_MoveAxialActuatorDataReaderView_var _var_type;
 
-      static logevent_updateDoneDataReaderView_ptr _duplicate (logevent_updateDoneDataReaderView_ptr obj);
+      static command_MoveAxialActuatorDataReaderView_ptr _duplicate (command_MoveAxialActuatorDataReaderView_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static logevent_updateDoneDataReaderView_ptr _narrow (DDS::Object_ptr obj);
-      static logevent_updateDoneDataReaderView_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static logevent_updateDoneDataReaderView_ptr _nil () { return 0; }
+      static command_MoveAxialActuatorDataReaderView_ptr _narrow (DDS::Object_ptr obj);
+      static command_MoveAxialActuatorDataReaderView_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static command_MoveAxialActuatorDataReaderView_ptr _nil () { return 0; }
       static const char * _local_id;
-      logevent_updateDoneDataReaderView_ptr _this () { return this; }
+      command_MoveAxialActuatorDataReaderView_ptr _this () { return this; }
 
-      virtual DDS::Long read (logevent_updateDoneSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take (logevent_updateDoneSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_w_condition (logevent_updateDoneSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_w_condition (logevent_updateDoneSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long read_next_sample (logevent_updateDone& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long take_next_sample (logevent_updateDone& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long read_instance (logevent_updateDoneSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_instance (logevent_updateDoneSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance (logevent_updateDoneSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_next_instance (logevent_updateDoneSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance_w_condition (logevent_updateDoneSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_next_instance_w_condition (logevent_updateDoneSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long return_loan (logevent_updateDoneSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
-      virtual DDS::Long get_key_value (logevent_updateDone& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const logevent_updateDone& instance) = 0;
+      virtual DDS::Long read (command_MoveAxialActuatorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (command_MoveAxialActuatorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (command_MoveAxialActuatorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (command_MoveAxialActuatorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (command_MoveAxialActuator& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (command_MoveAxialActuator& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (command_MoveAxialActuatorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (command_MoveAxialActuatorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (command_MoveAxialActuatorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (command_MoveAxialActuatorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (command_MoveAxialActuatorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (command_MoveAxialActuatorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (command_MoveAxialActuatorSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (command_MoveAxialActuator& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const command_MoveAxialActuator& instance) = 0;
 
    protected:
-      logevent_updateDoneDataReaderView () {};
-      ~logevent_updateDoneDataReaderView () {};
+      command_MoveAxialActuatorDataReaderView () {};
+      ~command_MoveAxialActuatorDataReaderView () {};
    private:
-      logevent_updateDoneDataReaderView (const logevent_updateDoneDataReaderView &);
-      logevent_updateDoneDataReaderView & operator = (const logevent_updateDoneDataReaderView &);
+      command_MoveAxialActuatorDataReaderView (const command_MoveAxialActuatorDataReaderView &);
+      command_MoveAxialActuatorDataReaderView & operator = (const command_MoveAxialActuatorDataReaderView &);
    };
 
-   struct logevent_updateErrorSeq_uniq_ {};
-   typedef DDS_DCPSUVLSeq < logevent_updateError, struct logevent_updateErrorSeq_uniq_> logevent_updateErrorSeq;
-   typedef DDS_DCPSSequence_var < logevent_updateErrorSeq> logevent_updateErrorSeq_var;
-   typedef DDS_DCPSSequence_out < logevent_updateErrorSeq> logevent_updateErrorSeq_out;
-   class logevent_updateErrorTypeSupportInterface
+   struct command_PositionMirrorSeq_uniq_ {};
+   typedef DDS_DCPSUVLSeq < command_PositionMirror, struct command_PositionMirrorSeq_uniq_> command_PositionMirrorSeq;
+   typedef DDS_DCPSSequence_var < command_PositionMirrorSeq> command_PositionMirrorSeq_var;
+   typedef DDS_DCPSSequence_out < command_PositionMirrorSeq> command_PositionMirrorSeq_out;
+   class command_PositionMirrorTypeSupportInterface
    :
       virtual public DDS::TypeSupport
    { 
    public:
-      typedef logevent_updateErrorTypeSupportInterface_ptr _ptr_type;
-      typedef logevent_updateErrorTypeSupportInterface_var _var_type;
+      typedef command_PositionMirrorTypeSupportInterface_ptr _ptr_type;
+      typedef command_PositionMirrorTypeSupportInterface_var _var_type;
 
-      static logevent_updateErrorTypeSupportInterface_ptr _duplicate (logevent_updateErrorTypeSupportInterface_ptr obj);
+      static command_PositionMirrorTypeSupportInterface_ptr _duplicate (command_PositionMirrorTypeSupportInterface_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static logevent_updateErrorTypeSupportInterface_ptr _narrow (DDS::Object_ptr obj);
-      static logevent_updateErrorTypeSupportInterface_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static logevent_updateErrorTypeSupportInterface_ptr _nil () { return 0; }
+      static command_PositionMirrorTypeSupportInterface_ptr _narrow (DDS::Object_ptr obj);
+      static command_PositionMirrorTypeSupportInterface_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static command_PositionMirrorTypeSupportInterface_ptr _nil () { return 0; }
       static const char * _local_id;
-      logevent_updateErrorTypeSupportInterface_ptr _this () { return this; }
+      command_PositionMirrorTypeSupportInterface_ptr _this () { return this; }
 
 
    protected:
-      logevent_updateErrorTypeSupportInterface () {};
-      ~logevent_updateErrorTypeSupportInterface () {};
+      command_PositionMirrorTypeSupportInterface () {};
+      ~command_PositionMirrorTypeSupportInterface () {};
    private:
-      logevent_updateErrorTypeSupportInterface (const logevent_updateErrorTypeSupportInterface &);
-      logevent_updateErrorTypeSupportInterface & operator = (const logevent_updateErrorTypeSupportInterface &);
+      command_PositionMirrorTypeSupportInterface (const command_PositionMirrorTypeSupportInterface &);
+      command_PositionMirrorTypeSupportInterface & operator = (const command_PositionMirrorTypeSupportInterface &);
    };
 
-   class logevent_updateErrorDataWriter
+   class command_PositionMirrorDataWriter
    :
       virtual public DDS::DataWriter
    { 
    public:
-      typedef logevent_updateErrorDataWriter_ptr _ptr_type;
-      typedef logevent_updateErrorDataWriter_var _var_type;
+      typedef command_PositionMirrorDataWriter_ptr _ptr_type;
+      typedef command_PositionMirrorDataWriter_var _var_type;
 
-      static logevent_updateErrorDataWriter_ptr _duplicate (logevent_updateErrorDataWriter_ptr obj);
+      static command_PositionMirrorDataWriter_ptr _duplicate (command_PositionMirrorDataWriter_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static logevent_updateErrorDataWriter_ptr _narrow (DDS::Object_ptr obj);
-      static logevent_updateErrorDataWriter_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static logevent_updateErrorDataWriter_ptr _nil () { return 0; }
+      static command_PositionMirrorDataWriter_ptr _narrow (DDS::Object_ptr obj);
+      static command_PositionMirrorDataWriter_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static command_PositionMirrorDataWriter_ptr _nil () { return 0; }
       static const char * _local_id;
-      logevent_updateErrorDataWriter_ptr _this () { return this; }
+      command_PositionMirrorDataWriter_ptr _this () { return this; }
 
-      virtual DDS::LongLong register_instance (const logevent_updateError& instance_data) = 0;
-      virtual DDS::LongLong register_instance_w_timestamp (const logevent_updateError& instance_data, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long unregister_instance (const logevent_updateError& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long unregister_instance_w_timestamp (const logevent_updateError& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long write (const logevent_updateError& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long write_w_timestamp (const logevent_updateError& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long dispose (const logevent_updateError& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long dispose_w_timestamp (const logevent_updateError& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long writedispose (const logevent_updateError& instance_data, DDS::LongLong handle) = 0;
-      virtual DDS::Long writedispose_w_timestamp (const logevent_updateError& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
-      virtual DDS::Long get_key_value (logevent_updateError& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const logevent_updateError& instance_data) = 0;
+      virtual DDS::LongLong register_instance (const command_PositionMirror& instance_data) = 0;
+      virtual DDS::LongLong register_instance_w_timestamp (const command_PositionMirror& instance_data, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long unregister_instance (const command_PositionMirror& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long unregister_instance_w_timestamp (const command_PositionMirror& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long write (const command_PositionMirror& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long write_w_timestamp (const command_PositionMirror& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long dispose (const command_PositionMirror& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long dispose_w_timestamp (const command_PositionMirror& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long writedispose (const command_PositionMirror& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long writedispose_w_timestamp (const command_PositionMirror& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long get_key_value (command_PositionMirror& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const command_PositionMirror& instance_data) = 0;
 
    protected:
-      logevent_updateErrorDataWriter () {};
-      ~logevent_updateErrorDataWriter () {};
+      command_PositionMirrorDataWriter () {};
+      ~command_PositionMirrorDataWriter () {};
    private:
-      logevent_updateErrorDataWriter (const logevent_updateErrorDataWriter &);
-      logevent_updateErrorDataWriter & operator = (const logevent_updateErrorDataWriter &);
+      command_PositionMirrorDataWriter (const command_PositionMirrorDataWriter &);
+      command_PositionMirrorDataWriter & operator = (const command_PositionMirrorDataWriter &);
    };
 
-   class logevent_updateErrorDataReader
+   class command_PositionMirrorDataReader
    :
       virtual public DDS::DataReader
    { 
    public:
-      typedef logevent_updateErrorDataReader_ptr _ptr_type;
-      typedef logevent_updateErrorDataReader_var _var_type;
+      typedef command_PositionMirrorDataReader_ptr _ptr_type;
+      typedef command_PositionMirrorDataReader_var _var_type;
 
-      static logevent_updateErrorDataReader_ptr _duplicate (logevent_updateErrorDataReader_ptr obj);
+      static command_PositionMirrorDataReader_ptr _duplicate (command_PositionMirrorDataReader_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static logevent_updateErrorDataReader_ptr _narrow (DDS::Object_ptr obj);
-      static logevent_updateErrorDataReader_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static logevent_updateErrorDataReader_ptr _nil () { return 0; }
+      static command_PositionMirrorDataReader_ptr _narrow (DDS::Object_ptr obj);
+      static command_PositionMirrorDataReader_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static command_PositionMirrorDataReader_ptr _nil () { return 0; }
       static const char * _local_id;
-      logevent_updateErrorDataReader_ptr _this () { return this; }
+      command_PositionMirrorDataReader_ptr _this () { return this; }
 
-      virtual DDS::Long read (logevent_updateErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take (logevent_updateErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_w_condition (logevent_updateErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_w_condition (logevent_updateErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long read_next_sample (logevent_updateError& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long take_next_sample (logevent_updateError& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long read_instance (logevent_updateErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_instance (logevent_updateErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance (logevent_updateErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_next_instance (logevent_updateErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance_w_condition (logevent_updateErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_next_instance_w_condition (logevent_updateErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long return_loan (logevent_updateErrorSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
-      virtual DDS::Long get_key_value (logevent_updateError& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const logevent_updateError& instance) = 0;
+      virtual DDS::Long read (command_PositionMirrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (command_PositionMirrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (command_PositionMirrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (command_PositionMirrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (command_PositionMirror& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (command_PositionMirror& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (command_PositionMirrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (command_PositionMirrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (command_PositionMirrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (command_PositionMirrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (command_PositionMirrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (command_PositionMirrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (command_PositionMirrorSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (command_PositionMirror& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const command_PositionMirror& instance) = 0;
 
    protected:
-      logevent_updateErrorDataReader () {};
-      ~logevent_updateErrorDataReader () {};
+      command_PositionMirrorDataReader () {};
+      ~command_PositionMirrorDataReader () {};
    private:
-      logevent_updateErrorDataReader (const logevent_updateErrorDataReader &);
-      logevent_updateErrorDataReader & operator = (const logevent_updateErrorDataReader &);
+      command_PositionMirrorDataReader (const command_PositionMirrorDataReader &);
+      command_PositionMirrorDataReader & operator = (const command_PositionMirrorDataReader &);
    };
 
-   class logevent_updateErrorDataReaderView
+   class command_PositionMirrorDataReaderView
    :
       virtual public DDS::DataReaderView
    { 
    public:
-      typedef logevent_updateErrorDataReaderView_ptr _ptr_type;
-      typedef logevent_updateErrorDataReaderView_var _var_type;
+      typedef command_PositionMirrorDataReaderView_ptr _ptr_type;
+      typedef command_PositionMirrorDataReaderView_var _var_type;
 
-      static logevent_updateErrorDataReaderView_ptr _duplicate (logevent_updateErrorDataReaderView_ptr obj);
+      static command_PositionMirrorDataReaderView_ptr _duplicate (command_PositionMirrorDataReaderView_ptr obj);
       DDS::Boolean _local_is_a (const char * id);
 
-      static logevent_updateErrorDataReaderView_ptr _narrow (DDS::Object_ptr obj);
-      static logevent_updateErrorDataReaderView_ptr _unchecked_narrow (DDS::Object_ptr obj);
-      static logevent_updateErrorDataReaderView_ptr _nil () { return 0; }
+      static command_PositionMirrorDataReaderView_ptr _narrow (DDS::Object_ptr obj);
+      static command_PositionMirrorDataReaderView_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static command_PositionMirrorDataReaderView_ptr _nil () { return 0; }
       static const char * _local_id;
-      logevent_updateErrorDataReaderView_ptr _this () { return this; }
+      command_PositionMirrorDataReaderView_ptr _this () { return this; }
 
-      virtual DDS::Long read (logevent_updateErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take (logevent_updateErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_w_condition (logevent_updateErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_w_condition (logevent_updateErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long read_next_sample (logevent_updateError& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long take_next_sample (logevent_updateError& received_data, DDS::SampleInfo& sample_info) = 0;
-      virtual DDS::Long read_instance (logevent_updateErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_instance (logevent_updateErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance (logevent_updateErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long take_next_instance (logevent_updateErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
-      virtual DDS::Long read_next_instance_w_condition (logevent_updateErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long take_next_instance_w_condition (logevent_updateErrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
-      virtual DDS::Long return_loan (logevent_updateErrorSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
-      virtual DDS::Long get_key_value (logevent_updateError& key_holder, DDS::LongLong handle) = 0;
-      virtual DDS::LongLong lookup_instance (const logevent_updateError& instance) = 0;
+      virtual DDS::Long read (command_PositionMirrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (command_PositionMirrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (command_PositionMirrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (command_PositionMirrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (command_PositionMirror& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (command_PositionMirror& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (command_PositionMirrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (command_PositionMirrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (command_PositionMirrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (command_PositionMirrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (command_PositionMirrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (command_PositionMirrorSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (command_PositionMirrorSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (command_PositionMirror& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const command_PositionMirror& instance) = 0;
 
    protected:
-      logevent_updateErrorDataReaderView () {};
-      ~logevent_updateErrorDataReaderView () {};
+      command_PositionMirrorDataReaderView () {};
+      ~command_PositionMirrorDataReaderView () {};
    private:
-      logevent_updateErrorDataReaderView (const logevent_updateErrorDataReaderView &);
-      logevent_updateErrorDataReaderView & operator = (const logevent_updateErrorDataReaderView &);
+      command_PositionMirrorDataReaderView (const command_PositionMirrorDataReaderView &);
+      command_PositionMirrorDataReaderView & operator = (const command_PositionMirrorDataReaderView &);
+   };
+
+   struct command_SetCorrectionModeSeq_uniq_ {};
+   typedef DDS_DCPSUVLSeq < command_SetCorrectionMode, struct command_SetCorrectionModeSeq_uniq_> command_SetCorrectionModeSeq;
+   typedef DDS_DCPSSequence_var < command_SetCorrectionModeSeq> command_SetCorrectionModeSeq_var;
+   typedef DDS_DCPSSequence_out < command_SetCorrectionModeSeq> command_SetCorrectionModeSeq_out;
+   class command_SetCorrectionModeTypeSupportInterface
+   :
+      virtual public DDS::TypeSupport
+   { 
+   public:
+      typedef command_SetCorrectionModeTypeSupportInterface_ptr _ptr_type;
+      typedef command_SetCorrectionModeTypeSupportInterface_var _var_type;
+
+      static command_SetCorrectionModeTypeSupportInterface_ptr _duplicate (command_SetCorrectionModeTypeSupportInterface_ptr obj);
+      DDS::Boolean _local_is_a (const char * id);
+
+      static command_SetCorrectionModeTypeSupportInterface_ptr _narrow (DDS::Object_ptr obj);
+      static command_SetCorrectionModeTypeSupportInterface_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static command_SetCorrectionModeTypeSupportInterface_ptr _nil () { return 0; }
+      static const char * _local_id;
+      command_SetCorrectionModeTypeSupportInterface_ptr _this () { return this; }
+
+
+   protected:
+      command_SetCorrectionModeTypeSupportInterface () {};
+      ~command_SetCorrectionModeTypeSupportInterface () {};
+   private:
+      command_SetCorrectionModeTypeSupportInterface (const command_SetCorrectionModeTypeSupportInterface &);
+      command_SetCorrectionModeTypeSupportInterface & operator = (const command_SetCorrectionModeTypeSupportInterface &);
+   };
+
+   class command_SetCorrectionModeDataWriter
+   :
+      virtual public DDS::DataWriter
+   { 
+   public:
+      typedef command_SetCorrectionModeDataWriter_ptr _ptr_type;
+      typedef command_SetCorrectionModeDataWriter_var _var_type;
+
+      static command_SetCorrectionModeDataWriter_ptr _duplicate (command_SetCorrectionModeDataWriter_ptr obj);
+      DDS::Boolean _local_is_a (const char * id);
+
+      static command_SetCorrectionModeDataWriter_ptr _narrow (DDS::Object_ptr obj);
+      static command_SetCorrectionModeDataWriter_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static command_SetCorrectionModeDataWriter_ptr _nil () { return 0; }
+      static const char * _local_id;
+      command_SetCorrectionModeDataWriter_ptr _this () { return this; }
+
+      virtual DDS::LongLong register_instance (const command_SetCorrectionMode& instance_data) = 0;
+      virtual DDS::LongLong register_instance_w_timestamp (const command_SetCorrectionMode& instance_data, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long unregister_instance (const command_SetCorrectionMode& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long unregister_instance_w_timestamp (const command_SetCorrectionMode& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long write (const command_SetCorrectionMode& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long write_w_timestamp (const command_SetCorrectionMode& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long dispose (const command_SetCorrectionMode& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long dispose_w_timestamp (const command_SetCorrectionMode& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long writedispose (const command_SetCorrectionMode& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long writedispose_w_timestamp (const command_SetCorrectionMode& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long get_key_value (command_SetCorrectionMode& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const command_SetCorrectionMode& instance_data) = 0;
+
+   protected:
+      command_SetCorrectionModeDataWriter () {};
+      ~command_SetCorrectionModeDataWriter () {};
+   private:
+      command_SetCorrectionModeDataWriter (const command_SetCorrectionModeDataWriter &);
+      command_SetCorrectionModeDataWriter & operator = (const command_SetCorrectionModeDataWriter &);
+   };
+
+   class command_SetCorrectionModeDataReader
+   :
+      virtual public DDS::DataReader
+   { 
+   public:
+      typedef command_SetCorrectionModeDataReader_ptr _ptr_type;
+      typedef command_SetCorrectionModeDataReader_var _var_type;
+
+      static command_SetCorrectionModeDataReader_ptr _duplicate (command_SetCorrectionModeDataReader_ptr obj);
+      DDS::Boolean _local_is_a (const char * id);
+
+      static command_SetCorrectionModeDataReader_ptr _narrow (DDS::Object_ptr obj);
+      static command_SetCorrectionModeDataReader_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static command_SetCorrectionModeDataReader_ptr _nil () { return 0; }
+      static const char * _local_id;
+      command_SetCorrectionModeDataReader_ptr _this () { return this; }
+
+      virtual DDS::Long read (command_SetCorrectionModeSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (command_SetCorrectionModeSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (command_SetCorrectionModeSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (command_SetCorrectionModeSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (command_SetCorrectionMode& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (command_SetCorrectionMode& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (command_SetCorrectionModeSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (command_SetCorrectionModeSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (command_SetCorrectionModeSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (command_SetCorrectionModeSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (command_SetCorrectionModeSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (command_SetCorrectionModeSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (command_SetCorrectionModeSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (command_SetCorrectionMode& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const command_SetCorrectionMode& instance) = 0;
+
+   protected:
+      command_SetCorrectionModeDataReader () {};
+      ~command_SetCorrectionModeDataReader () {};
+   private:
+      command_SetCorrectionModeDataReader (const command_SetCorrectionModeDataReader &);
+      command_SetCorrectionModeDataReader & operator = (const command_SetCorrectionModeDataReader &);
+   };
+
+   class command_SetCorrectionModeDataReaderView
+   :
+      virtual public DDS::DataReaderView
+   { 
+   public:
+      typedef command_SetCorrectionModeDataReaderView_ptr _ptr_type;
+      typedef command_SetCorrectionModeDataReaderView_var _var_type;
+
+      static command_SetCorrectionModeDataReaderView_ptr _duplicate (command_SetCorrectionModeDataReaderView_ptr obj);
+      DDS::Boolean _local_is_a (const char * id);
+
+      static command_SetCorrectionModeDataReaderView_ptr _narrow (DDS::Object_ptr obj);
+      static command_SetCorrectionModeDataReaderView_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static command_SetCorrectionModeDataReaderView_ptr _nil () { return 0; }
+      static const char * _local_id;
+      command_SetCorrectionModeDataReaderView_ptr _this () { return this; }
+
+      virtual DDS::Long read (command_SetCorrectionModeSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (command_SetCorrectionModeSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (command_SetCorrectionModeSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (command_SetCorrectionModeSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (command_SetCorrectionMode& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (command_SetCorrectionMode& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (command_SetCorrectionModeSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (command_SetCorrectionModeSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (command_SetCorrectionModeSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (command_SetCorrectionModeSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (command_SetCorrectionModeSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (command_SetCorrectionModeSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (command_SetCorrectionModeSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (command_SetCorrectionMode& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const command_SetCorrectionMode& instance) = 0;
+
+   protected:
+      command_SetCorrectionModeDataReaderView () {};
+      ~command_SetCorrectionModeDataReaderView () {};
+   private:
+      command_SetCorrectionModeDataReaderView (const command_SetCorrectionModeDataReaderView &);
+      command_SetCorrectionModeDataReaderView & operator = (const command_SetCorrectionModeDataReaderView &);
+   };
+
+   struct logevent_M2AssemblyInPositionSeq_uniq_ {};
+   typedef DDS_DCPSUVLSeq < logevent_M2AssemblyInPosition, struct logevent_M2AssemblyInPositionSeq_uniq_> logevent_M2AssemblyInPositionSeq;
+   typedef DDS_DCPSSequence_var < logevent_M2AssemblyInPositionSeq> logevent_M2AssemblyInPositionSeq_var;
+   typedef DDS_DCPSSequence_out < logevent_M2AssemblyInPositionSeq> logevent_M2AssemblyInPositionSeq_out;
+   class logevent_M2AssemblyInPositionTypeSupportInterface
+   :
+      virtual public DDS::TypeSupport
+   { 
+   public:
+      typedef logevent_M2AssemblyInPositionTypeSupportInterface_ptr _ptr_type;
+      typedef logevent_M2AssemblyInPositionTypeSupportInterface_var _var_type;
+
+      static logevent_M2AssemblyInPositionTypeSupportInterface_ptr _duplicate (logevent_M2AssemblyInPositionTypeSupportInterface_ptr obj);
+      DDS::Boolean _local_is_a (const char * id);
+
+      static logevent_M2AssemblyInPositionTypeSupportInterface_ptr _narrow (DDS::Object_ptr obj);
+      static logevent_M2AssemblyInPositionTypeSupportInterface_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static logevent_M2AssemblyInPositionTypeSupportInterface_ptr _nil () { return 0; }
+      static const char * _local_id;
+      logevent_M2AssemblyInPositionTypeSupportInterface_ptr _this () { return this; }
+
+
+   protected:
+      logevent_M2AssemblyInPositionTypeSupportInterface () {};
+      ~logevent_M2AssemblyInPositionTypeSupportInterface () {};
+   private:
+      logevent_M2AssemblyInPositionTypeSupportInterface (const logevent_M2AssemblyInPositionTypeSupportInterface &);
+      logevent_M2AssemblyInPositionTypeSupportInterface & operator = (const logevent_M2AssemblyInPositionTypeSupportInterface &);
+   };
+
+   class logevent_M2AssemblyInPositionDataWriter
+   :
+      virtual public DDS::DataWriter
+   { 
+   public:
+      typedef logevent_M2AssemblyInPositionDataWriter_ptr _ptr_type;
+      typedef logevent_M2AssemblyInPositionDataWriter_var _var_type;
+
+      static logevent_M2AssemblyInPositionDataWriter_ptr _duplicate (logevent_M2AssemblyInPositionDataWriter_ptr obj);
+      DDS::Boolean _local_is_a (const char * id);
+
+      static logevent_M2AssemblyInPositionDataWriter_ptr _narrow (DDS::Object_ptr obj);
+      static logevent_M2AssemblyInPositionDataWriter_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static logevent_M2AssemblyInPositionDataWriter_ptr _nil () { return 0; }
+      static const char * _local_id;
+      logevent_M2AssemblyInPositionDataWriter_ptr _this () { return this; }
+
+      virtual DDS::LongLong register_instance (const logevent_M2AssemblyInPosition& instance_data) = 0;
+      virtual DDS::LongLong register_instance_w_timestamp (const logevent_M2AssemblyInPosition& instance_data, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long unregister_instance (const logevent_M2AssemblyInPosition& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long unregister_instance_w_timestamp (const logevent_M2AssemblyInPosition& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long write (const logevent_M2AssemblyInPosition& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long write_w_timestamp (const logevent_M2AssemblyInPosition& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long dispose (const logevent_M2AssemblyInPosition& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long dispose_w_timestamp (const logevent_M2AssemblyInPosition& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long writedispose (const logevent_M2AssemblyInPosition& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long writedispose_w_timestamp (const logevent_M2AssemblyInPosition& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long get_key_value (logevent_M2AssemblyInPosition& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const logevent_M2AssemblyInPosition& instance_data) = 0;
+
+   protected:
+      logevent_M2AssemblyInPositionDataWriter () {};
+      ~logevent_M2AssemblyInPositionDataWriter () {};
+   private:
+      logevent_M2AssemblyInPositionDataWriter (const logevent_M2AssemblyInPositionDataWriter &);
+      logevent_M2AssemblyInPositionDataWriter & operator = (const logevent_M2AssemblyInPositionDataWriter &);
+   };
+
+   class logevent_M2AssemblyInPositionDataReader
+   :
+      virtual public DDS::DataReader
+   { 
+   public:
+      typedef logevent_M2AssemblyInPositionDataReader_ptr _ptr_type;
+      typedef logevent_M2AssemblyInPositionDataReader_var _var_type;
+
+      static logevent_M2AssemblyInPositionDataReader_ptr _duplicate (logevent_M2AssemblyInPositionDataReader_ptr obj);
+      DDS::Boolean _local_is_a (const char * id);
+
+      static logevent_M2AssemblyInPositionDataReader_ptr _narrow (DDS::Object_ptr obj);
+      static logevent_M2AssemblyInPositionDataReader_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static logevent_M2AssemblyInPositionDataReader_ptr _nil () { return 0; }
+      static const char * _local_id;
+      logevent_M2AssemblyInPositionDataReader_ptr _this () { return this; }
+
+      virtual DDS::Long read (logevent_M2AssemblyInPositionSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (logevent_M2AssemblyInPositionSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (logevent_M2AssemblyInPositionSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (logevent_M2AssemblyInPositionSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (logevent_M2AssemblyInPosition& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (logevent_M2AssemblyInPosition& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (logevent_M2AssemblyInPositionSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (logevent_M2AssemblyInPositionSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (logevent_M2AssemblyInPositionSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (logevent_M2AssemblyInPositionSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (logevent_M2AssemblyInPositionSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (logevent_M2AssemblyInPositionSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (logevent_M2AssemblyInPositionSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (logevent_M2AssemblyInPosition& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const logevent_M2AssemblyInPosition& instance) = 0;
+
+   protected:
+      logevent_M2AssemblyInPositionDataReader () {};
+      ~logevent_M2AssemblyInPositionDataReader () {};
+   private:
+      logevent_M2AssemblyInPositionDataReader (const logevent_M2AssemblyInPositionDataReader &);
+      logevent_M2AssemblyInPositionDataReader & operator = (const logevent_M2AssemblyInPositionDataReader &);
+   };
+
+   class logevent_M2AssemblyInPositionDataReaderView
+   :
+      virtual public DDS::DataReaderView
+   { 
+   public:
+      typedef logevent_M2AssemblyInPositionDataReaderView_ptr _ptr_type;
+      typedef logevent_M2AssemblyInPositionDataReaderView_var _var_type;
+
+      static logevent_M2AssemblyInPositionDataReaderView_ptr _duplicate (logevent_M2AssemblyInPositionDataReaderView_ptr obj);
+      DDS::Boolean _local_is_a (const char * id);
+
+      static logevent_M2AssemblyInPositionDataReaderView_ptr _narrow (DDS::Object_ptr obj);
+      static logevent_M2AssemblyInPositionDataReaderView_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static logevent_M2AssemblyInPositionDataReaderView_ptr _nil () { return 0; }
+      static const char * _local_id;
+      logevent_M2AssemblyInPositionDataReaderView_ptr _this () { return this; }
+
+      virtual DDS::Long read (logevent_M2AssemblyInPositionSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (logevent_M2AssemblyInPositionSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (logevent_M2AssemblyInPositionSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (logevent_M2AssemblyInPositionSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (logevent_M2AssemblyInPosition& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (logevent_M2AssemblyInPosition& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (logevent_M2AssemblyInPositionSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (logevent_M2AssemblyInPositionSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (logevent_M2AssemblyInPositionSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (logevent_M2AssemblyInPositionSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (logevent_M2AssemblyInPositionSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (logevent_M2AssemblyInPositionSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (logevent_M2AssemblyInPositionSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (logevent_M2AssemblyInPosition& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const logevent_M2AssemblyInPosition& instance) = 0;
+
+   protected:
+      logevent_M2AssemblyInPositionDataReaderView () {};
+      ~logevent_M2AssemblyInPositionDataReaderView () {};
+   private:
+      logevent_M2AssemblyInPositionDataReaderView (const logevent_M2AssemblyInPositionDataReaderView &);
+      logevent_M2AssemblyInPositionDataReaderView & operator = (const logevent_M2AssemblyInPositionDataReaderView &);
+   };
+
+   struct logevent_M2DetailedStateSeq_uniq_ {};
+   typedef DDS_DCPSUVLSeq < logevent_M2DetailedState, struct logevent_M2DetailedStateSeq_uniq_> logevent_M2DetailedStateSeq;
+   typedef DDS_DCPSSequence_var < logevent_M2DetailedStateSeq> logevent_M2DetailedStateSeq_var;
+   typedef DDS_DCPSSequence_out < logevent_M2DetailedStateSeq> logevent_M2DetailedStateSeq_out;
+   class logevent_M2DetailedStateTypeSupportInterface
+   :
+      virtual public DDS::TypeSupport
+   { 
+   public:
+      typedef logevent_M2DetailedStateTypeSupportInterface_ptr _ptr_type;
+      typedef logevent_M2DetailedStateTypeSupportInterface_var _var_type;
+
+      static logevent_M2DetailedStateTypeSupportInterface_ptr _duplicate (logevent_M2DetailedStateTypeSupportInterface_ptr obj);
+      DDS::Boolean _local_is_a (const char * id);
+
+      static logevent_M2DetailedStateTypeSupportInterface_ptr _narrow (DDS::Object_ptr obj);
+      static logevent_M2DetailedStateTypeSupportInterface_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static logevent_M2DetailedStateTypeSupportInterface_ptr _nil () { return 0; }
+      static const char * _local_id;
+      logevent_M2DetailedStateTypeSupportInterface_ptr _this () { return this; }
+
+
+   protected:
+      logevent_M2DetailedStateTypeSupportInterface () {};
+      ~logevent_M2DetailedStateTypeSupportInterface () {};
+   private:
+      logevent_M2DetailedStateTypeSupportInterface (const logevent_M2DetailedStateTypeSupportInterface &);
+      logevent_M2DetailedStateTypeSupportInterface & operator = (const logevent_M2DetailedStateTypeSupportInterface &);
+   };
+
+   class logevent_M2DetailedStateDataWriter
+   :
+      virtual public DDS::DataWriter
+   { 
+   public:
+      typedef logevent_M2DetailedStateDataWriter_ptr _ptr_type;
+      typedef logevent_M2DetailedStateDataWriter_var _var_type;
+
+      static logevent_M2DetailedStateDataWriter_ptr _duplicate (logevent_M2DetailedStateDataWriter_ptr obj);
+      DDS::Boolean _local_is_a (const char * id);
+
+      static logevent_M2DetailedStateDataWriter_ptr _narrow (DDS::Object_ptr obj);
+      static logevent_M2DetailedStateDataWriter_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static logevent_M2DetailedStateDataWriter_ptr _nil () { return 0; }
+      static const char * _local_id;
+      logevent_M2DetailedStateDataWriter_ptr _this () { return this; }
+
+      virtual DDS::LongLong register_instance (const logevent_M2DetailedState& instance_data) = 0;
+      virtual DDS::LongLong register_instance_w_timestamp (const logevent_M2DetailedState& instance_data, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long unregister_instance (const logevent_M2DetailedState& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long unregister_instance_w_timestamp (const logevent_M2DetailedState& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long write (const logevent_M2DetailedState& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long write_w_timestamp (const logevent_M2DetailedState& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long dispose (const logevent_M2DetailedState& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long dispose_w_timestamp (const logevent_M2DetailedState& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long writedispose (const logevent_M2DetailedState& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long writedispose_w_timestamp (const logevent_M2DetailedState& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long get_key_value (logevent_M2DetailedState& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const logevent_M2DetailedState& instance_data) = 0;
+
+   protected:
+      logevent_M2DetailedStateDataWriter () {};
+      ~logevent_M2DetailedStateDataWriter () {};
+   private:
+      logevent_M2DetailedStateDataWriter (const logevent_M2DetailedStateDataWriter &);
+      logevent_M2DetailedStateDataWriter & operator = (const logevent_M2DetailedStateDataWriter &);
+   };
+
+   class logevent_M2DetailedStateDataReader
+   :
+      virtual public DDS::DataReader
+   { 
+   public:
+      typedef logevent_M2DetailedStateDataReader_ptr _ptr_type;
+      typedef logevent_M2DetailedStateDataReader_var _var_type;
+
+      static logevent_M2DetailedStateDataReader_ptr _duplicate (logevent_M2DetailedStateDataReader_ptr obj);
+      DDS::Boolean _local_is_a (const char * id);
+
+      static logevent_M2DetailedStateDataReader_ptr _narrow (DDS::Object_ptr obj);
+      static logevent_M2DetailedStateDataReader_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static logevent_M2DetailedStateDataReader_ptr _nil () { return 0; }
+      static const char * _local_id;
+      logevent_M2DetailedStateDataReader_ptr _this () { return this; }
+
+      virtual DDS::Long read (logevent_M2DetailedStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (logevent_M2DetailedStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (logevent_M2DetailedStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (logevent_M2DetailedStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (logevent_M2DetailedState& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (logevent_M2DetailedState& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (logevent_M2DetailedStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (logevent_M2DetailedStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (logevent_M2DetailedStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (logevent_M2DetailedStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (logevent_M2DetailedStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (logevent_M2DetailedStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (logevent_M2DetailedStateSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (logevent_M2DetailedState& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const logevent_M2DetailedState& instance) = 0;
+
+   protected:
+      logevent_M2DetailedStateDataReader () {};
+      ~logevent_M2DetailedStateDataReader () {};
+   private:
+      logevent_M2DetailedStateDataReader (const logevent_M2DetailedStateDataReader &);
+      logevent_M2DetailedStateDataReader & operator = (const logevent_M2DetailedStateDataReader &);
+   };
+
+   class logevent_M2DetailedStateDataReaderView
+   :
+      virtual public DDS::DataReaderView
+   { 
+   public:
+      typedef logevent_M2DetailedStateDataReaderView_ptr _ptr_type;
+      typedef logevent_M2DetailedStateDataReaderView_var _var_type;
+
+      static logevent_M2DetailedStateDataReaderView_ptr _duplicate (logevent_M2DetailedStateDataReaderView_ptr obj);
+      DDS::Boolean _local_is_a (const char * id);
+
+      static logevent_M2DetailedStateDataReaderView_ptr _narrow (DDS::Object_ptr obj);
+      static logevent_M2DetailedStateDataReaderView_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static logevent_M2DetailedStateDataReaderView_ptr _nil () { return 0; }
+      static const char * _local_id;
+      logevent_M2DetailedStateDataReaderView_ptr _this () { return this; }
+
+      virtual DDS::Long read (logevent_M2DetailedStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (logevent_M2DetailedStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (logevent_M2DetailedStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (logevent_M2DetailedStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (logevent_M2DetailedState& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (logevent_M2DetailedState& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (logevent_M2DetailedStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (logevent_M2DetailedStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (logevent_M2DetailedStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (logevent_M2DetailedStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (logevent_M2DetailedStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (logevent_M2DetailedStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (logevent_M2DetailedStateSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (logevent_M2DetailedState& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const logevent_M2DetailedState& instance) = 0;
+
+   protected:
+      logevent_M2DetailedStateDataReaderView () {};
+      ~logevent_M2DetailedStateDataReaderView () {};
+   private:
+      logevent_M2DetailedStateDataReaderView (const logevent_M2DetailedStateDataReaderView &);
+      logevent_M2DetailedStateDataReaderView & operator = (const logevent_M2DetailedStateDataReaderView &);
+   };
+
+   struct logevent_M2FaultStateSeq_uniq_ {};
+   typedef DDS_DCPSUVLSeq < logevent_M2FaultState, struct logevent_M2FaultStateSeq_uniq_> logevent_M2FaultStateSeq;
+   typedef DDS_DCPSSequence_var < logevent_M2FaultStateSeq> logevent_M2FaultStateSeq_var;
+   typedef DDS_DCPSSequence_out < logevent_M2FaultStateSeq> logevent_M2FaultStateSeq_out;
+   class logevent_M2FaultStateTypeSupportInterface
+   :
+      virtual public DDS::TypeSupport
+   { 
+   public:
+      typedef logevent_M2FaultStateTypeSupportInterface_ptr _ptr_type;
+      typedef logevent_M2FaultStateTypeSupportInterface_var _var_type;
+
+      static logevent_M2FaultStateTypeSupportInterface_ptr _duplicate (logevent_M2FaultStateTypeSupportInterface_ptr obj);
+      DDS::Boolean _local_is_a (const char * id);
+
+      static logevent_M2FaultStateTypeSupportInterface_ptr _narrow (DDS::Object_ptr obj);
+      static logevent_M2FaultStateTypeSupportInterface_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static logevent_M2FaultStateTypeSupportInterface_ptr _nil () { return 0; }
+      static const char * _local_id;
+      logevent_M2FaultStateTypeSupportInterface_ptr _this () { return this; }
+
+
+   protected:
+      logevent_M2FaultStateTypeSupportInterface () {};
+      ~logevent_M2FaultStateTypeSupportInterface () {};
+   private:
+      logevent_M2FaultStateTypeSupportInterface (const logevent_M2FaultStateTypeSupportInterface &);
+      logevent_M2FaultStateTypeSupportInterface & operator = (const logevent_M2FaultStateTypeSupportInterface &);
+   };
+
+   class logevent_M2FaultStateDataWriter
+   :
+      virtual public DDS::DataWriter
+   { 
+   public:
+      typedef logevent_M2FaultStateDataWriter_ptr _ptr_type;
+      typedef logevent_M2FaultStateDataWriter_var _var_type;
+
+      static logevent_M2FaultStateDataWriter_ptr _duplicate (logevent_M2FaultStateDataWriter_ptr obj);
+      DDS::Boolean _local_is_a (const char * id);
+
+      static logevent_M2FaultStateDataWriter_ptr _narrow (DDS::Object_ptr obj);
+      static logevent_M2FaultStateDataWriter_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static logevent_M2FaultStateDataWriter_ptr _nil () { return 0; }
+      static const char * _local_id;
+      logevent_M2FaultStateDataWriter_ptr _this () { return this; }
+
+      virtual DDS::LongLong register_instance (const logevent_M2FaultState& instance_data) = 0;
+      virtual DDS::LongLong register_instance_w_timestamp (const logevent_M2FaultState& instance_data, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long unregister_instance (const logevent_M2FaultState& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long unregister_instance_w_timestamp (const logevent_M2FaultState& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long write (const logevent_M2FaultState& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long write_w_timestamp (const logevent_M2FaultState& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long dispose (const logevent_M2FaultState& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long dispose_w_timestamp (const logevent_M2FaultState& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long writedispose (const logevent_M2FaultState& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long writedispose_w_timestamp (const logevent_M2FaultState& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long get_key_value (logevent_M2FaultState& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const logevent_M2FaultState& instance_data) = 0;
+
+   protected:
+      logevent_M2FaultStateDataWriter () {};
+      ~logevent_M2FaultStateDataWriter () {};
+   private:
+      logevent_M2FaultStateDataWriter (const logevent_M2FaultStateDataWriter &);
+      logevent_M2FaultStateDataWriter & operator = (const logevent_M2FaultStateDataWriter &);
+   };
+
+   class logevent_M2FaultStateDataReader
+   :
+      virtual public DDS::DataReader
+   { 
+   public:
+      typedef logevent_M2FaultStateDataReader_ptr _ptr_type;
+      typedef logevent_M2FaultStateDataReader_var _var_type;
+
+      static logevent_M2FaultStateDataReader_ptr _duplicate (logevent_M2FaultStateDataReader_ptr obj);
+      DDS::Boolean _local_is_a (const char * id);
+
+      static logevent_M2FaultStateDataReader_ptr _narrow (DDS::Object_ptr obj);
+      static logevent_M2FaultStateDataReader_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static logevent_M2FaultStateDataReader_ptr _nil () { return 0; }
+      static const char * _local_id;
+      logevent_M2FaultStateDataReader_ptr _this () { return this; }
+
+      virtual DDS::Long read (logevent_M2FaultStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (logevent_M2FaultStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (logevent_M2FaultStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (logevent_M2FaultStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (logevent_M2FaultState& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (logevent_M2FaultState& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (logevent_M2FaultStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (logevent_M2FaultStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (logevent_M2FaultStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (logevent_M2FaultStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (logevent_M2FaultStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (logevent_M2FaultStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (logevent_M2FaultStateSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (logevent_M2FaultState& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const logevent_M2FaultState& instance) = 0;
+
+   protected:
+      logevent_M2FaultStateDataReader () {};
+      ~logevent_M2FaultStateDataReader () {};
+   private:
+      logevent_M2FaultStateDataReader (const logevent_M2FaultStateDataReader &);
+      logevent_M2FaultStateDataReader & operator = (const logevent_M2FaultStateDataReader &);
+   };
+
+   class logevent_M2FaultStateDataReaderView
+   :
+      virtual public DDS::DataReaderView
+   { 
+   public:
+      typedef logevent_M2FaultStateDataReaderView_ptr _ptr_type;
+      typedef logevent_M2FaultStateDataReaderView_var _var_type;
+
+      static logevent_M2FaultStateDataReaderView_ptr _duplicate (logevent_M2FaultStateDataReaderView_ptr obj);
+      DDS::Boolean _local_is_a (const char * id);
+
+      static logevent_M2FaultStateDataReaderView_ptr _narrow (DDS::Object_ptr obj);
+      static logevent_M2FaultStateDataReaderView_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static logevent_M2FaultStateDataReaderView_ptr _nil () { return 0; }
+      static const char * _local_id;
+      logevent_M2FaultStateDataReaderView_ptr _this () { return this; }
+
+      virtual DDS::Long read (logevent_M2FaultStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (logevent_M2FaultStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (logevent_M2FaultStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (logevent_M2FaultStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (logevent_M2FaultState& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (logevent_M2FaultState& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (logevent_M2FaultStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (logevent_M2FaultStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (logevent_M2FaultStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (logevent_M2FaultStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (logevent_M2FaultStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (logevent_M2FaultStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (logevent_M2FaultStateSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (logevent_M2FaultState& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const logevent_M2FaultState& instance) = 0;
+
+   protected:
+      logevent_M2FaultStateDataReaderView () {};
+      ~logevent_M2FaultStateDataReaderView () {};
+   private:
+      logevent_M2FaultStateDataReaderView (const logevent_M2FaultStateDataReaderView &);
+      logevent_M2FaultStateDataReaderView & operator = (const logevent_M2FaultStateDataReaderView &);
+   };
+
+   struct logevent_M2SummaryStateSeq_uniq_ {};
+   typedef DDS_DCPSUVLSeq < logevent_M2SummaryState, struct logevent_M2SummaryStateSeq_uniq_> logevent_M2SummaryStateSeq;
+   typedef DDS_DCPSSequence_var < logevent_M2SummaryStateSeq> logevent_M2SummaryStateSeq_var;
+   typedef DDS_DCPSSequence_out < logevent_M2SummaryStateSeq> logevent_M2SummaryStateSeq_out;
+   class logevent_M2SummaryStateTypeSupportInterface
+   :
+      virtual public DDS::TypeSupport
+   { 
+   public:
+      typedef logevent_M2SummaryStateTypeSupportInterface_ptr _ptr_type;
+      typedef logevent_M2SummaryStateTypeSupportInterface_var _var_type;
+
+      static logevent_M2SummaryStateTypeSupportInterface_ptr _duplicate (logevent_M2SummaryStateTypeSupportInterface_ptr obj);
+      DDS::Boolean _local_is_a (const char * id);
+
+      static logevent_M2SummaryStateTypeSupportInterface_ptr _narrow (DDS::Object_ptr obj);
+      static logevent_M2SummaryStateTypeSupportInterface_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static logevent_M2SummaryStateTypeSupportInterface_ptr _nil () { return 0; }
+      static const char * _local_id;
+      logevent_M2SummaryStateTypeSupportInterface_ptr _this () { return this; }
+
+
+   protected:
+      logevent_M2SummaryStateTypeSupportInterface () {};
+      ~logevent_M2SummaryStateTypeSupportInterface () {};
+   private:
+      logevent_M2SummaryStateTypeSupportInterface (const logevent_M2SummaryStateTypeSupportInterface &);
+      logevent_M2SummaryStateTypeSupportInterface & operator = (const logevent_M2SummaryStateTypeSupportInterface &);
+   };
+
+   class logevent_M2SummaryStateDataWriter
+   :
+      virtual public DDS::DataWriter
+   { 
+   public:
+      typedef logevent_M2SummaryStateDataWriter_ptr _ptr_type;
+      typedef logevent_M2SummaryStateDataWriter_var _var_type;
+
+      static logevent_M2SummaryStateDataWriter_ptr _duplicate (logevent_M2SummaryStateDataWriter_ptr obj);
+      DDS::Boolean _local_is_a (const char * id);
+
+      static logevent_M2SummaryStateDataWriter_ptr _narrow (DDS::Object_ptr obj);
+      static logevent_M2SummaryStateDataWriter_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static logevent_M2SummaryStateDataWriter_ptr _nil () { return 0; }
+      static const char * _local_id;
+      logevent_M2SummaryStateDataWriter_ptr _this () { return this; }
+
+      virtual DDS::LongLong register_instance (const logevent_M2SummaryState& instance_data) = 0;
+      virtual DDS::LongLong register_instance_w_timestamp (const logevent_M2SummaryState& instance_data, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long unregister_instance (const logevent_M2SummaryState& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long unregister_instance_w_timestamp (const logevent_M2SummaryState& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long write (const logevent_M2SummaryState& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long write_w_timestamp (const logevent_M2SummaryState& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long dispose (const logevent_M2SummaryState& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long dispose_w_timestamp (const logevent_M2SummaryState& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long writedispose (const logevent_M2SummaryState& instance_data, DDS::LongLong handle) = 0;
+      virtual DDS::Long writedispose_w_timestamp (const logevent_M2SummaryState& instance_data, DDS::LongLong handle, const DDS::Time_t& source_timestamp) = 0;
+      virtual DDS::Long get_key_value (logevent_M2SummaryState& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const logevent_M2SummaryState& instance_data) = 0;
+
+   protected:
+      logevent_M2SummaryStateDataWriter () {};
+      ~logevent_M2SummaryStateDataWriter () {};
+   private:
+      logevent_M2SummaryStateDataWriter (const logevent_M2SummaryStateDataWriter &);
+      logevent_M2SummaryStateDataWriter & operator = (const logevent_M2SummaryStateDataWriter &);
+   };
+
+   class logevent_M2SummaryStateDataReader
+   :
+      virtual public DDS::DataReader
+   { 
+   public:
+      typedef logevent_M2SummaryStateDataReader_ptr _ptr_type;
+      typedef logevent_M2SummaryStateDataReader_var _var_type;
+
+      static logevent_M2SummaryStateDataReader_ptr _duplicate (logevent_M2SummaryStateDataReader_ptr obj);
+      DDS::Boolean _local_is_a (const char * id);
+
+      static logevent_M2SummaryStateDataReader_ptr _narrow (DDS::Object_ptr obj);
+      static logevent_M2SummaryStateDataReader_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static logevent_M2SummaryStateDataReader_ptr _nil () { return 0; }
+      static const char * _local_id;
+      logevent_M2SummaryStateDataReader_ptr _this () { return this; }
+
+      virtual DDS::Long read (logevent_M2SummaryStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (logevent_M2SummaryStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (logevent_M2SummaryStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (logevent_M2SummaryStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (logevent_M2SummaryState& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (logevent_M2SummaryState& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (logevent_M2SummaryStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (logevent_M2SummaryStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (logevent_M2SummaryStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (logevent_M2SummaryStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (logevent_M2SummaryStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (logevent_M2SummaryStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (logevent_M2SummaryStateSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (logevent_M2SummaryState& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const logevent_M2SummaryState& instance) = 0;
+
+   protected:
+      logevent_M2SummaryStateDataReader () {};
+      ~logevent_M2SummaryStateDataReader () {};
+   private:
+      logevent_M2SummaryStateDataReader (const logevent_M2SummaryStateDataReader &);
+      logevent_M2SummaryStateDataReader & operator = (const logevent_M2SummaryStateDataReader &);
+   };
+
+   class logevent_M2SummaryStateDataReaderView
+   :
+      virtual public DDS::DataReaderView
+   { 
+   public:
+      typedef logevent_M2SummaryStateDataReaderView_ptr _ptr_type;
+      typedef logevent_M2SummaryStateDataReaderView_var _var_type;
+
+      static logevent_M2SummaryStateDataReaderView_ptr _duplicate (logevent_M2SummaryStateDataReaderView_ptr obj);
+      DDS::Boolean _local_is_a (const char * id);
+
+      static logevent_M2SummaryStateDataReaderView_ptr _narrow (DDS::Object_ptr obj);
+      static logevent_M2SummaryStateDataReaderView_ptr _unchecked_narrow (DDS::Object_ptr obj);
+      static logevent_M2SummaryStateDataReaderView_ptr _nil () { return 0; }
+      static const char * _local_id;
+      logevent_M2SummaryStateDataReaderView_ptr _this () { return this; }
+
+      virtual DDS::Long read (logevent_M2SummaryStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take (logevent_M2SummaryStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_w_condition (logevent_M2SummaryStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_w_condition (logevent_M2SummaryStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long read_next_sample (logevent_M2SummaryState& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long take_next_sample (logevent_M2SummaryState& received_data, DDS::SampleInfo& sample_info) = 0;
+      virtual DDS::Long read_instance (logevent_M2SummaryStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_instance (logevent_M2SummaryStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance (logevent_M2SummaryStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long take_next_instance (logevent_M2SummaryStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ULong sample_states, DDS::ULong view_states, DDS::ULong instance_states) = 0;
+      virtual DDS::Long read_next_instance_w_condition (logevent_M2SummaryStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long take_next_instance_w_condition (logevent_M2SummaryStateSeq& received_data, DDS::SampleInfoSeq& info_seq, DDS::Long max_samples, DDS::LongLong a_handle, DDS::ReadCondition_ptr a_condition) = 0;
+      virtual DDS::Long return_loan (logevent_M2SummaryStateSeq& received_data, DDS::SampleInfoSeq& info_seq) = 0;
+      virtual DDS::Long get_key_value (logevent_M2SummaryState& key_holder, DDS::LongLong handle) = 0;
+      virtual DDS::LongLong lookup_instance (const logevent_M2SummaryState& instance) = 0;
+
+   protected:
+      logevent_M2SummaryStateDataReaderView () {};
+      ~logevent_M2SummaryStateDataReaderView () {};
+   private:
+      logevent_M2SummaryStateDataReaderView (const logevent_M2SummaryStateDataReaderView &);
+      logevent_M2SummaryStateDataReaderView & operator = (const logevent_M2SummaryStateDataReaderView &);
    };
 
    struct commandSeq_uniq_ {};

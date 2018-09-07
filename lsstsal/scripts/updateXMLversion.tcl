@@ -1,4 +1,4 @@
-#!/usr/bin/tclsh
+#!/usr/bin/env tclsh
 
 source $env(SAL_DIR)/sal_version.tcl
 cd /data/gitrepo/ts_xml/sal_interfaces

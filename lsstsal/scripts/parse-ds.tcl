@@ -1,4 +1,4 @@
-#!/usr/bin/tclsh
+#!/usr/bin/env tclsh
 
 proc logsum { f t s {url no} } {
   set mbps [format %16.4f [expr $s*8./1024./1024.]]

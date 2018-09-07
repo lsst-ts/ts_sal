@@ -1,4 +1,4 @@
-#!/usr/bin/tclsh
+#!/usr/bin/env tclsh
 
 proc writeXMLsubsys { dpath subsys {ftype subsystem} } {
 global XMLTLM XMLTOPICS XMLITEMS SALVERSION

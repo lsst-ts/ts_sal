@@ -1,4 +1,4 @@
-#!/usr/bin/tclsh
+#!/usr/bin/env tclsh
 
 set SAL_HOME $env(SAL_HOME)
 puts stdout "Rebuilding bandwidth estimates"

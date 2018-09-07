@@ -1,4 +1,4 @@
-#!/usr/bin/tclsh
+#!/usr/bin/env tclsh
 #
 #  This script is intended to be executed from the simulate-visits.tcl 
 #  script.  It checks the input arguments and then uses the SAL

@@ -1,4 +1,4 @@
-#!/usr/bin/tclsh
+#!/usr/bin/env tclsh
 
 load $env(SAL_DIR)/../lib/libxtcs.so
 load $env(SAL_DIR)/../lib/libsqlite3.22.0.so Sqlite3

@@ -1,4 +1,4 @@
-#!/usr/bin/tclsh
+#!/usr/bin/env tclsh
 
 set ip [split [exec /sbin/ifconfig eth0] \n]
 set n [lindex [lindex [split [lindex $ip 1] ":"] 1] 0]

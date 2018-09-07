@@ -1,4 +1,4 @@
-#!/usr/bin/tclsh
+#!/usr/bin/env tclsh
 #
 # Generate SALDDS swig input file
 # 

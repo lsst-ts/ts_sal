@@ -1,0 +1,10 @@
+# -*- python -*-
+import os
+from lsst.sconsUtils import scripts, env
+
+try:
+    env.AppendENVPath('SUBSYSTEMS', os.environ['SUBSYSTEMS'])
+except:
+    pass
+
+scripts.BasicSConscript.tests()

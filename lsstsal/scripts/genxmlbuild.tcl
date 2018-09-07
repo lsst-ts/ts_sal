@@ -1,4 +1,4 @@
-#!/usr/bin/tclsh
+#!/usr/bin/env tclsh
 
 set all [lsort [glob *.idl]]
 set fin [open $env(SAL_DIR)/scripts/code/jSAL/salbuild.xml.template r]

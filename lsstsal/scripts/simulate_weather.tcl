@@ -1,4 +1,4 @@
-#!/usr/bin/tclsh
+#!/usr/bin/env tclsh
 
 set SAL_WORK_DIR $env(SAL_WORK_DIR)
 set fin [open ctio-weather.txt r]

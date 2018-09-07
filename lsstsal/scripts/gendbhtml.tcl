@@ -1,4 +1,4 @@
-#!/usr/bin/tclsh
+#!/usr/bin/env tclsh
 
 proc tidyname { f } { 
   return [join [split $f .] _]

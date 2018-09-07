@@ -1,4 +1,4 @@
-#!/usr/bin/tclsh
+#!/usr/bin/env tclsh
 
 proc telemetrytables { fid } {
 global SUBSYSTEM2 SID ITEM PROP DESC COMMENT

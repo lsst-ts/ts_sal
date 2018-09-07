@@ -1,4 +1,4 @@
-#!/usr/bin/tclsh
+#!/usr/bin/env tclsh
 #
 # freq selected from 0.001 0.01 0.03 0.1 0.2 1 10 20 30
 set SAL_DIR $env(SAL_DIR)

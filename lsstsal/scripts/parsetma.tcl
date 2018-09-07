@@ -1,4 +1,4 @@
-#!/usr/bin/tclsh
+#!/usr/bin/env tclsh
 
 set fin [open tmatlm r]
 while { [gets $fin rec] > -1 } {

@@ -1,4 +1,4 @@
-#!/usr/bin/tclsh
+#!/usr/bin/env tclsh
 
 #
 #  To convert legacy IDL Telemetry definitions to XML

@@ -1,4 +1,4 @@
-#!/usr/bin/tclsh
+#!/usr/bin/env tclsh
 
 # Run runtime-generator.sh and then update_visitsim.tcl firsts
 

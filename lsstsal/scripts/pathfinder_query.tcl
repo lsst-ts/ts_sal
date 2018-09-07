@@ -1,4 +1,4 @@
-#!/usr/bin/tclsh
+#!/usr/bin/env tclsh
 
 proc tidysqllog { t f } {
    set fin [open $f r]

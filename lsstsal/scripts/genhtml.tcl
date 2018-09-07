@@ -1,4 +1,4 @@
-#!/usr/bin/tclsh
+#!/usr/bin/env tclsh
 
 proc dometa { id } {
 global SDESC UDESC QDESC SAL_WORK_DIR

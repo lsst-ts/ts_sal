@@ -1,4 +1,4 @@
-#!/usr/bin/tclsh
+#!/usr/bin/env tclsh
 
 
 set nafiles [glob /home/shared/data/skycam/kp_n*.fits]

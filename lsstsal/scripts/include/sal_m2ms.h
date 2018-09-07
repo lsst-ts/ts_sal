@@ -4,7 +4,7 @@
 //  
 //  File name: sal_m2ms.h
 //  Source: sal_m2ms.idl
-//  Generated: Thu Apr  9 15:48:41 2015
+//  Generated: Thu Aug 23 17:36:53 2018
 //  OpenSplice V6.4.140320OSS
 //  
 //******************************************************************
@@ -17,350 +17,555 @@
 
 namespace m2ms
 {
-   struct Actuators;
-   struct Application;
-   struct Electrical;
-   struct LimitSensors;
-   struct Metrology;
-   struct Surface;
-   struct TC;
-   struct command_abort;
-   struct command_configure;
-   struct command_status;
-   struct command_stop;
-   struct command_target;
-   struct command_update;
-   struct logevent_interlock;
-   struct logevent_limitError;
-   struct logevent_targetDone;
-   struct logevent_targetError;
-   struct logevent_tempError;
-   struct logevent_updateDone;
-   struct logevent_updateError;
+   struct ActuatorLimitSwitches;
+   struct AxialActuatorAbsolutePositionSteps;
+   struct AxialActuatorPositionAbsoluteEncoderPositionMeasured;
+   struct AxialForcesMeasured;
+   struct MirrorPositionMeasured;
+   struct PowerStatus;
+   struct RawDisplacement;
+   struct RawTelemetry;
+   struct StepVectorUpdate;
+   struct SystemStatus;
+   struct TangentActuatorAbsolutePositionSteps;
+   struct TangentActuatorPositionAbsoluteEncoderPositionMeasured;
+   struct TangentForcesMeasured;
+   struct TargetForces;
+   struct TemperaturesMeasured;
+   struct ZenithAngleMeasured;
+   struct command_ApplyBendingMode;
+   struct command_ApplyForce;
+   struct command_MoveAxialActuator;
+   struct command_PositionMirror;
+   struct command_SetCorrectionMode;
+   struct logevent_M2AssemblyInPosition;
+   struct logevent_M2DetailedState;
+   struct logevent_M2FaultState;
+   struct logevent_M2SummaryState;
    struct command;
    struct ackcmd;
    struct logevent;
 
-   struct Actuators
+   struct ActuatorLimitSwitches
    {
-         typedef DDS::Long _Raw_slice;
-         typedef DDS::Long _Raw[15];
-         typedef _Raw _Raw_out;
-         static _Raw_slice * _Raw_alloc ();
-         static void _Raw_free (_Raw_slice *);
-         static void _Raw_copy (_Raw_slice* to, const _Raw_slice* from);
-         static _Raw_slice *_Raw_dup (const _Raw_slice* from);
+         typedef DDS::Boolean _forward_slice;
+         typedef DDS::Boolean _forward[72];
+         typedef _forward _forward_out;
+         static _forward_slice * _forward_alloc ();
+         static void _forward_free (_forward_slice *);
+         static void _forward_copy (_forward_slice* to, const _forward_slice* from);
+         static _forward_slice *_forward_dup (const _forward_slice* from);
 
-         struct _Raw_uniq_ {};
-         typedef DDS_DCPS_FArray_var< _Raw, _Raw_slice, struct _Raw_uniq_> _Raw_var;
-         typedef DDS_DCPS_Array_forany< _Raw, _Raw_slice, struct _Raw_uniq_> _Raw_forany;
-         typedef DDS::Float _Calibrated_slice;
-         typedef DDS::Float _Calibrated[31];
-         typedef _Calibrated _Calibrated_out;
-         static _Calibrated_slice * _Calibrated_alloc ();
-         static void _Calibrated_free (_Calibrated_slice *);
-         static void _Calibrated_copy (_Calibrated_slice* to, const _Calibrated_slice* from);
-         static _Calibrated_slice *_Calibrated_dup (const _Calibrated_slice* from);
+         struct _forward_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _forward, _forward_slice, struct _forward_uniq_> _forward_var;
+         typedef DDS_DCPS_Array_forany< _forward, _forward_slice, struct _forward_uniq_> _forward_forany;
+         typedef DDS::Boolean _reverse_slice;
+         typedef DDS::Boolean _reverse[72];
+         typedef _reverse _reverse_out;
+         static _reverse_slice * _reverse_alloc ();
+         static void _reverse_free (_reverse_slice *);
+         static void _reverse_copy (_reverse_slice* to, const _reverse_slice* from);
+         static _reverse_slice *_reverse_dup (const _reverse_slice* from);
 
-         struct _Calibrated_uniq_ {};
-         typedef DDS_DCPS_FArray_var< _Calibrated, _Calibrated_slice, struct _Calibrated_uniq_> _Calibrated_var;
-         typedef DDS_DCPS_Array_forany< _Calibrated, _Calibrated_slice, struct _Calibrated_uniq_> _Calibrated_forany;
+         struct _reverse_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _reverse, _reverse_slice, struct _reverse_uniq_> _reverse_var;
+         typedef DDS_DCPS_Array_forany< _reverse, _reverse_slice, struct _reverse_uniq_> _reverse_forany;
          DDS::String_mgr private_revCode;
          DDS::Double private_sndStamp;
          DDS::Double private_rcvStamp;
          DDS::Long private_seqNum;
          DDS::Long private_origin;
          DDS::Long private_host;
-         _Raw Raw;
-         _Calibrated Calibrated;
+         _forward forward;
+         _reverse reverse;
    };
 
-   typedef DDS_DCPSStruct_var < Actuators> Actuators_var;
-   typedef DDS_DCPSStruct_out < Actuators> Actuators_out;
+   typedef DDS_DCPSStruct_var < ActuatorLimitSwitches> ActuatorLimitSwitches_var;
+   typedef DDS_DCPSStruct_out < ActuatorLimitSwitches> ActuatorLimitSwitches_out;
 
-   struct Application
+   struct AxialActuatorAbsolutePositionSteps
    {
-         typedef DDS::Float _Demand_slice;
-         typedef DDS::Float _Demand[2];
-         typedef _Demand _Demand_out;
-         static _Demand_slice * _Demand_alloc ();
-         static void _Demand_free (_Demand_slice *);
-         static void _Demand_copy (_Demand_slice* to, const _Demand_slice* from);
-         static _Demand_slice *_Demand_dup (const _Demand_slice* from);
+         typedef DDS::Long _axialAbsolutePositionSteps_slice;
+         typedef DDS::Long _axialAbsolutePositionSteps[72];
+         typedef _axialAbsolutePositionSteps _axialAbsolutePositionSteps_out;
+         static _axialAbsolutePositionSteps_slice * _axialAbsolutePositionSteps_alloc ();
+         static void _axialAbsolutePositionSteps_free (_axialAbsolutePositionSteps_slice *);
+         static void _axialAbsolutePositionSteps_copy (_axialAbsolutePositionSteps_slice* to, const _axialAbsolutePositionSteps_slice* from);
+         static _axialAbsolutePositionSteps_slice *_axialAbsolutePositionSteps_dup (const _axialAbsolutePositionSteps_slice* from);
 
-         struct _Demand_uniq_ {};
-         typedef DDS_DCPS_FArray_var< _Demand, _Demand_slice, struct _Demand_uniq_> _Demand_var;
-         typedef DDS_DCPS_Array_forany< _Demand, _Demand_slice, struct _Demand_uniq_> _Demand_forany;
-         typedef DDS::Float _Position_slice;
-         typedef DDS::Float _Position[2];
-         typedef _Position _Position_out;
-         static _Position_slice * _Position_alloc ();
-         static void _Position_free (_Position_slice *);
-         static void _Position_copy (_Position_slice* to, const _Position_slice* from);
-         static _Position_slice *_Position_dup (const _Position_slice* from);
-
-         struct _Position_uniq_ {};
-         typedef DDS_DCPS_FArray_var< _Position, _Position_slice, struct _Position_uniq_> _Position_var;
-         typedef DDS_DCPS_Array_forany< _Position, _Position_slice, struct _Position_uniq_> _Position_forany;
-         typedef DDS::Float _Error_slice;
-         typedef DDS::Float _Error[2];
-         typedef _Error _Error_out;
-         static _Error_slice * _Error_alloc ();
-         static void _Error_free (_Error_slice *);
-         static void _Error_copy (_Error_slice* to, const _Error_slice* from);
-         static _Error_slice *_Error_dup (const _Error_slice* from);
-
-         struct _Error_uniq_ {};
-         typedef DDS_DCPS_FArray_var< _Error, _Error_slice, struct _Error_uniq_> _Error_var;
-         typedef DDS_DCPS_Array_forany< _Error, _Error_slice, struct _Error_uniq_> _Error_forany;
+         struct _axialAbsolutePositionSteps_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _axialAbsolutePositionSteps, _axialAbsolutePositionSteps_slice, struct _axialAbsolutePositionSteps_uniq_> _axialAbsolutePositionSteps_var;
+         typedef DDS_DCPS_Array_forany< _axialAbsolutePositionSteps, _axialAbsolutePositionSteps_slice, struct _axialAbsolutePositionSteps_uniq_> _axialAbsolutePositionSteps_forany;
          DDS::String_mgr private_revCode;
          DDS::Double private_sndStamp;
          DDS::Double private_rcvStamp;
          DDS::Long private_seqNum;
          DDS::Long private_origin;
          DDS::Long private_host;
-         _Demand Demand;
-         _Position Position;
-         _Error Error;
+         _axialAbsolutePositionSteps axialAbsolutePositionSteps;
    };
 
-   typedef DDS_DCPSStruct_var < Application> Application_var;
-   typedef DDS_DCPSStruct_out < Application> Application_out;
+   typedef DDS_DCPSStruct_var < AxialActuatorAbsolutePositionSteps> AxialActuatorAbsolutePositionSteps_var;
+   typedef DDS_DCPSStruct_out < AxialActuatorAbsolutePositionSteps> AxialActuatorAbsolutePositionSteps_out;
 
-   struct Electrical
+   struct AxialActuatorPositionAbsoluteEncoderPositionMeasured
    {
-         typedef DDS::Long _voltage_slice;
-         typedef DDS::Long _voltage[16];
-         typedef _voltage _voltage_out;
-         static _voltage_slice * _voltage_alloc ();
-         static void _voltage_free (_voltage_slice *);
-         static void _voltage_copy (_voltage_slice* to, const _voltage_slice* from);
-         static _voltage_slice *_voltage_dup (const _voltage_slice* from);
+         typedef DDS::Double _axialEncoderPositionMeasured_slice;
+         typedef DDS::Double _axialEncoderPositionMeasured[72];
+         typedef _axialEncoderPositionMeasured _axialEncoderPositionMeasured_out;
+         static _axialEncoderPositionMeasured_slice * _axialEncoderPositionMeasured_alloc ();
+         static void _axialEncoderPositionMeasured_free (_axialEncoderPositionMeasured_slice *);
+         static void _axialEncoderPositionMeasured_copy (_axialEncoderPositionMeasured_slice* to, const _axialEncoderPositionMeasured_slice* from);
+         static _axialEncoderPositionMeasured_slice *_axialEncoderPositionMeasured_dup (const _axialEncoderPositionMeasured_slice* from);
 
-         struct _voltage_uniq_ {};
-         typedef DDS_DCPS_FArray_var< _voltage, _voltage_slice, struct _voltage_uniq_> _voltage_var;
-         typedef DDS_DCPS_Array_forany< _voltage, _voltage_slice, struct _voltage_uniq_> _voltage_forany;
-         typedef DDS::Long _error_slice;
-         typedef DDS::Long _error[16];
-         typedef _error _error_out;
-         static _error_slice * _error_alloc ();
-         static void _error_free (_error_slice *);
-         static void _error_copy (_error_slice* to, const _error_slice* from);
-         static _error_slice *_error_dup (const _error_slice* from);
-
-         struct _error_uniq_ {};
-         typedef DDS_DCPS_FArray_var< _error, _error_slice, struct _error_uniq_> _error_var;
-         typedef DDS_DCPS_Array_forany< _error, _error_slice, struct _error_uniq_> _error_forany;
-         typedef DDS::Short _status_slice;
-         typedef DDS::Short _status[16];
-         typedef _status _status_out;
-         static _status_slice * _status_alloc ();
-         static void _status_free (_status_slice *);
-         static void _status_copy (_status_slice* to, const _status_slice* from);
-         static _status_slice *_status_dup (const _status_slice* from);
-
-         struct _status_uniq_ {};
-         typedef DDS_DCPS_FArray_var< _status, _status_slice, struct _status_uniq_> _status_var;
-         typedef DDS_DCPS_Array_forany< _status, _status_slice, struct _status_uniq_> _status_forany;
+         struct _axialEncoderPositionMeasured_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _axialEncoderPositionMeasured, _axialEncoderPositionMeasured_slice, struct _axialEncoderPositionMeasured_uniq_> _axialEncoderPositionMeasured_var;
+         typedef DDS_DCPS_Array_forany< _axialEncoderPositionMeasured, _axialEncoderPositionMeasured_slice, struct _axialEncoderPositionMeasured_uniq_> _axialEncoderPositionMeasured_forany;
          DDS::String_mgr private_revCode;
          DDS::Double private_sndStamp;
          DDS::Double private_rcvStamp;
          DDS::Long private_seqNum;
          DDS::Long private_origin;
          DDS::Long private_host;
-         _voltage voltage;
-         _error error;
-         _status status;
+         _axialEncoderPositionMeasured axialEncoderPositionMeasured;
    };
 
-   typedef DDS_DCPSStruct_var < Electrical> Electrical_var;
-   typedef DDS_DCPSStruct_out < Electrical> Electrical_out;
+   typedef DDS_DCPSStruct_var < AxialActuatorPositionAbsoluteEncoderPositionMeasured> AxialActuatorPositionAbsoluteEncoderPositionMeasured_var;
+   typedef DDS_DCPSStruct_out < AxialActuatorPositionAbsoluteEncoderPositionMeasured> AxialActuatorPositionAbsoluteEncoderPositionMeasured_out;
 
-   struct LimitSensors
+   struct AxialForcesMeasured
    {
-         typedef DDS::Short _liftoff_slice;
-         typedef DDS::Short _liftoff[64];
-         typedef _liftoff _liftoff_out;
-         static _liftoff_slice * _liftoff_alloc ();
-         static void _liftoff_free (_liftoff_slice *);
-         static void _liftoff_copy (_liftoff_slice* to, const _liftoff_slice* from);
-         static _liftoff_slice *_liftoff_dup (const _liftoff_slice* from);
+         typedef DDS::Double _axialForceMeasured_slice;
+         typedef DDS::Double _axialForceMeasured[72];
+         typedef _axialForceMeasured _axialForceMeasured_out;
+         static _axialForceMeasured_slice * _axialForceMeasured_alloc ();
+         static void _axialForceMeasured_free (_axialForceMeasured_slice *);
+         static void _axialForceMeasured_copy (_axialForceMeasured_slice* to, const _axialForceMeasured_slice* from);
+         static _axialForceMeasured_slice *_axialForceMeasured_dup (const _axialForceMeasured_slice* from);
 
-         struct _liftoff_uniq_ {};
-         typedef DDS_DCPS_FArray_var< _liftoff, _liftoff_slice, struct _liftoff_uniq_> _liftoff_var;
-         typedef DDS_DCPS_Array_forany< _liftoff, _liftoff_slice, struct _liftoff_uniq_> _liftoff_forany;
-         typedef DDS::Short _limit_slice;
-         typedef DDS::Short _limit[64];
-         typedef _limit _limit_out;
-         static _limit_slice * _limit_alloc ();
-         static void _limit_free (_limit_slice *);
-         static void _limit_copy (_limit_slice* to, const _limit_slice* from);
-         static _limit_slice *_limit_dup (const _limit_slice* from);
-
-         struct _limit_uniq_ {};
-         typedef DDS_DCPS_FArray_var< _limit, _limit_slice, struct _limit_uniq_> _limit_var;
-         typedef DDS_DCPS_Array_forany< _limit, _limit_slice, struct _limit_uniq_> _limit_forany;
+         struct _axialForceMeasured_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _axialForceMeasured, _axialForceMeasured_slice, struct _axialForceMeasured_uniq_> _axialForceMeasured_var;
+         typedef DDS_DCPS_Array_forany< _axialForceMeasured, _axialForceMeasured_slice, struct _axialForceMeasured_uniq_> _axialForceMeasured_forany;
          DDS::String_mgr private_revCode;
          DDS::Double private_sndStamp;
          DDS::Double private_rcvStamp;
          DDS::Long private_seqNum;
          DDS::Long private_origin;
          DDS::Long private_host;
-         _liftoff liftoff;
-         _limit limit;
+         _axialForceMeasured axialForceMeasured;
    };
 
-   typedef DDS_DCPSStruct_var < LimitSensors> LimitSensors_var;
-   typedef DDS_DCPSStruct_out < LimitSensors> LimitSensors_out;
+   typedef DDS_DCPSStruct_var < AxialForcesMeasured> AxialForcesMeasured_var;
+   typedef DDS_DCPSStruct_out < AxialForcesMeasured> AxialForcesMeasured_out;
 
-   struct Metrology
+   struct MirrorPositionMeasured
    {
-         typedef DDS::Long _distance_slice;
-         typedef DDS::Long _distance[16];
-         typedef _distance _distance_out;
-         static _distance_slice * _distance_alloc ();
-         static void _distance_free (_distance_slice *);
-         static void _distance_copy (_distance_slice* to, const _distance_slice* from);
-         static _distance_slice *_distance_dup (const _distance_slice* from);
-
-         struct _distance_uniq_ {};
-         typedef DDS_DCPS_FArray_var< _distance, _distance_slice, struct _distance_uniq_> _distance_var;
-         typedef DDS_DCPS_Array_forany< _distance, _distance_slice, struct _distance_uniq_> _distance_forany;
-         typedef DDS::Long _error_slice;
-         typedef DDS::Long _error[16];
-         typedef _error _error_out;
-         static _error_slice * _error_alloc ();
-         static void _error_free (_error_slice *);
-         static void _error_copy (_error_slice* to, const _error_slice* from);
-         static _error_slice *_error_dup (const _error_slice* from);
-
-         struct _error_uniq_ {};
-         typedef DDS_DCPS_FArray_var< _error, _error_slice, struct _error_uniq_> _error_var;
-         typedef DDS_DCPS_Array_forany< _error, _error_slice, struct _error_uniq_> _error_forany;
-         typedef DDS::Short _status_slice;
-         typedef DDS::Short _status[16];
-         typedef _status _status_out;
-         static _status_slice * _status_alloc ();
-         static void _status_free (_status_slice *);
-         static void _status_copy (_status_slice* to, const _status_slice* from);
-         static _status_slice *_status_dup (const _status_slice* from);
-
-         struct _status_uniq_ {};
-         typedef DDS_DCPS_FArray_var< _status, _status_slice, struct _status_uniq_> _status_var;
-         typedef DDS_DCPS_Array_forany< _status, _status_slice, struct _status_uniq_> _status_forany;
          DDS::String_mgr private_revCode;
          DDS::Double private_sndStamp;
          DDS::Double private_rcvStamp;
          DDS::Long private_seqNum;
          DDS::Long private_origin;
          DDS::Long private_host;
-         _distance distance;
-         _error error;
-         _status status;
+         DDS::Double xTilt;
+         DDS::Double yTilt;
+         DDS::Double piston;
+         DDS::Double xPosition;
+         DDS::Double yPosition;
+         DDS::Double theta_z_position;
    };
 
-   typedef DDS_DCPSStruct_var < Metrology> Metrology_var;
-   typedef DDS_DCPSStruct_out < Metrology> Metrology_out;
+   typedef DDS_DCPSStruct_var < MirrorPositionMeasured> MirrorPositionMeasured_var;
+   typedef DDS_DCPSStruct_out < MirrorPositionMeasured> MirrorPositionMeasured_out;
 
-   struct Surface
+   struct PowerStatus
    {
-         typedef DDS::Long _Raw_slice;
-         typedef DDS::Long _Raw[200];
-         typedef _Raw _Raw_out;
-         static _Raw_slice * _Raw_alloc ();
-         static void _Raw_free (_Raw_slice *);
-         static void _Raw_copy (_Raw_slice* to, const _Raw_slice* from);
-         static _Raw_slice *_Raw_dup (const _Raw_slice* from);
+         typedef DDS::Double _voltages_slice;
+         typedef DDS::Double _voltages[16];
+         typedef _voltages _voltages_out;
+         static _voltages_slice * _voltages_alloc ();
+         static void _voltages_free (_voltages_slice *);
+         static void _voltages_copy (_voltages_slice* to, const _voltages_slice* from);
+         static _voltages_slice *_voltages_dup (const _voltages_slice* from);
 
-         struct _Raw_uniq_ {};
-         typedef DDS_DCPS_FArray_var< _Raw, _Raw_slice, struct _Raw_uniq_> _Raw_var;
-         typedef DDS_DCPS_Array_forany< _Raw, _Raw_slice, struct _Raw_uniq_> _Raw_forany;
-         typedef DDS::Float _Calibrated_slice;
-         typedef DDS::Float _Calibrated[200];
-         typedef _Calibrated _Calibrated_out;
-         static _Calibrated_slice * _Calibrated_alloc ();
-         static void _Calibrated_free (_Calibrated_slice *);
-         static void _Calibrated_copy (_Calibrated_slice* to, const _Calibrated_slice* from);
-         static _Calibrated_slice *_Calibrated_dup (const _Calibrated_slice* from);
+         struct _voltages_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _voltages, _voltages_slice, struct _voltages_uniq_> _voltages_var;
+         typedef DDS_DCPS_Array_forany< _voltages, _voltages_slice, struct _voltages_uniq_> _voltages_forany;
+         typedef DDS::Double _currents_slice;
+         typedef DDS::Double _currents[16];
+         typedef _currents _currents_out;
+         static _currents_slice * _currents_alloc ();
+         static void _currents_free (_currents_slice *);
+         static void _currents_copy (_currents_slice* to, const _currents_slice* from);
+         static _currents_slice *_currents_dup (const _currents_slice* from);
 
-         struct _Calibrated_uniq_ {};
-         typedef DDS_DCPS_FArray_var< _Calibrated, _Calibrated_slice, struct _Calibrated_uniq_> _Calibrated_var;
-         typedef DDS_DCPS_Array_forany< _Calibrated, _Calibrated_slice, struct _Calibrated_uniq_> _Calibrated_forany;
+         struct _currents_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _currents, _currents_slice, struct _currents_uniq_> _currents_var;
+         typedef DDS_DCPS_Array_forany< _currents, _currents_slice, struct _currents_uniq_> _currents_forany;
+         typedef DDS::Boolean _onOff_slice;
+         typedef DDS::Boolean _onOff[16];
+         typedef _onOff _onOff_out;
+         static _onOff_slice * _onOff_alloc ();
+         static void _onOff_free (_onOff_slice *);
+         static void _onOff_copy (_onOff_slice* to, const _onOff_slice* from);
+         static _onOff_slice *_onOff_dup (const _onOff_slice* from);
+
+         struct _onOff_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _onOff, _onOff_slice, struct _onOff_uniq_> _onOff_var;
+         typedef DDS_DCPS_Array_forany< _onOff, _onOff_slice, struct _onOff_uniq_> _onOff_forany;
+         typedef DDS::ULong _states_slice;
+         typedef DDS::ULong _states[16];
+         typedef _states _states_out;
+         static _states_slice * _states_alloc ();
+         static void _states_free (_states_slice *);
+         static void _states_copy (_states_slice* to, const _states_slice* from);
+         static _states_slice *_states_dup (const _states_slice* from);
+
+         struct _states_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _states, _states_slice, struct _states_uniq_> _states_var;
+         typedef DDS_DCPS_Array_forany< _states, _states_slice, struct _states_uniq_> _states_forany;
          DDS::String_mgr private_revCode;
          DDS::Double private_sndStamp;
          DDS::Double private_rcvStamp;
          DDS::Long private_seqNum;
          DDS::Long private_origin;
          DDS::Long private_host;
-         _Raw Raw;
-         _Calibrated Calibrated;
+         _voltages voltages;
+         _currents currents;
+         _onOff onOff;
+         _states states;
    };
 
-   typedef DDS_DCPSStruct_var < Surface> Surface_var;
-   typedef DDS_DCPSStruct_out < Surface> Surface_out;
+   typedef DDS_DCPSStruct_var < PowerStatus> PowerStatus_var;
+   typedef DDS_DCPSStruct_out < PowerStatus> PowerStatus_out;
 
-   struct TC
+   struct RawDisplacement
    {
-         typedef DDS::Float _setpoint_slice;
-         typedef DDS::Float _setpoint[16];
-         typedef _setpoint _setpoint_out;
-         static _setpoint_slice * _setpoint_alloc ();
-         static void _setpoint_free (_setpoint_slice *);
-         static void _setpoint_copy (_setpoint_slice* to, const _setpoint_slice* from);
-         static _setpoint_slice *_setpoint_dup (const _setpoint_slice* from);
+         typedef DDS::Double _rawPosition_slice;
+         typedef DDS::Double _rawPosition[72];
+         typedef _rawPosition _rawPosition_out;
+         static _rawPosition_slice * _rawPosition_alloc ();
+         static void _rawPosition_free (_rawPosition_slice *);
+         static void _rawPosition_copy (_rawPosition_slice* to, const _rawPosition_slice* from);
+         static _rawPosition_slice *_rawPosition_dup (const _rawPosition_slice* from);
 
-         struct _setpoint_uniq_ {};
-         typedef DDS_DCPS_FArray_var< _setpoint, _setpoint_slice, struct _setpoint_uniq_> _setpoint_var;
-         typedef DDS_DCPS_Array_forany< _setpoint, _setpoint_slice, struct _setpoint_uniq_> _setpoint_forany;
-         typedef DDS::Float _temperature_slice;
-         typedef DDS::Float _temperature[16];
-         typedef _temperature _temperature_out;
-         static _temperature_slice * _temperature_alloc ();
-         static void _temperature_free (_temperature_slice *);
-         static void _temperature_copy (_temperature_slice* to, const _temperature_slice* from);
-         static _temperature_slice *_temperature_dup (const _temperature_slice* from);
-
-         struct _temperature_uniq_ {};
-         typedef DDS_DCPS_FArray_var< _temperature, _temperature_slice, struct _temperature_uniq_> _temperature_var;
-         typedef DDS_DCPS_Array_forany< _temperature, _temperature_slice, struct _temperature_uniq_> _temperature_forany;
-         typedef DDS::Float _error_slice;
-         typedef DDS::Float _error[16];
-         typedef _error _error_out;
-         static _error_slice * _error_alloc ();
-         static void _error_free (_error_slice *);
-         static void _error_copy (_error_slice* to, const _error_slice* from);
-         static _error_slice *_error_dup (const _error_slice* from);
-
-         struct _error_uniq_ {};
-         typedef DDS_DCPS_FArray_var< _error, _error_slice, struct _error_uniq_> _error_var;
-         typedef DDS_DCPS_Array_forany< _error, _error_slice, struct _error_uniq_> _error_forany;
-         typedef DDS::Short _status_slice;
-         typedef DDS::Short _status[16];
-         typedef _status _status_out;
-         static _status_slice * _status_alloc ();
-         static void _status_free (_status_slice *);
-         static void _status_copy (_status_slice* to, const _status_slice* from);
-         static _status_slice *_status_dup (const _status_slice* from);
-
-         struct _status_uniq_ {};
-         typedef DDS_DCPS_FArray_var< _status, _status_slice, struct _status_uniq_> _status_var;
-         typedef DDS_DCPS_Array_forany< _status, _status_slice, struct _status_uniq_> _status_forany;
+         struct _rawPosition_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _rawPosition, _rawPosition_slice, struct _rawPosition_uniq_> _rawPosition_var;
+         typedef DDS_DCPS_Array_forany< _rawPosition, _rawPosition_slice, struct _rawPosition_uniq_> _rawPosition_forany;
          DDS::String_mgr private_revCode;
          DDS::Double private_sndStamp;
          DDS::Double private_rcvStamp;
          DDS::Long private_seqNum;
          DDS::Long private_origin;
          DDS::Long private_host;
-         _setpoint setpoint;
-         _temperature temperature;
-         _error error;
-         _status status;
+         _rawPosition rawPosition;
    };
 
-   typedef DDS_DCPSStruct_var < TC> TC_var;
-   typedef DDS_DCPSStruct_out < TC> TC_out;
+   typedef DDS_DCPSStruct_var < RawDisplacement> RawDisplacement_var;
+   typedef DDS_DCPSStruct_out < RawDisplacement> RawDisplacement_out;
 
-   struct command_abort
+   struct RawTelemetry
+   {
+         typedef DDS::Long _dataPacket_slice;
+         typedef DDS::Long _dataPacket[720];
+         typedef _dataPacket _dataPacket_out;
+         static _dataPacket_slice * _dataPacket_alloc ();
+         static void _dataPacket_free (_dataPacket_slice *);
+         static void _dataPacket_copy (_dataPacket_slice* to, const _dataPacket_slice* from);
+         static _dataPacket_slice *_dataPacket_dup (const _dataPacket_slice* from);
+
+         struct _dataPacket_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _dataPacket, _dataPacket_slice, struct _dataPacket_uniq_> _dataPacket_var;
+         typedef DDS_DCPS_Array_forany< _dataPacket, _dataPacket_slice, struct _dataPacket_uniq_> _dataPacket_forany;
+         DDS::String_mgr private_revCode;
+         DDS::Double private_sndStamp;
+         DDS::Double private_rcvStamp;
+         DDS::Long private_seqNum;
+         DDS::Long private_origin;
+         DDS::Long private_host;
+         _dataPacket dataPacket;
+   };
+
+   typedef DDS_DCPSStruct_var < RawTelemetry> RawTelemetry_var;
+   typedef DDS_DCPSStruct_out < RawTelemetry> RawTelemetry_out;
+
+   struct StepVectorUpdate
+   {
+         typedef DDS::Long _steps_slice;
+         typedef DDS::Long _steps[72];
+         typedef _steps _steps_out;
+         static _steps_slice * _steps_alloc ();
+         static void _steps_free (_steps_slice *);
+         static void _steps_copy (_steps_slice* to, const _steps_slice* from);
+         static _steps_slice *_steps_dup (const _steps_slice* from);
+
+         struct _steps_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _steps, _steps_slice, struct _steps_uniq_> _steps_var;
+         typedef DDS_DCPS_Array_forany< _steps, _steps_slice, struct _steps_uniq_> _steps_forany;
+         DDS::String_mgr private_revCode;
+         DDS::Double private_sndStamp;
+         DDS::Double private_rcvStamp;
+         DDS::Long private_seqNum;
+         DDS::Long private_origin;
+         DDS::Long private_host;
+         _steps steps;
+   };
+
+   typedef DDS_DCPSStruct_var < StepVectorUpdate> StepVectorUpdate_var;
+   typedef DDS_DCPSStruct_out < StepVectorUpdate> StepVectorUpdate_out;
+
+   struct SystemStatus
+   {
+         typedef DDS::ULong _statusBits_slice;
+         typedef DDS::ULong _statusBits[72];
+         typedef _statusBits _statusBits_out;
+         static _statusBits_slice * _statusBits_alloc ();
+         static void _statusBits_free (_statusBits_slice *);
+         static void _statusBits_copy (_statusBits_slice* to, const _statusBits_slice* from);
+         static _statusBits_slice *_statusBits_dup (const _statusBits_slice* from);
+
+         struct _statusBits_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _statusBits, _statusBits_slice, struct _statusBits_uniq_> _statusBits_var;
+         typedef DDS_DCPS_Array_forany< _statusBits, _statusBits_slice, struct _statusBits_uniq_> _statusBits_forany;
+         DDS::String_mgr private_revCode;
+         DDS::Double private_sndStamp;
+         DDS::Double private_rcvStamp;
+         DDS::Long private_seqNum;
+         DDS::Long private_origin;
+         DDS::Long private_host;
+         _statusBits statusBits;
+   };
+
+   typedef DDS_DCPSStruct_var < SystemStatus> SystemStatus_var;
+   typedef DDS_DCPSStruct_out < SystemStatus> SystemStatus_out;
+
+   struct TangentActuatorAbsolutePositionSteps
+   {
+         DDS::String_mgr private_revCode;
+         DDS::Double private_sndStamp;
+         DDS::Double private_rcvStamp;
+         DDS::Long private_seqNum;
+         DDS::Long private_origin;
+         DDS::Long private_host;
+         DDS::Long tangentLink_0deg_absolutePositionSteps;
+         DDS::Long tangentLink_60deg_absolutePositionSteps;
+         DDS::Long tangentLink_120deg_absolutePositionSteps;
+         DDS::Long tangentLink_180deg_absolutePositionSteps;
+         DDS::Long tangentLink_240deg_absolutePositionSteps;
+         DDS::Long tangentLink_300deg_absolutePositionSteps;
+   };
+
+   typedef DDS_DCPSStruct_var < TangentActuatorAbsolutePositionSteps> TangentActuatorAbsolutePositionSteps_var;
+   typedef DDS_DCPSStruct_out < TangentActuatorAbsolutePositionSteps> TangentActuatorAbsolutePositionSteps_out;
+
+   struct TangentActuatorPositionAbsoluteEncoderPositionMeasured
+   {
+         DDS::String_mgr private_revCode;
+         DDS::Double private_sndStamp;
+         DDS::Double private_rcvStamp;
+         DDS::Long private_seqNum;
+         DDS::Long private_origin;
+         DDS::Long private_host;
+         DDS::Double tangentLink_0deg_absoluteEncoderPositionMeasured;
+         DDS::Double tangentLink_60deg_absoluteEncoderPositionMeasured;
+         DDS::Double tangentLink_120deg_absoluteEncoderPositionMeasured;
+         DDS::Double tangentLink_180deg_absoluteEncoderPositionMeasured;
+         DDS::Double tangentLink_240deg_absoluteEncoderPositionMeasured;
+         DDS::Double tangentLink_300deg_absoluteEncoderPositionMeasured;
+   };
+
+   typedef DDS_DCPSStruct_var < TangentActuatorPositionAbsoluteEncoderPositionMeasured> TangentActuatorPositionAbsoluteEncoderPositionMeasured_var;
+   typedef DDS_DCPSStruct_out < TangentActuatorPositionAbsoluteEncoderPositionMeasured> TangentActuatorPositionAbsoluteEncoderPositionMeasured_out;
+
+   struct TangentForcesMeasured
+   {
+         DDS::String_mgr private_revCode;
+         DDS::Double private_sndStamp;
+         DDS::Double private_rcvStamp;
+         DDS::Long private_seqNum;
+         DDS::Long private_origin;
+         DDS::Long private_host;
+         DDS::Double tangentLink_0deg_forceMeasured;
+         DDS::Double tangentLink_60deg_forceMeasured;
+         DDS::Double tangentLink_120deg_forceMeasured;
+         DDS::Double tangentLink_180deg_forceMeasured;
+         DDS::Double tangentLink_240deg_forceMeasured;
+         DDS::Double tangentLink_300deg_forceMeasured;
+   };
+
+   typedef DDS_DCPSStruct_var < TangentForcesMeasured> TangentForcesMeasured_var;
+   typedef DDS_DCPSStruct_out < TangentForcesMeasured> TangentForcesMeasured_out;
+
+   struct TargetForces
+   {
+         typedef DDS::Double _setPoint_slice;
+         typedef DDS::Double _setPoint[72];
+         typedef _setPoint _setPoint_out;
+         static _setPoint_slice * _setPoint_alloc ();
+         static void _setPoint_free (_setPoint_slice *);
+         static void _setPoint_copy (_setPoint_slice* to, const _setPoint_slice* from);
+         static _setPoint_slice *_setPoint_dup (const _setPoint_slice* from);
+
+         struct _setPoint_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _setPoint, _setPoint_slice, struct _setPoint_uniq_> _setPoint_var;
+         typedef DDS_DCPS_Array_forany< _setPoint, _setPoint_slice, struct _setPoint_uniq_> _setPoint_forany;
+         typedef DDS::Double _forceComponent_slice;
+         typedef DDS::Double _forceComponent[72];
+         typedef _forceComponent _forceComponent_out;
+         static _forceComponent_slice * _forceComponent_alloc ();
+         static void _forceComponent_free (_forceComponent_slice *);
+         static void _forceComponent_copy (_forceComponent_slice* to, const _forceComponent_slice* from);
+         static _forceComponent_slice *_forceComponent_dup (const _forceComponent_slice* from);
+
+         struct _forceComponent_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _forceComponent, _forceComponent_slice, struct _forceComponent_uniq_> _forceComponent_var;
+         typedef DDS_DCPS_Array_forany< _forceComponent, _forceComponent_slice, struct _forceComponent_uniq_> _forceComponent_forany;
+         DDS::String_mgr private_revCode;
+         DDS::Double private_sndStamp;
+         DDS::Double private_rcvStamp;
+         DDS::Long private_seqNum;
+         DDS::Long private_origin;
+         DDS::Long private_host;
+         _setPoint setPoint;
+         _forceComponent forceComponent;
+   };
+
+   typedef DDS_DCPSStruct_var < TargetForces> TargetForces_var;
+   typedef DDS_DCPSStruct_out < TargetForces> TargetForces_out;
+
+   struct TemperaturesMeasured
+   {
+         typedef DDS::Double _temps_slice;
+         typedef DDS::Double _temps[72];
+         typedef _temps _temps_out;
+         static _temps_slice * _temps_alloc ();
+         static void _temps_free (_temps_slice *);
+         static void _temps_copy (_temps_slice* to, const _temps_slice* from);
+         static _temps_slice *_temps_dup (const _temps_slice* from);
+
+         struct _temps_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _temps, _temps_slice, struct _temps_uniq_> _temps_var;
+         typedef DDS_DCPS_Array_forany< _temps, _temps_slice, struct _temps_uniq_> _temps_forany;
+         typedef DDS::Double _intakeTemperatures_slice;
+         typedef DDS::Double _intakeTemperatures[4];
+         typedef _intakeTemperatures _intakeTemperatures_out;
+         static _intakeTemperatures_slice * _intakeTemperatures_alloc ();
+         static void _intakeTemperatures_free (_intakeTemperatures_slice *);
+         static void _intakeTemperatures_copy (_intakeTemperatures_slice* to, const _intakeTemperatures_slice* from);
+         static _intakeTemperatures_slice *_intakeTemperatures_dup (const _intakeTemperatures_slice* from);
+
+         struct _intakeTemperatures_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _intakeTemperatures, _intakeTemperatures_slice, struct _intakeTemperatures_uniq_> _intakeTemperatures_var;
+         typedef DDS_DCPS_Array_forany< _intakeTemperatures, _intakeTemperatures_slice, struct _intakeTemperatures_uniq_> _intakeTemperatures_forany;
+         typedef DDS::Double _exhaustTemperatures_slice;
+         typedef DDS::Double _exhaustTemperatures[4];
+         typedef _exhaustTemperatures _exhaustTemperatures_out;
+         static _exhaustTemperatures_slice * _exhaustTemperatures_alloc ();
+         static void _exhaustTemperatures_free (_exhaustTemperatures_slice *);
+         static void _exhaustTemperatures_copy (_exhaustTemperatures_slice* to, const _exhaustTemperatures_slice* from);
+         static _exhaustTemperatures_slice *_exhaustTemperatures_dup (const _exhaustTemperatures_slice* from);
+
+         struct _exhaustTemperatures_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _exhaustTemperatures, _exhaustTemperatures_slice, struct _exhaustTemperatures_uniq_> _exhaustTemperatures_var;
+         typedef DDS_DCPS_Array_forany< _exhaustTemperatures, _exhaustTemperatures_slice, struct _exhaustTemperatures_uniq_> _exhaustTemperatures_forany;
+         DDS::String_mgr private_revCode;
+         DDS::Double private_sndStamp;
+         DDS::Double private_rcvStamp;
+         DDS::Long private_seqNum;
+         DDS::Long private_origin;
+         DDS::Long private_host;
+         _temps temps;
+         _intakeTemperatures intakeTemperatures;
+         _exhaustTemperatures exhaustTemperatures;
+   };
+
+   typedef DDS_DCPSStruct_var < TemperaturesMeasured> TemperaturesMeasured_var;
+   typedef DDS_DCPSStruct_out < TemperaturesMeasured> TemperaturesMeasured_out;
+
+   struct ZenithAngleMeasured
+   {
+         DDS::String_mgr private_revCode;
+         DDS::Double private_sndStamp;
+         DDS::Double private_rcvStamp;
+         DDS::Long private_seqNum;
+         DDS::Long private_origin;
+         DDS::Long private_host;
+         DDS::Double ZenithAngleMeasured;
+   };
+
+   typedef DDS_DCPSStruct_var < ZenithAngleMeasured> ZenithAngleMeasured_var;
+   typedef DDS_DCPSStruct_out < ZenithAngleMeasured> ZenithAngleMeasured_out;
+
+   struct command_ApplyBendingMode
+   {
+         typedef DDS::Short _bendingModeNbr_slice;
+         typedef DDS::Short _bendingModeNbr[32];
+         typedef _bendingModeNbr _bendingModeNbr_out;
+         static _bendingModeNbr_slice * _bendingModeNbr_alloc ();
+         static void _bendingModeNbr_free (_bendingModeNbr_slice *);
+         static void _bendingModeNbr_copy (_bendingModeNbr_slice* to, const _bendingModeNbr_slice* from);
+         static _bendingModeNbr_slice *_bendingModeNbr_dup (const _bendingModeNbr_slice* from);
+
+         struct _bendingModeNbr_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _bendingModeNbr, _bendingModeNbr_slice, struct _bendingModeNbr_uniq_> _bendingModeNbr_var;
+         typedef DDS_DCPS_Array_forany< _bendingModeNbr, _bendingModeNbr_slice, struct _bendingModeNbr_uniq_> _bendingModeNbr_forany;
+         typedef DDS::Double _bendingModeValue_slice;
+         typedef DDS::Double _bendingModeValue[32];
+         typedef _bendingModeValue _bendingModeValue_out;
+         static _bendingModeValue_slice * _bendingModeValue_alloc ();
+         static void _bendingModeValue_free (_bendingModeValue_slice *);
+         static void _bendingModeValue_copy (_bendingModeValue_slice* to, const _bendingModeValue_slice* from);
+         static _bendingModeValue_slice *_bendingModeValue_dup (const _bendingModeValue_slice* from);
+
+         struct _bendingModeValue_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _bendingModeValue, _bendingModeValue_slice, struct _bendingModeValue_uniq_> _bendingModeValue_var;
+         typedef DDS_DCPS_Array_forany< _bendingModeValue, _bendingModeValue_slice, struct _bendingModeValue_uniq_> _bendingModeValue_forany;
+         DDS::String_mgr private_revCode;
+         DDS::Double private_sndStamp;
+         DDS::Double private_rcvStamp;
+         DDS::Long private_seqNum;
+         DDS::Long private_origin;
+         DDS::Long private_host;
+         DDS::String_mgr device;
+         DDS::String_mgr property;
+         DDS::String_mgr action;
+         DDS::String_mgr itemValue;
+         _bendingModeNbr bendingModeNbr;
+         _bendingModeValue bendingModeValue;
+   };
+
+   typedef DDS_DCPSStruct_var < command_ApplyBendingMode> command_ApplyBendingMode_var;
+   typedef DDS_DCPSStruct_out < command_ApplyBendingMode> command_ApplyBendingMode_out;
+
+   struct command_ApplyForce
+   {
+         typedef DDS::Double _forceSetPoint_slice;
+         typedef DDS::Double _forceSetPoint[72];
+         typedef _forceSetPoint _forceSetPoint_out;
+         static _forceSetPoint_slice * _forceSetPoint_alloc ();
+         static void _forceSetPoint_free (_forceSetPoint_slice *);
+         static void _forceSetPoint_copy (_forceSetPoint_slice* to, const _forceSetPoint_slice* from);
+         static _forceSetPoint_slice *_forceSetPoint_dup (const _forceSetPoint_slice* from);
+
+         struct _forceSetPoint_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _forceSetPoint, _forceSetPoint_slice, struct _forceSetPoint_uniq_> _forceSetPoint_var;
+         typedef DDS_DCPS_Array_forany< _forceSetPoint, _forceSetPoint_slice, struct _forceSetPoint_uniq_> _forceSetPoint_forany;
+         DDS::String_mgr private_revCode;
+         DDS::Double private_sndStamp;
+         DDS::Double private_rcvStamp;
+         DDS::Long private_seqNum;
+         DDS::Long private_origin;
+         DDS::Long private_host;
+         DDS::String_mgr device;
+         DDS::String_mgr property;
+         DDS::String_mgr action;
+         DDS::String_mgr itemValue;
+         _forceSetPoint forceSetPoint;
+   };
+
+   typedef DDS_DCPSStruct_var < command_ApplyForce> command_ApplyForce_var;
+   typedef DDS_DCPSStruct_out < command_ApplyForce> command_ApplyForce_out;
+
+   struct command_MoveAxialActuator
    {
          DDS::String_mgr private_revCode;
          DDS::Double private_sndStamp;
@@ -371,13 +576,15 @@ namespace m2ms
          DDS::String_mgr device;
          DDS::String_mgr property;
          DDS::String_mgr action;
-         DDS::String_mgr value;
+         DDS::String_mgr itemValue;
+         DDS::Short axialActuatorID;
+         DDS::Long relativeStepsToMove;
    };
 
-   typedef DDS_DCPSStruct_var < command_abort> command_abort_var;
-   typedef DDS_DCPSStruct_out < command_abort> command_abort_out;
+   typedef DDS_DCPSStruct_var < command_MoveAxialActuator> command_MoveAxialActuator_var;
+   typedef DDS_DCPSStruct_out < command_MoveAxialActuator> command_MoveAxialActuator_out;
 
-   struct command_configure
+   struct command_PositionMirror
    {
          DDS::String_mgr private_revCode;
          DDS::Double private_sndStamp;
@@ -388,14 +595,16 @@ namespace m2ms
          DDS::String_mgr device;
          DDS::String_mgr property;
          DDS::String_mgr action;
-         DDS::String_mgr value;
-         DDS::String_mgr spec_id;
+         DDS::String_mgr itemValue;
+         DDS::Double xTilt;
+         DDS::Double yTilt;
+         DDS::Double piston;
    };
 
-   typedef DDS_DCPSStruct_var < command_configure> command_configure_var;
-   typedef DDS_DCPSStruct_out < command_configure> command_configure_out;
+   typedef DDS_DCPSStruct_var < command_PositionMirror> command_PositionMirror_var;
+   typedef DDS_DCPSStruct_out < command_PositionMirror> command_PositionMirror_out;
 
-   struct command_status
+   struct command_SetCorrectionMode
    {
          DDS::String_mgr private_revCode;
          DDS::Double private_sndStamp;
@@ -406,13 +615,14 @@ namespace m2ms
          DDS::String_mgr device;
          DDS::String_mgr property;
          DDS::String_mgr action;
-         DDS::String_mgr value;
+         DDS::String_mgr itemValue;
+         DDS::Long Mode;
    };
 
-   typedef DDS_DCPSStruct_var < command_status> command_status_var;
-   typedef DDS_DCPSStruct_out < command_status> command_status_out;
+   typedef DDS_DCPSStruct_var < command_SetCorrectionMode> command_SetCorrectionMode_var;
+   typedef DDS_DCPSStruct_out < command_SetCorrectionMode> command_SetCorrectionMode_out;
 
-   struct command_stop
+   struct logevent_M2AssemblyInPosition
    {
          DDS::String_mgr private_revCode;
          DDS::Double private_sndStamp;
@@ -420,98 +630,14 @@ namespace m2ms
          DDS::Long private_seqNum;
          DDS::Long private_origin;
          DDS::Long private_host;
-         DDS::String_mgr device;
-         DDS::String_mgr property;
-         DDS::String_mgr action;
-         DDS::String_mgr value;
-   };
-
-   typedef DDS_DCPSStruct_var < command_stop> command_stop_var;
-   typedef DDS_DCPSStruct_out < command_stop> command_stop_out;
-
-   struct command_target
-   {
-         DDS::String_mgr private_revCode;
-         DDS::Double private_sndStamp;
-         DDS::Double private_rcvStamp;
-         DDS::Long private_seqNum;
-         DDS::Long private_origin;
-         DDS::Long private_host;
-         DDS::String_mgr device;
-         DDS::String_mgr property;
-         DDS::String_mgr action;
-         DDS::String_mgr value;
-         DDS::Double azimuth;
-         DDS::Double elevation;
-   };
-
-   typedef DDS_DCPSStruct_var < command_target> command_target_var;
-   typedef DDS_DCPSStruct_out < command_target> command_target_out;
-
-   struct command_update
-   {
-         DDS::String_mgr private_revCode;
-         DDS::Double private_sndStamp;
-         DDS::Double private_rcvStamp;
-         DDS::Long private_seqNum;
-         DDS::Long private_origin;
-         DDS::Long private_host;
-         DDS::String_mgr device;
-         DDS::String_mgr property;
-         DDS::String_mgr action;
-         DDS::String_mgr value;
-         DDS::String_mgr lut_id;
-   };
-
-   typedef DDS_DCPSStruct_var < command_update> command_update_var;
-   typedef DDS_DCPSStruct_out < command_update> command_update_out;
-
-   struct logevent_interlock
-   {
-         DDS::String_mgr private_revCode;
-         DDS::Double private_sndStamp;
-         DDS::Double private_rcvStamp;
-         DDS::Long private_seqNum;
-         DDS::Long private_origin;
-         DDS::Long private_host;
-         DDS::Long priority;
-         DDS::String_mgr detail;
-   };
-
-   typedef DDS_DCPSStruct_var < logevent_interlock> logevent_interlock_var;
-   typedef DDS_DCPSStruct_out < logevent_interlock> logevent_interlock_out;
-
-   struct logevent_limitError
-   {
-         DDS::String_mgr private_revCode;
-         DDS::Double private_sndStamp;
-         DDS::Double private_rcvStamp;
-         DDS::Long private_seqNum;
-         DDS::Long private_origin;
-         DDS::Long private_host;
-         DDS::Long priority;
-         DDS::String_mgr limit;
-         DDS::String_mgr type;
-   };
-
-   typedef DDS_DCPSStruct_var < logevent_limitError> logevent_limitError_var;
-   typedef DDS_DCPSStruct_out < logevent_limitError> logevent_limitError_out;
-
-   struct logevent_targetDone
-   {
-         DDS::String_mgr private_revCode;
-         DDS::Double private_sndStamp;
-         DDS::Double private_rcvStamp;
-         DDS::Long private_seqNum;
-         DDS::Long private_origin;
-         DDS::Long private_host;
+         DDS::Boolean inPosition;
          DDS::Long priority;
    };
 
-   typedef DDS_DCPSStruct_var < logevent_targetDone> logevent_targetDone_var;
-   typedef DDS_DCPSStruct_out < logevent_targetDone> logevent_targetDone_out;
+   typedef DDS_DCPSStruct_var < logevent_M2AssemblyInPosition> logevent_M2AssemblyInPosition_var;
+   typedef DDS_DCPSStruct_out < logevent_M2AssemblyInPosition> logevent_M2AssemblyInPosition_out;
 
-   struct logevent_targetError
+   struct logevent_M2DetailedState
    {
          DDS::String_mgr private_revCode;
          DDS::Double private_sndStamp;
@@ -519,13 +645,14 @@ namespace m2ms
          DDS::Long private_seqNum;
          DDS::Long private_origin;
          DDS::Long private_host;
+         DDS::Short state;
          DDS::Long priority;
    };
 
-   typedef DDS_DCPSStruct_var < logevent_targetError> logevent_targetError_var;
-   typedef DDS_DCPSStruct_out < logevent_targetError> logevent_targetError_out;
+   typedef DDS_DCPSStruct_var < logevent_M2DetailedState> logevent_M2DetailedState_var;
+   typedef DDS_DCPSStruct_out < logevent_M2DetailedState> logevent_M2DetailedState_out;
 
-   struct logevent_tempError
+   struct logevent_M2FaultState
    {
          DDS::String_mgr private_revCode;
          DDS::Double private_sndStamp;
@@ -533,16 +660,39 @@ namespace m2ms
          DDS::Long private_seqNum;
          DDS::Long private_origin;
          DDS::Long private_host;
+         DDS::Short state;
          DDS::Long priority;
-         DDS::String_mgr device;
-         DDS::Long severity;
-         DDS::Double temp;
    };
 
-   typedef DDS_DCPSStruct_var < logevent_tempError> logevent_tempError_var;
-   typedef DDS_DCPSStruct_out < logevent_tempError> logevent_tempError_out;
+   typedef DDS_DCPSStruct_var < logevent_M2FaultState> logevent_M2FaultState_var;
+   typedef DDS_DCPSStruct_out < logevent_M2FaultState> logevent_M2FaultState_out;
+   const DDS::Long M2FaultState_ActuatorPlusLimit = (DDS::Long) 1L;
+   const DDS::Long M2FaultState_ActuatorMinusLimit = (DDS::Long) 2L;
+   const DDS::Long M2FaultState_ActuatorPlusForceLimit = (DDS::Long) 3L;
+   const DDS::Long M2FaultState_ActuatorMinusForceLimit = (DDS::Long) 4L;
+   const DDS::Long M2FaultState_ActuatorCommTimeout = (DDS::Long) 5L;
+   const DDS::Long M2FaultState_FollowingError = (DDS::Long) 6L;
+   const DDS::Long M2FaultState_ConfigurationError = (DDS::Long) 7L;
+   const DDS::Long M2FaultState_UnresponsiveActuator = (DDS::Long) 8L;
+   const DDS::Long M2FaultState_TangentLinkStrainFault = (DDS::Long) 9L;
+   const DDS::Long M2FaultState_cRIOCommFailure = (DDS::Long) 10L;
+   const DDS::Long M2FaultState_cRIOHeartbeatFailure = (DDS::Long) 11L;
+   const DDS::Long M2FaultState_CurrentError = (DDS::Long) 12L;
+   const DDS::Long M2FaultState_VoltageError = (DDS::Long) 13L;
+   const DDS::Long M2FaultState_PowerRelayFault = (DDS::Long) 14L;
+   const DDS::Long M2FaultState_PowerSupplyFault = (DDS::Long) 15L;
+   const DDS::Long M2FaultState_TemperatureFault = (DDS::Long) 16L;
+   const DDS::Long M2FaultState_TempSensorFailure = (DDS::Long) 17L;
+   const DDS::Long M2FaultState_TelescopeElevationFault = (DDS::Long) 18L;
+   const DDS::Long M2FaultState_GravitySensorFailure = (DDS::Long) 19L;
+   const DDS::Long M2FaultState_ILCFault = (DDS::Long) 20L;
+   const DDS::Long M2FaultState_CelRBPositionError = (DDS::Long) 21L;
+   const DDS::Long M2FaultState_DisplacementSensor = (DDS::Long) 22L;
+   const DDS::Long M2FaultState_ActuatorPlusSoftLimit = (DDS::Long) 23L;
+   const DDS::Long M2FaultState_ActuatorMinusSoftLimit = (DDS::Long) 24L;
+   const DDS::Long M2FaultState_CelTemperatureWarning = (DDS::Long) 25L;
 
-   struct logevent_updateDone
+   struct logevent_M2SummaryState
    {
          DDS::String_mgr private_revCode;
          DDS::Double private_sndStamp;
@@ -550,25 +700,12 @@ namespace m2ms
          DDS::Long private_seqNum;
          DDS::Long private_origin;
          DDS::Long private_host;
+         DDS::Short state;
          DDS::Long priority;
    };
 
-   typedef DDS_DCPSStruct_var < logevent_updateDone> logevent_updateDone_var;
-   typedef DDS_DCPSStruct_out < logevent_updateDone> logevent_updateDone_out;
-
-   struct logevent_updateError
-   {
-         DDS::String_mgr private_revCode;
-         DDS::Double private_sndStamp;
-         DDS::Double private_rcvStamp;
-         DDS::Long private_seqNum;
-         DDS::Long private_origin;
-         DDS::Long private_host;
-         DDS::Long priority;
-   };
-
-   typedef DDS_DCPSStruct_var < logevent_updateError> logevent_updateError_var;
-   typedef DDS_DCPSStruct_out < logevent_updateError> logevent_updateError_out;
+   typedef DDS_DCPSStruct_var < logevent_M2SummaryState> logevent_M2SummaryState_var;
+   typedef DDS_DCPSStruct_out < logevent_M2SummaryState> logevent_M2SummaryState_out;
 
    struct command
    {
@@ -581,7 +718,7 @@ namespace m2ms
          DDS::String_mgr device;
          DDS::String_mgr property;
          DDS::String_mgr action;
-         DDS::String_mgr value;
+         DDS::String_mgr itemValue;
          DDS::String_mgr modifiers;
    };
 
@@ -618,119 +755,131 @@ namespace m2ms
    typedef DDS_DCPSStruct_out < logevent> logevent_out;
 }
 template <>
-m2ms::Actuators::_Raw_slice* DDS_DCPS_ArrayHelper < m2ms::Actuators::_Raw, m2ms::Actuators::_Raw_slice, m2ms::Actuators::_Raw_uniq_>::alloc ();
+m2ms::ActuatorLimitSwitches::_forward_slice* DDS_DCPS_ArrayHelper < m2ms::ActuatorLimitSwitches::_forward, m2ms::ActuatorLimitSwitches::_forward_slice, m2ms::ActuatorLimitSwitches::_forward_uniq_>::alloc ();
 template <>
-void DDS_DCPS_ArrayHelper < m2ms::Actuators::_Raw, m2ms::Actuators::_Raw_slice, m2ms::Actuators::_Raw_uniq_>::copy (m2ms::Actuators::_Raw_slice *to, const m2ms::Actuators::_Raw_slice* from);
+void DDS_DCPS_ArrayHelper < m2ms::ActuatorLimitSwitches::_forward, m2ms::ActuatorLimitSwitches::_forward_slice, m2ms::ActuatorLimitSwitches::_forward_uniq_>::copy (m2ms::ActuatorLimitSwitches::_forward_slice *to, const m2ms::ActuatorLimitSwitches::_forward_slice* from);
 template <>
-void DDS_DCPS_ArrayHelper < m2ms::Actuators::_Raw, m2ms::Actuators::_Raw_slice, m2ms::Actuators::_Raw_uniq_>::free (m2ms::Actuators::_Raw_slice *ptr);
+void DDS_DCPS_ArrayHelper < m2ms::ActuatorLimitSwitches::_forward, m2ms::ActuatorLimitSwitches::_forward_slice, m2ms::ActuatorLimitSwitches::_forward_uniq_>::free (m2ms::ActuatorLimitSwitches::_forward_slice *ptr);
 template <>
-m2ms::Actuators::_Calibrated_slice* DDS_DCPS_ArrayHelper < m2ms::Actuators::_Calibrated, m2ms::Actuators::_Calibrated_slice, m2ms::Actuators::_Calibrated_uniq_>::alloc ();
+m2ms::ActuatorLimitSwitches::_reverse_slice* DDS_DCPS_ArrayHelper < m2ms::ActuatorLimitSwitches::_reverse, m2ms::ActuatorLimitSwitches::_reverse_slice, m2ms::ActuatorLimitSwitches::_reverse_uniq_>::alloc ();
 template <>
-void DDS_DCPS_ArrayHelper < m2ms::Actuators::_Calibrated, m2ms::Actuators::_Calibrated_slice, m2ms::Actuators::_Calibrated_uniq_>::copy (m2ms::Actuators::_Calibrated_slice *to, const m2ms::Actuators::_Calibrated_slice* from);
+void DDS_DCPS_ArrayHelper < m2ms::ActuatorLimitSwitches::_reverse, m2ms::ActuatorLimitSwitches::_reverse_slice, m2ms::ActuatorLimitSwitches::_reverse_uniq_>::copy (m2ms::ActuatorLimitSwitches::_reverse_slice *to, const m2ms::ActuatorLimitSwitches::_reverse_slice* from);
 template <>
-void DDS_DCPS_ArrayHelper < m2ms::Actuators::_Calibrated, m2ms::Actuators::_Calibrated_slice, m2ms::Actuators::_Calibrated_uniq_>::free (m2ms::Actuators::_Calibrated_slice *ptr);
+void DDS_DCPS_ArrayHelper < m2ms::ActuatorLimitSwitches::_reverse, m2ms::ActuatorLimitSwitches::_reverse_slice, m2ms::ActuatorLimitSwitches::_reverse_uniq_>::free (m2ms::ActuatorLimitSwitches::_reverse_slice *ptr);
 template <>
-m2ms::Application::_Demand_slice* DDS_DCPS_ArrayHelper < m2ms::Application::_Demand, m2ms::Application::_Demand_slice, m2ms::Application::_Demand_uniq_>::alloc ();
+m2ms::AxialActuatorAbsolutePositionSteps::_axialAbsolutePositionSteps_slice* DDS_DCPS_ArrayHelper < m2ms::AxialActuatorAbsolutePositionSteps::_axialAbsolutePositionSteps, m2ms::AxialActuatorAbsolutePositionSteps::_axialAbsolutePositionSteps_slice, m2ms::AxialActuatorAbsolutePositionSteps::_axialAbsolutePositionSteps_uniq_>::alloc ();
 template <>
-void DDS_DCPS_ArrayHelper < m2ms::Application::_Demand, m2ms::Application::_Demand_slice, m2ms::Application::_Demand_uniq_>::copy (m2ms::Application::_Demand_slice *to, const m2ms::Application::_Demand_slice* from);
+void DDS_DCPS_ArrayHelper < m2ms::AxialActuatorAbsolutePositionSteps::_axialAbsolutePositionSteps, m2ms::AxialActuatorAbsolutePositionSteps::_axialAbsolutePositionSteps_slice, m2ms::AxialActuatorAbsolutePositionSteps::_axialAbsolutePositionSteps_uniq_>::copy (m2ms::AxialActuatorAbsolutePositionSteps::_axialAbsolutePositionSteps_slice *to, const m2ms::AxialActuatorAbsolutePositionSteps::_axialAbsolutePositionSteps_slice* from);
 template <>
-void DDS_DCPS_ArrayHelper < m2ms::Application::_Demand, m2ms::Application::_Demand_slice, m2ms::Application::_Demand_uniq_>::free (m2ms::Application::_Demand_slice *ptr);
+void DDS_DCPS_ArrayHelper < m2ms::AxialActuatorAbsolutePositionSteps::_axialAbsolutePositionSteps, m2ms::AxialActuatorAbsolutePositionSteps::_axialAbsolutePositionSteps_slice, m2ms::AxialActuatorAbsolutePositionSteps::_axialAbsolutePositionSteps_uniq_>::free (m2ms::AxialActuatorAbsolutePositionSteps::_axialAbsolutePositionSteps_slice *ptr);
 template <>
-m2ms::Application::_Position_slice* DDS_DCPS_ArrayHelper < m2ms::Application::_Position, m2ms::Application::_Position_slice, m2ms::Application::_Position_uniq_>::alloc ();
+m2ms::AxialActuatorPositionAbsoluteEncoderPositionMeasured::_axialEncoderPositionMeasured_slice* DDS_DCPS_ArrayHelper < m2ms::AxialActuatorPositionAbsoluteEncoderPositionMeasured::_axialEncoderPositionMeasured, m2ms::AxialActuatorPositionAbsoluteEncoderPositionMeasured::_axialEncoderPositionMeasured_slice, m2ms::AxialActuatorPositionAbsoluteEncoderPositionMeasured::_axialEncoderPositionMeasured_uniq_>::alloc ();
 template <>
-void DDS_DCPS_ArrayHelper < m2ms::Application::_Position, m2ms::Application::_Position_slice, m2ms::Application::_Position_uniq_>::copy (m2ms::Application::_Position_slice *to, const m2ms::Application::_Position_slice* from);
+void DDS_DCPS_ArrayHelper < m2ms::AxialActuatorPositionAbsoluteEncoderPositionMeasured::_axialEncoderPositionMeasured, m2ms::AxialActuatorPositionAbsoluteEncoderPositionMeasured::_axialEncoderPositionMeasured_slice, m2ms::AxialActuatorPositionAbsoluteEncoderPositionMeasured::_axialEncoderPositionMeasured_uniq_>::copy (m2ms::AxialActuatorPositionAbsoluteEncoderPositionMeasured::_axialEncoderPositionMeasured_slice *to, const m2ms::AxialActuatorPositionAbsoluteEncoderPositionMeasured::_axialEncoderPositionMeasured_slice* from);
 template <>
-void DDS_DCPS_ArrayHelper < m2ms::Application::_Position, m2ms::Application::_Position_slice, m2ms::Application::_Position_uniq_>::free (m2ms::Application::_Position_slice *ptr);
+void DDS_DCPS_ArrayHelper < m2ms::AxialActuatorPositionAbsoluteEncoderPositionMeasured::_axialEncoderPositionMeasured, m2ms::AxialActuatorPositionAbsoluteEncoderPositionMeasured::_axialEncoderPositionMeasured_slice, m2ms::AxialActuatorPositionAbsoluteEncoderPositionMeasured::_axialEncoderPositionMeasured_uniq_>::free (m2ms::AxialActuatorPositionAbsoluteEncoderPositionMeasured::_axialEncoderPositionMeasured_slice *ptr);
 template <>
-m2ms::Application::_Error_slice* DDS_DCPS_ArrayHelper < m2ms::Application::_Error, m2ms::Application::_Error_slice, m2ms::Application::_Error_uniq_>::alloc ();
+m2ms::AxialForcesMeasured::_axialForceMeasured_slice* DDS_DCPS_ArrayHelper < m2ms::AxialForcesMeasured::_axialForceMeasured, m2ms::AxialForcesMeasured::_axialForceMeasured_slice, m2ms::AxialForcesMeasured::_axialForceMeasured_uniq_>::alloc ();
 template <>
-void DDS_DCPS_ArrayHelper < m2ms::Application::_Error, m2ms::Application::_Error_slice, m2ms::Application::_Error_uniq_>::copy (m2ms::Application::_Error_slice *to, const m2ms::Application::_Error_slice* from);
+void DDS_DCPS_ArrayHelper < m2ms::AxialForcesMeasured::_axialForceMeasured, m2ms::AxialForcesMeasured::_axialForceMeasured_slice, m2ms::AxialForcesMeasured::_axialForceMeasured_uniq_>::copy (m2ms::AxialForcesMeasured::_axialForceMeasured_slice *to, const m2ms::AxialForcesMeasured::_axialForceMeasured_slice* from);
 template <>
-void DDS_DCPS_ArrayHelper < m2ms::Application::_Error, m2ms::Application::_Error_slice, m2ms::Application::_Error_uniq_>::free (m2ms::Application::_Error_slice *ptr);
+void DDS_DCPS_ArrayHelper < m2ms::AxialForcesMeasured::_axialForceMeasured, m2ms::AxialForcesMeasured::_axialForceMeasured_slice, m2ms::AxialForcesMeasured::_axialForceMeasured_uniq_>::free (m2ms::AxialForcesMeasured::_axialForceMeasured_slice *ptr);
 template <>
-m2ms::Electrical::_voltage_slice* DDS_DCPS_ArrayHelper < m2ms::Electrical::_voltage, m2ms::Electrical::_voltage_slice, m2ms::Electrical::_voltage_uniq_>::alloc ();
+m2ms::PowerStatus::_voltages_slice* DDS_DCPS_ArrayHelper < m2ms::PowerStatus::_voltages, m2ms::PowerStatus::_voltages_slice, m2ms::PowerStatus::_voltages_uniq_>::alloc ();
 template <>
-void DDS_DCPS_ArrayHelper < m2ms::Electrical::_voltage, m2ms::Electrical::_voltage_slice, m2ms::Electrical::_voltage_uniq_>::copy (m2ms::Electrical::_voltage_slice *to, const m2ms::Electrical::_voltage_slice* from);
+void DDS_DCPS_ArrayHelper < m2ms::PowerStatus::_voltages, m2ms::PowerStatus::_voltages_slice, m2ms::PowerStatus::_voltages_uniq_>::copy (m2ms::PowerStatus::_voltages_slice *to, const m2ms::PowerStatus::_voltages_slice* from);
 template <>
-void DDS_DCPS_ArrayHelper < m2ms::Electrical::_voltage, m2ms::Electrical::_voltage_slice, m2ms::Electrical::_voltage_uniq_>::free (m2ms::Electrical::_voltage_slice *ptr);
+void DDS_DCPS_ArrayHelper < m2ms::PowerStatus::_voltages, m2ms::PowerStatus::_voltages_slice, m2ms::PowerStatus::_voltages_uniq_>::free (m2ms::PowerStatus::_voltages_slice *ptr);
 template <>
-m2ms::Electrical::_error_slice* DDS_DCPS_ArrayHelper < m2ms::Electrical::_error, m2ms::Electrical::_error_slice, m2ms::Electrical::_error_uniq_>::alloc ();
+m2ms::PowerStatus::_currents_slice* DDS_DCPS_ArrayHelper < m2ms::PowerStatus::_currents, m2ms::PowerStatus::_currents_slice, m2ms::PowerStatus::_currents_uniq_>::alloc ();
 template <>
-void DDS_DCPS_ArrayHelper < m2ms::Electrical::_error, m2ms::Electrical::_error_slice, m2ms::Electrical::_error_uniq_>::copy (m2ms::Electrical::_error_slice *to, const m2ms::Electrical::_error_slice* from);
+void DDS_DCPS_ArrayHelper < m2ms::PowerStatus::_currents, m2ms::PowerStatus::_currents_slice, m2ms::PowerStatus::_currents_uniq_>::copy (m2ms::PowerStatus::_currents_slice *to, const m2ms::PowerStatus::_currents_slice* from);
 template <>
-void DDS_DCPS_ArrayHelper < m2ms::Electrical::_error, m2ms::Electrical::_error_slice, m2ms::Electrical::_error_uniq_>::free (m2ms::Electrical::_error_slice *ptr);
+void DDS_DCPS_ArrayHelper < m2ms::PowerStatus::_currents, m2ms::PowerStatus::_currents_slice, m2ms::PowerStatus::_currents_uniq_>::free (m2ms::PowerStatus::_currents_slice *ptr);
 template <>
-m2ms::Electrical::_status_slice* DDS_DCPS_ArrayHelper < m2ms::Electrical::_status, m2ms::Electrical::_status_slice, m2ms::Electrical::_status_uniq_>::alloc ();
+m2ms::PowerStatus::_onOff_slice* DDS_DCPS_ArrayHelper < m2ms::PowerStatus::_onOff, m2ms::PowerStatus::_onOff_slice, m2ms::PowerStatus::_onOff_uniq_>::alloc ();
 template <>
-void DDS_DCPS_ArrayHelper < m2ms::Electrical::_status, m2ms::Electrical::_status_slice, m2ms::Electrical::_status_uniq_>::copy (m2ms::Electrical::_status_slice *to, const m2ms::Electrical::_status_slice* from);
+void DDS_DCPS_ArrayHelper < m2ms::PowerStatus::_onOff, m2ms::PowerStatus::_onOff_slice, m2ms::PowerStatus::_onOff_uniq_>::copy (m2ms::PowerStatus::_onOff_slice *to, const m2ms::PowerStatus::_onOff_slice* from);
 template <>
-void DDS_DCPS_ArrayHelper < m2ms::Electrical::_status, m2ms::Electrical::_status_slice, m2ms::Electrical::_status_uniq_>::free (m2ms::Electrical::_status_slice *ptr);
+void DDS_DCPS_ArrayHelper < m2ms::PowerStatus::_onOff, m2ms::PowerStatus::_onOff_slice, m2ms::PowerStatus::_onOff_uniq_>::free (m2ms::PowerStatus::_onOff_slice *ptr);
 template <>
-m2ms::LimitSensors::_liftoff_slice* DDS_DCPS_ArrayHelper < m2ms::LimitSensors::_liftoff, m2ms::LimitSensors::_liftoff_slice, m2ms::LimitSensors::_liftoff_uniq_>::alloc ();
+m2ms::PowerStatus::_states_slice* DDS_DCPS_ArrayHelper < m2ms::PowerStatus::_states, m2ms::PowerStatus::_states_slice, m2ms::PowerStatus::_states_uniq_>::alloc ();
 template <>
-void DDS_DCPS_ArrayHelper < m2ms::LimitSensors::_liftoff, m2ms::LimitSensors::_liftoff_slice, m2ms::LimitSensors::_liftoff_uniq_>::copy (m2ms::LimitSensors::_liftoff_slice *to, const m2ms::LimitSensors::_liftoff_slice* from);
+void DDS_DCPS_ArrayHelper < m2ms::PowerStatus::_states, m2ms::PowerStatus::_states_slice, m2ms::PowerStatus::_states_uniq_>::copy (m2ms::PowerStatus::_states_slice *to, const m2ms::PowerStatus::_states_slice* from);
 template <>
-void DDS_DCPS_ArrayHelper < m2ms::LimitSensors::_liftoff, m2ms::LimitSensors::_liftoff_slice, m2ms::LimitSensors::_liftoff_uniq_>::free (m2ms::LimitSensors::_liftoff_slice *ptr);
+void DDS_DCPS_ArrayHelper < m2ms::PowerStatus::_states, m2ms::PowerStatus::_states_slice, m2ms::PowerStatus::_states_uniq_>::free (m2ms::PowerStatus::_states_slice *ptr);
 template <>
-m2ms::LimitSensors::_limit_slice* DDS_DCPS_ArrayHelper < m2ms::LimitSensors::_limit, m2ms::LimitSensors::_limit_slice, m2ms::LimitSensors::_limit_uniq_>::alloc ();
+m2ms::RawDisplacement::_rawPosition_slice* DDS_DCPS_ArrayHelper < m2ms::RawDisplacement::_rawPosition, m2ms::RawDisplacement::_rawPosition_slice, m2ms::RawDisplacement::_rawPosition_uniq_>::alloc ();
 template <>
-void DDS_DCPS_ArrayHelper < m2ms::LimitSensors::_limit, m2ms::LimitSensors::_limit_slice, m2ms::LimitSensors::_limit_uniq_>::copy (m2ms::LimitSensors::_limit_slice *to, const m2ms::LimitSensors::_limit_slice* from);
+void DDS_DCPS_ArrayHelper < m2ms::RawDisplacement::_rawPosition, m2ms::RawDisplacement::_rawPosition_slice, m2ms::RawDisplacement::_rawPosition_uniq_>::copy (m2ms::RawDisplacement::_rawPosition_slice *to, const m2ms::RawDisplacement::_rawPosition_slice* from);
 template <>
-void DDS_DCPS_ArrayHelper < m2ms::LimitSensors::_limit, m2ms::LimitSensors::_limit_slice, m2ms::LimitSensors::_limit_uniq_>::free (m2ms::LimitSensors::_limit_slice *ptr);
+void DDS_DCPS_ArrayHelper < m2ms::RawDisplacement::_rawPosition, m2ms::RawDisplacement::_rawPosition_slice, m2ms::RawDisplacement::_rawPosition_uniq_>::free (m2ms::RawDisplacement::_rawPosition_slice *ptr);
 template <>
-m2ms::Metrology::_distance_slice* DDS_DCPS_ArrayHelper < m2ms::Metrology::_distance, m2ms::Metrology::_distance_slice, m2ms::Metrology::_distance_uniq_>::alloc ();
+m2ms::RawTelemetry::_dataPacket_slice* DDS_DCPS_ArrayHelper < m2ms::RawTelemetry::_dataPacket, m2ms::RawTelemetry::_dataPacket_slice, m2ms::RawTelemetry::_dataPacket_uniq_>::alloc ();
 template <>
-void DDS_DCPS_ArrayHelper < m2ms::Metrology::_distance, m2ms::Metrology::_distance_slice, m2ms::Metrology::_distance_uniq_>::copy (m2ms::Metrology::_distance_slice *to, const m2ms::Metrology::_distance_slice* from);
+void DDS_DCPS_ArrayHelper < m2ms::RawTelemetry::_dataPacket, m2ms::RawTelemetry::_dataPacket_slice, m2ms::RawTelemetry::_dataPacket_uniq_>::copy (m2ms::RawTelemetry::_dataPacket_slice *to, const m2ms::RawTelemetry::_dataPacket_slice* from);
 template <>
-void DDS_DCPS_ArrayHelper < m2ms::Metrology::_distance, m2ms::Metrology::_distance_slice, m2ms::Metrology::_distance_uniq_>::free (m2ms::Metrology::_distance_slice *ptr);
+void DDS_DCPS_ArrayHelper < m2ms::RawTelemetry::_dataPacket, m2ms::RawTelemetry::_dataPacket_slice, m2ms::RawTelemetry::_dataPacket_uniq_>::free (m2ms::RawTelemetry::_dataPacket_slice *ptr);
 template <>
-m2ms::Metrology::_error_slice* DDS_DCPS_ArrayHelper < m2ms::Metrology::_error, m2ms::Metrology::_error_slice, m2ms::Metrology::_error_uniq_>::alloc ();
+m2ms::StepVectorUpdate::_steps_slice* DDS_DCPS_ArrayHelper < m2ms::StepVectorUpdate::_steps, m2ms::StepVectorUpdate::_steps_slice, m2ms::StepVectorUpdate::_steps_uniq_>::alloc ();
 template <>
-void DDS_DCPS_ArrayHelper < m2ms::Metrology::_error, m2ms::Metrology::_error_slice, m2ms::Metrology::_error_uniq_>::copy (m2ms::Metrology::_error_slice *to, const m2ms::Metrology::_error_slice* from);
+void DDS_DCPS_ArrayHelper < m2ms::StepVectorUpdate::_steps, m2ms::StepVectorUpdate::_steps_slice, m2ms::StepVectorUpdate::_steps_uniq_>::copy (m2ms::StepVectorUpdate::_steps_slice *to, const m2ms::StepVectorUpdate::_steps_slice* from);
 template <>
-void DDS_DCPS_ArrayHelper < m2ms::Metrology::_error, m2ms::Metrology::_error_slice, m2ms::Metrology::_error_uniq_>::free (m2ms::Metrology::_error_slice *ptr);
+void DDS_DCPS_ArrayHelper < m2ms::StepVectorUpdate::_steps, m2ms::StepVectorUpdate::_steps_slice, m2ms::StepVectorUpdate::_steps_uniq_>::free (m2ms::StepVectorUpdate::_steps_slice *ptr);
 template <>
-m2ms::Metrology::_status_slice* DDS_DCPS_ArrayHelper < m2ms::Metrology::_status, m2ms::Metrology::_status_slice, m2ms::Metrology::_status_uniq_>::alloc ();
+m2ms::SystemStatus::_statusBits_slice* DDS_DCPS_ArrayHelper < m2ms::SystemStatus::_statusBits, m2ms::SystemStatus::_statusBits_slice, m2ms::SystemStatus::_statusBits_uniq_>::alloc ();
 template <>
-void DDS_DCPS_ArrayHelper < m2ms::Metrology::_status, m2ms::Metrology::_status_slice, m2ms::Metrology::_status_uniq_>::copy (m2ms::Metrology::_status_slice *to, const m2ms::Metrology::_status_slice* from);
+void DDS_DCPS_ArrayHelper < m2ms::SystemStatus::_statusBits, m2ms::SystemStatus::_statusBits_slice, m2ms::SystemStatus::_statusBits_uniq_>::copy (m2ms::SystemStatus::_statusBits_slice *to, const m2ms::SystemStatus::_statusBits_slice* from);
 template <>
-void DDS_DCPS_ArrayHelper < m2ms::Metrology::_status, m2ms::Metrology::_status_slice, m2ms::Metrology::_status_uniq_>::free (m2ms::Metrology::_status_slice *ptr);
+void DDS_DCPS_ArrayHelper < m2ms::SystemStatus::_statusBits, m2ms::SystemStatus::_statusBits_slice, m2ms::SystemStatus::_statusBits_uniq_>::free (m2ms::SystemStatus::_statusBits_slice *ptr);
 template <>
-m2ms::Surface::_Raw_slice* DDS_DCPS_ArrayHelper < m2ms::Surface::_Raw, m2ms::Surface::_Raw_slice, m2ms::Surface::_Raw_uniq_>::alloc ();
+m2ms::TargetForces::_setPoint_slice* DDS_DCPS_ArrayHelper < m2ms::TargetForces::_setPoint, m2ms::TargetForces::_setPoint_slice, m2ms::TargetForces::_setPoint_uniq_>::alloc ();
 template <>
-void DDS_DCPS_ArrayHelper < m2ms::Surface::_Raw, m2ms::Surface::_Raw_slice, m2ms::Surface::_Raw_uniq_>::copy (m2ms::Surface::_Raw_slice *to, const m2ms::Surface::_Raw_slice* from);
+void DDS_DCPS_ArrayHelper < m2ms::TargetForces::_setPoint, m2ms::TargetForces::_setPoint_slice, m2ms::TargetForces::_setPoint_uniq_>::copy (m2ms::TargetForces::_setPoint_slice *to, const m2ms::TargetForces::_setPoint_slice* from);
 template <>
-void DDS_DCPS_ArrayHelper < m2ms::Surface::_Raw, m2ms::Surface::_Raw_slice, m2ms::Surface::_Raw_uniq_>::free (m2ms::Surface::_Raw_slice *ptr);
+void DDS_DCPS_ArrayHelper < m2ms::TargetForces::_setPoint, m2ms::TargetForces::_setPoint_slice, m2ms::TargetForces::_setPoint_uniq_>::free (m2ms::TargetForces::_setPoint_slice *ptr);
 template <>
-m2ms::Surface::_Calibrated_slice* DDS_DCPS_ArrayHelper < m2ms::Surface::_Calibrated, m2ms::Surface::_Calibrated_slice, m2ms::Surface::_Calibrated_uniq_>::alloc ();
+m2ms::TargetForces::_forceComponent_slice* DDS_DCPS_ArrayHelper < m2ms::TargetForces::_forceComponent, m2ms::TargetForces::_forceComponent_slice, m2ms::TargetForces::_forceComponent_uniq_>::alloc ();
 template <>
-void DDS_DCPS_ArrayHelper < m2ms::Surface::_Calibrated, m2ms::Surface::_Calibrated_slice, m2ms::Surface::_Calibrated_uniq_>::copy (m2ms::Surface::_Calibrated_slice *to, const m2ms::Surface::_Calibrated_slice* from);
+void DDS_DCPS_ArrayHelper < m2ms::TargetForces::_forceComponent, m2ms::TargetForces::_forceComponent_slice, m2ms::TargetForces::_forceComponent_uniq_>::copy (m2ms::TargetForces::_forceComponent_slice *to, const m2ms::TargetForces::_forceComponent_slice* from);
 template <>
-void DDS_DCPS_ArrayHelper < m2ms::Surface::_Calibrated, m2ms::Surface::_Calibrated_slice, m2ms::Surface::_Calibrated_uniq_>::free (m2ms::Surface::_Calibrated_slice *ptr);
+void DDS_DCPS_ArrayHelper < m2ms::TargetForces::_forceComponent, m2ms::TargetForces::_forceComponent_slice, m2ms::TargetForces::_forceComponent_uniq_>::free (m2ms::TargetForces::_forceComponent_slice *ptr);
 template <>
-m2ms::TC::_setpoint_slice* DDS_DCPS_ArrayHelper < m2ms::TC::_setpoint, m2ms::TC::_setpoint_slice, m2ms::TC::_setpoint_uniq_>::alloc ();
+m2ms::TemperaturesMeasured::_temps_slice* DDS_DCPS_ArrayHelper < m2ms::TemperaturesMeasured::_temps, m2ms::TemperaturesMeasured::_temps_slice, m2ms::TemperaturesMeasured::_temps_uniq_>::alloc ();
 template <>
-void DDS_DCPS_ArrayHelper < m2ms::TC::_setpoint, m2ms::TC::_setpoint_slice, m2ms::TC::_setpoint_uniq_>::copy (m2ms::TC::_setpoint_slice *to, const m2ms::TC::_setpoint_slice* from);
+void DDS_DCPS_ArrayHelper < m2ms::TemperaturesMeasured::_temps, m2ms::TemperaturesMeasured::_temps_slice, m2ms::TemperaturesMeasured::_temps_uniq_>::copy (m2ms::TemperaturesMeasured::_temps_slice *to, const m2ms::TemperaturesMeasured::_temps_slice* from);
 template <>
-void DDS_DCPS_ArrayHelper < m2ms::TC::_setpoint, m2ms::TC::_setpoint_slice, m2ms::TC::_setpoint_uniq_>::free (m2ms::TC::_setpoint_slice *ptr);
+void DDS_DCPS_ArrayHelper < m2ms::TemperaturesMeasured::_temps, m2ms::TemperaturesMeasured::_temps_slice, m2ms::TemperaturesMeasured::_temps_uniq_>::free (m2ms::TemperaturesMeasured::_temps_slice *ptr);
 template <>
-m2ms::TC::_temperature_slice* DDS_DCPS_ArrayHelper < m2ms::TC::_temperature, m2ms::TC::_temperature_slice, m2ms::TC::_temperature_uniq_>::alloc ();
+m2ms::TemperaturesMeasured::_intakeTemperatures_slice* DDS_DCPS_ArrayHelper < m2ms::TemperaturesMeasured::_intakeTemperatures, m2ms::TemperaturesMeasured::_intakeTemperatures_slice, m2ms::TemperaturesMeasured::_intakeTemperatures_uniq_>::alloc ();
 template <>
-void DDS_DCPS_ArrayHelper < m2ms::TC::_temperature, m2ms::TC::_temperature_slice, m2ms::TC::_temperature_uniq_>::copy (m2ms::TC::_temperature_slice *to, const m2ms::TC::_temperature_slice* from);
+void DDS_DCPS_ArrayHelper < m2ms::TemperaturesMeasured::_intakeTemperatures, m2ms::TemperaturesMeasured::_intakeTemperatures_slice, m2ms::TemperaturesMeasured::_intakeTemperatures_uniq_>::copy (m2ms::TemperaturesMeasured::_intakeTemperatures_slice *to, const m2ms::TemperaturesMeasured::_intakeTemperatures_slice* from);
 template <>
-void DDS_DCPS_ArrayHelper < m2ms::TC::_temperature, m2ms::TC::_temperature_slice, m2ms::TC::_temperature_uniq_>::free (m2ms::TC::_temperature_slice *ptr);
+void DDS_DCPS_ArrayHelper < m2ms::TemperaturesMeasured::_intakeTemperatures, m2ms::TemperaturesMeasured::_intakeTemperatures_slice, m2ms::TemperaturesMeasured::_intakeTemperatures_uniq_>::free (m2ms::TemperaturesMeasured::_intakeTemperatures_slice *ptr);
 template <>
-m2ms::TC::_error_slice* DDS_DCPS_ArrayHelper < m2ms::TC::_error, m2ms::TC::_error_slice, m2ms::TC::_error_uniq_>::alloc ();
+m2ms::TemperaturesMeasured::_exhaustTemperatures_slice* DDS_DCPS_ArrayHelper < m2ms::TemperaturesMeasured::_exhaustTemperatures, m2ms::TemperaturesMeasured::_exhaustTemperatures_slice, m2ms::TemperaturesMeasured::_exhaustTemperatures_uniq_>::alloc ();
 template <>
-void DDS_DCPS_ArrayHelper < m2ms::TC::_error, m2ms::TC::_error_slice, m2ms::TC::_error_uniq_>::copy (m2ms::TC::_error_slice *to, const m2ms::TC::_error_slice* from);
+void DDS_DCPS_ArrayHelper < m2ms::TemperaturesMeasured::_exhaustTemperatures, m2ms::TemperaturesMeasured::_exhaustTemperatures_slice, m2ms::TemperaturesMeasured::_exhaustTemperatures_uniq_>::copy (m2ms::TemperaturesMeasured::_exhaustTemperatures_slice *to, const m2ms::TemperaturesMeasured::_exhaustTemperatures_slice* from);
 template <>
-void DDS_DCPS_ArrayHelper < m2ms::TC::_error, m2ms::TC::_error_slice, m2ms::TC::_error_uniq_>::free (m2ms::TC::_error_slice *ptr);
+void DDS_DCPS_ArrayHelper < m2ms::TemperaturesMeasured::_exhaustTemperatures, m2ms::TemperaturesMeasured::_exhaustTemperatures_slice, m2ms::TemperaturesMeasured::_exhaustTemperatures_uniq_>::free (m2ms::TemperaturesMeasured::_exhaustTemperatures_slice *ptr);
 template <>
-m2ms::TC::_status_slice* DDS_DCPS_ArrayHelper < m2ms::TC::_status, m2ms::TC::_status_slice, m2ms::TC::_status_uniq_>::alloc ();
+m2ms::command_ApplyBendingMode::_bendingModeNbr_slice* DDS_DCPS_ArrayHelper < m2ms::command_ApplyBendingMode::_bendingModeNbr, m2ms::command_ApplyBendingMode::_bendingModeNbr_slice, m2ms::command_ApplyBendingMode::_bendingModeNbr_uniq_>::alloc ();
 template <>
-void DDS_DCPS_ArrayHelper < m2ms::TC::_status, m2ms::TC::_status_slice, m2ms::TC::_status_uniq_>::copy (m2ms::TC::_status_slice *to, const m2ms::TC::_status_slice* from);
+void DDS_DCPS_ArrayHelper < m2ms::command_ApplyBendingMode::_bendingModeNbr, m2ms::command_ApplyBendingMode::_bendingModeNbr_slice, m2ms::command_ApplyBendingMode::_bendingModeNbr_uniq_>::copy (m2ms::command_ApplyBendingMode::_bendingModeNbr_slice *to, const m2ms::command_ApplyBendingMode::_bendingModeNbr_slice* from);
 template <>
-void DDS_DCPS_ArrayHelper < m2ms::TC::_status, m2ms::TC::_status_slice, m2ms::TC::_status_uniq_>::free (m2ms::TC::_status_slice *ptr);
+void DDS_DCPS_ArrayHelper < m2ms::command_ApplyBendingMode::_bendingModeNbr, m2ms::command_ApplyBendingMode::_bendingModeNbr_slice, m2ms::command_ApplyBendingMode::_bendingModeNbr_uniq_>::free (m2ms::command_ApplyBendingMode::_bendingModeNbr_slice *ptr);
+template <>
+m2ms::command_ApplyBendingMode::_bendingModeValue_slice* DDS_DCPS_ArrayHelper < m2ms::command_ApplyBendingMode::_bendingModeValue, m2ms::command_ApplyBendingMode::_bendingModeValue_slice, m2ms::command_ApplyBendingMode::_bendingModeValue_uniq_>::alloc ();
+template <>
+void DDS_DCPS_ArrayHelper < m2ms::command_ApplyBendingMode::_bendingModeValue, m2ms::command_ApplyBendingMode::_bendingModeValue_slice, m2ms::command_ApplyBendingMode::_bendingModeValue_uniq_>::copy (m2ms::command_ApplyBendingMode::_bendingModeValue_slice *to, const m2ms::command_ApplyBendingMode::_bendingModeValue_slice* from);
+template <>
+void DDS_DCPS_ArrayHelper < m2ms::command_ApplyBendingMode::_bendingModeValue, m2ms::command_ApplyBendingMode::_bendingModeValue_slice, m2ms::command_ApplyBendingMode::_bendingModeValue_uniq_>::free (m2ms::command_ApplyBendingMode::_bendingModeValue_slice *ptr);
+template <>
+m2ms::command_ApplyForce::_forceSetPoint_slice* DDS_DCPS_ArrayHelper < m2ms::command_ApplyForce::_forceSetPoint, m2ms::command_ApplyForce::_forceSetPoint_slice, m2ms::command_ApplyForce::_forceSetPoint_uniq_>::alloc ();
+template <>
+void DDS_DCPS_ArrayHelper < m2ms::command_ApplyForce::_forceSetPoint, m2ms::command_ApplyForce::_forceSetPoint_slice, m2ms::command_ApplyForce::_forceSetPoint_uniq_>::copy (m2ms::command_ApplyForce::_forceSetPoint_slice *to, const m2ms::command_ApplyForce::_forceSetPoint_slice* from);
+template <>
+void DDS_DCPS_ArrayHelper < m2ms::command_ApplyForce::_forceSetPoint, m2ms::command_ApplyForce::_forceSetPoint_slice, m2ms::command_ApplyForce::_forceSetPoint_uniq_>::free (m2ms::command_ApplyForce::_forceSetPoint_slice *ptr);
 
 
 

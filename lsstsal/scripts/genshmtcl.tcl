@@ -1,4 +1,4 @@
-#!/usr/bin/tclsh
+#!/usr/bin/env tclsh
 
 set ftcl [open shm_tcl.c w]
 set finc [open shm_tcl.h w]

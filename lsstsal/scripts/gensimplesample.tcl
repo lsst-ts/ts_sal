@@ -1,4 +1,4 @@
-#!/usr/bin/tclsh
+#!/usr/bin/env tclsh
 #
 #  Generate simple pub/sub programs for each data type in cpp and java
 #

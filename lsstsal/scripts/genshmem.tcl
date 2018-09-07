@@ -1,4 +1,4 @@
-#!/usr/bin/tclsh
+#!/usr/bin/env tclsh
 #
 #
 
@@ -287,7 +287,7 @@ global LVERSION SALVERSION VPROPS
   close $fo2
   close $ftst
   set ftst [open test_[set subsys].tcl w]
-  puts $ftst "#!/usr/bin/tclsh
+  puts $ftst "#!/usr/bin/env tclsh
 
 source ./connect_[set subsys].tcl 
 writeshm [set subsys]

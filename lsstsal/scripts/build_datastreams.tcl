@@ -1,4 +1,4 @@
-#!/usr/bin/tclsh
+#!/usr/bin/env tclsh
 
 puts stdout "Building datastreams.html"
 set scriptdir $env(SAL_HOME)/scripts

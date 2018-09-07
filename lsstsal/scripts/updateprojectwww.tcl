@@ -1,4 +1,4 @@
-#!/usr/bin/tclsh
+#!/usr/bin/env tclsh
 
 if { $argv == "schema" } {
       puts stdout "Updating project website ts/sal_objects/schema"

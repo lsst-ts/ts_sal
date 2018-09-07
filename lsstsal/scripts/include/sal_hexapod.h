@@ -4,7 +4,7 @@
 //  
 //  File name: sal_hexapod.h
 //  Source: sal_hexapod.idl
-//  Generated: Thu Apr  2 10:00:08 2015
+//  Generated: Thu Aug 23 17:23:00 2018
 //  OpenSplice V6.4.140320OSS
 //  
 //******************************************************************
@@ -23,40 +23,34 @@ namespace hexapod
    struct LimitSensors;
    struct Metrology;
    struct TC;
+   struct command_clearError;
    struct command_configureAcceleration;
+   struct command_configureAzimuthCoeffsLut;
+   struct command_configureAzimuthRawLut;
+   struct command_configureElevationCoeffsLut;
+   struct command_configureElevationRawLut;
    struct command_configureLimits;
-   struct command_configureLut;
-   struct command_configurePosition;
+   struct command_configureTemperatureCoeffsLut;
    struct command_configureVelocity;
    struct command_move;
    struct command_offset;
    struct command_pivot;
-   struct command_stop;
+   struct command_positionSet;
+   struct command_rawPositionSet;
    struct command_test;
-   struct logevent_error;
+   struct logevent_TempError;
+   struct logevent_TrackLost;
+   struct logevent_Tracking;
+   struct logevent_deviceError;
+   struct logevent_inPosition;
    struct logevent_interlock;
    struct logevent_limit;
-   struct logevent_slewOK;
-   struct logevent_temp;
-   struct logevent_trackLost;
-   struct logevent_tracking;
    struct command;
    struct ackcmd;
    struct logevent;
 
    struct Actuators
    {
-         typedef DDS::Long _Raw_slice;
-         typedef DDS::Long _Raw[18];
-         typedef _Raw _Raw_out;
-         static _Raw_slice * _Raw_alloc ();
-         static void _Raw_free (_Raw_slice *);
-         static void _Raw_copy (_Raw_slice* to, const _Raw_slice* from);
-         static _Raw_slice *_Raw_dup (const _Raw_slice* from);
-
-         struct _Raw_uniq_ {};
-         typedef DDS_DCPS_FArray_var< _Raw, _Raw_slice, struct _Raw_uniq_> _Raw_var;
-         typedef DDS_DCPS_Array_forany< _Raw, _Raw_slice, struct _Raw_uniq_> _Raw_forany;
          typedef DDS::Float _Calibrated_slice;
          typedef DDS::Float _Calibrated[18];
          typedef _Calibrated _Calibrated_out;
@@ -68,6 +62,17 @@ namespace hexapod
          struct _Calibrated_uniq_ {};
          typedef DDS_DCPS_FArray_var< _Calibrated, _Calibrated_slice, struct _Calibrated_uniq_> _Calibrated_var;
          typedef DDS_DCPS_Array_forany< _Calibrated, _Calibrated_slice, struct _Calibrated_uniq_> _Calibrated_forany;
+         typedef DDS::Long _Raw_slice;
+         typedef DDS::Long _Raw[18];
+         typedef _Raw _Raw_out;
+         static _Raw_slice * _Raw_alloc ();
+         static void _Raw_free (_Raw_slice *);
+         static void _Raw_copy (_Raw_slice* to, const _Raw_slice* from);
+         static _Raw_slice *_Raw_dup (const _Raw_slice* from);
+
+         struct _Raw_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _Raw, _Raw_slice, struct _Raw_uniq_> _Raw_var;
+         typedef DDS_DCPS_Array_forany< _Raw, _Raw_slice, struct _Raw_uniq_> _Raw_forany;
          DDS::Short hexapodID;
          DDS::String_mgr private_revCode;
          DDS::Double private_sndStamp;
@@ -75,8 +80,8 @@ namespace hexapod
          DDS::Long private_seqNum;
          DDS::Long private_origin;
          DDS::Long private_host;
-         _Raw Raw;
          _Calibrated Calibrated;
+         _Raw Raw;
    };
 
    typedef DDS_DCPSStruct_var < Actuators> Actuators_var;
@@ -95,17 +100,6 @@ namespace hexapod
          struct _Demand_uniq_ {};
          typedef DDS_DCPS_FArray_var< _Demand, _Demand_slice, struct _Demand_uniq_> _Demand_var;
          typedef DDS_DCPS_Array_forany< _Demand, _Demand_slice, struct _Demand_uniq_> _Demand_forany;
-         typedef DDS::Float _Position_slice;
-         typedef DDS::Float _Position[6];
-         typedef _Position _Position_out;
-         static _Position_slice * _Position_alloc ();
-         static void _Position_free (_Position_slice *);
-         static void _Position_copy (_Position_slice* to, const _Position_slice* from);
-         static _Position_slice *_Position_dup (const _Position_slice* from);
-
-         struct _Position_uniq_ {};
-         typedef DDS_DCPS_FArray_var< _Position, _Position_slice, struct _Position_uniq_> _Position_var;
-         typedef DDS_DCPS_Array_forany< _Position, _Position_slice, struct _Position_uniq_> _Position_forany;
          typedef DDS::Float _Error_slice;
          typedef DDS::Float _Error[6];
          typedef _Error _Error_out;
@@ -117,6 +111,17 @@ namespace hexapod
          struct _Error_uniq_ {};
          typedef DDS_DCPS_FArray_var< _Error, _Error_slice, struct _Error_uniq_> _Error_var;
          typedef DDS_DCPS_Array_forany< _Error, _Error_slice, struct _Error_uniq_> _Error_forany;
+         typedef DDS::Float _Position_slice;
+         typedef DDS::Float _Position[6];
+         typedef _Position _Position_out;
+         static _Position_slice * _Position_alloc ();
+         static void _Position_free (_Position_slice *);
+         static void _Position_copy (_Position_slice* to, const _Position_slice* from);
+         static _Position_slice *_Position_dup (const _Position_slice* from);
+
+         struct _Position_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _Position, _Position_slice, struct _Position_uniq_> _Position_var;
+         typedef DDS_DCPS_Array_forany< _Position, _Position_slice, struct _Position_uniq_> _Position_forany;
          DDS::Short hexapodID;
          DDS::String_mgr private_revCode;
          DDS::Double private_sndStamp;
@@ -125,8 +130,8 @@ namespace hexapod
          DDS::Long private_origin;
          DDS::Long private_host;
          _Demand Demand;
-         _Position Position;
          _Error Error;
+         _Position Position;
    };
 
    typedef DDS_DCPSStruct_var < Application> Application_var;
@@ -134,17 +139,6 @@ namespace hexapod
 
    struct Electrical
    {
-         typedef DDS::Long _voltage_slice;
-         typedef DDS::Long _voltage[16];
-         typedef _voltage _voltage_out;
-         static _voltage_slice * _voltage_alloc ();
-         static void _voltage_free (_voltage_slice *);
-         static void _voltage_copy (_voltage_slice* to, const _voltage_slice* from);
-         static _voltage_slice *_voltage_dup (const _voltage_slice* from);
-
-         struct _voltage_uniq_ {};
-         typedef DDS_DCPS_FArray_var< _voltage, _voltage_slice, struct _voltage_uniq_> _voltage_var;
-         typedef DDS_DCPS_Array_forany< _voltage, _voltage_slice, struct _voltage_uniq_> _voltage_forany;
          typedef DDS::Long _error_slice;
          typedef DDS::Long _error[16];
          typedef _error _error_out;
@@ -167,6 +161,17 @@ namespace hexapod
          struct _status_uniq_ {};
          typedef DDS_DCPS_FArray_var< _status, _status_slice, struct _status_uniq_> _status_var;
          typedef DDS_DCPS_Array_forany< _status, _status_slice, struct _status_uniq_> _status_forany;
+         typedef DDS::Long _voltage_slice;
+         typedef DDS::Long _voltage[16];
+         typedef _voltage _voltage_out;
+         static _voltage_slice * _voltage_alloc ();
+         static void _voltage_free (_voltage_slice *);
+         static void _voltage_copy (_voltage_slice* to, const _voltage_slice* from);
+         static _voltage_slice *_voltage_dup (const _voltage_slice* from);
+
+         struct _voltage_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _voltage, _voltage_slice, struct _voltage_uniq_> _voltage_var;
+         typedef DDS_DCPS_Array_forany< _voltage, _voltage_slice, struct _voltage_uniq_> _voltage_forany;
          DDS::Short hexapodID;
          DDS::String_mgr private_revCode;
          DDS::Double private_sndStamp;
@@ -174,9 +179,9 @@ namespace hexapod
          DDS::Long private_seqNum;
          DDS::Long private_origin;
          DDS::Long private_host;
-         _voltage voltage;
          _error error;
          _status status;
+         _voltage voltage;
    };
 
    typedef DDS_DCPSStruct_var < Electrical> Electrical_var;
@@ -195,17 +200,17 @@ namespace hexapod
          struct _liftoff_uniq_ {};
          typedef DDS_DCPS_FArray_var< _liftoff, _liftoff_slice, struct _liftoff_uniq_> _liftoff_var;
          typedef DDS_DCPS_Array_forany< _liftoff, _liftoff_slice, struct _liftoff_uniq_> _liftoff_forany;
-         typedef DDS::Short _limit_slice;
-         typedef DDS::Short _limit[18];
-         typedef _limit _limit_out;
-         static _limit_slice * _limit_alloc ();
-         static void _limit_free (_limit_slice *);
-         static void _limit_copy (_limit_slice* to, const _limit_slice* from);
-         static _limit_slice *_limit_dup (const _limit_slice* from);
+         typedef DDS::Short _llimit_slice;
+         typedef DDS::Short _llimit[18];
+         typedef _llimit _llimit_out;
+         static _llimit_slice * _llimit_alloc ();
+         static void _llimit_free (_llimit_slice *);
+         static void _llimit_copy (_llimit_slice* to, const _llimit_slice* from);
+         static _llimit_slice *_llimit_dup (const _llimit_slice* from);
 
-         struct _limit_uniq_ {};
-         typedef DDS_DCPS_FArray_var< _limit, _limit_slice, struct _limit_uniq_> _limit_var;
-         typedef DDS_DCPS_Array_forany< _limit, _limit_slice, struct _limit_uniq_> _limit_forany;
+         struct _llimit_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _llimit, _llimit_slice, struct _llimit_uniq_> _llimit_var;
+         typedef DDS_DCPS_Array_forany< _llimit, _llimit_slice, struct _llimit_uniq_> _llimit_forany;
          DDS::Short hexapodID;
          DDS::String_mgr private_revCode;
          DDS::Double private_sndStamp;
@@ -214,7 +219,7 @@ namespace hexapod
          DDS::Long private_origin;
          DDS::Long private_host;
          _liftoff liftoff;
-         _limit limit;
+         _llimit llimit;
    };
 
    typedef DDS_DCPSStruct_var < LimitSensors> LimitSensors_var;
@@ -272,28 +277,6 @@ namespace hexapod
 
    struct TC
    {
-         typedef DDS::Float _setpoint_slice;
-         typedef DDS::Float _setpoint[16];
-         typedef _setpoint _setpoint_out;
-         static _setpoint_slice * _setpoint_alloc ();
-         static void _setpoint_free (_setpoint_slice *);
-         static void _setpoint_copy (_setpoint_slice* to, const _setpoint_slice* from);
-         static _setpoint_slice *_setpoint_dup (const _setpoint_slice* from);
-
-         struct _setpoint_uniq_ {};
-         typedef DDS_DCPS_FArray_var< _setpoint, _setpoint_slice, struct _setpoint_uniq_> _setpoint_var;
-         typedef DDS_DCPS_Array_forany< _setpoint, _setpoint_slice, struct _setpoint_uniq_> _setpoint_forany;
-         typedef DDS::Float _temperature_slice;
-         typedef DDS::Float _temperature[16];
-         typedef _temperature _temperature_out;
-         static _temperature_slice * _temperature_alloc ();
-         static void _temperature_free (_temperature_slice *);
-         static void _temperature_copy (_temperature_slice* to, const _temperature_slice* from);
-         static _temperature_slice *_temperature_dup (const _temperature_slice* from);
-
-         struct _temperature_uniq_ {};
-         typedef DDS_DCPS_FArray_var< _temperature, _temperature_slice, struct _temperature_uniq_> _temperature_var;
-         typedef DDS_DCPS_Array_forany< _temperature, _temperature_slice, struct _temperature_uniq_> _temperature_forany;
          typedef DDS::Float _error_slice;
          typedef DDS::Float _error[16];
          typedef _error _error_out;
@@ -316,6 +299,28 @@ namespace hexapod
          struct _status_uniq_ {};
          typedef DDS_DCPS_FArray_var< _status, _status_slice, struct _status_uniq_> _status_var;
          typedef DDS_DCPS_Array_forany< _status, _status_slice, struct _status_uniq_> _status_forany;
+         typedef DDS::Float _setpoint_slice;
+         typedef DDS::Float _setpoint[16];
+         typedef _setpoint _setpoint_out;
+         static _setpoint_slice * _setpoint_alloc ();
+         static void _setpoint_free (_setpoint_slice *);
+         static void _setpoint_copy (_setpoint_slice* to, const _setpoint_slice* from);
+         static _setpoint_slice *_setpoint_dup (const _setpoint_slice* from);
+
+         struct _setpoint_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _setpoint, _setpoint_slice, struct _setpoint_uniq_> _setpoint_var;
+         typedef DDS_DCPS_Array_forany< _setpoint, _setpoint_slice, struct _setpoint_uniq_> _setpoint_forany;
+         typedef DDS::Float _temperature_slice;
+         typedef DDS::Float _temperature[16];
+         typedef _temperature _temperature_out;
+         static _temperature_slice * _temperature_alloc ();
+         static void _temperature_free (_temperature_slice *);
+         static void _temperature_copy (_temperature_slice* to, const _temperature_slice* from);
+         static _temperature_slice *_temperature_dup (const _temperature_slice* from);
+
+         struct _temperature_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _temperature, _temperature_slice, struct _temperature_uniq_> _temperature_var;
+         typedef DDS_DCPS_Array_forany< _temperature, _temperature_slice, struct _temperature_uniq_> _temperature_forany;
          DDS::Short hexapodID;
          DDS::String_mgr private_revCode;
          DDS::Double private_sndStamp;
@@ -323,14 +328,33 @@ namespace hexapod
          DDS::Long private_seqNum;
          DDS::Long private_origin;
          DDS::Long private_host;
-         _setpoint setpoint;
-         _temperature temperature;
          _error error;
          _status status;
+         _setpoint setpoint;
+         _temperature temperature;
    };
 
    typedef DDS_DCPSStruct_var < TC> TC_var;
    typedef DDS_DCPSStruct_out < TC> TC_out;
+
+   struct command_clearError
+   {
+         DDS::Short hexapodID;
+         DDS::String_mgr private_revCode;
+         DDS::Double private_sndStamp;
+         DDS::Double private_rcvStamp;
+         DDS::Long private_seqNum;
+         DDS::Long private_origin;
+         DDS::Long private_host;
+         DDS::String_mgr device;
+         DDS::String_mgr property;
+         DDS::String_mgr action;
+         DDS::String_mgr itemValue;
+         DDS::Boolean state;
+   };
+
+   typedef DDS_DCPSStruct_var < command_clearError> command_clearError_var;
+   typedef DDS_DCPSStruct_out < command_clearError> command_clearError_out;
 
    struct command_configureAcceleration
    {
@@ -344,23 +368,420 @@ namespace hexapod
          DDS::String_mgr device;
          DDS::String_mgr property;
          DDS::String_mgr action;
-         DDS::String_mgr value;
-         DDS::Double xmin;
-         DDS::Double xmax;
-         DDS::Double ymin;
-         DDS::Double ymax;
-         DDS::Double zmin;
-         DDS::Double zmax;
-         DDS::Double umin;
-         DDS::Double umax;
-         DDS::Double vmin;
-         DDS::Double vmax;
-         DDS::Double wmin;
-         DDS::Double wmax;
+         DDS::String_mgr itemValue;
+         DDS::Float accmax;
    };
 
    typedef DDS_DCPSStruct_var < command_configureAcceleration> command_configureAcceleration_var;
    typedef DDS_DCPSStruct_out < command_configureAcceleration> command_configureAcceleration_out;
+
+   struct command_configureAzimuthCoeffsLut
+   {
+         typedef DDS::Long _headingInfo_slice;
+         typedef DDS::Long _headingInfo[6];
+         typedef _headingInfo _headingInfo_out;
+         static _headingInfo_slice * _headingInfo_alloc ();
+         static void _headingInfo_free (_headingInfo_slice *);
+         static void _headingInfo_copy (_headingInfo_slice* to, const _headingInfo_slice* from);
+         static _headingInfo_slice *_headingInfo_dup (const _headingInfo_slice* from);
+
+         struct _headingInfo_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _headingInfo, _headingInfo_slice, struct _headingInfo_uniq_> _headingInfo_var;
+         typedef DDS_DCPS_Array_forany< _headingInfo, _headingInfo_slice, struct _headingInfo_uniq_> _headingInfo_forany;
+         typedef DDS::Float _c1_slice;
+         typedef DDS::Float _c1[6];
+         typedef _c1 _c1_out;
+         static _c1_slice * _c1_alloc ();
+         static void _c1_free (_c1_slice *);
+         static void _c1_copy (_c1_slice* to, const _c1_slice* from);
+         static _c1_slice *_c1_dup (const _c1_slice* from);
+
+         struct _c1_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _c1, _c1_slice, struct _c1_uniq_> _c1_var;
+         typedef DDS_DCPS_Array_forany< _c1, _c1_slice, struct _c1_uniq_> _c1_forany;
+         typedef DDS::Float _c2_slice;
+         typedef DDS::Float _c2[6];
+         typedef _c2 _c2_out;
+         static _c2_slice * _c2_alloc ();
+         static void _c2_free (_c2_slice *);
+         static void _c2_copy (_c2_slice* to, const _c2_slice* from);
+         static _c2_slice *_c2_dup (const _c2_slice* from);
+
+         struct _c2_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _c2, _c2_slice, struct _c2_uniq_> _c2_var;
+         typedef DDS_DCPS_Array_forany< _c2, _c2_slice, struct _c2_uniq_> _c2_forany;
+         typedef DDS::Float _c3_slice;
+         typedef DDS::Float _c3[6];
+         typedef _c3 _c3_out;
+         static _c3_slice * _c3_alloc ();
+         static void _c3_free (_c3_slice *);
+         static void _c3_copy (_c3_slice* to, const _c3_slice* from);
+         static _c3_slice *_c3_dup (const _c3_slice* from);
+
+         struct _c3_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _c3, _c3_slice, struct _c3_uniq_> _c3_var;
+         typedef DDS_DCPS_Array_forany< _c3, _c3_slice, struct _c3_uniq_> _c3_forany;
+         typedef DDS::Float _c4_slice;
+         typedef DDS::Float _c4[6];
+         typedef _c4 _c4_out;
+         static _c4_slice * _c4_alloc ();
+         static void _c4_free (_c4_slice *);
+         static void _c4_copy (_c4_slice* to, const _c4_slice* from);
+         static _c4_slice *_c4_dup (const _c4_slice* from);
+
+         struct _c4_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _c4, _c4_slice, struct _c4_uniq_> _c4_var;
+         typedef DDS_DCPS_Array_forany< _c4, _c4_slice, struct _c4_uniq_> _c4_forany;
+         typedef DDS::Float _c5_slice;
+         typedef DDS::Float _c5[6];
+         typedef _c5 _c5_out;
+         static _c5_slice * _c5_alloc ();
+         static void _c5_free (_c5_slice *);
+         static void _c5_copy (_c5_slice* to, const _c5_slice* from);
+         static _c5_slice *_c5_dup (const _c5_slice* from);
+
+         struct _c5_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _c5, _c5_slice, struct _c5_uniq_> _c5_var;
+         typedef DDS_DCPS_Array_forany< _c5, _c5_slice, struct _c5_uniq_> _c5_forany;
+         typedef DDS::Float _c6_slice;
+         typedef DDS::Float _c6[6];
+         typedef _c6 _c6_out;
+         static _c6_slice * _c6_alloc ();
+         static void _c6_free (_c6_slice *);
+         static void _c6_copy (_c6_slice* to, const _c6_slice* from);
+         static _c6_slice *_c6_dup (const _c6_slice* from);
+
+         struct _c6_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _c6, _c6_slice, struct _c6_uniq_> _c6_var;
+         typedef DDS_DCPS_Array_forany< _c6, _c6_slice, struct _c6_uniq_> _c6_forany;
+         DDS::Short hexapodID;
+         DDS::String_mgr private_revCode;
+         DDS::Double private_sndStamp;
+         DDS::Double private_rcvStamp;
+         DDS::Long private_seqNum;
+         DDS::Long private_origin;
+         DDS::Long private_host;
+         DDS::String_mgr device;
+         DDS::String_mgr property;
+         DDS::String_mgr action;
+         DDS::String_mgr itemValue;
+         _headingInfo headingInfo;
+         _c1 c1;
+         _c2 c2;
+         _c3 c3;
+         _c4 c4;
+         _c5 c5;
+         _c6 c6;
+   };
+
+   typedef DDS_DCPSStruct_var < command_configureAzimuthCoeffsLut> command_configureAzimuthCoeffsLut_var;
+   typedef DDS_DCPSStruct_out < command_configureAzimuthCoeffsLut> command_configureAzimuthCoeffsLut_out;
+
+   struct command_configureAzimuthRawLut
+   {
+         typedef DDS::Long _headingInfo_slice;
+         typedef DDS::Long _headingInfo[35];
+         typedef _headingInfo _headingInfo_out;
+         static _headingInfo_slice * _headingInfo_alloc ();
+         static void _headingInfo_free (_headingInfo_slice *);
+         static void _headingInfo_copy (_headingInfo_slice* to, const _headingInfo_slice* from);
+         static _headingInfo_slice *_headingInfo_dup (const _headingInfo_slice* from);
+
+         struct _headingInfo_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _headingInfo, _headingInfo_slice, struct _headingInfo_uniq_> _headingInfo_var;
+         typedef DDS_DCPS_Array_forany< _headingInfo, _headingInfo_slice, struct _headingInfo_uniq_> _headingInfo_forany;
+         typedef DDS::Float _fz1_slice;
+         typedef DDS::Float _fz1[35];
+         typedef _fz1 _fz1_out;
+         static _fz1_slice * _fz1_alloc ();
+         static void _fz1_free (_fz1_slice *);
+         static void _fz1_copy (_fz1_slice* to, const _fz1_slice* from);
+         static _fz1_slice *_fz1_dup (const _fz1_slice* from);
+
+         struct _fz1_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _fz1, _fz1_slice, struct _fz1_uniq_> _fz1_var;
+         typedef DDS_DCPS_Array_forany< _fz1, _fz1_slice, struct _fz1_uniq_> _fz1_forany;
+         typedef DDS::Float _fz2_slice;
+         typedef DDS::Float _fz2[35];
+         typedef _fz2 _fz2_out;
+         static _fz2_slice * _fz2_alloc ();
+         static void _fz2_free (_fz2_slice *);
+         static void _fz2_copy (_fz2_slice* to, const _fz2_slice* from);
+         static _fz2_slice *_fz2_dup (const _fz2_slice* from);
+
+         struct _fz2_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _fz2, _fz2_slice, struct _fz2_uniq_> _fz2_var;
+         typedef DDS_DCPS_Array_forany< _fz2, _fz2_slice, struct _fz2_uniq_> _fz2_forany;
+         typedef DDS::Float _fz3_slice;
+         typedef DDS::Float _fz3[35];
+         typedef _fz3 _fz3_out;
+         static _fz3_slice * _fz3_alloc ();
+         static void _fz3_free (_fz3_slice *);
+         static void _fz3_copy (_fz3_slice* to, const _fz3_slice* from);
+         static _fz3_slice *_fz3_dup (const _fz3_slice* from);
+
+         struct _fz3_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _fz3, _fz3_slice, struct _fz3_uniq_> _fz3_var;
+         typedef DDS_DCPS_Array_forany< _fz3, _fz3_slice, struct _fz3_uniq_> _fz3_forany;
+         typedef DDS::Float _fz4_slice;
+         typedef DDS::Float _fz4[35];
+         typedef _fz4 _fz4_out;
+         static _fz4_slice * _fz4_alloc ();
+         static void _fz4_free (_fz4_slice *);
+         static void _fz4_copy (_fz4_slice* to, const _fz4_slice* from);
+         static _fz4_slice *_fz4_dup (const _fz4_slice* from);
+
+         struct _fz4_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _fz4, _fz4_slice, struct _fz4_uniq_> _fz4_var;
+         typedef DDS_DCPS_Array_forany< _fz4, _fz4_slice, struct _fz4_uniq_> _fz4_forany;
+         typedef DDS::Float _fz5_slice;
+         typedef DDS::Float _fz5[35];
+         typedef _fz5 _fz5_out;
+         static _fz5_slice * _fz5_alloc ();
+         static void _fz5_free (_fz5_slice *);
+         static void _fz5_copy (_fz5_slice* to, const _fz5_slice* from);
+         static _fz5_slice *_fz5_dup (const _fz5_slice* from);
+
+         struct _fz5_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _fz5, _fz5_slice, struct _fz5_uniq_> _fz5_var;
+         typedef DDS_DCPS_Array_forany< _fz5, _fz5_slice, struct _fz5_uniq_> _fz5_forany;
+         typedef DDS::Float _fz6_slice;
+         typedef DDS::Float _fz6[35];
+         typedef _fz6 _fz6_out;
+         static _fz6_slice * _fz6_alloc ();
+         static void _fz6_free (_fz6_slice *);
+         static void _fz6_copy (_fz6_slice* to, const _fz6_slice* from);
+         static _fz6_slice *_fz6_dup (const _fz6_slice* from);
+
+         struct _fz6_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _fz6, _fz6_slice, struct _fz6_uniq_> _fz6_var;
+         typedef DDS_DCPS_Array_forany< _fz6, _fz6_slice, struct _fz6_uniq_> _fz6_forany;
+         DDS::Short hexapodID;
+         DDS::String_mgr private_revCode;
+         DDS::Double private_sndStamp;
+         DDS::Double private_rcvStamp;
+         DDS::Long private_seqNum;
+         DDS::Long private_origin;
+         DDS::Long private_host;
+         DDS::String_mgr device;
+         DDS::String_mgr property;
+         DDS::String_mgr action;
+         DDS::String_mgr itemValue;
+         _headingInfo headingInfo;
+         _fz1 fz1;
+         _fz2 fz2;
+         _fz3 fz3;
+         _fz4 fz4;
+         _fz5 fz5;
+         _fz6 fz6;
+   };
+
+   typedef DDS_DCPSStruct_var < command_configureAzimuthRawLut> command_configureAzimuthRawLut_var;
+   typedef DDS_DCPSStruct_out < command_configureAzimuthRawLut> command_configureAzimuthRawLut_out;
+
+   struct command_configureElevationCoeffsLut
+   {
+         typedef DDS::Long _headingInfo_slice;
+         typedef DDS::Long _headingInfo[6];
+         typedef _headingInfo _headingInfo_out;
+         static _headingInfo_slice * _headingInfo_alloc ();
+         static void _headingInfo_free (_headingInfo_slice *);
+         static void _headingInfo_copy (_headingInfo_slice* to, const _headingInfo_slice* from);
+         static _headingInfo_slice *_headingInfo_dup (const _headingInfo_slice* from);
+
+         struct _headingInfo_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _headingInfo, _headingInfo_slice, struct _headingInfo_uniq_> _headingInfo_var;
+         typedef DDS_DCPS_Array_forany< _headingInfo, _headingInfo_slice, struct _headingInfo_uniq_> _headingInfo_forany;
+         typedef DDS::Float _c1_slice;
+         typedef DDS::Float _c1[6];
+         typedef _c1 _c1_out;
+         static _c1_slice * _c1_alloc ();
+         static void _c1_free (_c1_slice *);
+         static void _c1_copy (_c1_slice* to, const _c1_slice* from);
+         static _c1_slice *_c1_dup (const _c1_slice* from);
+
+         struct _c1_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _c1, _c1_slice, struct _c1_uniq_> _c1_var;
+         typedef DDS_DCPS_Array_forany< _c1, _c1_slice, struct _c1_uniq_> _c1_forany;
+         typedef DDS::Float _c2_slice;
+         typedef DDS::Float _c2[6];
+         typedef _c2 _c2_out;
+         static _c2_slice * _c2_alloc ();
+         static void _c2_free (_c2_slice *);
+         static void _c2_copy (_c2_slice* to, const _c2_slice* from);
+         static _c2_slice *_c2_dup (const _c2_slice* from);
+
+         struct _c2_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _c2, _c2_slice, struct _c2_uniq_> _c2_var;
+         typedef DDS_DCPS_Array_forany< _c2, _c2_slice, struct _c2_uniq_> _c2_forany;
+         typedef DDS::Float _c3_slice;
+         typedef DDS::Float _c3[6];
+         typedef _c3 _c3_out;
+         static _c3_slice * _c3_alloc ();
+         static void _c3_free (_c3_slice *);
+         static void _c3_copy (_c3_slice* to, const _c3_slice* from);
+         static _c3_slice *_c3_dup (const _c3_slice* from);
+
+         struct _c3_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _c3, _c3_slice, struct _c3_uniq_> _c3_var;
+         typedef DDS_DCPS_Array_forany< _c3, _c3_slice, struct _c3_uniq_> _c3_forany;
+         typedef DDS::Float _c4_slice;
+         typedef DDS::Float _c4[6];
+         typedef _c4 _c4_out;
+         static _c4_slice * _c4_alloc ();
+         static void _c4_free (_c4_slice *);
+         static void _c4_copy (_c4_slice* to, const _c4_slice* from);
+         static _c4_slice *_c4_dup (const _c4_slice* from);
+
+         struct _c4_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _c4, _c4_slice, struct _c4_uniq_> _c4_var;
+         typedef DDS_DCPS_Array_forany< _c4, _c4_slice, struct _c4_uniq_> _c4_forany;
+         typedef DDS::Float _c5_slice;
+         typedef DDS::Float _c5[6];
+         typedef _c5 _c5_out;
+         static _c5_slice * _c5_alloc ();
+         static void _c5_free (_c5_slice *);
+         static void _c5_copy (_c5_slice* to, const _c5_slice* from);
+         static _c5_slice *_c5_dup (const _c5_slice* from);
+
+         struct _c5_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _c5, _c5_slice, struct _c5_uniq_> _c5_var;
+         typedef DDS_DCPS_Array_forany< _c5, _c5_slice, struct _c5_uniq_> _c5_forany;
+         typedef DDS::Float _c6_slice;
+         typedef DDS::Float _c6[6];
+         typedef _c6 _c6_out;
+         static _c6_slice * _c6_alloc ();
+         static void _c6_free (_c6_slice *);
+         static void _c6_copy (_c6_slice* to, const _c6_slice* from);
+         static _c6_slice *_c6_dup (const _c6_slice* from);
+
+         struct _c6_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _c6, _c6_slice, struct _c6_uniq_> _c6_var;
+         typedef DDS_DCPS_Array_forany< _c6, _c6_slice, struct _c6_uniq_> _c6_forany;
+         DDS::Short hexapodID;
+         DDS::String_mgr private_revCode;
+         DDS::Double private_sndStamp;
+         DDS::Double private_rcvStamp;
+         DDS::Long private_seqNum;
+         DDS::Long private_origin;
+         DDS::Long private_host;
+         DDS::String_mgr device;
+         DDS::String_mgr property;
+         DDS::String_mgr action;
+         DDS::String_mgr itemValue;
+         _headingInfo headingInfo;
+         _c1 c1;
+         _c2 c2;
+         _c3 c3;
+         _c4 c4;
+         _c5 c5;
+         _c6 c6;
+   };
+
+   typedef DDS_DCPSStruct_var < command_configureElevationCoeffsLut> command_configureElevationCoeffsLut_var;
+   typedef DDS_DCPSStruct_out < command_configureElevationCoeffsLut> command_configureElevationCoeffsLut_out;
+
+   struct command_configureElevationRawLut
+   {
+         typedef DDS::Long _headingInfo_slice;
+         typedef DDS::Long _headingInfo[19];
+         typedef _headingInfo _headingInfo_out;
+         static _headingInfo_slice * _headingInfo_alloc ();
+         static void _headingInfo_free (_headingInfo_slice *);
+         static void _headingInfo_copy (_headingInfo_slice* to, const _headingInfo_slice* from);
+         static _headingInfo_slice *_headingInfo_dup (const _headingInfo_slice* from);
+
+         struct _headingInfo_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _headingInfo, _headingInfo_slice, struct _headingInfo_uniq_> _headingInfo_var;
+         typedef DDS_DCPS_Array_forany< _headingInfo, _headingInfo_slice, struct _headingInfo_uniq_> _headingInfo_forany;
+         typedef DDS::Float _fz1_slice;
+         typedef DDS::Float _fz1[19];
+         typedef _fz1 _fz1_out;
+         static _fz1_slice * _fz1_alloc ();
+         static void _fz1_free (_fz1_slice *);
+         static void _fz1_copy (_fz1_slice* to, const _fz1_slice* from);
+         static _fz1_slice *_fz1_dup (const _fz1_slice* from);
+
+         struct _fz1_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _fz1, _fz1_slice, struct _fz1_uniq_> _fz1_var;
+         typedef DDS_DCPS_Array_forany< _fz1, _fz1_slice, struct _fz1_uniq_> _fz1_forany;
+         typedef DDS::Float _fz2_slice;
+         typedef DDS::Float _fz2[19];
+         typedef _fz2 _fz2_out;
+         static _fz2_slice * _fz2_alloc ();
+         static void _fz2_free (_fz2_slice *);
+         static void _fz2_copy (_fz2_slice* to, const _fz2_slice* from);
+         static _fz2_slice *_fz2_dup (const _fz2_slice* from);
+
+         struct _fz2_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _fz2, _fz2_slice, struct _fz2_uniq_> _fz2_var;
+         typedef DDS_DCPS_Array_forany< _fz2, _fz2_slice, struct _fz2_uniq_> _fz2_forany;
+         typedef DDS::Float _fz3_slice;
+         typedef DDS::Float _fz3[19];
+         typedef _fz3 _fz3_out;
+         static _fz3_slice * _fz3_alloc ();
+         static void _fz3_free (_fz3_slice *);
+         static void _fz3_copy (_fz3_slice* to, const _fz3_slice* from);
+         static _fz3_slice *_fz3_dup (const _fz3_slice* from);
+
+         struct _fz3_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _fz3, _fz3_slice, struct _fz3_uniq_> _fz3_var;
+         typedef DDS_DCPS_Array_forany< _fz3, _fz3_slice, struct _fz3_uniq_> _fz3_forany;
+         typedef DDS::Float _fz4_slice;
+         typedef DDS::Float _fz4[19];
+         typedef _fz4 _fz4_out;
+         static _fz4_slice * _fz4_alloc ();
+         static void _fz4_free (_fz4_slice *);
+         static void _fz4_copy (_fz4_slice* to, const _fz4_slice* from);
+         static _fz4_slice *_fz4_dup (const _fz4_slice* from);
+
+         struct _fz4_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _fz4, _fz4_slice, struct _fz4_uniq_> _fz4_var;
+         typedef DDS_DCPS_Array_forany< _fz4, _fz4_slice, struct _fz4_uniq_> _fz4_forany;
+         typedef DDS::Float _fz5_slice;
+         typedef DDS::Float _fz5[19];
+         typedef _fz5 _fz5_out;
+         static _fz5_slice * _fz5_alloc ();
+         static void _fz5_free (_fz5_slice *);
+         static void _fz5_copy (_fz5_slice* to, const _fz5_slice* from);
+         static _fz5_slice *_fz5_dup (const _fz5_slice* from);
+
+         struct _fz5_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _fz5, _fz5_slice, struct _fz5_uniq_> _fz5_var;
+         typedef DDS_DCPS_Array_forany< _fz5, _fz5_slice, struct _fz5_uniq_> _fz5_forany;
+         typedef DDS::Float _fz6_slice;
+         typedef DDS::Float _fz6[19];
+         typedef _fz6 _fz6_out;
+         static _fz6_slice * _fz6_alloc ();
+         static void _fz6_free (_fz6_slice *);
+         static void _fz6_copy (_fz6_slice* to, const _fz6_slice* from);
+         static _fz6_slice *_fz6_dup (const _fz6_slice* from);
+
+         struct _fz6_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _fz6, _fz6_slice, struct _fz6_uniq_> _fz6_var;
+         typedef DDS_DCPS_Array_forany< _fz6, _fz6_slice, struct _fz6_uniq_> _fz6_forany;
+         DDS::Short hexapodID;
+         DDS::String_mgr private_revCode;
+         DDS::Double private_sndStamp;
+         DDS::Double private_rcvStamp;
+         DDS::Long private_seqNum;
+         DDS::Long private_origin;
+         DDS::Long private_host;
+         DDS::String_mgr device;
+         DDS::String_mgr property;
+         DDS::String_mgr action;
+         DDS::String_mgr itemValue;
+         _headingInfo headingInfo;
+         _fz1 fz1;
+         _fz2 fz2;
+         _fz3 fz3;
+         _fz4 fz4;
+         _fz5 fz5;
+         _fz6 fz6;
+   };
+
+   typedef DDS_DCPSStruct_var < command_configureElevationRawLut> command_configureElevationRawLut_var;
+   typedef DDS_DCPSStruct_out < command_configureElevationRawLut> command_configureElevationRawLut_out;
 
    struct command_configureLimits
    {
@@ -374,92 +795,103 @@ namespace hexapod
          DDS::String_mgr device;
          DDS::String_mgr property;
          DDS::String_mgr action;
-         DDS::String_mgr value;
-         DDS::Long xmin;
-         DDS::Long xmax;
-         DDS::Long ymin;
-         DDS::Long ymax;
-         DDS::Long zmin;
-         DDS::Long zmax;
-         DDS::Long umin;
-         DDS::Long umax;
-         DDS::Long vmin;
-         DDS::Long vmax;
-         DDS::Long wmin;
-         DDS::Long wmax;
+         DDS::String_mgr itemValue;
+         DDS::Float xmin;
+         DDS::Float xmax;
+         DDS::Float ymin;
+         DDS::Float ymax;
+         DDS::Float zmin;
+         DDS::Float zmax;
+         DDS::Float umin;
+         DDS::Float umax;
+         DDS::Float vmin;
+         DDS::Float vmax;
+         DDS::Float wmin;
+         DDS::Float wmax;
    };
 
    typedef DDS_DCPSStruct_var < command_configureLimits> command_configureLimits_var;
    typedef DDS_DCPSStruct_out < command_configureLimits> command_configureLimits_out;
 
-   struct command_configureLut
+   struct command_configureTemperatureCoeffsLut
    {
-         typedef DDS::Double _xlut_slice;
-         typedef DDS::Double _xlut[90];
-         typedef _xlut _xlut_out;
-         static _xlut_slice * _xlut_alloc ();
-         static void _xlut_free (_xlut_slice *);
-         static void _xlut_copy (_xlut_slice* to, const _xlut_slice* from);
-         static _xlut_slice *_xlut_dup (const _xlut_slice* from);
+         typedef DDS::Long _headingInfo_slice;
+         typedef DDS::Long _headingInfo[6];
+         typedef _headingInfo _headingInfo_out;
+         static _headingInfo_slice * _headingInfo_alloc ();
+         static void _headingInfo_free (_headingInfo_slice *);
+         static void _headingInfo_copy (_headingInfo_slice* to, const _headingInfo_slice* from);
+         static _headingInfo_slice *_headingInfo_dup (const _headingInfo_slice* from);
 
-         struct _xlut_uniq_ {};
-         typedef DDS_DCPS_FArray_var< _xlut, _xlut_slice, struct _xlut_uniq_> _xlut_var;
-         typedef DDS_DCPS_Array_forany< _xlut, _xlut_slice, struct _xlut_uniq_> _xlut_forany;
-         typedef DDS::Double _ylut_slice;
-         typedef DDS::Double _ylut[90];
-         typedef _ylut _ylut_out;
-         static _ylut_slice * _ylut_alloc ();
-         static void _ylut_free (_ylut_slice *);
-         static void _ylut_copy (_ylut_slice* to, const _ylut_slice* from);
-         static _ylut_slice *_ylut_dup (const _ylut_slice* from);
+         struct _headingInfo_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _headingInfo, _headingInfo_slice, struct _headingInfo_uniq_> _headingInfo_var;
+         typedef DDS_DCPS_Array_forany< _headingInfo, _headingInfo_slice, struct _headingInfo_uniq_> _headingInfo_forany;
+         typedef DDS::Float _c1_slice;
+         typedef DDS::Float _c1[6];
+         typedef _c1 _c1_out;
+         static _c1_slice * _c1_alloc ();
+         static void _c1_free (_c1_slice *);
+         static void _c1_copy (_c1_slice* to, const _c1_slice* from);
+         static _c1_slice *_c1_dup (const _c1_slice* from);
 
-         struct _ylut_uniq_ {};
-         typedef DDS_DCPS_FArray_var< _ylut, _ylut_slice, struct _ylut_uniq_> _ylut_var;
-         typedef DDS_DCPS_Array_forany< _ylut, _ylut_slice, struct _ylut_uniq_> _ylut_forany;
-         typedef DDS::Double _zlut_slice;
-         typedef DDS::Double _zlut[90];
-         typedef _zlut _zlut_out;
-         static _zlut_slice * _zlut_alloc ();
-         static void _zlut_free (_zlut_slice *);
-         static void _zlut_copy (_zlut_slice* to, const _zlut_slice* from);
-         static _zlut_slice *_zlut_dup (const _zlut_slice* from);
+         struct _c1_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _c1, _c1_slice, struct _c1_uniq_> _c1_var;
+         typedef DDS_DCPS_Array_forany< _c1, _c1_slice, struct _c1_uniq_> _c1_forany;
+         typedef DDS::Float _c2_slice;
+         typedef DDS::Float _c2[6];
+         typedef _c2 _c2_out;
+         static _c2_slice * _c2_alloc ();
+         static void _c2_free (_c2_slice *);
+         static void _c2_copy (_c2_slice* to, const _c2_slice* from);
+         static _c2_slice *_c2_dup (const _c2_slice* from);
 
-         struct _zlut_uniq_ {};
-         typedef DDS_DCPS_FArray_var< _zlut, _zlut_slice, struct _zlut_uniq_> _zlut_var;
-         typedef DDS_DCPS_Array_forany< _zlut, _zlut_slice, struct _zlut_uniq_> _zlut_forany;
-         typedef DDS::Double _ulut_slice;
-         typedef DDS::Double _ulut[90];
-         typedef _ulut _ulut_out;
-         static _ulut_slice * _ulut_alloc ();
-         static void _ulut_free (_ulut_slice *);
-         static void _ulut_copy (_ulut_slice* to, const _ulut_slice* from);
-         static _ulut_slice *_ulut_dup (const _ulut_slice* from);
+         struct _c2_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _c2, _c2_slice, struct _c2_uniq_> _c2_var;
+         typedef DDS_DCPS_Array_forany< _c2, _c2_slice, struct _c2_uniq_> _c2_forany;
+         typedef DDS::Float _c3_slice;
+         typedef DDS::Float _c3[6];
+         typedef _c3 _c3_out;
+         static _c3_slice * _c3_alloc ();
+         static void _c3_free (_c3_slice *);
+         static void _c3_copy (_c3_slice* to, const _c3_slice* from);
+         static _c3_slice *_c3_dup (const _c3_slice* from);
 
-         struct _ulut_uniq_ {};
-         typedef DDS_DCPS_FArray_var< _ulut, _ulut_slice, struct _ulut_uniq_> _ulut_var;
-         typedef DDS_DCPS_Array_forany< _ulut, _ulut_slice, struct _ulut_uniq_> _ulut_forany;
-         typedef DDS::Double _vlut_slice;
-         typedef DDS::Double _vlut[90];
-         typedef _vlut _vlut_out;
-         static _vlut_slice * _vlut_alloc ();
-         static void _vlut_free (_vlut_slice *);
-         static void _vlut_copy (_vlut_slice* to, const _vlut_slice* from);
-         static _vlut_slice *_vlut_dup (const _vlut_slice* from);
+         struct _c3_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _c3, _c3_slice, struct _c3_uniq_> _c3_var;
+         typedef DDS_DCPS_Array_forany< _c3, _c3_slice, struct _c3_uniq_> _c3_forany;
+         typedef DDS::Float _c4_slice;
+         typedef DDS::Float _c4[6];
+         typedef _c4 _c4_out;
+         static _c4_slice * _c4_alloc ();
+         static void _c4_free (_c4_slice *);
+         static void _c4_copy (_c4_slice* to, const _c4_slice* from);
+         static _c4_slice *_c4_dup (const _c4_slice* from);
 
-         struct _vlut_uniq_ {};
-         typedef DDS_DCPS_FArray_var< _vlut, _vlut_slice, struct _vlut_uniq_> _vlut_var;
-         typedef DDS_DCPS_Array_forany< _vlut, _vlut_slice, struct _vlut_uniq_> _vlut_forany;
-         typedef DDS::Double _wlut_slice;
-         typedef DDS::Double _wlut[90];
-         typedef _wlut _wlut_out;
-         static _wlut_slice * _wlut_alloc ();
-         static void _wlut_free (_wlut_slice *);
-         static void _wlut_copy (_wlut_slice* to, const _wlut_slice* from);
-         static _wlut_slice *_wlut_dup (const _wlut_slice* from);
+         struct _c4_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _c4, _c4_slice, struct _c4_uniq_> _c4_var;
+         typedef DDS_DCPS_Array_forany< _c4, _c4_slice, struct _c4_uniq_> _c4_forany;
+         typedef DDS::Float _c5_slice;
+         typedef DDS::Float _c5[6];
+         typedef _c5 _c5_out;
+         static _c5_slice * _c5_alloc ();
+         static void _c5_free (_c5_slice *);
+         static void _c5_copy (_c5_slice* to, const _c5_slice* from);
+         static _c5_slice *_c5_dup (const _c5_slice* from);
 
-         struct _wlut_uniq_ {};
-         typedef DDS_DCPS_FArray_var< _wlut, _wlut_slice, struct _wlut_uniq_> _wlut_var;
-         typedef DDS_DCPS_Array_forany< _wlut, _wlut_slice, struct _wlut_uniq_> _wlut_forany;
+         struct _c5_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _c5, _c5_slice, struct _c5_uniq_> _c5_var;
+         typedef DDS_DCPS_Array_forany< _c5, _c5_slice, struct _c5_uniq_> _c5_forany;
+         typedef DDS::Float _c6_slice;
+         typedef DDS::Float _c6[6];
+         typedef _c6 _c6_out;
+         static _c6_slice * _c6_alloc ();
+         static void _c6_free (_c6_slice *);
+         static void _c6_copy (_c6_slice* to, const _c6_slice* from);
+         static _c6_slice *_c6_dup (const _c6_slice* from);
+
+         struct _c6_uniq_ {};
+         typedef DDS_DCPS_FArray_var< _c6, _c6_slice, struct _c6_uniq_> _c6_var;
+         typedef DDS_DCPS_Array_forany< _c6, _c6_slice, struct _c6_uniq_> _c6_forany;
          DDS::Short hexapodID;
          DDS::String_mgr private_revCode;
          DDS::Double private_sndStamp;
@@ -470,42 +902,18 @@ namespace hexapod
          DDS::String_mgr device;
          DDS::String_mgr property;
          DDS::String_mgr action;
-         DDS::String_mgr value;
-         _xlut xlut;
-         _ylut ylut;
-         _zlut zlut;
-         _ulut ulut;
-         _vlut vlut;
-         _wlut wlut;
+         DDS::String_mgr itemValue;
+         _headingInfo headingInfo;
+         _c1 c1;
+         _c2 c2;
+         _c3 c3;
+         _c4 c4;
+         _c5 c5;
+         _c6 c6;
    };
 
-   typedef DDS_DCPSStruct_var < command_configureLut> command_configureLut_var;
-   typedef DDS_DCPSStruct_out < command_configureLut> command_configureLut_out;
-
-   struct command_configurePosition
-   {
-         DDS::Short hexapodID;
-         DDS::String_mgr private_revCode;
-         DDS::Double private_sndStamp;
-         DDS::Double private_rcvStamp;
-         DDS::Long private_seqNum;
-         DDS::Long private_origin;
-         DDS::Long private_host;
-         DDS::String_mgr device;
-         DDS::String_mgr property;
-         DDS::String_mgr action;
-         DDS::String_mgr value;
-         DDS::Double x;
-         DDS::Double y;
-         DDS::Double z;
-         DDS::Double u;
-         DDS::Double v;
-         DDS::Double w;
-         DDS::Boolean sync;
-   };
-
-   typedef DDS_DCPSStruct_var < command_configurePosition> command_configurePosition_var;
-   typedef DDS_DCPSStruct_out < command_configurePosition> command_configurePosition_out;
+   typedef DDS_DCPSStruct_var < command_configureTemperatureCoeffsLut> command_configureTemperatureCoeffsLut_var;
+   typedef DDS_DCPSStruct_out < command_configureTemperatureCoeffsLut> command_configureTemperatureCoeffsLut_out;
 
    struct command_configureVelocity
    {
@@ -519,19 +927,11 @@ namespace hexapod
          DDS::String_mgr device;
          DDS::String_mgr property;
          DDS::String_mgr action;
-         DDS::String_mgr value;
-         DDS::Double xmin;
-         DDS::Double xmax;
-         DDS::Double ymin;
-         DDS::Double ymax;
-         DDS::Double zmin;
-         DDS::Double zmax;
-         DDS::Double umin;
-         DDS::Double umax;
-         DDS::Double vmin;
-         DDS::Double vmax;
-         DDS::Double wmin;
-         DDS::Double wmax;
+         DDS::String_mgr itemValue;
+         DDS::Float xymax;
+         DDS::Float rxrymax;
+         DDS::Float zmax;
+         DDS::Float rzmax;
    };
 
    typedef DDS_DCPSStruct_var < command_configureVelocity> command_configureVelocity_var;
@@ -549,8 +949,8 @@ namespace hexapod
          DDS::String_mgr device;
          DDS::String_mgr property;
          DDS::String_mgr action;
-         DDS::String_mgr value;
-         DDS::Double angle;
+         DDS::String_mgr itemValue;
+         DDS::Boolean state;
    };
 
    typedef DDS_DCPSStruct_var < command_move> command_move_var;
@@ -568,13 +968,13 @@ namespace hexapod
          DDS::String_mgr device;
          DDS::String_mgr property;
          DDS::String_mgr action;
-         DDS::String_mgr value;
-         DDS::Double x;
-         DDS::Double y;
-         DDS::Double z;
-         DDS::Double u;
-         DDS::Double v;
-         DDS::Double w;
+         DDS::String_mgr itemValue;
+         DDS::Float x;
+         DDS::Float y;
+         DDS::Float z;
+         DDS::Float u;
+         DDS::Float v;
+         DDS::Float w;
          DDS::Boolean sync;
    };
 
@@ -593,16 +993,16 @@ namespace hexapod
          DDS::String_mgr device;
          DDS::String_mgr property;
          DDS::String_mgr action;
-         DDS::String_mgr value;
-         DDS::Double x;
-         DDS::Double y;
-         DDS::Double z;
+         DDS::String_mgr itemValue;
+         DDS::Float x;
+         DDS::Float y;
+         DDS::Float z;
    };
 
    typedef DDS_DCPSStruct_var < command_pivot> command_pivot_var;
    typedef DDS_DCPSStruct_out < command_pivot> command_pivot_out;
 
-   struct command_stop
+   struct command_positionSet
    {
          DDS::Short hexapodID;
          DDS::String_mgr private_revCode;
@@ -614,11 +1014,43 @@ namespace hexapod
          DDS::String_mgr device;
          DDS::String_mgr property;
          DDS::String_mgr action;
-         DDS::String_mgr value;
+         DDS::String_mgr itemValue;
+         DDS::Float x;
+         DDS::Float y;
+         DDS::Float z;
+         DDS::Float u;
+         DDS::Float v;
+         DDS::Float w;
+         DDS::Boolean sync;
    };
 
-   typedef DDS_DCPSStruct_var < command_stop> command_stop_var;
-   typedef DDS_DCPSStruct_out < command_stop> command_stop_out;
+   typedef DDS_DCPSStruct_var < command_positionSet> command_positionSet_var;
+   typedef DDS_DCPSStruct_out < command_positionSet> command_positionSet_out;
+
+   struct command_rawPositionSet
+   {
+         DDS::Short hexapodID;
+         DDS::String_mgr private_revCode;
+         DDS::Double private_sndStamp;
+         DDS::Double private_rcvStamp;
+         DDS::Long private_seqNum;
+         DDS::Long private_origin;
+         DDS::Long private_host;
+         DDS::String_mgr device;
+         DDS::String_mgr property;
+         DDS::String_mgr action;
+         DDS::String_mgr itemValue;
+         DDS::Long a1;
+         DDS::Long a2;
+         DDS::Long a3;
+         DDS::Long a4;
+         DDS::Long a5;
+         DDS::Long a6;
+         DDS::Boolean sync;
+   };
+
+   typedef DDS_DCPSStruct_var < command_rawPositionSet> command_rawPositionSet_var;
+   typedef DDS_DCPSStruct_out < command_rawPositionSet> command_rawPositionSet_out;
 
    struct command_test
    {
@@ -632,13 +1064,15 @@ namespace hexapod
          DDS::String_mgr device;
          DDS::String_mgr property;
          DDS::String_mgr action;
-         DDS::String_mgr value;
+         DDS::String_mgr itemValue;
+         DDS::Long ivalue1;
+         DDS::Long ivalue2;
    };
 
    typedef DDS_DCPSStruct_var < command_test> command_test_var;
    typedef DDS_DCPSStruct_out < command_test> command_test_out;
 
-   struct logevent_error
+   struct logevent_TempError
    {
          DDS::Short hexapodID;
          DDS::String_mgr private_revCode;
@@ -647,11 +1081,84 @@ namespace hexapod
          DDS::Long private_seqNum;
          DDS::Long private_origin;
          DDS::Long private_host;
+         DDS::Long severity;
+         DDS::String_mgr axis;
+         DDS::Float temp;
+         DDS::Double timeStamp;
          DDS::Long priority;
    };
 
-   typedef DDS_DCPSStruct_var < logevent_error> logevent_error_var;
-   typedef DDS_DCPSStruct_out < logevent_error> logevent_error_out;
+   typedef DDS_DCPSStruct_var < logevent_TempError> logevent_TempError_var;
+   typedef DDS_DCPSStruct_out < logevent_TempError> logevent_TempError_out;
+
+   struct logevent_TrackLost
+   {
+         DDS::Short hexapodID;
+         DDS::String_mgr private_revCode;
+         DDS::Double private_sndStamp;
+         DDS::Double private_rcvStamp;
+         DDS::Long private_seqNum;
+         DDS::Long private_origin;
+         DDS::Long private_host;
+         DDS::Long severity;
+         DDS::Double timeStamp;
+         DDS::Long priority;
+   };
+
+   typedef DDS_DCPSStruct_var < logevent_TrackLost> logevent_TrackLost_var;
+   typedef DDS_DCPSStruct_out < logevent_TrackLost> logevent_TrackLost_out;
+
+   struct logevent_Tracking
+   {
+         DDS::Short hexapodID;
+         DDS::String_mgr private_revCode;
+         DDS::Double private_sndStamp;
+         DDS::Double private_rcvStamp;
+         DDS::Long private_seqNum;
+         DDS::Long private_origin;
+         DDS::Long private_host;
+         DDS::Long severity;
+         DDS::Double timeStamp;
+         DDS::Long priority;
+   };
+
+   typedef DDS_DCPSStruct_var < logevent_Tracking> logevent_Tracking_var;
+   typedef DDS_DCPSStruct_out < logevent_Tracking> logevent_Tracking_out;
+
+   struct logevent_deviceError
+   {
+         DDS::Short hexapodID;
+         DDS::String_mgr private_revCode;
+         DDS::Double private_sndStamp;
+         DDS::Double private_rcvStamp;
+         DDS::Long private_seqNum;
+         DDS::Long private_origin;
+         DDS::Long private_host;
+         DDS::String_mgr device;
+         DDS::Long severity;
+         DDS::Double timeStamp;
+         DDS::String_mgr code;
+         DDS::Long priority;
+   };
+
+   typedef DDS_DCPSStruct_var < logevent_deviceError> logevent_deviceError_var;
+   typedef DDS_DCPSStruct_out < logevent_deviceError> logevent_deviceError_out;
+
+   struct logevent_inPosition
+   {
+         DDS::Short hexapodID;
+         DDS::String_mgr private_revCode;
+         DDS::Double private_sndStamp;
+         DDS::Double private_rcvStamp;
+         DDS::Long private_seqNum;
+         DDS::Long private_origin;
+         DDS::Long private_host;
+         DDS::Double timeStamp;
+         DDS::Long priority;
+   };
+
+   typedef DDS_DCPSStruct_var < logevent_inPosition> logevent_inPosition_var;
+   typedef DDS_DCPSStruct_out < logevent_inPosition> logevent_inPosition_out;
 
    struct logevent_interlock
    {
@@ -662,8 +1169,9 @@ namespace hexapod
          DDS::Long private_seqNum;
          DDS::Long private_origin;
          DDS::Long private_host;
-         DDS::Long priority;
          DDS::String_mgr detail;
+         DDS::Double timeStamp;
+         DDS::Long priority;
    };
 
    typedef DDS_DCPSStruct_var < logevent_interlock> logevent_interlock_var;
@@ -678,91 +1186,29 @@ namespace hexapod
          DDS::Long private_seqNum;
          DDS::Long private_origin;
          DDS::Long private_host;
-         DDS::Long priority;
          DDS::String_mgr axis;
-         DDS::String_mgr limit;
+         DDS::String_mgr llimit;
          DDS::String_mgr type;
+         DDS::Double timeStamp;
+         DDS::Long priority;
    };
 
    typedef DDS_DCPSStruct_var < logevent_limit> logevent_limit_var;
    typedef DDS_DCPSStruct_out < logevent_limit> logevent_limit_out;
 
-   struct logevent_slewOK
-   {
-         DDS::Short hexapodID;
-         DDS::String_mgr private_revCode;
-         DDS::Double private_sndStamp;
-         DDS::Double private_rcvStamp;
-         DDS::Long private_seqNum;
-         DDS::Long private_origin;
-         DDS::Long private_host;
-         DDS::Long priority;
-   };
-
-   typedef DDS_DCPSStruct_var < logevent_slewOK> logevent_slewOK_var;
-   typedef DDS_DCPSStruct_out < logevent_slewOK> logevent_slewOK_out;
-
-   struct logevent_temp
-   {
-         DDS::Short hexapodID;
-         DDS::String_mgr private_revCode;
-         DDS::Double private_sndStamp;
-         DDS::Double private_rcvStamp;
-         DDS::Long private_seqNum;
-         DDS::Long private_origin;
-         DDS::Long private_host;
-         DDS::Long priority;
-         DDS::String_mgr axis;
-         DDS::String_mgr device;
-         DDS::Long severity;
-   };
-
-   typedef DDS_DCPSStruct_var < logevent_temp> logevent_temp_var;
-   typedef DDS_DCPSStruct_out < logevent_temp> logevent_temp_out;
-
-   struct logevent_trackLost
-   {
-         DDS::Short hexapodID;
-         DDS::String_mgr private_revCode;
-         DDS::Double private_sndStamp;
-         DDS::Double private_rcvStamp;
-         DDS::Long private_seqNum;
-         DDS::Long private_origin;
-         DDS::Long private_host;
-         DDS::Long priority;
-   };
-
-   typedef DDS_DCPSStruct_var < logevent_trackLost> logevent_trackLost_var;
-   typedef DDS_DCPSStruct_out < logevent_trackLost> logevent_trackLost_out;
-
-   struct logevent_tracking
-   {
-         DDS::Short hexapodID;
-         DDS::String_mgr private_revCode;
-         DDS::Double private_sndStamp;
-         DDS::Double private_rcvStamp;
-         DDS::Long private_seqNum;
-         DDS::Long private_origin;
-         DDS::Long private_host;
-         DDS::Long priority;
-   };
-
-   typedef DDS_DCPSStruct_var < logevent_tracking> logevent_tracking_var;
-   typedef DDS_DCPSStruct_out < logevent_tracking> logevent_tracking_out;
-
    struct command
    {
-         DDS::Short hexapodID;
          DDS::String_mgr private_revCode;
          DDS::Double private_sndStamp;
          DDS::Double private_rcvStamp;
          DDS::Long private_origin;
          DDS::Long private_host;
          DDS::Long private_seqNum;
+         DDS::Short hexapodID;
          DDS::String_mgr device;
          DDS::String_mgr property;
          DDS::String_mgr action;
-         DDS::String_mgr value;
+         DDS::String_mgr itemValue;
          DDS::String_mgr modifiers;
    };
 
@@ -771,13 +1217,13 @@ namespace hexapod
 
    struct ackcmd
    {
-         DDS::Short hexapodID;
          DDS::String_mgr private_revCode;
          DDS::Double private_sndStamp;
          DDS::Double private_rcvStamp;
          DDS::Long private_origin;
          DDS::Long private_host;
          DDS::Long private_seqNum;
+         DDS::Short hexapodID;
          DDS::Long ack;
          DDS::Long error;
          DDS::String_mgr result;
@@ -788,12 +1234,13 @@ namespace hexapod
 
    struct logevent
    {
-         DDS::Short hexapodID;
          DDS::String_mgr private_revCode;
          DDS::Double private_sndStamp;
          DDS::Double private_rcvStamp;
          DDS::Long private_origin;
          DDS::Long private_host;
+         DDS::Long private_seqNum;
+         DDS::Short hexapodID;
          DDS::String_mgr message;
    };
 
@@ -801,17 +1248,17 @@ namespace hexapod
    typedef DDS_DCPSStruct_out < logevent> logevent_out;
 }
 template <>
-hexapod::Actuators::_Raw_slice* DDS_DCPS_ArrayHelper < hexapod::Actuators::_Raw, hexapod::Actuators::_Raw_slice, hexapod::Actuators::_Raw_uniq_>::alloc ();
-template <>
-void DDS_DCPS_ArrayHelper < hexapod::Actuators::_Raw, hexapod::Actuators::_Raw_slice, hexapod::Actuators::_Raw_uniq_>::copy (hexapod::Actuators::_Raw_slice *to, const hexapod::Actuators::_Raw_slice* from);
-template <>
-void DDS_DCPS_ArrayHelper < hexapod::Actuators::_Raw, hexapod::Actuators::_Raw_slice, hexapod::Actuators::_Raw_uniq_>::free (hexapod::Actuators::_Raw_slice *ptr);
-template <>
 hexapod::Actuators::_Calibrated_slice* DDS_DCPS_ArrayHelper < hexapod::Actuators::_Calibrated, hexapod::Actuators::_Calibrated_slice, hexapod::Actuators::_Calibrated_uniq_>::alloc ();
 template <>
 void DDS_DCPS_ArrayHelper < hexapod::Actuators::_Calibrated, hexapod::Actuators::_Calibrated_slice, hexapod::Actuators::_Calibrated_uniq_>::copy (hexapod::Actuators::_Calibrated_slice *to, const hexapod::Actuators::_Calibrated_slice* from);
 template <>
 void DDS_DCPS_ArrayHelper < hexapod::Actuators::_Calibrated, hexapod::Actuators::_Calibrated_slice, hexapod::Actuators::_Calibrated_uniq_>::free (hexapod::Actuators::_Calibrated_slice *ptr);
+template <>
+hexapod::Actuators::_Raw_slice* DDS_DCPS_ArrayHelper < hexapod::Actuators::_Raw, hexapod::Actuators::_Raw_slice, hexapod::Actuators::_Raw_uniq_>::alloc ();
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::Actuators::_Raw, hexapod::Actuators::_Raw_slice, hexapod::Actuators::_Raw_uniq_>::copy (hexapod::Actuators::_Raw_slice *to, const hexapod::Actuators::_Raw_slice* from);
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::Actuators::_Raw, hexapod::Actuators::_Raw_slice, hexapod::Actuators::_Raw_uniq_>::free (hexapod::Actuators::_Raw_slice *ptr);
 template <>
 hexapod::Application::_Demand_slice* DDS_DCPS_ArrayHelper < hexapod::Application::_Demand, hexapod::Application::_Demand_slice, hexapod::Application::_Demand_uniq_>::alloc ();
 template <>
@@ -819,23 +1266,17 @@ void DDS_DCPS_ArrayHelper < hexapod::Application::_Demand, hexapod::Application:
 template <>
 void DDS_DCPS_ArrayHelper < hexapod::Application::_Demand, hexapod::Application::_Demand_slice, hexapod::Application::_Demand_uniq_>::free (hexapod::Application::_Demand_slice *ptr);
 template <>
-hexapod::Application::_Position_slice* DDS_DCPS_ArrayHelper < hexapod::Application::_Position, hexapod::Application::_Position_slice, hexapod::Application::_Position_uniq_>::alloc ();
-template <>
-void DDS_DCPS_ArrayHelper < hexapod::Application::_Position, hexapod::Application::_Position_slice, hexapod::Application::_Position_uniq_>::copy (hexapod::Application::_Position_slice *to, const hexapod::Application::_Position_slice* from);
-template <>
-void DDS_DCPS_ArrayHelper < hexapod::Application::_Position, hexapod::Application::_Position_slice, hexapod::Application::_Position_uniq_>::free (hexapod::Application::_Position_slice *ptr);
-template <>
 hexapod::Application::_Error_slice* DDS_DCPS_ArrayHelper < hexapod::Application::_Error, hexapod::Application::_Error_slice, hexapod::Application::_Error_uniq_>::alloc ();
 template <>
 void DDS_DCPS_ArrayHelper < hexapod::Application::_Error, hexapod::Application::_Error_slice, hexapod::Application::_Error_uniq_>::copy (hexapod::Application::_Error_slice *to, const hexapod::Application::_Error_slice* from);
 template <>
 void DDS_DCPS_ArrayHelper < hexapod::Application::_Error, hexapod::Application::_Error_slice, hexapod::Application::_Error_uniq_>::free (hexapod::Application::_Error_slice *ptr);
 template <>
-hexapod::Electrical::_voltage_slice* DDS_DCPS_ArrayHelper < hexapod::Electrical::_voltage, hexapod::Electrical::_voltage_slice, hexapod::Electrical::_voltage_uniq_>::alloc ();
+hexapod::Application::_Position_slice* DDS_DCPS_ArrayHelper < hexapod::Application::_Position, hexapod::Application::_Position_slice, hexapod::Application::_Position_uniq_>::alloc ();
 template <>
-void DDS_DCPS_ArrayHelper < hexapod::Electrical::_voltage, hexapod::Electrical::_voltage_slice, hexapod::Electrical::_voltage_uniq_>::copy (hexapod::Electrical::_voltage_slice *to, const hexapod::Electrical::_voltage_slice* from);
+void DDS_DCPS_ArrayHelper < hexapod::Application::_Position, hexapod::Application::_Position_slice, hexapod::Application::_Position_uniq_>::copy (hexapod::Application::_Position_slice *to, const hexapod::Application::_Position_slice* from);
 template <>
-void DDS_DCPS_ArrayHelper < hexapod::Electrical::_voltage, hexapod::Electrical::_voltage_slice, hexapod::Electrical::_voltage_uniq_>::free (hexapod::Electrical::_voltage_slice *ptr);
+void DDS_DCPS_ArrayHelper < hexapod::Application::_Position, hexapod::Application::_Position_slice, hexapod::Application::_Position_uniq_>::free (hexapod::Application::_Position_slice *ptr);
 template <>
 hexapod::Electrical::_error_slice* DDS_DCPS_ArrayHelper < hexapod::Electrical::_error, hexapod::Electrical::_error_slice, hexapod::Electrical::_error_uniq_>::alloc ();
 template <>
@@ -849,17 +1290,23 @@ void DDS_DCPS_ArrayHelper < hexapod::Electrical::_status, hexapod::Electrical::_
 template <>
 void DDS_DCPS_ArrayHelper < hexapod::Electrical::_status, hexapod::Electrical::_status_slice, hexapod::Electrical::_status_uniq_>::free (hexapod::Electrical::_status_slice *ptr);
 template <>
+hexapod::Electrical::_voltage_slice* DDS_DCPS_ArrayHelper < hexapod::Electrical::_voltage, hexapod::Electrical::_voltage_slice, hexapod::Electrical::_voltage_uniq_>::alloc ();
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::Electrical::_voltage, hexapod::Electrical::_voltage_slice, hexapod::Electrical::_voltage_uniq_>::copy (hexapod::Electrical::_voltage_slice *to, const hexapod::Electrical::_voltage_slice* from);
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::Electrical::_voltage, hexapod::Electrical::_voltage_slice, hexapod::Electrical::_voltage_uniq_>::free (hexapod::Electrical::_voltage_slice *ptr);
+template <>
 hexapod::LimitSensors::_liftoff_slice* DDS_DCPS_ArrayHelper < hexapod::LimitSensors::_liftoff, hexapod::LimitSensors::_liftoff_slice, hexapod::LimitSensors::_liftoff_uniq_>::alloc ();
 template <>
 void DDS_DCPS_ArrayHelper < hexapod::LimitSensors::_liftoff, hexapod::LimitSensors::_liftoff_slice, hexapod::LimitSensors::_liftoff_uniq_>::copy (hexapod::LimitSensors::_liftoff_slice *to, const hexapod::LimitSensors::_liftoff_slice* from);
 template <>
 void DDS_DCPS_ArrayHelper < hexapod::LimitSensors::_liftoff, hexapod::LimitSensors::_liftoff_slice, hexapod::LimitSensors::_liftoff_uniq_>::free (hexapod::LimitSensors::_liftoff_slice *ptr);
 template <>
-hexapod::LimitSensors::_limit_slice* DDS_DCPS_ArrayHelper < hexapod::LimitSensors::_limit, hexapod::LimitSensors::_limit_slice, hexapod::LimitSensors::_limit_uniq_>::alloc ();
+hexapod::LimitSensors::_llimit_slice* DDS_DCPS_ArrayHelper < hexapod::LimitSensors::_llimit, hexapod::LimitSensors::_llimit_slice, hexapod::LimitSensors::_llimit_uniq_>::alloc ();
 template <>
-void DDS_DCPS_ArrayHelper < hexapod::LimitSensors::_limit, hexapod::LimitSensors::_limit_slice, hexapod::LimitSensors::_limit_uniq_>::copy (hexapod::LimitSensors::_limit_slice *to, const hexapod::LimitSensors::_limit_slice* from);
+void DDS_DCPS_ArrayHelper < hexapod::LimitSensors::_llimit, hexapod::LimitSensors::_llimit_slice, hexapod::LimitSensors::_llimit_uniq_>::copy (hexapod::LimitSensors::_llimit_slice *to, const hexapod::LimitSensors::_llimit_slice* from);
 template <>
-void DDS_DCPS_ArrayHelper < hexapod::LimitSensors::_limit, hexapod::LimitSensors::_limit_slice, hexapod::LimitSensors::_limit_uniq_>::free (hexapod::LimitSensors::_limit_slice *ptr);
+void DDS_DCPS_ArrayHelper < hexapod::LimitSensors::_llimit, hexapod::LimitSensors::_llimit_slice, hexapod::LimitSensors::_llimit_uniq_>::free (hexapod::LimitSensors::_llimit_slice *ptr);
 template <>
 hexapod::Metrology::_distance_slice* DDS_DCPS_ArrayHelper < hexapod::Metrology::_distance, hexapod::Metrology::_distance_slice, hexapod::Metrology::_distance_uniq_>::alloc ();
 template <>
@@ -879,18 +1326,6 @@ void DDS_DCPS_ArrayHelper < hexapod::Metrology::_status, hexapod::Metrology::_st
 template <>
 void DDS_DCPS_ArrayHelper < hexapod::Metrology::_status, hexapod::Metrology::_status_slice, hexapod::Metrology::_status_uniq_>::free (hexapod::Metrology::_status_slice *ptr);
 template <>
-hexapod::TC::_setpoint_slice* DDS_DCPS_ArrayHelper < hexapod::TC::_setpoint, hexapod::TC::_setpoint_slice, hexapod::TC::_setpoint_uniq_>::alloc ();
-template <>
-void DDS_DCPS_ArrayHelper < hexapod::TC::_setpoint, hexapod::TC::_setpoint_slice, hexapod::TC::_setpoint_uniq_>::copy (hexapod::TC::_setpoint_slice *to, const hexapod::TC::_setpoint_slice* from);
-template <>
-void DDS_DCPS_ArrayHelper < hexapod::TC::_setpoint, hexapod::TC::_setpoint_slice, hexapod::TC::_setpoint_uniq_>::free (hexapod::TC::_setpoint_slice *ptr);
-template <>
-hexapod::TC::_temperature_slice* DDS_DCPS_ArrayHelper < hexapod::TC::_temperature, hexapod::TC::_temperature_slice, hexapod::TC::_temperature_uniq_>::alloc ();
-template <>
-void DDS_DCPS_ArrayHelper < hexapod::TC::_temperature, hexapod::TC::_temperature_slice, hexapod::TC::_temperature_uniq_>::copy (hexapod::TC::_temperature_slice *to, const hexapod::TC::_temperature_slice* from);
-template <>
-void DDS_DCPS_ArrayHelper < hexapod::TC::_temperature, hexapod::TC::_temperature_slice, hexapod::TC::_temperature_uniq_>::free (hexapod::TC::_temperature_slice *ptr);
-template <>
 hexapod::TC::_error_slice* DDS_DCPS_ArrayHelper < hexapod::TC::_error, hexapod::TC::_error_slice, hexapod::TC::_error_uniq_>::alloc ();
 template <>
 void DDS_DCPS_ArrayHelper < hexapod::TC::_error, hexapod::TC::_error_slice, hexapod::TC::_error_uniq_>::copy (hexapod::TC::_error_slice *to, const hexapod::TC::_error_slice* from);
@@ -903,41 +1338,227 @@ void DDS_DCPS_ArrayHelper < hexapod::TC::_status, hexapod::TC::_status_slice, he
 template <>
 void DDS_DCPS_ArrayHelper < hexapod::TC::_status, hexapod::TC::_status_slice, hexapod::TC::_status_uniq_>::free (hexapod::TC::_status_slice *ptr);
 template <>
-hexapod::command_configureLut::_xlut_slice* DDS_DCPS_ArrayHelper < hexapod::command_configureLut::_xlut, hexapod::command_configureLut::_xlut_slice, hexapod::command_configureLut::_xlut_uniq_>::alloc ();
+hexapod::TC::_setpoint_slice* DDS_DCPS_ArrayHelper < hexapod::TC::_setpoint, hexapod::TC::_setpoint_slice, hexapod::TC::_setpoint_uniq_>::alloc ();
 template <>
-void DDS_DCPS_ArrayHelper < hexapod::command_configureLut::_xlut, hexapod::command_configureLut::_xlut_slice, hexapod::command_configureLut::_xlut_uniq_>::copy (hexapod::command_configureLut::_xlut_slice *to, const hexapod::command_configureLut::_xlut_slice* from);
+void DDS_DCPS_ArrayHelper < hexapod::TC::_setpoint, hexapod::TC::_setpoint_slice, hexapod::TC::_setpoint_uniq_>::copy (hexapod::TC::_setpoint_slice *to, const hexapod::TC::_setpoint_slice* from);
 template <>
-void DDS_DCPS_ArrayHelper < hexapod::command_configureLut::_xlut, hexapod::command_configureLut::_xlut_slice, hexapod::command_configureLut::_xlut_uniq_>::free (hexapod::command_configureLut::_xlut_slice *ptr);
+void DDS_DCPS_ArrayHelper < hexapod::TC::_setpoint, hexapod::TC::_setpoint_slice, hexapod::TC::_setpoint_uniq_>::free (hexapod::TC::_setpoint_slice *ptr);
 template <>
-hexapod::command_configureLut::_ylut_slice* DDS_DCPS_ArrayHelper < hexapod::command_configureLut::_ylut, hexapod::command_configureLut::_ylut_slice, hexapod::command_configureLut::_ylut_uniq_>::alloc ();
+hexapod::TC::_temperature_slice* DDS_DCPS_ArrayHelper < hexapod::TC::_temperature, hexapod::TC::_temperature_slice, hexapod::TC::_temperature_uniq_>::alloc ();
 template <>
-void DDS_DCPS_ArrayHelper < hexapod::command_configureLut::_ylut, hexapod::command_configureLut::_ylut_slice, hexapod::command_configureLut::_ylut_uniq_>::copy (hexapod::command_configureLut::_ylut_slice *to, const hexapod::command_configureLut::_ylut_slice* from);
+void DDS_DCPS_ArrayHelper < hexapod::TC::_temperature, hexapod::TC::_temperature_slice, hexapod::TC::_temperature_uniq_>::copy (hexapod::TC::_temperature_slice *to, const hexapod::TC::_temperature_slice* from);
 template <>
-void DDS_DCPS_ArrayHelper < hexapod::command_configureLut::_ylut, hexapod::command_configureLut::_ylut_slice, hexapod::command_configureLut::_ylut_uniq_>::free (hexapod::command_configureLut::_ylut_slice *ptr);
+void DDS_DCPS_ArrayHelper < hexapod::TC::_temperature, hexapod::TC::_temperature_slice, hexapod::TC::_temperature_uniq_>::free (hexapod::TC::_temperature_slice *ptr);
 template <>
-hexapod::command_configureLut::_zlut_slice* DDS_DCPS_ArrayHelper < hexapod::command_configureLut::_zlut, hexapod::command_configureLut::_zlut_slice, hexapod::command_configureLut::_zlut_uniq_>::alloc ();
+hexapod::command_configureAzimuthCoeffsLut::_headingInfo_slice* DDS_DCPS_ArrayHelper < hexapod::command_configureAzimuthCoeffsLut::_headingInfo, hexapod::command_configureAzimuthCoeffsLut::_headingInfo_slice, hexapod::command_configureAzimuthCoeffsLut::_headingInfo_uniq_>::alloc ();
 template <>
-void DDS_DCPS_ArrayHelper < hexapod::command_configureLut::_zlut, hexapod::command_configureLut::_zlut_slice, hexapod::command_configureLut::_zlut_uniq_>::copy (hexapod::command_configureLut::_zlut_slice *to, const hexapod::command_configureLut::_zlut_slice* from);
+void DDS_DCPS_ArrayHelper < hexapod::command_configureAzimuthCoeffsLut::_headingInfo, hexapod::command_configureAzimuthCoeffsLut::_headingInfo_slice, hexapod::command_configureAzimuthCoeffsLut::_headingInfo_uniq_>::copy (hexapod::command_configureAzimuthCoeffsLut::_headingInfo_slice *to, const hexapod::command_configureAzimuthCoeffsLut::_headingInfo_slice* from);
 template <>
-void DDS_DCPS_ArrayHelper < hexapod::command_configureLut::_zlut, hexapod::command_configureLut::_zlut_slice, hexapod::command_configureLut::_zlut_uniq_>::free (hexapod::command_configureLut::_zlut_slice *ptr);
+void DDS_DCPS_ArrayHelper < hexapod::command_configureAzimuthCoeffsLut::_headingInfo, hexapod::command_configureAzimuthCoeffsLut::_headingInfo_slice, hexapod::command_configureAzimuthCoeffsLut::_headingInfo_uniq_>::free (hexapod::command_configureAzimuthCoeffsLut::_headingInfo_slice *ptr);
 template <>
-hexapod::command_configureLut::_ulut_slice* DDS_DCPS_ArrayHelper < hexapod::command_configureLut::_ulut, hexapod::command_configureLut::_ulut_slice, hexapod::command_configureLut::_ulut_uniq_>::alloc ();
+hexapod::command_configureAzimuthCoeffsLut::_c1_slice* DDS_DCPS_ArrayHelper < hexapod::command_configureAzimuthCoeffsLut::_c1, hexapod::command_configureAzimuthCoeffsLut::_c1_slice, hexapod::command_configureAzimuthCoeffsLut::_c1_uniq_>::alloc ();
 template <>
-void DDS_DCPS_ArrayHelper < hexapod::command_configureLut::_ulut, hexapod::command_configureLut::_ulut_slice, hexapod::command_configureLut::_ulut_uniq_>::copy (hexapod::command_configureLut::_ulut_slice *to, const hexapod::command_configureLut::_ulut_slice* from);
+void DDS_DCPS_ArrayHelper < hexapod::command_configureAzimuthCoeffsLut::_c1, hexapod::command_configureAzimuthCoeffsLut::_c1_slice, hexapod::command_configureAzimuthCoeffsLut::_c1_uniq_>::copy (hexapod::command_configureAzimuthCoeffsLut::_c1_slice *to, const hexapod::command_configureAzimuthCoeffsLut::_c1_slice* from);
 template <>
-void DDS_DCPS_ArrayHelper < hexapod::command_configureLut::_ulut, hexapod::command_configureLut::_ulut_slice, hexapod::command_configureLut::_ulut_uniq_>::free (hexapod::command_configureLut::_ulut_slice *ptr);
+void DDS_DCPS_ArrayHelper < hexapod::command_configureAzimuthCoeffsLut::_c1, hexapod::command_configureAzimuthCoeffsLut::_c1_slice, hexapod::command_configureAzimuthCoeffsLut::_c1_uniq_>::free (hexapod::command_configureAzimuthCoeffsLut::_c1_slice *ptr);
 template <>
-hexapod::command_configureLut::_vlut_slice* DDS_DCPS_ArrayHelper < hexapod::command_configureLut::_vlut, hexapod::command_configureLut::_vlut_slice, hexapod::command_configureLut::_vlut_uniq_>::alloc ();
+hexapod::command_configureAzimuthCoeffsLut::_c2_slice* DDS_DCPS_ArrayHelper < hexapod::command_configureAzimuthCoeffsLut::_c2, hexapod::command_configureAzimuthCoeffsLut::_c2_slice, hexapod::command_configureAzimuthCoeffsLut::_c2_uniq_>::alloc ();
 template <>
-void DDS_DCPS_ArrayHelper < hexapod::command_configureLut::_vlut, hexapod::command_configureLut::_vlut_slice, hexapod::command_configureLut::_vlut_uniq_>::copy (hexapod::command_configureLut::_vlut_slice *to, const hexapod::command_configureLut::_vlut_slice* from);
+void DDS_DCPS_ArrayHelper < hexapod::command_configureAzimuthCoeffsLut::_c2, hexapod::command_configureAzimuthCoeffsLut::_c2_slice, hexapod::command_configureAzimuthCoeffsLut::_c2_uniq_>::copy (hexapod::command_configureAzimuthCoeffsLut::_c2_slice *to, const hexapod::command_configureAzimuthCoeffsLut::_c2_slice* from);
 template <>
-void DDS_DCPS_ArrayHelper < hexapod::command_configureLut::_vlut, hexapod::command_configureLut::_vlut_slice, hexapod::command_configureLut::_vlut_uniq_>::free (hexapod::command_configureLut::_vlut_slice *ptr);
+void DDS_DCPS_ArrayHelper < hexapod::command_configureAzimuthCoeffsLut::_c2, hexapod::command_configureAzimuthCoeffsLut::_c2_slice, hexapod::command_configureAzimuthCoeffsLut::_c2_uniq_>::free (hexapod::command_configureAzimuthCoeffsLut::_c2_slice *ptr);
 template <>
-hexapod::command_configureLut::_wlut_slice* DDS_DCPS_ArrayHelper < hexapod::command_configureLut::_wlut, hexapod::command_configureLut::_wlut_slice, hexapod::command_configureLut::_wlut_uniq_>::alloc ();
+hexapod::command_configureAzimuthCoeffsLut::_c3_slice* DDS_DCPS_ArrayHelper < hexapod::command_configureAzimuthCoeffsLut::_c3, hexapod::command_configureAzimuthCoeffsLut::_c3_slice, hexapod::command_configureAzimuthCoeffsLut::_c3_uniq_>::alloc ();
 template <>
-void DDS_DCPS_ArrayHelper < hexapod::command_configureLut::_wlut, hexapod::command_configureLut::_wlut_slice, hexapod::command_configureLut::_wlut_uniq_>::copy (hexapod::command_configureLut::_wlut_slice *to, const hexapod::command_configureLut::_wlut_slice* from);
+void DDS_DCPS_ArrayHelper < hexapod::command_configureAzimuthCoeffsLut::_c3, hexapod::command_configureAzimuthCoeffsLut::_c3_slice, hexapod::command_configureAzimuthCoeffsLut::_c3_uniq_>::copy (hexapod::command_configureAzimuthCoeffsLut::_c3_slice *to, const hexapod::command_configureAzimuthCoeffsLut::_c3_slice* from);
 template <>
-void DDS_DCPS_ArrayHelper < hexapod::command_configureLut::_wlut, hexapod::command_configureLut::_wlut_slice, hexapod::command_configureLut::_wlut_uniq_>::free (hexapod::command_configureLut::_wlut_slice *ptr);
+void DDS_DCPS_ArrayHelper < hexapod::command_configureAzimuthCoeffsLut::_c3, hexapod::command_configureAzimuthCoeffsLut::_c3_slice, hexapod::command_configureAzimuthCoeffsLut::_c3_uniq_>::free (hexapod::command_configureAzimuthCoeffsLut::_c3_slice *ptr);
+template <>
+hexapod::command_configureAzimuthCoeffsLut::_c4_slice* DDS_DCPS_ArrayHelper < hexapod::command_configureAzimuthCoeffsLut::_c4, hexapod::command_configureAzimuthCoeffsLut::_c4_slice, hexapod::command_configureAzimuthCoeffsLut::_c4_uniq_>::alloc ();
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureAzimuthCoeffsLut::_c4, hexapod::command_configureAzimuthCoeffsLut::_c4_slice, hexapod::command_configureAzimuthCoeffsLut::_c4_uniq_>::copy (hexapod::command_configureAzimuthCoeffsLut::_c4_slice *to, const hexapod::command_configureAzimuthCoeffsLut::_c4_slice* from);
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureAzimuthCoeffsLut::_c4, hexapod::command_configureAzimuthCoeffsLut::_c4_slice, hexapod::command_configureAzimuthCoeffsLut::_c4_uniq_>::free (hexapod::command_configureAzimuthCoeffsLut::_c4_slice *ptr);
+template <>
+hexapod::command_configureAzimuthCoeffsLut::_c5_slice* DDS_DCPS_ArrayHelper < hexapod::command_configureAzimuthCoeffsLut::_c5, hexapod::command_configureAzimuthCoeffsLut::_c5_slice, hexapod::command_configureAzimuthCoeffsLut::_c5_uniq_>::alloc ();
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureAzimuthCoeffsLut::_c5, hexapod::command_configureAzimuthCoeffsLut::_c5_slice, hexapod::command_configureAzimuthCoeffsLut::_c5_uniq_>::copy (hexapod::command_configureAzimuthCoeffsLut::_c5_slice *to, const hexapod::command_configureAzimuthCoeffsLut::_c5_slice* from);
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureAzimuthCoeffsLut::_c5, hexapod::command_configureAzimuthCoeffsLut::_c5_slice, hexapod::command_configureAzimuthCoeffsLut::_c5_uniq_>::free (hexapod::command_configureAzimuthCoeffsLut::_c5_slice *ptr);
+template <>
+hexapod::command_configureAzimuthCoeffsLut::_c6_slice* DDS_DCPS_ArrayHelper < hexapod::command_configureAzimuthCoeffsLut::_c6, hexapod::command_configureAzimuthCoeffsLut::_c6_slice, hexapod::command_configureAzimuthCoeffsLut::_c6_uniq_>::alloc ();
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureAzimuthCoeffsLut::_c6, hexapod::command_configureAzimuthCoeffsLut::_c6_slice, hexapod::command_configureAzimuthCoeffsLut::_c6_uniq_>::copy (hexapod::command_configureAzimuthCoeffsLut::_c6_slice *to, const hexapod::command_configureAzimuthCoeffsLut::_c6_slice* from);
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureAzimuthCoeffsLut::_c6, hexapod::command_configureAzimuthCoeffsLut::_c6_slice, hexapod::command_configureAzimuthCoeffsLut::_c6_uniq_>::free (hexapod::command_configureAzimuthCoeffsLut::_c6_slice *ptr);
+template <>
+hexapod::command_configureAzimuthRawLut::_headingInfo_slice* DDS_DCPS_ArrayHelper < hexapod::command_configureAzimuthRawLut::_headingInfo, hexapod::command_configureAzimuthRawLut::_headingInfo_slice, hexapod::command_configureAzimuthRawLut::_headingInfo_uniq_>::alloc ();
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureAzimuthRawLut::_headingInfo, hexapod::command_configureAzimuthRawLut::_headingInfo_slice, hexapod::command_configureAzimuthRawLut::_headingInfo_uniq_>::copy (hexapod::command_configureAzimuthRawLut::_headingInfo_slice *to, const hexapod::command_configureAzimuthRawLut::_headingInfo_slice* from);
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureAzimuthRawLut::_headingInfo, hexapod::command_configureAzimuthRawLut::_headingInfo_slice, hexapod::command_configureAzimuthRawLut::_headingInfo_uniq_>::free (hexapod::command_configureAzimuthRawLut::_headingInfo_slice *ptr);
+template <>
+hexapod::command_configureAzimuthRawLut::_fz1_slice* DDS_DCPS_ArrayHelper < hexapod::command_configureAzimuthRawLut::_fz1, hexapod::command_configureAzimuthRawLut::_fz1_slice, hexapod::command_configureAzimuthRawLut::_fz1_uniq_>::alloc ();
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureAzimuthRawLut::_fz1, hexapod::command_configureAzimuthRawLut::_fz1_slice, hexapod::command_configureAzimuthRawLut::_fz1_uniq_>::copy (hexapod::command_configureAzimuthRawLut::_fz1_slice *to, const hexapod::command_configureAzimuthRawLut::_fz1_slice* from);
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureAzimuthRawLut::_fz1, hexapod::command_configureAzimuthRawLut::_fz1_slice, hexapod::command_configureAzimuthRawLut::_fz1_uniq_>::free (hexapod::command_configureAzimuthRawLut::_fz1_slice *ptr);
+template <>
+hexapod::command_configureAzimuthRawLut::_fz2_slice* DDS_DCPS_ArrayHelper < hexapod::command_configureAzimuthRawLut::_fz2, hexapod::command_configureAzimuthRawLut::_fz2_slice, hexapod::command_configureAzimuthRawLut::_fz2_uniq_>::alloc ();
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureAzimuthRawLut::_fz2, hexapod::command_configureAzimuthRawLut::_fz2_slice, hexapod::command_configureAzimuthRawLut::_fz2_uniq_>::copy (hexapod::command_configureAzimuthRawLut::_fz2_slice *to, const hexapod::command_configureAzimuthRawLut::_fz2_slice* from);
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureAzimuthRawLut::_fz2, hexapod::command_configureAzimuthRawLut::_fz2_slice, hexapod::command_configureAzimuthRawLut::_fz2_uniq_>::free (hexapod::command_configureAzimuthRawLut::_fz2_slice *ptr);
+template <>
+hexapod::command_configureAzimuthRawLut::_fz3_slice* DDS_DCPS_ArrayHelper < hexapod::command_configureAzimuthRawLut::_fz3, hexapod::command_configureAzimuthRawLut::_fz3_slice, hexapod::command_configureAzimuthRawLut::_fz3_uniq_>::alloc ();
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureAzimuthRawLut::_fz3, hexapod::command_configureAzimuthRawLut::_fz3_slice, hexapod::command_configureAzimuthRawLut::_fz3_uniq_>::copy (hexapod::command_configureAzimuthRawLut::_fz3_slice *to, const hexapod::command_configureAzimuthRawLut::_fz3_slice* from);
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureAzimuthRawLut::_fz3, hexapod::command_configureAzimuthRawLut::_fz3_slice, hexapod::command_configureAzimuthRawLut::_fz3_uniq_>::free (hexapod::command_configureAzimuthRawLut::_fz3_slice *ptr);
+template <>
+hexapod::command_configureAzimuthRawLut::_fz4_slice* DDS_DCPS_ArrayHelper < hexapod::command_configureAzimuthRawLut::_fz4, hexapod::command_configureAzimuthRawLut::_fz4_slice, hexapod::command_configureAzimuthRawLut::_fz4_uniq_>::alloc ();
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureAzimuthRawLut::_fz4, hexapod::command_configureAzimuthRawLut::_fz4_slice, hexapod::command_configureAzimuthRawLut::_fz4_uniq_>::copy (hexapod::command_configureAzimuthRawLut::_fz4_slice *to, const hexapod::command_configureAzimuthRawLut::_fz4_slice* from);
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureAzimuthRawLut::_fz4, hexapod::command_configureAzimuthRawLut::_fz4_slice, hexapod::command_configureAzimuthRawLut::_fz4_uniq_>::free (hexapod::command_configureAzimuthRawLut::_fz4_slice *ptr);
+template <>
+hexapod::command_configureAzimuthRawLut::_fz5_slice* DDS_DCPS_ArrayHelper < hexapod::command_configureAzimuthRawLut::_fz5, hexapod::command_configureAzimuthRawLut::_fz5_slice, hexapod::command_configureAzimuthRawLut::_fz5_uniq_>::alloc ();
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureAzimuthRawLut::_fz5, hexapod::command_configureAzimuthRawLut::_fz5_slice, hexapod::command_configureAzimuthRawLut::_fz5_uniq_>::copy (hexapod::command_configureAzimuthRawLut::_fz5_slice *to, const hexapod::command_configureAzimuthRawLut::_fz5_slice* from);
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureAzimuthRawLut::_fz5, hexapod::command_configureAzimuthRawLut::_fz5_slice, hexapod::command_configureAzimuthRawLut::_fz5_uniq_>::free (hexapod::command_configureAzimuthRawLut::_fz5_slice *ptr);
+template <>
+hexapod::command_configureAzimuthRawLut::_fz6_slice* DDS_DCPS_ArrayHelper < hexapod::command_configureAzimuthRawLut::_fz6, hexapod::command_configureAzimuthRawLut::_fz6_slice, hexapod::command_configureAzimuthRawLut::_fz6_uniq_>::alloc ();
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureAzimuthRawLut::_fz6, hexapod::command_configureAzimuthRawLut::_fz6_slice, hexapod::command_configureAzimuthRawLut::_fz6_uniq_>::copy (hexapod::command_configureAzimuthRawLut::_fz6_slice *to, const hexapod::command_configureAzimuthRawLut::_fz6_slice* from);
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureAzimuthRawLut::_fz6, hexapod::command_configureAzimuthRawLut::_fz6_slice, hexapod::command_configureAzimuthRawLut::_fz6_uniq_>::free (hexapod::command_configureAzimuthRawLut::_fz6_slice *ptr);
+template <>
+hexapod::command_configureElevationCoeffsLut::_headingInfo_slice* DDS_DCPS_ArrayHelper < hexapod::command_configureElevationCoeffsLut::_headingInfo, hexapod::command_configureElevationCoeffsLut::_headingInfo_slice, hexapod::command_configureElevationCoeffsLut::_headingInfo_uniq_>::alloc ();
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureElevationCoeffsLut::_headingInfo, hexapod::command_configureElevationCoeffsLut::_headingInfo_slice, hexapod::command_configureElevationCoeffsLut::_headingInfo_uniq_>::copy (hexapod::command_configureElevationCoeffsLut::_headingInfo_slice *to, const hexapod::command_configureElevationCoeffsLut::_headingInfo_slice* from);
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureElevationCoeffsLut::_headingInfo, hexapod::command_configureElevationCoeffsLut::_headingInfo_slice, hexapod::command_configureElevationCoeffsLut::_headingInfo_uniq_>::free (hexapod::command_configureElevationCoeffsLut::_headingInfo_slice *ptr);
+template <>
+hexapod::command_configureElevationCoeffsLut::_c1_slice* DDS_DCPS_ArrayHelper < hexapod::command_configureElevationCoeffsLut::_c1, hexapod::command_configureElevationCoeffsLut::_c1_slice, hexapod::command_configureElevationCoeffsLut::_c1_uniq_>::alloc ();
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureElevationCoeffsLut::_c1, hexapod::command_configureElevationCoeffsLut::_c1_slice, hexapod::command_configureElevationCoeffsLut::_c1_uniq_>::copy (hexapod::command_configureElevationCoeffsLut::_c1_slice *to, const hexapod::command_configureElevationCoeffsLut::_c1_slice* from);
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureElevationCoeffsLut::_c1, hexapod::command_configureElevationCoeffsLut::_c1_slice, hexapod::command_configureElevationCoeffsLut::_c1_uniq_>::free (hexapod::command_configureElevationCoeffsLut::_c1_slice *ptr);
+template <>
+hexapod::command_configureElevationCoeffsLut::_c2_slice* DDS_DCPS_ArrayHelper < hexapod::command_configureElevationCoeffsLut::_c2, hexapod::command_configureElevationCoeffsLut::_c2_slice, hexapod::command_configureElevationCoeffsLut::_c2_uniq_>::alloc ();
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureElevationCoeffsLut::_c2, hexapod::command_configureElevationCoeffsLut::_c2_slice, hexapod::command_configureElevationCoeffsLut::_c2_uniq_>::copy (hexapod::command_configureElevationCoeffsLut::_c2_slice *to, const hexapod::command_configureElevationCoeffsLut::_c2_slice* from);
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureElevationCoeffsLut::_c2, hexapod::command_configureElevationCoeffsLut::_c2_slice, hexapod::command_configureElevationCoeffsLut::_c2_uniq_>::free (hexapod::command_configureElevationCoeffsLut::_c2_slice *ptr);
+template <>
+hexapod::command_configureElevationCoeffsLut::_c3_slice* DDS_DCPS_ArrayHelper < hexapod::command_configureElevationCoeffsLut::_c3, hexapod::command_configureElevationCoeffsLut::_c3_slice, hexapod::command_configureElevationCoeffsLut::_c3_uniq_>::alloc ();
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureElevationCoeffsLut::_c3, hexapod::command_configureElevationCoeffsLut::_c3_slice, hexapod::command_configureElevationCoeffsLut::_c3_uniq_>::copy (hexapod::command_configureElevationCoeffsLut::_c3_slice *to, const hexapod::command_configureElevationCoeffsLut::_c3_slice* from);
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureElevationCoeffsLut::_c3, hexapod::command_configureElevationCoeffsLut::_c3_slice, hexapod::command_configureElevationCoeffsLut::_c3_uniq_>::free (hexapod::command_configureElevationCoeffsLut::_c3_slice *ptr);
+template <>
+hexapod::command_configureElevationCoeffsLut::_c4_slice* DDS_DCPS_ArrayHelper < hexapod::command_configureElevationCoeffsLut::_c4, hexapod::command_configureElevationCoeffsLut::_c4_slice, hexapod::command_configureElevationCoeffsLut::_c4_uniq_>::alloc ();
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureElevationCoeffsLut::_c4, hexapod::command_configureElevationCoeffsLut::_c4_slice, hexapod::command_configureElevationCoeffsLut::_c4_uniq_>::copy (hexapod::command_configureElevationCoeffsLut::_c4_slice *to, const hexapod::command_configureElevationCoeffsLut::_c4_slice* from);
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureElevationCoeffsLut::_c4, hexapod::command_configureElevationCoeffsLut::_c4_slice, hexapod::command_configureElevationCoeffsLut::_c4_uniq_>::free (hexapod::command_configureElevationCoeffsLut::_c4_slice *ptr);
+template <>
+hexapod::command_configureElevationCoeffsLut::_c5_slice* DDS_DCPS_ArrayHelper < hexapod::command_configureElevationCoeffsLut::_c5, hexapod::command_configureElevationCoeffsLut::_c5_slice, hexapod::command_configureElevationCoeffsLut::_c5_uniq_>::alloc ();
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureElevationCoeffsLut::_c5, hexapod::command_configureElevationCoeffsLut::_c5_slice, hexapod::command_configureElevationCoeffsLut::_c5_uniq_>::copy (hexapod::command_configureElevationCoeffsLut::_c5_slice *to, const hexapod::command_configureElevationCoeffsLut::_c5_slice* from);
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureElevationCoeffsLut::_c5, hexapod::command_configureElevationCoeffsLut::_c5_slice, hexapod::command_configureElevationCoeffsLut::_c5_uniq_>::free (hexapod::command_configureElevationCoeffsLut::_c5_slice *ptr);
+template <>
+hexapod::command_configureElevationCoeffsLut::_c6_slice* DDS_DCPS_ArrayHelper < hexapod::command_configureElevationCoeffsLut::_c6, hexapod::command_configureElevationCoeffsLut::_c6_slice, hexapod::command_configureElevationCoeffsLut::_c6_uniq_>::alloc ();
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureElevationCoeffsLut::_c6, hexapod::command_configureElevationCoeffsLut::_c6_slice, hexapod::command_configureElevationCoeffsLut::_c6_uniq_>::copy (hexapod::command_configureElevationCoeffsLut::_c6_slice *to, const hexapod::command_configureElevationCoeffsLut::_c6_slice* from);
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureElevationCoeffsLut::_c6, hexapod::command_configureElevationCoeffsLut::_c6_slice, hexapod::command_configureElevationCoeffsLut::_c6_uniq_>::free (hexapod::command_configureElevationCoeffsLut::_c6_slice *ptr);
+template <>
+hexapod::command_configureElevationRawLut::_headingInfo_slice* DDS_DCPS_ArrayHelper < hexapod::command_configureElevationRawLut::_headingInfo, hexapod::command_configureElevationRawLut::_headingInfo_slice, hexapod::command_configureElevationRawLut::_headingInfo_uniq_>::alloc ();
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureElevationRawLut::_headingInfo, hexapod::command_configureElevationRawLut::_headingInfo_slice, hexapod::command_configureElevationRawLut::_headingInfo_uniq_>::copy (hexapod::command_configureElevationRawLut::_headingInfo_slice *to, const hexapod::command_configureElevationRawLut::_headingInfo_slice* from);
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureElevationRawLut::_headingInfo, hexapod::command_configureElevationRawLut::_headingInfo_slice, hexapod::command_configureElevationRawLut::_headingInfo_uniq_>::free (hexapod::command_configureElevationRawLut::_headingInfo_slice *ptr);
+template <>
+hexapod::command_configureElevationRawLut::_fz1_slice* DDS_DCPS_ArrayHelper < hexapod::command_configureElevationRawLut::_fz1, hexapod::command_configureElevationRawLut::_fz1_slice, hexapod::command_configureElevationRawLut::_fz1_uniq_>::alloc ();
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureElevationRawLut::_fz1, hexapod::command_configureElevationRawLut::_fz1_slice, hexapod::command_configureElevationRawLut::_fz1_uniq_>::copy (hexapod::command_configureElevationRawLut::_fz1_slice *to, const hexapod::command_configureElevationRawLut::_fz1_slice* from);
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureElevationRawLut::_fz1, hexapod::command_configureElevationRawLut::_fz1_slice, hexapod::command_configureElevationRawLut::_fz1_uniq_>::free (hexapod::command_configureElevationRawLut::_fz1_slice *ptr);
+template <>
+hexapod::command_configureElevationRawLut::_fz2_slice* DDS_DCPS_ArrayHelper < hexapod::command_configureElevationRawLut::_fz2, hexapod::command_configureElevationRawLut::_fz2_slice, hexapod::command_configureElevationRawLut::_fz2_uniq_>::alloc ();
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureElevationRawLut::_fz2, hexapod::command_configureElevationRawLut::_fz2_slice, hexapod::command_configureElevationRawLut::_fz2_uniq_>::copy (hexapod::command_configureElevationRawLut::_fz2_slice *to, const hexapod::command_configureElevationRawLut::_fz2_slice* from);
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureElevationRawLut::_fz2, hexapod::command_configureElevationRawLut::_fz2_slice, hexapod::command_configureElevationRawLut::_fz2_uniq_>::free (hexapod::command_configureElevationRawLut::_fz2_slice *ptr);
+template <>
+hexapod::command_configureElevationRawLut::_fz3_slice* DDS_DCPS_ArrayHelper < hexapod::command_configureElevationRawLut::_fz3, hexapod::command_configureElevationRawLut::_fz3_slice, hexapod::command_configureElevationRawLut::_fz3_uniq_>::alloc ();
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureElevationRawLut::_fz3, hexapod::command_configureElevationRawLut::_fz3_slice, hexapod::command_configureElevationRawLut::_fz3_uniq_>::copy (hexapod::command_configureElevationRawLut::_fz3_slice *to, const hexapod::command_configureElevationRawLut::_fz3_slice* from);
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureElevationRawLut::_fz3, hexapod::command_configureElevationRawLut::_fz3_slice, hexapod::command_configureElevationRawLut::_fz3_uniq_>::free (hexapod::command_configureElevationRawLut::_fz3_slice *ptr);
+template <>
+hexapod::command_configureElevationRawLut::_fz4_slice* DDS_DCPS_ArrayHelper < hexapod::command_configureElevationRawLut::_fz4, hexapod::command_configureElevationRawLut::_fz4_slice, hexapod::command_configureElevationRawLut::_fz4_uniq_>::alloc ();
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureElevationRawLut::_fz4, hexapod::command_configureElevationRawLut::_fz4_slice, hexapod::command_configureElevationRawLut::_fz4_uniq_>::copy (hexapod::command_configureElevationRawLut::_fz4_slice *to, const hexapod::command_configureElevationRawLut::_fz4_slice* from);
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureElevationRawLut::_fz4, hexapod::command_configureElevationRawLut::_fz4_slice, hexapod::command_configureElevationRawLut::_fz4_uniq_>::free (hexapod::command_configureElevationRawLut::_fz4_slice *ptr);
+template <>
+hexapod::command_configureElevationRawLut::_fz5_slice* DDS_DCPS_ArrayHelper < hexapod::command_configureElevationRawLut::_fz5, hexapod::command_configureElevationRawLut::_fz5_slice, hexapod::command_configureElevationRawLut::_fz5_uniq_>::alloc ();
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureElevationRawLut::_fz5, hexapod::command_configureElevationRawLut::_fz5_slice, hexapod::command_configureElevationRawLut::_fz5_uniq_>::copy (hexapod::command_configureElevationRawLut::_fz5_slice *to, const hexapod::command_configureElevationRawLut::_fz5_slice* from);
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureElevationRawLut::_fz5, hexapod::command_configureElevationRawLut::_fz5_slice, hexapod::command_configureElevationRawLut::_fz5_uniq_>::free (hexapod::command_configureElevationRawLut::_fz5_slice *ptr);
+template <>
+hexapod::command_configureElevationRawLut::_fz6_slice* DDS_DCPS_ArrayHelper < hexapod::command_configureElevationRawLut::_fz6, hexapod::command_configureElevationRawLut::_fz6_slice, hexapod::command_configureElevationRawLut::_fz6_uniq_>::alloc ();
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureElevationRawLut::_fz6, hexapod::command_configureElevationRawLut::_fz6_slice, hexapod::command_configureElevationRawLut::_fz6_uniq_>::copy (hexapod::command_configureElevationRawLut::_fz6_slice *to, const hexapod::command_configureElevationRawLut::_fz6_slice* from);
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureElevationRawLut::_fz6, hexapod::command_configureElevationRawLut::_fz6_slice, hexapod::command_configureElevationRawLut::_fz6_uniq_>::free (hexapod::command_configureElevationRawLut::_fz6_slice *ptr);
+template <>
+hexapod::command_configureTemperatureCoeffsLut::_headingInfo_slice* DDS_DCPS_ArrayHelper < hexapod::command_configureTemperatureCoeffsLut::_headingInfo, hexapod::command_configureTemperatureCoeffsLut::_headingInfo_slice, hexapod::command_configureTemperatureCoeffsLut::_headingInfo_uniq_>::alloc ();
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureTemperatureCoeffsLut::_headingInfo, hexapod::command_configureTemperatureCoeffsLut::_headingInfo_slice, hexapod::command_configureTemperatureCoeffsLut::_headingInfo_uniq_>::copy (hexapod::command_configureTemperatureCoeffsLut::_headingInfo_slice *to, const hexapod::command_configureTemperatureCoeffsLut::_headingInfo_slice* from);
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureTemperatureCoeffsLut::_headingInfo, hexapod::command_configureTemperatureCoeffsLut::_headingInfo_slice, hexapod::command_configureTemperatureCoeffsLut::_headingInfo_uniq_>::free (hexapod::command_configureTemperatureCoeffsLut::_headingInfo_slice *ptr);
+template <>
+hexapod::command_configureTemperatureCoeffsLut::_c1_slice* DDS_DCPS_ArrayHelper < hexapod::command_configureTemperatureCoeffsLut::_c1, hexapod::command_configureTemperatureCoeffsLut::_c1_slice, hexapod::command_configureTemperatureCoeffsLut::_c1_uniq_>::alloc ();
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureTemperatureCoeffsLut::_c1, hexapod::command_configureTemperatureCoeffsLut::_c1_slice, hexapod::command_configureTemperatureCoeffsLut::_c1_uniq_>::copy (hexapod::command_configureTemperatureCoeffsLut::_c1_slice *to, const hexapod::command_configureTemperatureCoeffsLut::_c1_slice* from);
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureTemperatureCoeffsLut::_c1, hexapod::command_configureTemperatureCoeffsLut::_c1_slice, hexapod::command_configureTemperatureCoeffsLut::_c1_uniq_>::free (hexapod::command_configureTemperatureCoeffsLut::_c1_slice *ptr);
+template <>
+hexapod::command_configureTemperatureCoeffsLut::_c2_slice* DDS_DCPS_ArrayHelper < hexapod::command_configureTemperatureCoeffsLut::_c2, hexapod::command_configureTemperatureCoeffsLut::_c2_slice, hexapod::command_configureTemperatureCoeffsLut::_c2_uniq_>::alloc ();
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureTemperatureCoeffsLut::_c2, hexapod::command_configureTemperatureCoeffsLut::_c2_slice, hexapod::command_configureTemperatureCoeffsLut::_c2_uniq_>::copy (hexapod::command_configureTemperatureCoeffsLut::_c2_slice *to, const hexapod::command_configureTemperatureCoeffsLut::_c2_slice* from);
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureTemperatureCoeffsLut::_c2, hexapod::command_configureTemperatureCoeffsLut::_c2_slice, hexapod::command_configureTemperatureCoeffsLut::_c2_uniq_>::free (hexapod::command_configureTemperatureCoeffsLut::_c2_slice *ptr);
+template <>
+hexapod::command_configureTemperatureCoeffsLut::_c3_slice* DDS_DCPS_ArrayHelper < hexapod::command_configureTemperatureCoeffsLut::_c3, hexapod::command_configureTemperatureCoeffsLut::_c3_slice, hexapod::command_configureTemperatureCoeffsLut::_c3_uniq_>::alloc ();
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureTemperatureCoeffsLut::_c3, hexapod::command_configureTemperatureCoeffsLut::_c3_slice, hexapod::command_configureTemperatureCoeffsLut::_c3_uniq_>::copy (hexapod::command_configureTemperatureCoeffsLut::_c3_slice *to, const hexapod::command_configureTemperatureCoeffsLut::_c3_slice* from);
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureTemperatureCoeffsLut::_c3, hexapod::command_configureTemperatureCoeffsLut::_c3_slice, hexapod::command_configureTemperatureCoeffsLut::_c3_uniq_>::free (hexapod::command_configureTemperatureCoeffsLut::_c3_slice *ptr);
+template <>
+hexapod::command_configureTemperatureCoeffsLut::_c4_slice* DDS_DCPS_ArrayHelper < hexapod::command_configureTemperatureCoeffsLut::_c4, hexapod::command_configureTemperatureCoeffsLut::_c4_slice, hexapod::command_configureTemperatureCoeffsLut::_c4_uniq_>::alloc ();
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureTemperatureCoeffsLut::_c4, hexapod::command_configureTemperatureCoeffsLut::_c4_slice, hexapod::command_configureTemperatureCoeffsLut::_c4_uniq_>::copy (hexapod::command_configureTemperatureCoeffsLut::_c4_slice *to, const hexapod::command_configureTemperatureCoeffsLut::_c4_slice* from);
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureTemperatureCoeffsLut::_c4, hexapod::command_configureTemperatureCoeffsLut::_c4_slice, hexapod::command_configureTemperatureCoeffsLut::_c4_uniq_>::free (hexapod::command_configureTemperatureCoeffsLut::_c4_slice *ptr);
+template <>
+hexapod::command_configureTemperatureCoeffsLut::_c5_slice* DDS_DCPS_ArrayHelper < hexapod::command_configureTemperatureCoeffsLut::_c5, hexapod::command_configureTemperatureCoeffsLut::_c5_slice, hexapod::command_configureTemperatureCoeffsLut::_c5_uniq_>::alloc ();
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureTemperatureCoeffsLut::_c5, hexapod::command_configureTemperatureCoeffsLut::_c5_slice, hexapod::command_configureTemperatureCoeffsLut::_c5_uniq_>::copy (hexapod::command_configureTemperatureCoeffsLut::_c5_slice *to, const hexapod::command_configureTemperatureCoeffsLut::_c5_slice* from);
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureTemperatureCoeffsLut::_c5, hexapod::command_configureTemperatureCoeffsLut::_c5_slice, hexapod::command_configureTemperatureCoeffsLut::_c5_uniq_>::free (hexapod::command_configureTemperatureCoeffsLut::_c5_slice *ptr);
+template <>
+hexapod::command_configureTemperatureCoeffsLut::_c6_slice* DDS_DCPS_ArrayHelper < hexapod::command_configureTemperatureCoeffsLut::_c6, hexapod::command_configureTemperatureCoeffsLut::_c6_slice, hexapod::command_configureTemperatureCoeffsLut::_c6_uniq_>::alloc ();
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureTemperatureCoeffsLut::_c6, hexapod::command_configureTemperatureCoeffsLut::_c6_slice, hexapod::command_configureTemperatureCoeffsLut::_c6_uniq_>::copy (hexapod::command_configureTemperatureCoeffsLut::_c6_slice *to, const hexapod::command_configureTemperatureCoeffsLut::_c6_slice* from);
+template <>
+void DDS_DCPS_ArrayHelper < hexapod::command_configureTemperatureCoeffsLut::_c6, hexapod::command_configureTemperatureCoeffsLut::_c6_slice, hexapod::command_configureTemperatureCoeffsLut::_c6_uniq_>::free (hexapod::command_configureTemperatureCoeffsLut::_c6_slice *ptr);
 
 
 

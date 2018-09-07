@@ -1,4 +1,4 @@
-#!/usr/bin/tclsh
+#!/usr/bin/env tclsh
 #
 # Generate SALDDS methods for getSample and putSample for all types
 # and generate salTypeSupport routine

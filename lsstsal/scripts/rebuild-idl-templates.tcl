@@ -1,4 +1,4 @@
-#!/usr/bin/tclsh
+#!/usr/bin/env tclsh
 
 #
 #  Rebuild per subsystem idl templates from existing definitions

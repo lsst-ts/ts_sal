@@ -1,4 +1,4 @@
-#!/usr/bin/tclsh
+#!/usr/bin/env tclsh
 
 proc writeXMLtelemetry { dpath subsys } { 
 global SAL_WORK_DIR SALVERSION

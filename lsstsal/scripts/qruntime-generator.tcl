@@ -1,4 +1,4 @@
-#!/usr/bin/tclsh
+#!/usr/bin/env tclsh
 
 puts stdout "Removing old idl-templates"
 exec rm -fr idl-templates

@@ -1,4 +1,4 @@
-#!/usr/bin/tclsh
+#!/usr/bin/env tclsh
 
 #
 # Step 1 : Modify datastreams.detail as necessary (web tools)

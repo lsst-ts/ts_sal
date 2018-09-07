@@ -1,4 +1,4 @@
-#!/usr/bin/tclsh
+#!/usr/bin/env tclsh
 #
 #  Rebuild SAL support for a subsystem from default idl/cmd/evt input
 #

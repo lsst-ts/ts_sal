@@ -1,5 +1,4 @@
-#!/usr/bin/tclsh
-
+#!/usr/bin/env tclsh
 #
 # Command line tool for SAL code/document/etc generation.
 #

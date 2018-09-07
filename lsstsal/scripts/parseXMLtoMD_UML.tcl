@@ -1,4 +1,4 @@
-#!/usr/bin/tclsh
+#!/usr/bin/env tclsh
 
 source $env(SAL_DIR)/add_system_dictionary.tcl
 set TCODE(string) '_rC9ncFqtEeiGoKJ3GcWAXw'
