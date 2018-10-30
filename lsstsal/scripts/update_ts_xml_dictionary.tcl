@@ -19,6 +19,7 @@ global env
   <Name>$s</Name>
   <Description></Description
   <Enumeration></Enumeration>
+  <Generics>yes</Generics>
   <Version></Version>
   <Author></Author>
 </Subsystem>
@@ -39,6 +40,11 @@ global env SYSDIC
       if { $tag == "Name" } {
          set name $value
          lappend SYSDIC(systems) $name
+      }
+      if { $tag == "Generics" } {
+         if { $value == "yes" } {
+            set SYSDIC($name,hasGenerics) 1
+         }
       }
       if { $tag == "Enumeration" } {
          if { $value != "" } {
