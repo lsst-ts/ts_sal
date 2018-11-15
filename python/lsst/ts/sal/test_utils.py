@@ -169,19 +169,19 @@ class TestWrapper:
     def arrays_fields(self):
         """Get a tuple of the fields in an arrays struct."""
         return (
-            "boolean1", "byte1", "char1", "short1",
-            "int1", "long1", "longLong1", "octet1",
-            "unsignedShort1", "unsignedInt1", "unsignedLong1",
-            "float1", "double1")
+            "boolean0", "byte0", "char0", "short0",
+            "int0", "long0", "longLong0", "octet0",
+            "unsignedShort0", "unsignedInt0", "unsignedLong0",
+            "float0", "double0")
 
     @property
     def scalars_fields(self):
         """Get a tuple of the fields in a scalars struct."""
         return (
-            "boolean1", "byte1", "char1", "short1",
-            "int1", "long1", "longLong1", "octet1",
-            "unsignedShort1", "unsignedInt1", "unsignedLong1",
-            "float1", "double1", "string1")
+            "boolean0", "byte0", "char0", "short0",
+            "int0", "long0", "longLong0", "octet0",
+            "unsignedShort0", "unsignedInt0", "unsignedLong0",
+            "float0", "double0", "string0")
 
     def assert_arrays_equal(self, arrays1, arrays2):
         """Assert that two arrays data structs are equal.
@@ -239,15 +239,15 @@ class TestWrapper:
         printable_chars = [c for c in string.ascii_letters + string.digits]
         data.char1 = "".join(np.random.choice(printable_chars, size=(nelts,)))
         for field_name in (
-            "byte1",
-            "octet1",
-            "short1",
-            "int1",
-            "long1",
-            "longLong1",
-            "unsignedShort1",
-            "unsignedInt1",
-            "unsignedLong1",
+            "byte0",
+            "octet0",
+            "short0",
+            "int0",
+            "long0",
+            "longLong0",
+            "unsignedShort0",
+            "unsignedInt0",
+            "unsignedLong0",
         ):
             field = getattr(data, field_name)
             iinfo = np.iinfo(field.dtype)
@@ -268,15 +268,15 @@ class TestWrapper:
         data.char1 = np.random.choice(printable_chars)
         data.string1 = "".join(np.random.choice(printable_chars, size=(20,)))
         for field_name in (
-            "byte1",
-            "octet1",
-            "short1",
-            "int1",
-            "long1",
-            "longLong1",
-            "unsignedShort1",
-            "unsignedInt1",
-            "unsignedLong1",
+            "byte0",
+            "octet0",
+            "short0",
+            "int0",
+            "long0",
+            "longLong0",
+            "unsignedShort0",
+            "unsignedInt0",
+            "unsignedLong0",
         ):
             dtype = getattr(empty_arrays, field_name).dtype
             # work around a bug in numpy 1.14.5 that causes

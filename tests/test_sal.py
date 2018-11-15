@@ -2,7 +2,7 @@ import time
 import unittest
 
 import numpy as np
-import test_utils
+from lsst.ts.sal import test_utils
 import SALPY_Test
 
 index_gen = test_utils.index_generator()
@@ -53,14 +53,14 @@ class BasicTestCase(unittest.TestCase):
         int_values = (-5, 47, 999)  # arbitrary
         for val in int_values:
             data = self.salinfo.lib.Test_logevent_scalarsC()
-            data.int1 = val
+            data.int0 = val
             res = self.manager.logEvent_scalars(data, 1)
             self.assertEqual(res, self.salinfo.lib.SAL__OK)
 
         for expected_value in int_values:
             data = self.salinfo.lib.Test_logevent_scalarsC()
             self.get_topic(self.manager.getEvent_scalars, data)
-            self.assertEqual(data.int1, expected_value)
+            self.assertEqual(data.int0, expected_value)
 
         # at this point there should be nothing on the queu
         res = self.manager.getNextSample_logevent_scalars(data)
@@ -73,14 +73,14 @@ class BasicTestCase(unittest.TestCase):
         int_values = (-5, 47, 999)  # arbitrary
         for val in int_values:
             data = self.salinfo.lib.Test_scalarsC()
-            data.int1 = val
+            data.int0 = val
             res = self.manager.putSample_scalars(data)
             self.assertEqual(res, self.salinfo.lib.SAL__OK)
 
         expected_value = int_values[-1]
         data = self.salinfo.lib.Test_scalarsC()
         self.get_topic(self.manager.getSample_scalars, data)
-        self.assertEqual(data.int1, expected_value)
+        self.assertEqual(data.int0, expected_value)
 
         # at this point there should be nothing on the queu
         res = self.manager.getNextSample_scalars(data)
@@ -98,20 +98,20 @@ class BasicTestCase(unittest.TestCase):
         # doing so to speed up the test
         for val in range(0, 50000):
             data = self.salinfo.lib.Test_logevent_scalarsC()
-            data.int1 = val
+            data.int0 = val
             res = self.manager.logEvent_scalars(data, 1)
             self.assertEqual(res, self.salinfo.lib.SAL__OK)
 
         data = self.salinfo.lib.Test_logevent_scalarsC()
         self.get_topic(self.manager.getEvent_scalars, data)
         # make sure the queue overflowed
-        self.assertNotEqual(data.int1, 0)
+        self.assertNotEqual(data.int0, 0)
 
-        start_value = data.int1
+        start_value = data.int0
         for i in range(1, 100):
             data = self.salinfo.lib.Test_logevent_scalarsC()
             self.get_topic(self.manager.getEvent_scalars, data)
-            self.assertEqual(data.int1, start_value + i)
+            self.assertEqual(data.int0, start_value + i)
 
     @unittest.expectedFailure
     def test_too_long_strings(self):
@@ -130,31 +130,31 @@ class BasicTestCase(unittest.TestCase):
         too_long_data = "0123456789"*10
         self.assertEqual(len(too_long_data), 100)
         data = self.salinfo.lib.Test_scalarsC()
-        # string1 has a limit of 20 characters
-        data.string1 = too_long_data
+        # string0 has a limit of 20 characters
+        data.string0 = too_long_data
         res = self.manager.putSample_scalars(data)
         self.assertEqual(res, self.salinfo.lib.SAL__OK)
 
         data = self.salinfo.lib.Test_scalarsC()
         res = self.get_topic(self.manager.getNextSample_scalars, data)
         # this fails because the data is not truncated!
-        self.assertEqual(data.string1, too_long_data[0:str_len])
+        self.assertEqual(data.string0, too_long_data[0:str_len])
 
     def test_wrong_length_arrays(self):
         """Check that setting sending too long an array causes an error.
         """
         data = self.salinfo.lib.Test_arraysC()
-        float1_len = len(data.float1)
-        bad_float_data = np.arange(float1_len + 1, dtype=data.float1.dtype)
+        float1_len = len(data.float0)
+        bad_float_data = np.arange(float1_len + 1, dtype=data.float0.dtype)
         # cannot set array attributes at all
         with self.assertRaises(AttributeError):
-            data.float1 = data.float
+            data.float0 = data.float
         # cannot set to too long a value
         with self.assertRaises(ValueError):
-            data.float1[:] = bad_float_data  # too long
+            data.float0[:] = bad_float_data  # too long
         # cannot set to too short a value
         with self.assertRaises(ValueError):
-            data.float1[:] = data.float1[0:-2]  # too short
+            data.float0[:] = data.float0[0:-2]  # too short
 
 
 class ErrorProtectionTestCase(unittest.TestCase):
@@ -258,7 +258,7 @@ class ErrorProtectionTestCase(unittest.TestCase):
             "flushSamples_logevent_scalars",
         ):
             with self.subTest(func_name=func_name):
-                func = getattr(self.manager. func_name)
+                func = getattr(self.manager, func_name)
                 with self.assertRaises(exception):
                     func(data)
 

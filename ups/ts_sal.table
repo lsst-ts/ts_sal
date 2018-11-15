@@ -23,6 +23,7 @@ envSet(RLM_HOME, ${SAL_HOME}/.m2/repository/org/opensplice/gateway/rlm/9.1.3)
 envPrepend(PATH, ${SAL_DIR}:${SAL_HOME}/bin)
 envPrepend(PYTHONPATH, ${SAL_WORK_DIR}/lib)
 envPrepend(PYTHONPATH, ${SAL_WORK_DIR}/../python)
+envPrepend(PYTHONPATH, ${PRODUCT_DIR}/python)
 
 # Extend and add library paths
 envPrepend(LD_LIBRARY_PATH, ${SAL_WORK_DIR}/lib:${SAL_DIR}/lib:${SAL_HOME}/lib)
