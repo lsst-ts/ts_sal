@@ -146,24 +146,27 @@ def set_random_lsst_dds_domain():
 class TestWrapper:
     """Wrap Test and provide access to the commands and topics.
     """
+    __test__ = False  # stop pytest from warning that this is not a test
+
     def __init__(self, salinfo):
         self.salinfo = salinfo
+        lib = salinfo.lib
         manager = salinfo.manager
 
         for name in manager.getCommandNames():
             topic = f"Test_command_{name}"
-            manager.salCommand(topic)
-            manager.salProcessor(topic)
+            assert manager.salCommand(topic) == lib.SAL__OK
+            assert manager.salProcessor(topic) == lib.SAL__OK
 
         for name in manager.getEventNames():
             topic = f"Test_logevent_{name}"
-            manager.salEventPub(topic)
-            manager.salEventSub(topic)
+            assert manager.salEventPub(topic) == lib.SAL__OK
+            assert manager.salEventSub(topic) == lib.SAL__OK
 
         for name in manager.getTelemetryNames():
             topic = f"Test_{name}"
-            manager.salTelemetryPub(topic)
-            manager.salTelemetrySub(topic)
+            assert manager.salTelemetryPub(topic) == lib.SAL__OK
+            assert manager.salTelemetrySub(topic) == lib.SAL__OK
 
     @property
     def arrays_fields(self):
