@@ -1,38 +1,9 @@
-# LSST packages for build and unit test
 setupRequired(sconsUtils)
-setupRequired(utils)
-# TS_SAL related packages
-setupRequired(ts_opensplice)
 setupRequired(ts_xml)
 
-# Set up environment variables for DDS and SAL.
-envSet(PYTHON_BUILD_VERSION, 3.6m)
-envSet(PYTHON_BUILD_LOCATION, ${CONDA_PREFIX})
-envSet(LSST_SDK_INSTALL, ${PRODUCT_DIR})
+envPrepend(LD_LIBRARY_PATH, ${PRODUCT_DIR}/lib)
+envPrepend(DYLD_LIBRARY_PATH, ${PRODUCT_DIR}/lib)
+envPrepend(LSST_LIBRARY_PATH, ${PRODUCT_DIR}/lib)
 
-# Set the environment variables otherwise set in setup.env
-envSet(SAL_HOME, ${LSST_SDK_INSTALL}/lsstsal)
-envSet(SAL_WORK_DIR, ${LSST_SDK_INSTALL}/xml_test)
-envSet(SAL_DIR, ${SAL_HOME}/scripts)
-
-# Opensplice gateway 
-# (Note that variables from $OSPL_HOME/release.com set as part of ts_opensplice setup).
-envSet(RLM_HOME, ${SAL_HOME}/.m2/repository/org/opensplice/gateway/rlm/9.1.3)
-
-# Extend paths
-envPrepend(PATH, ${SAL_DIR}:${SAL_HOME}/bin)
-envPrepend(PYTHONPATH, ${SAL_WORK_DIR}/lib)
-envPrepend(PYTHONPATH, ${SAL_WORK_DIR}/../python)
 envPrepend(PYTHONPATH, ${PRODUCT_DIR}/python)
-
-# Extend and add library paths
-envPrepend(LD_LIBRARY_PATH, ${SAL_WORK_DIR}/lib:${SAL_DIR}/lib:${SAL_HOME}/lib)
-envPrepend(LSST_LIBRARY_PATH, ${SAL_WORK_DIR}/lib:${SAL_DIR}/lib:${SAL_HOME}/lib)
-envSet(TCL_LIBRARY, ${SAL_HOME}/lib/tcl8.5)
-envSet(TK_LIBRARY, ${SAL_HOME}/lib/tk8.5)
-
-# Add JAVA support - will be added automatically by eupspkg prep stage.
-# eupspkg will add JAVA_HOME, LD_PRELOAD and add $JAVA_HOME/bin to the PATH.
-# JAVA_HOME can be found by:
-#  java -XshowSettings 2>&1 > /dev/null | grep java.home | sed 's/.*= //'
-# and LD_PRELOAD should point to the libjsig.so library under that directory.
+envPrepend(PATH, ${PRODUCT_DIR}/bin)
