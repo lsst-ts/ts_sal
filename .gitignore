@@ -36,3 +36,14 @@ __pycache__
 # Project
 version.py
 config_*
+config.log
+pytest_session.txt
+.coverage
+.scon*
+.cache
+.pytest_cache
+lib/*.so
+python/*.so
+.out
+*.log
+bin/*.py
