@@ -150,23 +150,22 @@ class TestWrapper:
 
     def __init__(self, salinfo):
         self.salinfo = salinfo
-        lib = salinfo.lib
         manager = salinfo.manager
 
         for name in manager.getCommandNames():
             topic = f"Test_command_{name}"
-            assert manager.salCommand(topic) == lib.SAL__OK
-            assert manager.salProcessor(topic) == lib.SAL__OK
+            manager.salCommand(topic)
+            manager.salProcessor(topic)
 
         for name in manager.getEventNames():
             topic = f"Test_logevent_{name}"
-            assert manager.salEventPub(topic) == lib.SAL__OK
-            assert manager.salEventSub(topic) == lib.SAL__OK
+            manager.salEventPub(topic)
+            manager.salEventSub(topic)
 
         for name in manager.getTelemetryNames():
             topic = f"Test_{name}"
-            assert manager.salTelemetryPub(topic) == lib.SAL__OK
-            assert manager.salTelemetrySub(topic) == lib.SAL__OK
+            manager.salTelemetryPub(topic)
+            manager.salTelemetrySub(topic)
 
     @property
     def arrays_fields(self):
