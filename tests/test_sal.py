@@ -134,6 +134,71 @@ class BasicTestCase(unittest.TestCase):
             self.get_topic(self.manager.getEvent_scalars, data)
             self.assertEqual(data.int0, start_value + i)
 
+    def test_evt_late_joiner_oldest(self):
+        """Test that a late joiner can an event using getNextSample.
+
+        Only one value is retrievable.
+        """
+        num_values = 3
+        scalars_data = SALPY_Test.Test_logevent_scalarsC()
+        for i in range(num_values):
+            scalars_data.int0 = i + 1
+            self.manager.logEvent_scalars(scalars_data, 1)
+
+        salinfo2 = test_utils.SalInfo(SALPY_Test, self.salinfo.index)
+        manager2 = salinfo2.manager
+        manager2.salEventSub("Test_logevent_scalars")
+        retcode = manager2.getNextSample_logevent_scalars(scalars_data)
+        self.assertEqual(retcode, self.salinfo.lib.SAL__OK)
+        self.assertEqual(scalars_data.int0, num_values)
+
+    def test_evt_late_joiner_newest(self):
+        """Test that a late joiner can see an event using getEvent.
+        """
+        num_values = 3
+        scalars_data = SALPY_Test.Test_logevent_scalarsC()
+        for i in range(num_values):
+            scalars_data.int0 = i + 1
+            self.manager.logEvent_scalars(scalars_data, 1)
+
+        salinfo2 = test_utils.SalInfo(SALPY_Test, self.salinfo.index)
+        manager2 = salinfo2.manager
+        manager2.salEventSub("Test_logevent_scalars")
+        retcode = manager2.getEvent_scalars(scalars_data)
+        self.assertEqual(retcode, self.salinfo.lib.SAL__OK)
+
+    def test_tel_late_joiner_oldest(self):
+        """Test that a late joiner can see telemetry using getNextSample.
+
+        Only one value is retrievable.
+        """
+        num_values = 3
+        scalars_data = SALPY_Test.Test_scalarsC()
+        for i in range(num_values):
+            scalars_data.int0 = i + 1
+            self.manager.putSample_scalars(scalars_data)
+
+        salinfo2 = test_utils.SalInfo(SALPY_Test, self.salinfo.index)
+        manager2 = salinfo2.manager
+        manager2.salTelemetrySub("Test_scalars")
+        retcode = manager2.getNextSample_scalars(scalars_data)
+        self.assertEqual(retcode, self.salinfo.lib.SAL__OK)
+
+    def test_tel_late_joiner_newest(self):
+        """Test that a late joiner can see telemetry using getSample.
+        """
+        num_values = 3
+        scalars_data = SALPY_Test.Test_scalarsC()
+        for i in range(num_values):
+            scalars_data.int0 = i + 1
+            self.manager.putSample_scalars(scalars_data)
+
+        salinfo2 = test_utils.SalInfo(SALPY_Test, self.salinfo.index)
+        manager2 = salinfo2.manager
+        manager2.salTelemetrySub("Test_scalars")
+        retcode = manager2.getSample_scalars(scalars_data)
+        self.assertEqual(retcode, self.salinfo.lib.SAL__OK)
+
     @unittest.expectedFailure
     def test_too_long_strings(self):
         """Check that sending too long a string causes an error.
