@@ -44,15 +44,7 @@ class SimpleController:
         self.run = True
         """Set `run` False to quit"""
         self.setScalars_data = SALPY_Test.Test_command_setScalarsC()
-        self.manager.salCommand("Test_command_setScalars")
-
-        # Why is it necessary to wait until the first call to
-        # acceptCommand_setScalars before calling
-        # issueCommand_setScalars from the remote?
-        # If I don't wait then acceptCommand_setScalars
-        # never sees the issued command.
-        cmd_id = self.manager.acceptCommand_setScalars(self.setScalars_data)
-        assert cmd_id == 0
+        self.manager.salProcessor("Test_command_setScalars")
         self.done_task = asyncio.Future()
         asyncio.ensure_future(self.handle_setScalars())
 
@@ -123,8 +115,8 @@ class SimpleRemote:
 class Harness:
     def __init__(self, int0):
         self.int0 = int0
-        self.controller = SimpleController(int0)
         self.remote = SimpleRemote()
+        self.controller = SimpleController(int0)
 
 
 class LsstDdsDomainTestCase(unittest.TestCase):
