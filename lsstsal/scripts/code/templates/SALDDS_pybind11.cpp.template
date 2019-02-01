@@ -63,11 +63,14 @@ PYBIND11_MODULE(SALPY_SALData,m){
 // INSERT_SAL_PYTHON_DATATYPES
     py::class_<SALData_ackcmdC>(m,"SALData_ackcmdC" )    
         .def(py::init<>())
-        .def(py::init([](int a, int b, const std::string &name))
         .def_readwrite( "ack", &SALData_ackcmdC::ack )    
         .def_readwrite( "error", &SALData_ackcmdC::error )    
         .def_readwrite( "result", &SALData_ackcmdC::result )    
         ;
+
+    py::class_<AckCmd>(m,"AckCmd", py::module_local(), py::dynamic_attr())    
+        .def(py::init<int, int, const std::string &>())   
+        ;    
 
     py::class_<SAL_SALData>(m,"SAL_SALData")    
          .def(py::init<int>())   
