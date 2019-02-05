@@ -631,12 +631,6 @@ salReturn SAL_SALData::getResponse(SALData::ackcmdSeq data)
 }
 
 
-AckCmd::AckCmd(int ack, int error, std::string result)
-{
-  ackData.ack = ack;
-  ackData.error = error;
-  ackData.result = result;
-}
 
 
 salReturn SAL_SALData::cancelCommand( int cmdSeqNum )
