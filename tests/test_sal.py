@@ -2,6 +2,11 @@ import time
 import unittest
 
 import numpy as np
+try:
+    from astropy.time import Time
+except ImportError:
+    Time = None
+
 from lsst.ts.sal import test_utils
 import SALPY_Test
 import SALPY_Script
@@ -46,6 +51,35 @@ class BasicTestCase(unittest.TestCase):
                 self.fail(f"Unexpected return value {retcode}")
         else:
             self.fail("Timed out waiting for events")
+
+    @unittest.skipIf(Time is None, "Could not import astropy")
+    def test_get_current_time(self):
+        """Test that the value returned by getCurrentTime is reasonable.
+
+        The time will either be TAI, if SAL can see a time server,
+        or UTC if not.
+
+        This tests DM-18637.
+        This test will have to be updated when TAI-UTC changes.
+        """
+        def curr_tai():
+            """Get the current time as TAI in unix seconds.
+
+            This is the same format used by the ATPtg CSC.
+            """
+            # unfortunately I can't just output curr_time.tai.unix
+            # because that has the same value as curr_time.utc.unix
+            curr_time = Time.now()
+            tai_minus_utc = (curr_time.tai.mjd - curr_time.utc.mjd)*24*60*60
+            return curr_time.utc.unix + tai_minus_utc
+
+        sal_time = self.salinfo.manager.getCurrentTime()
+        tai = curr_tai()
+        utc = time.time()
+        min_err = min(abs(sal_time - t) for t in (tai, utc))
+        self.assertLess(min_err, 0.1,
+                        msg=f"sal_time={sal_time:0.2f} is neither tai={tai:0.2f} nor utc={utc:0.2f}; "
+                        f"min_err={min_err:0.2f}")
 
     def test_evt_get_oldest(self):
         """Write several logevent messages and make sure gettting the
