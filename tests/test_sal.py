@@ -87,6 +87,29 @@ class BasicTestCase(unittest.TestCase):
         retcode = self.manager.getNextSample_scalars(data)
         self.assertEqual(retcode, self.salinfo.lib.SAL__NO_UPDATES)
 
+    def test_evt_get_newest(self):
+        """Write several messages and make sure gettting the newest
+        returns that and flushes the queue.
+        """
+        int_values = (-5, 47, 999)  # arbitrary
+        for val in int_values:
+            data = self.salinfo.lib.Test_logevent_scalarsC()
+            data.int0 = val
+            retcode = self.manager.logEvent_scalars(data, 1)
+            self.assertEqual(retcode, self.salinfo.lib.SAL__OK)
+
+        expected_value = int_values[-1]
+        data = self.salinfo.lib.Test_logevent_scalarsC()
+        self.get_topic(self.manager.getSample_logevent_scalars, data)
+        self.assertEqual(data.int0, expected_value)
+
+        # at this point there should be nothing on the queu
+        retcode = self.manager.getNextSample_logevent_scalars(data)
+        self.assertEqual(retcode, self.salinfo.lib.SAL__NO_UPDATES)
+
+        retcode = self.manager.getSample_logevent_scalars(data)
+        self.assertEqual(retcode, self.salinfo.lib.SAL__NO_UPDATES)
+
     def test_tel_get_newest(self):
         """Write several messages and make sure gettting the newest
         returns that and flushes the queue.
