@@ -167,6 +167,68 @@ class BasicTestCase(unittest.TestCase):
         retcode = self.manager.getSample_scalars(data)
         self.assertEqual(retcode, self.salinfo.lib.SAL__NO_UPDATES)
 
+    def test_evt_get_newest_after_oldest(self):
+        """Test that get newest after get oldest does get the newest value.
+
+        This tests DM-18491.
+        """
+        int_values = (-5, 47, 999)  # arbitrary
+        data = self.salinfo.lib.Test_logevent_scalarsC()
+        data.int0 = int_values[0]
+        retcode = self.manager.logEvent_scalars(data, 1)
+        self.assertEqual(retcode, self.salinfo.lib.SAL__OK)
+
+        # read oldest
+        expected_value = int_values[0]
+        data = self.salinfo.lib.Test_logevent_scalarsC()
+        self.get_topic(self.manager.getEvent_scalars, data)
+        self.assertEqual(data.int0, expected_value)
+
+        # write remaining ints
+        for val in int_values[1:]:
+            data = self.salinfo.lib.Test_logevent_scalarsC()
+            data.int0 = val
+            print(f"writing val={val}")
+            retcode = self.manager.logEvent_scalars(data, 1)
+            self.assertEqual(retcode, self.salinfo.lib.SAL__OK)
+
+        # read newest
+        expected_value = int_values[-1]
+        data = self.salinfo.lib.Test_logevent_scalarsC()
+        self.get_topic(self.manager.getSample_logevent_scalars, data)
+        self.assertEqual(data.int0, expected_value)
+
+    def test_tel_get_newest_after_oldest(self):
+        """Test that get newest after get oldest does get the newest value.
+
+        This tests DM-18491.
+        """
+        int_values = (-5, 47, 999)  # arbitrary
+        data = self.salinfo.lib.Test_scalarsC()
+        data.int0 = int_values[0]
+        retcode = self.manager.putSample_scalars(data)
+        self.assertEqual(retcode, self.salinfo.lib.SAL__OK)
+
+        # read oldest
+        expected_value = int_values[0]
+        data = self.salinfo.lib.Test_scalarsC()
+        self.get_topic(self.manager.getNextSample_scalars, data)
+        self.assertEqual(data.int0, expected_value)
+
+        # write remaining ints
+        for val in int_values[1:]:
+            data = self.salinfo.lib.Test_scalarsC()
+            data.int0 = val
+            print(f"writing val={val}")
+            retcode = self.manager.putSample_scalars(data)
+            self.assertEqual(retcode, self.salinfo.lib.SAL__OK)
+
+        # read newest
+        expected_value = int_values[-1]
+        data = self.salinfo.lib.Test_scalarsC()
+        self.get_topic(self.manager.getSample_scalars, data)
+        self.assertEqual(data.int0, expected_value)
+
     def test_teloverflow_buffer(self):
         """Write enough message to overflow the read buffer and check that
         the oldest data is lost and the newest data preserved.
