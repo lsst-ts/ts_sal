@@ -382,7 +382,10 @@ global VPROPS TYPEFORMAT
          puts $fcod1 "    data->$VPROPS(name)=Instances\[j\].$VPROPS(name).m_ptr;"
          puts $fcod1 "    lastSample_[set VPROPS(topic)].$VPROPS(name)=Instances\[j\].$VPROPS(name).m_ptr;"
          puts $fcod1b "   data->$VPROPS(name) = lastSample_[set VPROPS(topic)].$VPROPS(name);"
-         puts $fcod2 "    Instance.$VPROPS(name) = DDS::string_dup(data->$VPROPS(name).c_str());"
+         puts $fcod2 "    if ( data->$VPROPS(name).length() > $VPROPS(dim) ) \{
+       throw std::runtime_error(\"No item $VPROPS(name) exceeds string length\");
+    \}
+    Instance.$VPROPS(name) = DDS::string_dup(data->$VPROPS(name).c_str());"
          puts $fcod3 "    cout << \"    $VPROPS(name) : \" << SALInstance.$VPROPS(name) << endl;"
          puts $fcod4 "    myData.$VPROPS(name)=\"LSST\";"
          puts $fcod5 "    myData.$VPROPS(name)=argv\[$idx\];"
