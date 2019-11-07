@@ -165,7 +165,8 @@
 
 
       double getCurrentTime();
-      double getRcvdTime();
+      double getRcvdTime(char *topicName);
+      double getSentTime(char *topicName);
       int getLeapSeconds();
       void setTuneableQos(char *topicName);
       void setDefaultQos(char *topicName);

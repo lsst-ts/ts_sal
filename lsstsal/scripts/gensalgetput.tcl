@@ -27,16 +27,16 @@ salReturn SAL_[set base]::putSample_[set name]([set base]_[set name]C *data)
   if ( data == NULL ) \{
      throw std::runtime_error(\"NULL pointer for putSample_[set name]\");
   \}
-  if ( sal\[actorIdx\].isWriter == false ) \{
-    createWriter(actorIdx,false);
-    sal\[actorIdx\].isWriter = true;
-  \}
   DataWriter_var dwriter = getWriter(actorIdx);
+  if ( dwriter == NULL ) \{
+     throw std::runtime_error(\"No DataWriter for putSample_[set name]\");
+  \}
   [set base]::[set name][set revcode]DataWriter_var SALWriter = [set base]::[set name][set revcode]DataWriter::_narrow(dwriter.in());
   [set base]::[set name][set revcode] Instance;
 
   Instance.private_revCode = DDS::string_dup(\"[string trim $revcode _]\");
   Instance.private_sndStamp = getCurrentTime();
+  sal\[actorIdx\].sndStamp = Instance.private_sndStamp;
   Instance.private_origin = getpid();
   Instance.private_host = ddsIPaddress;
   Instance.private_seqNum = sndSeqNum;
@@ -82,11 +82,10 @@ salReturn SAL_[set base]::getSample_[set name]([set base]_[set name]C *data)
      throw std::runtime_error(\"NULL pointer for getSample_[set name]\");
   \}
   int actorIdx = SAL__[set base]_[set name]_ACTOR;
-  if ( sal\[actorIdx\].isReader == false ) \{
-    createReader(actorIdx,false);
-    sal\[actorIdx\].isReader = true;
-  \}
   DataReader_var dreader = getReader(actorIdx);
+  if ( dreader == NULL ) \{
+     throw std::runtime_error(\"No DataReader for getSample_[set name]\");
+  \}
   [set base]::[set name][set revcode]DataReader_var SALReader = [set base]::[set name][set revcode]DataReader::_narrow(dreader.in());
   checkHandle(SALReader.in(), \"[set base]::[set name][set revcode]DataReader::_narrow\");
   status = SALReader->take(Instances, info, sal\[SAL__[set base]_[set name]_ACTOR\].maxSamples , NOT_READ_SAMPLE_STATE, ANY_VIEW_STATE, ANY_INSTANCE_STATE);
@@ -95,6 +94,8 @@ salReturn SAL_[set base]::getSample_[set name]([set base]_[set name]C *data)
   for (DDS::ULong j = 0; j < numsamp; j++)
   \{
     rcvdTime = getCurrentTime();
+    sal\[actorIdx\].rcvStamp = rcvdTime;
+    sal\[actorIdx\].sndStamp = Instances\[j\].private_sndStamp;
     if (debugLevel > 8) \{
       cout << \"=== \[GetSample\] message received :\" << numsamp << endl;
       cout << \"    revCode  : \" << Instances\[j\].private_revCode << endl;
@@ -542,7 +543,7 @@ puts $fout "
             int j=numsamp-1;
             if (infoSeq.value\[j\].valid_data) \{
         double rcvdTime = getCurrentTime();
-    double dTime = rcvdTime - SALInstance.value\[j\].private_sndStamp;
+        double dTime = rcvdTime - SALInstance.value\[j\].private_sndStamp;
         if ( dTime < sal\[actorIdx\].sampleAge ) \{
                    data.private_sndStamp = SALInstance.value\[j\].private_sndStamp;"
                 copyfromjavasample $fout $base $name
@@ -667,6 +668,9 @@ puts $fout "
 salReturn SAL_[set base]::putSample([set base]::[set name][set revcode] data)
 \{
   DataWriter_var dwriter = getWriter();
+  if ( dwriter == NULL ) \{
+     throw std::runtime_error(\"No DataWriter for putSample_[set name]\");
+  \}
   [set base]::[set name][set revcode]DataWriter_var SALWriter = [set base]::[set name][set revcode]DataWriter::_narrow(dwriter.in());
   data.private_revCode = DDS::string_dup(\"[string trim $revcode _]\");
   if (debugLevel > 0) \{
@@ -691,6 +695,9 @@ salReturn SAL_[set base]::getSample([set base]::[set name][set revcode]Seq data)
   ReturnCode_t status =  - 1;
   unsigned int numsamp = 0;
   DataReader_var dreader = getReader();
+  if ( dreader == NULL ) \{
+     throw std::runtime_error(\"No DataReader for getSample_[set name]\");
+  \}
   [set base]::[set name][set revcode]DataReader_var SALReader = [set base]::[set name][set revcode]DataReader::_narrow(dreader.in());
   checkHandle(SALReader.in(), \"[set base]::[set name][set revcode]DataReader::_narrow\");
   status = SALReader->take(data, infoSeq, LENGTH_UNLIMITED, NOT_READ_SAMPLE_STATE, ANY_VIEW_STATE, ANY_INSTANCE_STATE);

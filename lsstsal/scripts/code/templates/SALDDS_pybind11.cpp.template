@@ -144,15 +144,14 @@ PYBIND11_MODULE(SALPY_SALData,m){
             "setDebugLevel"
             , (::salReturn ( ::SAL_SALData::* )( int ) )( &::SAL_SALData::setDebugLevel )
             , ( py::arg("level") ) )    
-//        .def( 
-//            "telemetryAvailable"
-//            , (::salReturn ( ::SAL_SALData::* )(  ) )( &::SAL_SALData::telemetryAvailable ) )
-//        .def( 
-//            "commandAvailable"
-//            , (::salReturn ( ::SAL_SALData::* )(  ) )( &::SAL_SALData::commandAvailable ) )
-//        .def( 
-//            "eventAvailable"
-//            , (::salReturn ( ::SAL_SALData::* )(  ) )( &::SAL_SALData::eventAvailable ) )
+        .def( 
+            "getRcvdTime"
+            , (::salReturn ( ::SAL_SALData::* )( char * ) )( &::SAL_SALData::getRcvdTime )
+            , ( py::arg("topicName") ) )    
+        .def( 
+            "getSentTime"
+            , (::salReturn ( ::SAL_SALData::* )( char * ) )( &::SAL_SALData::getSentTime )
+            , ( py::arg("topicName") ) )    
 // INSERT_SAL_PYTHON_GETPUT
         ;
 

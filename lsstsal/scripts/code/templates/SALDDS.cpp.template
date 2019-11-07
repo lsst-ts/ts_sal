@@ -144,10 +144,20 @@ int SAL_SALData::getLeapSeconds()
 }
 
 
-double SAL_SALData::getRcvdTime()
+double SAL_SALData::getRcvdTime(char *topicName)
 {
-     return rcvdTime;
+    int actorIdx;
+    actorIdx = getActorIndex(topicName);
+    return sal[actorIdx].rcvStamp;
 }
+
+double SAL_SALData::getSentTime(char *topicName)
+{
+    int actorIdx;
+    actorIdx = getActorIndex(topicName);
+    return sal[actorIdx].sndStamp;
+}
+
 
 void SAL_SALData::setTuneableQos (char *topicName) {
     int actorIdx;

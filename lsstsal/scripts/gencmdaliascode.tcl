@@ -174,6 +174,8 @@ int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
     ackdata.result = DDS::string_dup(\"SAL ACK\");
     status = Instances\[j\].private_seqNum;
     rcvdTime = getCurrentTime();
+    sal\[actorIdx\].rcvStamp = rcvdTime;
+    sal\[actorIdx\].sndStamp = Instances\[j\].private_sndStamp;
     if ( (rcvdTime - Instances\[j\].private_sndStamp) < sal\[actorIdx\].sampleAge ) \{
       rcvSeqNum = status;
       rcvOrigin = Instances\[j\].private_origin;
@@ -276,6 +278,8 @@ salReturn SAL_SALData::getResponse_[set i](SALData::ackcmd[set ACKREVCODE]Seq da
 // check origin, host , cmdtype here
     status = data\[j\].ack;
     rcvdTime = getCurrentTime();
+    sal\[actorIdxCmd\].rcvStamp = rcvdTime;
+    sal\[actorIdxCmd\].sndStamp = data\[j\].private_sndStamp;
     sal\[actorIdxCmd\].rcvSeqNum = data\[j\].private_seqNum;
     sal\[actorIdxCmd\].rcvOrigin = data\[j\].private_origin;
     sal\[actorIdxCmd\].ack = data\[j\].ack;
@@ -329,6 +333,8 @@ salReturn SAL_SALData::getResponse_[set i]C(SALData_ackcmdC *response)
 // check origin, host , cmdtype here
     status = data\[j\].private_seqNum;;
     rcvdTime = getCurrentTime();
+    sal\[actorIdxCmd\].rcvStamp = rcvdTime;
+    sal\[actorIdxCmd\].sndStamp = data\[j\].private_sndStamp;
     sal\[actorIdxCmd\].rcvSeqNum = data\[j\].private_seqNum;
     sal\[actorIdxCmd\].rcvOrigin = data\[j\].private_origin;
     sal\[actorIdxCmd\].ack = data\[j\].ack;
