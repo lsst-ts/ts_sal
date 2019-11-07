@@ -187,9 +187,7 @@
       bool getBoolProperty(int actorIdx,salCHAR *property);
       void setMaxSamples(int actorIdx, int n);
       void logError(salReturn status);
-//      salTIME currentTime();
 
-      int getEventC(SALData_logeventC *data);
 // INSERT EVENTALIAS SUPPORT for getEventC and logEventC , getAnyEvent
 
       void createParticipant(const char *partitiontName);

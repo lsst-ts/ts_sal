@@ -350,57 +350,6 @@ public class SAL_SALData {
 	}
 
 
-	public int getEvent(logeventSeqHolder data)
-	{
-	  int status =  -1;
-
-	  DataReader dreader = getReader();
-	  logeventDataReader SALReader = logeventDataReaderHelper.narrow(dreader);
-  	  SampleInfoSeqHolder infoSeq = new SampleInfoSeqHolder();
-	  SALReader.take(data, infoSeq, LENGTH_UNLIMITED.value,
-					ANY_SAMPLE_STATE.value, ANY_VIEW_STATE.value,
-					ANY_INSTANCE_STATE.value);
-	  if (debugLevel > 0) {
-		for (int i = 0; i < data.value.length; i++) {
-				System.out.println("=== [getEvent] message received :");
-				System.out.println("    revCode  : "
-						+ data.value[i].private_revCode);
-		}
-	  }
-	  return status;
-	}
-
-	public logEvent( String message, int priority )
-	{
-	   int status = 0;
-	   int istatus =  -1;
-	   logevent event;
-	   String stopic="SALData_logevent";
-	   long eventHandle = HANDLE_NIL;
-
-	  if (hasEventWriter == false) {
-	    salTelemetryPub(stopic);
-	    // create DataWriter :
-	    // If autodispose_unregistered_instances is set to true (default value),
-	    //  you will have to start the subscriber before the publisher
-	    boolean autodispose_unregistered_instances = false;
-	    createWriter(autodispose_unregistered_instances);
-	    hasEventWriter = true;	
-  	  }
-	  DataWriter dwriter = getWriter();
-	  logeventDataWriter SALWriter = logeventDataWriterHelper.narrow(dwriter);
-	  event.message = message;
-	   eventHandle = SALWriter.register_instance(event);	
-	   event.SALDataID = subsystemID;
-	  status=SALWriter.write(event, eventHandle);
-	  checkStatus(status, "logEventDataWriter.write");
-	  SALWriter.dispose(event, eventHandle);
-	   SALWriter.unregister_instance(event, eventHandle);
-	   return status;
-	}
-
-
-
 
 	public int setDebugLevel( int level )
 	{

@@ -106,7 +106,8 @@ global TYPESUBS
 }
 
 proc typeidltoc { rec } {
-global TYPESUBS VPROPS
+global TYPESUBS VPROPS OPTIONS
+   if { $OPTIONS(verbose) } {stdlog "###>>> typeidltoc : $rec"}
    set u ""
    set VPROPS(array) 0
    set VPROPS(string) 0
@@ -181,6 +182,7 @@ global TYPESUBS VPROPS
         }
       }
    }
+   if { $OPTIONS(verbose) } {stdlog "###<<< typeidltoc : $res"}
    return $res
 }
 
@@ -195,7 +197,8 @@ proc testsimpletypecode { } {
 }
 
 proc typeidltolv { rec } {
-global TYPESUBS ATYPESUBS VPROPS
+global TYPESUBS ATYPESUBS VPROPS OPTIONS
+   if { $OPTIONS(verbose) } {stdlog "###>>> typeidltolv : $rec"}
    set u ""
    if { [lindex $rec 0] == "string" } {
       set name [string trim [lindex $rec 1] ";"]
@@ -233,6 +236,7 @@ global TYPESUBS ATYPESUBS VPROPS
         }
       }
    }
+   if { $OPTIONS(verbose) } {stdlog "###<<< typeidltolv : $res"}
    return $res
 }
 

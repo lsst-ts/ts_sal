@@ -55,6 +55,7 @@ puts stdout "SAL generator - [set SALVERSION]"
 
 set TSUBSYSTEMS ""
 foreach i $argv {
+puts stdout "checking $i"
   if { [lsearch "validate efd writers code compile cpp idl isocpp java jni lib link maven tcl db icd labview python pydds html rpm sal shmem sim simd verbose fastest" $i] < 0 } {
     if { [lsearch $SYSDIC(systems) $i] < 0 } {
       puts stdout "
@@ -102,7 +103,7 @@ if { [file exists $SAL_WORK_DIR] == 0 } {
 
 cd $SAL_WORK_DIR
 set SAL_WORK_DIR [file normalize .]
-foreach o "validate efd writers code compile cpp idl isocpp java jni lib link maven tcl db icd labview python pydds html rpm sal shmem sim simd  verbose fastest" {
+foreach o "validate efd writers code compile cpp idl isocpp java jni lib link maven tcl db icd labview python pydds html rpm sal shmem sim simd verbose fastest" {
   set OPTIONS($o) 0
   if { [lsearch [string tolower $argv] $o] > -1 } {
      set OPTIONS($o) 1
@@ -165,14 +166,14 @@ if { $OPTIONS(validate) || $OPTIONS(idl) } {
   set all $TSUBSYSTEMS
   stdlog "Processing $all"
   foreach i $all {
-    if { [file exists [set i]_Telemetry.xml] == 0 } {
-        stdlog "Add minimal Telemetry"
-        set SALSubsys $i
-        source $SAL_DIR/generateMinimalTelemetry.tcl
-        set fxml [open $SAL_WORK_DIR/[set i]_Telemetry.xml w]
-        puts $fxml $SAL_MIN_TELEMETRY 
-        close $fxml
-    }
+#    if { [file exists [set i]_Telemetry.xml] == 0 } {
+#        stdlog "Add minimal Telemetry"
+#        set SALSubsys $i
+#        source $SAL_DIR/generateMinimalTelemetry.tcl
+#        set fxml [open $SAL_WORK_DIR/[set i]_Telemetry.xml w]
+#        puts $fxml $SAL_MIN_TELEMETRY 
+#        close $fxml
+#    }
     if { [file exists $SAL_WORK_DIR/SALGenerics.xml] } {
       if { [info exists SYSDIC($i,hasGenerics)] || [info exists SYSDIC($i,hasAllGenerics)] } {
         set x none
@@ -208,7 +209,10 @@ if { $OPTIONS(validate) || $OPTIONS(idl) } {
       }
     }
     stdlog "Validating $i interface IDL format definitions"
-    createackcmdidl $i [info exists SYSDIC($i,keyedID)] 
+    catch {
+        set hascmd [glob $SAL_WORK_DIR/idl-templates/[set i]_command_*.idl]
+        createackcmdidl $i [info exists SYSDIC($i,keyedID)] 
+    }
     set new [lsort [glob $SAL_WORK_DIR/idl-templates/[set i]_*.idl]]
     foreach n $new {
       checkidl [file tail $n]
@@ -285,107 +289,29 @@ if { $OPTIONS(sal) } {
   cd $SAL_WORK_DIR
   set base [lindex [split [lindex $TARGETS 0] _] 0]
   source $SAL_DIR/gensimplesample.tcl
-  if { [file exists $SAL_WORK_DIR/idl-templates/validated/[set base]_cmddef.tcl] } {
-        source $SAL_WORK_DIR/idl-templates/validated/[set base]_cmddef.tcl
-  } else {
-        stdlog "================================================"
-        stdlog "WARNING : No Command definitions found for $base"
-        stdlog "================================================"
-  }
-  if { [file exists $SAL_WORK_DIR/idl-templates/validated/[set base]_evtdef.tcl] } {
-        source $SAL_WORK_DIR/idl-templates/validated/[set base]_evtdef.tcl
-  } else {
-        stdlog "WARNING : No Event definitions found for $base"
-  }
-  if { [file exists $SAL_WORK_DIR/idl-templates/validated/[set base]_tlmdef.tcl] } {
-        source $SAL_WORK_DIR/idl-templates/validated/[set base]_tlmdef.tcl
-  } else {
-        stdlog "ERROR : No Telemetry definitions found for $base"
-        stdlog "        Install [set base]_Telemetry.xml in $SAL_WORK_DIR"
-        stdlog "        and run the validate step again."
-        exit 1
-  }
+  source $SAL_DIR/gensalcodes.tcl
+  checktopictypes $base
   source $SAL_WORK_DIR/idl-templates/validated/[set base]_revCodes.tcl
   catch { set idlfile [makesalidl $base] } bad
-puts stdout $bad
-puts stdout $idlfile
+  puts stdout $bad
+  puts stdout $idlfile
   updateRevCodes $base
   if { $OPTIONS(idl) == 0 } {
     source $SAL_WORK_DIR/idl-templates/validated/[set base]_revCodes.tcl
-    foreach subsys $TARGETS {
-      set spl [file rootname [split $subsys _]]
-      set base [lindex $spl 0]
-      if { [lindex $spl 1] != "command" && [lindex $spl 1] != "logevent" && [lindex $spl 1] != "ackcmd" } {
-       set name [join [lrange $spl 1 end] _]
-       if { $OPTIONS(cpp) } {
-         stdlog "Generating SAL CPP code for $subsys"
-         set result none
-         catch { set result [makesalcode $idlfile $base $name cpp] } bad
-         if { $result == "none" } {stdlog $bad}
-         if { $OPTIONS(verbose) } {stdlog $result}
-       } 
-       if { $OPTIONS(java) } {
-         stdlog "Generating SAL Java code for $subsys"
-         set result none
-         catch { set result [exec $SAL_DIR/make_salUtils] } bad
-         if { $result == "none" } {puts stderr $bad}
-         set result none
-         catch { set result [makesalcode $idlfile $base $name java] } bad
-         if { $result == "none" } {puts stderr $bad}
-         if { $OPTIONS(verbose) } {stdlog $result}
-       }
-       if { $OPTIONS(isocpp) } {
-         stdlog "Generating SAL ISOCPP code for $subsys"
-         set result none
-         catch { set result [makesalcode $idlfile $base $name isocpp] } bad
-         if { $result == "none" } {stdlog $bad}
-         if { $OPTIONS(verbose) } {stdlog $result}
-       }
-       if { $OPTIONS(python) && $ONEPYTHON == 0 } {
-         stdlog "Generating SAL Python code for $subsys $ONEPYTHON"
-         set result none
-         catch { set result [makesalcode $idlfile $base $name python] } bad
-         if { $result == "none" } {stdlog $bad}
-         set ONEPYTHON 1
-         if { $OPTIONS(verbose) } {stdlog $result}
-       }
-       set DONE_CMDEVT 1
-     }
+    gengenericcodes $base
+    gentelemetrycodes $idlfile $TARGETS
+    gensingleprocesstests $base
+    if { $OPTIONS(pydds) } {
+      exec mkdir -p $SAL_WORK_DIR/python
+      set spl [lindex [file rootname [split [lindex $TARGETS 0] _]] 0]
+      stdlog "Building native DDS python support for $spl subsystem"
+      set result none
+      catch { set result [exec $SAL_DIR/genddspython.tcl $spl] } bad
+      if { $OPTIONS(verbose) } {stdlog $result}
     }
-  }
-  if { $OPTIONS(cpp) } {
-    set result none
-    if { [info exists CMD_ALIASES($base)] } {
-       catch { set result [gencommandtestsinglefilescpp $base] } bad
-       if { $result == "none" } {stdlog $bad}
-       if { $OPTIONS(verbose) } {stdlog $result}
-    }
-    set result none
-    catch { set result [geneventtestssinglefilescpp $base] } bad
-    if { $result == "none" } {stdlog $bad}
-    if { $OPTIONS(verbose) } {stdlog $result}
-    set result none
-    catch { set result [gentelemetrytestsinglefilescpp $base] } bad
-    if { $result == "none" } {stdlog $bad}
-    if { $OPTIONS(verbose) } {stdlog $result}
-  }
-  if { $OPTIONS(java) } {
-    if { [info exists CMD_ALIASES($base)] } {
-       catch { set result [gencommandtestssinglefilejava $base] } bad
-       if { $OPTIONS(verbose) } {stdlog $result}
-    }
-    catch { set result [geneventtestssinglefilejava $base] } bad
-    if { $OPTIONS(verbose) } {stdlog $result}
-    catch { set result [gentelemetrytestssinglefilejava $base] } bad
-    if { $OPTIONS(verbose) } {stdlog $result}
-  }
-  if { $OPTIONS(pydds) } {
-    exec mkdir -p $SAL_WORK_DIR/python
-    set spl [lindex [file rootname [split [lindex $TARGETS 0] _]] 0]
-    stdlog "Building native DDS python support for $spl subsystem"
-    set result none
-    catch { set result [exec $SAL_DIR/genddspython.tcl $spl] } bad
-    if { $OPTIONS(verbose) } {stdlog $result}
+  } else {
+    exec rm -fr $SAL_WORK_DIR/[set base]/cpp
+    exec cp $SAL_WORK_DIR/idl-templates/validated/sal/sal_revCoded_[set base].idl $SAL_WORK_DIR/[set base]/.
   }
 }
 

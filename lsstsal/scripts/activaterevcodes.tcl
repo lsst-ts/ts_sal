@@ -3,13 +3,14 @@
 set SAL_WORK_DIR $env(SAL_WORK_DIR)
 
 proc updateRevCodes { subsys } {
-global SAL_WORK_DIR
+global SAL_WORK_DIR REVCODE
   set lidl [glob $SAL_WORK_DIR/idl-templates/validated/[set subsys]_*.idl]
   set fmd5 [open $SAL_WORK_DIR/idl-templates/validated/[set subsys]_revCodes.tcl w]
   foreach i [lsort $lidl] {
     set c [lindex [exec md5sum $i] 0]
     set s [file tail [file rootname $i]]
     puts $fmd5 "set REVCODE($s) [string range $c 0 7]"
+    set REVCODE($s) [string range $c 0 7]
   }
   close $fmd5
 }
@@ -24,7 +25,8 @@ proc getItemName { rec } {
 
 
 proc activeRevCodes { subsys } {
-global SAL_WORK_DIR REVCODE
+global SAL_WORK_DIR REVCODE OPTIONS
+  if { $OPTIONS(verbose) } {stdlog "###>>> activeRevCodes $subsys"}
   set fin [open $SAL_WORK_DIR/idl-templates/validated/sal/sal_[set subsys].idl r]
   set fout [open $SAL_WORK_DIR/idl-templates/validated/sal/sal_revCoded_[set subsys].idl w]
   gets $fin rec ; puts $fout $rec
@@ -71,6 +73,7 @@ global SAL_WORK_DIR REVCODE
   }
   close $fin
   close $fout
+  if { $OPTIONS(verbose) } {stdlog "###<<< activeRevCodes $subsys"}
 }
 
 
@@ -91,8 +94,9 @@ global REVCODE
 }
 
 proc modidlforjava { subsys } {
-global SAL_WORK_DIR REVCODE SYSDIC
-  puts stdout "Updating $subsys idl with revCodes"
+global SAL_WORK_DIR REVCODE SYSDIC CMD_ALIASES OPTIONS
+  if { $OPTIONS(verbose) } {stdlog "###>>> modidlforjava $subsys"}
+  stdlog "Updating $subsys idl with revCodes"
   set lc [exec wc -l $SAL_WORK_DIR/idl-templates/validated/sal/sal_[set subsys].idl]
   set lcnt [expr [lindex $lc 0] -2]
   set fin [open $SAL_WORK_DIR/idl-templates/validated/sal/sal_[set subsys].idl r]
@@ -107,41 +111,14 @@ global SAL_WORK_DIR REVCODE SYSDIC
   set fin [open $SAL_WORK_DIR/idl-templates/validated/sal/sal_revCoded_[set subsys].idl r]
   gets $fin rec
   set done 0
-  while { $done == 0 } {
-     gets $fin rec
-     if { [string trim $rec "	 {}"] == "struct command" } {
-        set done 1
-     } else {
-        if { [lindex [lindex [split [string trim $rec "{}"] /] 0] 0] != "const" } {
-          puts $fout $rec
-        }
-     } 
+  while { [gets $fin rec] > -1 } {
+     if { [lindex [lindex [split [string trim $rec "{}"] /] 0] 0] != "const" } {
+        puts $fout $rec
+     }
   }
-  set revcode [getRevCode [set subsys]_ackcmd]
-  puts $fout "
-	struct ackcmd_[set revcode] {
-      string<8>	private_revCode;
-      double		private_sndStamp;
-      double		private_rcvStamp;
-      long		private_origin;
-      long 		private_host;
-      long		private_seqNum;"
-  if { [info exists SYSDIC($subsys,keyedID)] } {
-     puts $fout "      long 		[set subsys]ID;"
-  }
-  puts $fout "      long 		ack;
-      long 		error;
-      string<256>	result;
-      long		host;
-      long		origin;
-      long		cmdtype;
-      double		timeout;
-	};
-	#pragma keylist ackcmd_[set revcode]
-"
-  puts $fout "\};"
   close $fin
   close $fout
+  if { $OPTIONS(verbose) } {stdlog "###<<< modidlforjava $subsys"}
 }
 
 

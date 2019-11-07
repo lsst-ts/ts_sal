@@ -48,7 +48,7 @@ global SAL_WORK_DIR EVENT_ENUMS
   if { [file exists $SAL_WORK_DIR/idl-templates/validated/[set subsys]_evtdef.tcl] } {
     source $SAL_WORK_DIR/idl-templates/validated/[set subsys]_evtdef.tcl
     if { [info exists EVENT_ENUMS] } {
-      set fout [open $SAL_WORK_DIR/python/SAL_[set subsys]_enum.py w]
+      set fout [open $SAL_WORK_DIR/[set subsys]/SAL_[set subsys]_enum.py w]
       puts $fout "import enum"
       foreach i [lsort [array names EVENT_ENUMS]] {
         set idot [join [split $i ,] .]
@@ -68,6 +68,7 @@ global SAL_WORK_DIR EVENT_ENUMS
         puts $fout ""
       }
       close $fout
+      puts stdout "Python support for enums defined for subsystem $subsys"
     } else { 
       puts stdout "No enums defined for subsystem $subsys"
     }
