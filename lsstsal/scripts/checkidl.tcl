@@ -376,7 +376,7 @@ global SAL_DIR
 
 proc createackcmdidl { base {keyid 0} } {
 global SAL_WORK_DIR OPTIONS
-   if { $OPTIONS(verbose) } {stdlog "###>>> createackcmdidl $base $keyid"}
+   if { $OPTIONS(verbose) } {stdlog "###TRACE>>> createackcmdidl $base $keyid"}
    set fack [open $SAL_WORK_DIR/idl-templates/[set base]_ackcmd.idl w]
    puts $fack "struct [set base]_ackcmd \{
       string<8>	private_revCode;
@@ -399,7 +399,7 @@ global SAL_WORK_DIR OPTIONS
 #pragma keylist [set base]_ackcmd
 "
    close $fack
-   if { $OPTIONS(verbose) } {stdlog "###<<< createackcmdidl $base $keyid"}
+   if { $OPTIONS(verbose) } {stdlog "###TRACE<<< createackcmdidl $base $keyid"}
 }
 
 

@@ -25,10 +25,12 @@ proc getItemName { rec } {
 
 
 proc activeRevCodes { subsys } {
-global SAL_WORK_DIR REVCODE OPTIONS
-  if { $OPTIONS(verbose) } {stdlog "###>>> activeRevCodes $subsys"}
+global SAL_WORK_DIR REVCODE OPTIONS SALVERSION
+  if { $OPTIONS(verbose) } {stdlog "###TRACE>>> activeRevCodes $subsys"}
   set fin [open $SAL_WORK_DIR/idl-templates/validated/sal/sal_[set subsys].idl r]
   set fout [open $SAL_WORK_DIR/idl-templates/validated/sal/sal_revCoded_[set subsys].idl w]
+  set xmlversion [exec cat $SAL_WORK_DIR/VERSION]
+  puts $fout "// SAL_VERSION=$SALVERSION XML_VERSION=$xmlversion"
   gets $fin rec ; puts $fout $rec
   while { [gets $fin rec] > -1 } {
     set r2 [string trim $rec "{}"]
@@ -73,7 +75,7 @@ global SAL_WORK_DIR REVCODE OPTIONS
   }
   close $fin
   close $fout
-  if { $OPTIONS(verbose) } {stdlog "###<<< activeRevCodes $subsys"}
+  if { $OPTIONS(verbose) } {stdlog "###TRACE<<< activeRevCodes $subsys"}
 }
 
 
@@ -95,7 +97,7 @@ global REVCODE
 
 proc modidlforjava { subsys } {
 global SAL_WORK_DIR REVCODE SYSDIC CMD_ALIASES OPTIONS
-  if { $OPTIONS(verbose) } {stdlog "###>>> modidlforjava $subsys"}
+  if { $OPTIONS(verbose) } {stdlog "###TRACE>>> modidlforjava $subsys"}
   stdlog "Updating $subsys idl with revCodes"
   set lc [exec wc -l $SAL_WORK_DIR/idl-templates/validated/sal/sal_[set subsys].idl]
   set lcnt [expr [lindex $lc 0] -2]
@@ -118,7 +120,7 @@ global SAL_WORK_DIR REVCODE SYSDIC CMD_ALIASES OPTIONS
   }
   close $fin
   close $fout
-  if { $OPTIONS(verbose) } {stdlog "###<<< modidlforjava $subsys"}
+  if { $OPTIONS(verbose) } {stdlog "###TRACE<<< modidlforjava $subsys"}
 }
 
 

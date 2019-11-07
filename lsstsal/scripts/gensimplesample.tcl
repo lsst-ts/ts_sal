@@ -4,7 +4,7 @@
 #
 proc makesaldirs { base name } {
 global SAL_WORK_DIR OPTIONS
-   if { $OPTIONS(verbose) } {stdlog "###>>> makesaldirs $base $name"}
+   if { $OPTIONS(verbose) } {stdlog "###TRACE>>> makesaldirs $base $name"}
    exec mkdir -p $SAL_WORK_DIR/[set base]_[set name]/python
    exec mkdir -p $SAL_WORK_DIR/[set base]_[set name]/cpp/src
    exec mkdir -p $SAL_WORK_DIR/[set base]_[set name]/cpp/standalone
@@ -31,7 +31,7 @@ global SAL_WORK_DIR OPTIONS
    exec touch $SAL_WORK_DIR/[set base]/cpp/.depend.Makefile.sacpp_[set base]_types
    exec touch $SAL_WORK_DIR/[set base]/java/.depend.Makefile.saj_[set base]_types
    exec touch $SAL_WORK_DIR/[set base]/isocpp/.depend.Makefile.ISO_Cxx_[set base]_types
-   if { $OPTIONS(verbose) } {stdlog "###<<< makesaldirs $base $name"}
+   if { $OPTIONS(verbose) } {stdlog "###TRACE<<< makesaldirs $base $name"}
 }
 
 
@@ -131,7 +131,7 @@ typedef StrArray** StrArrayHdl;
 
 proc makesalidl { subsys } {
 global SAL_DIR SAL_WORK_DIR SYSDIC VPROPS EVENT_ENUM OPTIONS CMD_ALIASES
-   if { $OPTIONS(verbose) } {stdlog "###>>> makesalidl $subsys"}
+   if { $OPTIONS(verbose) } {stdlog "###TRACE>>> makesalidl $subsys"}
    set all [lsort [glob $SAL_WORK_DIR/idl-templates/validated/[set subsys]_*.idl]]
    exec mkdir -p $SAL_WORK_DIR/idl-templates/validated/sal
    set fout [open $SAL_WORK_DIR/idl-templates/validated/sal/sal_[set subsys].idl w]
@@ -318,7 +318,7 @@ using namespace std;
    close $fpyb2
    updateRevCodes $subsys
    activeRevCodes $subsys
-   if { $OPTIONS(verbose) } {stdlog "###<<< makesalidl $subsys"}
+   if { $OPTIONS(verbose) } {stdlog "###TRACE<<< makesalidl $subsys"}
    return $SAL_WORK_DIR/idl-templates/validated/sal/sal_$subsys.idl
 }
 
@@ -454,7 +454,7 @@ global VPROPS TYPEFORMAT
 
 proc gennonkeyedidl { fout } {
 global OPTIONS
-   if { $OPTIONS(verbose) } {stdlog "###>>> gennonkeyedidl $fout"}
+   if { $OPTIONS(verbose) } {stdlog "###TRACE>>> gennonkeyedidl $fout"}
      puts $fout "	struct ackcmd \{
       string<8>	private_revCode;
       double		private_sndStamp;
@@ -471,12 +471,12 @@ global OPTIONS
       double		timeout;
 	\};
 	#pragma keylist ackcmd"
-   if { $OPTIONS(verbose) } {stdlog "###<<< gennonkeyedidl $fout"}
+   if { $OPTIONS(verbose) } {stdlog "###TRACE<<< gennonkeyedidl $fout"}
 }
 
 proc genkeyedidl { fout base } {
 global SAL_WORK_DIR OPTIONS
-     if { $OPTIONS(verbose) } {stdlog "###>>> genkeyedidl $fout $base"}
+     if { $OPTIONS(verbose) } {stdlog "###TRACE>>> genkeyedidl $fout $base"}
      puts $fout "	struct ackcmd \{
       string<8>	private_revCode;
       double		private_sndStamp;
@@ -494,13 +494,13 @@ global SAL_WORK_DIR OPTIONS
       double		timeout;
 	\};
 	#pragma keylist ackcmd [set base]ID"
-     if { $OPTIONS(verbose) } {stdlog "###<<< genkeyedidl $fout $base"}
+     if { $OPTIONS(verbose) } {stdlog "###TRACE<<< genkeyedidl $fout $base"}
 }
 
 
 proc genackcmdincl { subsys fhdr fhlv } {
 global OPTIONS
-   if { $OPTIONS(verbose) } {stdlog "###>>> genackcmdincl $subsys $fhdr $fhlv "}
+   if { $OPTIONS(verbose) } {stdlog "###TRACE>>> genackcmdincl $subsys $fhdr $fhlv "}
    puts $fhdr "
 struct [set subsys]_ackcmdC
 \{
@@ -527,14 +527,14 @@ typedef struct [set subsys]_waitCompleteLV
       unsigned int timeout;
 \} [set subsys]_waitComplete_Ctl;
 "
-   if { $OPTIONS(verbose) } {stdlog "###<<< genackcmdincl $subsys $fhdr $fhlv "}
+   if { $OPTIONS(verbose) } {stdlog "###TRACE<<< genackcmdincl $subsys $fhdr $fhlv "}
 }
 
 
 
 proc makesalcmdevt { base lang } {
 global SAL_DIR SAL_WORK_DIR SYSDIC ONEPYTHON DONE_CMDEVT OPTIONS
-      if { $OPTIONS(verbose) } {stdlog "###>>> makesalcmdevt $base $lang "}
+      if { $OPTIONS(verbose) } {stdlog "###TRACE>>> makesalcmdevt $base $lang "}
       stdlog "Processing $base Types, Commands, and Events in $SAL_WORK_DIR"
       cd $SAL_WORK_DIR
       set frep [open /tmp/sreplace4.sal w]
@@ -583,14 +583,14 @@ global SAL_DIR SAL_WORK_DIR SYSDIC ONEPYTHON DONE_CMDEVT OPTIONS
          stdlog "Generating python telemetry tests"
          gentelemetrytestspython $base
       }
-      if { $OPTIONS(verbose) } {stdlog "###<<< makesalcmdevt $base $lang "}
+      if { $OPTIONS(verbose) } {stdlog "###TRACE<<< makesalcmdevt $base $lang "}
 }
 
 
 
 proc makesalcode { idlfile base name lang } {
 global SAL_DIR SAL_WORK_DIR SYSDIC ONEPYTHON DONE_CMDEVT OPTIONS
-      if { $OPTIONS(verbose) } {stdlog "###>>> makesalcode $idlfile $base $name $lang"}
+      if { $OPTIONS(verbose) } {stdlog "###TRACE>>> makesalcode $idlfile $base $name $lang"}
       stdlog "Processing $base $name in $SAL_WORK_DIR"
       cd $SAL_WORK_DIR
       catch {makesaldirs $base $name}
@@ -730,7 +730,7 @@ global SAL_DIR SAL_WORK_DIR SYSDIC ONEPYTHON DONE_CMDEVT OPTIONS
          exec cp [set base]/java/saj_[set base]_types.jar $SAL_WORK_DIR/lib/.
          saljavaclassgen $base $id
       }
-      if { $OPTIONS(verbose) } {stdlog "###<<< makesalcode $idlfile $base $name $lang"}
+      if { $OPTIONS(verbose) } {stdlog "###TRACE<<< makesalcode $idlfile $base $name $lang"}
 }
 
 
@@ -765,7 +765,7 @@ global SAL_WORK_DIR OPTIONS
 
 proc salidlgen { base lang } {
 global SAL_WORK_DIR OPTIONS ONEDDSGEN
-   if { $OPTIONS(verbose) } {stdlog "###>>> salidlgen $base $lang"}
+   if { $OPTIONS(verbose) } {stdlog "###TRACE>>> salidlgen $base $lang"}
    if { $lang != "python" } {
      if { $ONEDDSGEN == 0 } {
        cd $SAL_WORK_DIR/$base/$lang
@@ -781,27 +781,27 @@ global SAL_WORK_DIR OPTIONS ONEDDSGEN
        set ONEDDSGEN 1
      }
    }
-   if { $OPTIONS(verbose) } {stdlog "###<<< salidlgen $base $lang"}
+   if { $OPTIONS(verbose) } {stdlog "###TRACE<<< salidlgen $base $lang"}
 }
 
 
 
 proc salpythonshlibgen { base } {
 global SAL_WORK_DIR OPTIONS
-   if { $OPTIONS(verbose) } {stdlog "###>>> salpythonshlibgen $base"}
+   if { $OPTIONS(verbose) } {stdlog "###TRACE>>> salpythonshlibgen $base"}
    cd $SAL_WORK_DIR/$base/cpp/src
    stdlog "Generating Python SAL support for $base"
    exec touch .depend.Makefile.sacpp_[set base]_python
    catch { set result [exec make -f Makefile.sacpp_[set base]_python] } bad
    if { $bad != "" } {stdlog $bad}
    stdlog "python : Done SALPY_[set base].so"
-   if { $OPTIONS(verbose) } {stdlog "###<<< salpythonshlibgen $base"}
+   if { $OPTIONS(verbose) } {stdlog "###TRACE<<< salpythonshlibgen $base"}
 }
 
 
 proc saljavaclassgen { base id } {
 global SAL_WORK_DIR OPTIONS
- if { $OPTIONS(verbose) } {stdlog "###>>> saljavaclassgen $base $id"}
+ if { $OPTIONS(verbose) } {stdlog "###TRACE>>> saljavaclassgen $base $id"}
  if { $OPTIONS(fastest) == 0 } {
    cd $SAL_WORK_DIR/$id/java/standalone
    catch { set result [exec make -f Makefile.saj_[set id]_pub] } bad
@@ -814,12 +814,12 @@ global SAL_WORK_DIR OPTIONS
    stdlog "javac : Done Subscriber"
    cd $SAL_WORK_DIR
  }
- if { $OPTIONS(verbose) } {stdlog "###<<< saljavaclassgen $base $id"}
+ if { $OPTIONS(verbose) } {stdlog "###TRACE<<< saljavaclassgen $base $id"}
 }
 
 proc salcpptestgen { base id } {
 global SAL_WORK_DIR OPTIONS DONE_CMDEVT
- if { $OPTIONS(verbose) } {stdlog "###>>> salcpptestgen $base $id"}
+ if { $OPTIONS(verbose) } {stdlog "###TRACE>>> salcpptestgen $base $id"}
  if { $OPTIONS(fastest) == 0 } {
   stdlog "Generating cpp test programs for $id"
   cd $SAL_WORK_DIR/$id/cpp/standalone
@@ -845,7 +845,7 @@ global SAL_WORK_DIR OPTIONS DONE_CMDEVT
    cd $SAL_WORK_DIR
   }
  }
- if { $OPTIONS(verbose) } {stdlog "###<<< salcpptestgen $base $id"}
+ if { $OPTIONS(verbose) } {stdlog "###TRACE<<< salcpptestgen $base $id"}
 }
 
 source $SAL_DIR/add_system_dictionary.tcl

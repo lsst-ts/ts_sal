@@ -1,6 +1,6 @@
 proc checktopictypes { base } {
 global SAL_WORK_DIR OPTIONS CMD_ALIASES EVENT_ALIASES TLM_ALIASES CMDS EVTS TLMS
-  if { $OPTIONS(verbose) } {stdlog "###>>> checktopictypes $base"}
+  if { $OPTIONS(verbose) } {stdlog "###TRACE>>> checktopictypes $base"}
   if { [file exists $SAL_WORK_DIR/idl-templates/validated/[set base]_cmddef.tcl] } {
         source $SAL_WORK_DIR/idl-templates/validated/[set base]_cmddef.tcl
   } else {
@@ -22,14 +22,14 @@ global SAL_WORK_DIR OPTIONS CMD_ALIASES EVENT_ALIASES TLM_ALIASES CMDS EVTS TLMS
         stdlog "WARNING : No Telemetry definitions found for $base"
         stdlog "==================================================================="
   }
-  if { $OPTIONS(verbose) } {stdlog "###<<< checktopictypes $base"}
+  if { $OPTIONS(verbose) } {stdlog "###TRACE<<< checktopictypes $base"}
 }
 
 
 
 proc gentelemetrycodes { idlfile targets } {
 global DONE_CMDEVT OPTIONS ONEPYTHON SAL_DIR
-  if { $OPTIONS(verbose) } {stdlog "###>>> gentelemetrycodes $targets"}
+  if { $OPTIONS(verbose) } {stdlog "###TRACE>>> gentelemetrycodes $targets"}
   foreach subsys $targets {
      set spl [file rootname [split $subsys _]]
      set base [lindex $spl 0]
@@ -70,13 +70,13 @@ global DONE_CMDEVT OPTIONS ONEPYTHON SAL_DIR
        set DONE_CMDEVT 1
      }
   }
-  if { $OPTIONS(verbose) } {stdlog "###<<< gentelemetrycodes $targets"}
+  if { $OPTIONS(verbose) } {stdlog "###TRACE<<< gentelemetrycodes $targets"}
 }
 
 
 proc gengenericcodes { base } {
 global OPTIONS
-    if { $OPTIONS(verbose) } {stdlog "###>>> gengenericcodes $base"}
+    if { $OPTIONS(verbose) } {stdlog "###TRACE>>> gengenericcodes $base"}
     if { $OPTIONS(cpp) } {
       set result none
       catch { set result [makesalcmdevt $base cpp] } bad
@@ -95,13 +95,13 @@ global OPTIONS
       if { $result == "none" } {stdlog $bad}
       if { $OPTIONS(verbose) } {stdlog $result}
     }
-    if { $OPTIONS(verbose) } {stdlog "###<<< gengenericcodes $base"}
+    if { $OPTIONS(verbose) } {stdlog "###TRACE<<< gengenericcodes $base"}
 }
 
 
 proc gensingleprocesstests { base } {
 global OPTIONS CMD_ALIASES EVT_ALIASES TLM_ALIASES
-  if { $OPTIONS(verbose) } {stdlog "###>>> gensingleprocesstests $base"}
+  if { $OPTIONS(verbose) } {stdlog "###TRACE>>> gensingleprocesstests $base"}
   if { $OPTIONS(cpp) } {
     set result none
     if { [info exists CMD_ALIASES($base)] } {
@@ -136,7 +136,7 @@ global OPTIONS CMD_ALIASES EVT_ALIASES TLM_ALIASES
       if { $OPTIONS(verbose) } {stdlog $result}
     }
   }
-  if { $OPTIONS(verbose) } {stdlog "###<<< gensingleprocesstests $base"}
+  if { $OPTIONS(verbose) } {stdlog "###TRACE<<< gensingleprocesstests $base"}
 }
 
 
