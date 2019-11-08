@@ -1,10 +1,33 @@
-This is release 4.0 of the SAL SDK (October 23th, 2019)
+This is release 4.1 of the SAL SDK (October 23th, 2019)
+
+Changes for 4.1
+
+Add  support for retreiving timestamp metadata in SALPY
+
+Remove redundant metadata from topics
+
+Add a salgenerator command that only generates the revision coded idl
+
+Add a check for string length exceptions in C++/SALPY
+
+Add support for subscriber/publisher existance checking
+
+Add support for routine entry/exit tracking in verbose mode of salgenerator
+
+Add support for adding SAL_VERSION and XML_VERSION to idl
+
+Add support for passing Unit and Description metadata to pydds via idl
+
+Update RPM's to be relocatable where possible
+
+Update default ospl.xml to allow unlimited participants per node
+
 
 Changes for 4.0
 
 Add support for RPI4 platform build
 
-Add support for setting Enumeration values to use ddefined values
+Add support for setting Enumeration values to use defined values
 
 Add exception generation when null data structures passed to SAL methods
 
@@ -49,23 +72,32 @@ Remove deprecated parts of API
 Changes for 3.9
 
 Support for OpenSplice V6.9
+
 EFD writers for Kafka and InfluxDB
+
 RPM generation
+
 Increased build and test efficiency
+
 Upgrade to pybind11 wrapper
 
 
 Changes for 3.8
 
 Add SAL__STATE_ defines for generic states
+
 Add support for Python OO library
+
 Move CSC dictionary to ts_xml/sal_interfaces/SALSubsystems.xml and change to XML format
+
 Remove generic Commands/Events from generated MagicDraw XMI importable
+
 Change location of Nexus repository
 
 Changes for 3.7.2
 
 Update CSC list
+
 Remove rougue setup file
 
 Changes for 3.7.1
@@ -189,9 +221,13 @@ isolate users when testing on the same network.
 Changes for 3.4
 
 Added generic Event types
+
 Added Java controller tests
+
 Added m2ms Telemetry items
+
 Added ocs commands
+
 
 Changes for 3.3
 

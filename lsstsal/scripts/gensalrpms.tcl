@@ -425,6 +425,7 @@ URL: http://project.lsst.org/ts
 Group: Telescope and Site SAL
 AutoReqProv: no
 Source0: [set subsys]-$SALVERSION.tgz
+Prefix: /opt
 BuildRoot: $SAL_WORK_DIR/rpmbuild/%\{name\}-%\{version\}
 Packager: dmills@lsst.org
 Requires: OpenSpliceDDS = $OSPL_VERSION
@@ -483,6 +484,7 @@ URL: http://project.lsst.org/ts
 Group: Telescope and Site SAL
 AutoReqProv: no
 Source0: [set subsys]_test-$SALVERSION.tgz
+Prefix: /opt
 BuildRoot: $SAL_WORK_DIR/rpmbuild/%\{name\}-%\{version\}
 Packager: dmills@lsst.org
 Requires: OpenSpliceDDS = $OSPL_VERSION

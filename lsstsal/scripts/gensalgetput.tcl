@@ -358,7 +358,7 @@ global CMDS TLMS EVTS
             if { $arr != "" } {
               puts $fout "           System.arraycopy(data.$apar,0,SALInstance.$apar,0,$arr);"
             } else {
-              puts $fout "           SALInstance.$apar = data.$apar ;"
+              puts $fout "           SALInstance.$apar = data.$apar;"
             }
           }
         }
