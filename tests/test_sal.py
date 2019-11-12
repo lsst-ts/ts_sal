@@ -391,16 +391,31 @@ class BasicTestCase(BaseSalTestCase):
         self.assertEqual(retcode, SALPY_Test.SAL__OK)
         self.test_data.assert_arrays_equal(data, data_list[-1])
 
+    def test_enumerations(self):
+        """Test enumerations."""
+        # Shared enum with default values
+        self.assertEqual(SALPY_Test.Test_shared_Enum_One, 1)
+        self.assertEqual(SALPY_Test.Test_shared_Enum_Two, 2)
+        self.assertEqual(SALPY_Test.Test_shared_Enum_Three, 3)
+        # Shared enum with specified values
+        self.assertEqual(SALPY_Test.Test_shared_ValueEnum_Zero, 0)
+        self.assertEqual(SALPY_Test.Test_shared_ValueEnum_Two, 2)
+        self.assertEqual(SALPY_Test.Test_shared_ValueEnum_Four, 4)
+        self.assertEqual(SALPY_Test.Test_shared_ValueEnum_Five, 5)
+        # Topic-specific enum with default values
+        self.assertEqual(SALPY_Test.scalars_Int0Enum_One, 1)
+        self.assertEqual(SALPY_Test.scalars_Int0Enum_Two, 2)
+        self.assertEqual(SALPY_Test.scalars_Int0Enum_Three, 3)
+        # Topic-specific enum with specified values
+        self.assertEqual(SALPY_Test.arrays_Int0ValueEnum_Zero, 0)
+        self.assertEqual(SALPY_Test.arrays_Int0ValueEnum_Two, 2)
+        self.assertEqual(SALPY_Test.arrays_Int0ValueEnum_Four, 4)
+        self.assertEqual(SALPY_Test.arrays_Int0ValueEnum_Five, 5)
+
 
 class ScriptTestCase(unittest.TestCase):
-    """A few tests require a non-CSC component or a SAL component
-    with enumerations. Script fits both criteria.
+    """A few tests require CSC that doesn't use generics, so we use Script.
     """
-    def test_enumerations_present(self):
-        """Test that enumeration values are present as constants."""
-        self.assertTrue(hasattr(SALPY_Script, "Script_shared_ScriptState_Done"))
-        self.assertTrue(hasattr(SALPY_Script, "Script_shared_MetadataCoordSys_ICRS"))
-
     def test_generics_no(self):
         """Test that setting generics to `no` avoids generics."""
         self.assertFalse(hasattr(SALPY_Script, "Test_command_enterControlC"))
