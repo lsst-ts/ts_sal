@@ -6,7 +6,7 @@ from lsst.ts.sal.make_salpy_lib import make_salpy_lib
 
 scripts.BasicSConscript.tests(pyList=[])
 
-for name in ("OSPL_URI",):
+for name in ("OSPL_URI", "OPENSPLICE_LOC", "ADLINK_LICENSE"):
     val = os.environ.get(name)
     if val is not None:
         env.AppendENVPath(name, val)
