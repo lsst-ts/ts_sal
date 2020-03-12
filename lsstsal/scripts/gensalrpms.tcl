@@ -121,6 +121,10 @@ export QA_RPATHS=0x001F
 rpmbuild -bi -bl -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_[set subsys]_test.spec
 rpmbuild -bb -bl -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_[set subsys]_test.spec
 "
+    close $frpm
+    exec chmod 755 /tmp/makerpm
+    exec /tmp/makerpm  >& /tmp/makerpm_[set subsys]_test.log
+    exec cat /tmp/makerpm_[set subsys]_test.log
   } else {
     generaterpm $subsys
     set frpm [open /tmp/makerpm w]
@@ -129,11 +133,11 @@ export QA_RPATHS=0x001F
 rpmbuild -bi -bl -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_[set subsys].spec
 rpmbuild -bb -bl -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_[set subsys].spec
 "
+    close $frpm
+    exec chmod 755 /tmp/makerpm
+    exec /tmp/makerpm  >& /tmp/makerpm_[set subsys].log
+    exec cat /tmp/makerpm_[set subsys].log
   }
-  close $frpm
-  exec chmod 755 /tmp/makerpm
-  exec /tmp/makerpm  >& /tmp/makerpm.log
-  exec cat /tmp/makerpm.log
   cd $SAL_WORK_DIR
   updatesingletons ts_sal_utils generateUtilsrpm
   updatesingletons ts_sal_runtime generatemetarpm
