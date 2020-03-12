@@ -36,7 +36,8 @@ if { $argc < 2 } {
 
 set SAL_DIR $env(SAL_DIR)
 set OSPL_HOME $env(OSPL_HOME)
-foreach o "validate efd writers code compile cpp idl isocpp java jni lib link maven tcl db icd labview python pydds html rpm sal shmem sim simd verbose fastest" {
+set COMMANDS "validate efd writers code compile cpp idl isocpp java jni lib link maven tcl db icd labview python pydds html rpm sal shmem sim simd verbose fastest" 
+foreach o $COMMANDS {
   set OPTIONS($o) 0
   if { [lsearch [string tolower $argv] $o] > -1 } {
      set OPTIONS($o) 1
@@ -73,7 +74,7 @@ if { [file exists $env(SAL_WORK_DIR)/VERSION] == 0 } {
 set TSUBSYSTEMS ""
 foreach i $argv {
 puts stdout "checking $i"
-  if { [lsearch "validate efd writers code compile cpp idl isocpp java jni lib link maven tcl db icd labview python pydds html rpm sal shmem sim simd verbose fastest" $i] < 0 } {
+  if { [lsearch $COMMANDS $i] < 0 } {
     if { [lsearch $SYSDIC(systems) $i] < 0 } {
       puts stdout "
 *******************************************************************************
@@ -120,12 +121,6 @@ if { [file exists $SAL_WORK_DIR] == 0 } {
 
 cd $SAL_WORK_DIR
 set SAL_WORK_DIR [file normalize .]
-foreach o "validate efd writers code compile cpp idl isocpp java jni lib link maven tcl db icd labview python pydds html rpm sal shmem sim simd verbose fastest" {
-  set OPTIONS($o) 0
-  if { [lsearch [string tolower $argv] $o] > -1 } {
-     set OPTIONS($o) 1
-  }
-}
 
 catch {exec mkdir saltemptest} ok
 if { [file exists saltemptest] == 0 } {
@@ -182,6 +177,14 @@ if { $OPTIONS(validate) || $OPTIONS(idl) } {
   set all $TSUBSYSTEMS
   stdlog "Processing $all"
   foreach i $all {
+#    if { [file exists [set i]_Telemetry.xml] == 0 } {
+#        stdlog "Add minimal Telemetry"
+#        set SALSubsys $i
+#        source $SAL_DIR/generateMinimalTelemetry.tcl
+#        set fxml [open $SAL_WORK_DIR/[set i]_Telemetry.xml w]
+#        puts $fxml $SAL_MIN_TELEMETRY 
+#        close $fxml
+#    }
     if { [file exists $SAL_WORK_DIR/SALGenerics.xml] } {
       if { [info exists SYSDIC($i,hasGenerics)] || [info exists SYSDIC($i,hasAllGenerics)] } {
         set x none
@@ -315,7 +318,6 @@ if { $OPTIONS(sal) } {
       stdlog "Building native DDS python support for $spl subsystem"
       set result none
       catch { set result [exec $SAL_DIR/genddspython.tcl $spl] } bad
-      if { $result == "none" } {errorexit "failure in genddspython.tcl" }
       if { $OPTIONS(verbose) } {stdlog $result}
     }
   } else {
@@ -330,7 +332,6 @@ if { $OPTIONS(lib) } {
        stdlog "Building shared library for $s subsystem"
        set result none
        catch { set result [exec $SAL_DIR/buildsharedlib $s] } bad
-       if { $result == "none" } {errorexit "failure in buildsharedlib" }
        if { $OPTIONS(verbose) } {stdlog $result}
      }
      if { [file exists $SAL_WORK_DIR/[set s]/cpp/src/SALPY_[set s].so] } {
@@ -379,7 +380,7 @@ if { $OPTIONS(labview) } {
   }
   set result none
   catch { set result [genshmemlabview $subsys] } bad
-  if { $result == "none" } {errorexit "failure in genshmemlabview" }
+  if { $result == "none" } {stdlog $bad}
   puts stdout $bad
   if { $OPTIONS(verbose) } {stdlog $result}
 }
@@ -387,10 +388,10 @@ if { $OPTIONS(labview) } {
 
 ### TSUBSYSTEMS is svcSAL_topicname
 if { $OPTIONS(compile) } {
-  set topic [string range [file rootname $TSUBSYSTEMS] 7 end]
-  set result none
-  catch {set result [exec g++  -g -I. -I/opt/lsstsal/scripts/code/include/sal -I$OSPL_HOME/include/dcps/C++/SACPP -I$OSPL_HOME/include -I$OSPL_HOME/include/sys -I/opt/simd/include -I../include -pipe -Wall  -c -std=c++0x -I../shmem-[set topic] $TSUBSYSTEMS.cpp] } bad
-  if { $result == "none" } {errorexit "failure in g++ compilation" }
+   set topic [string range [file rootname $TSUBSYSTEMS] 7 end]
+   set result none
+   catch {set result [exec g++  -g -I. -I/opt/lsstsal/scripts/code/include/sal -I$OSPL_HOME/include/dcps/C++/SACPP -I$OSPL_HOME/include -I$OSPL_HOME/include/sys -I/opt/simd/include -I../include -pipe -Wall  -c -std=c++0x -I../shmem-[set topic] $TSUBSYSTEMS.cpp] } bad
+  if { $result == "none" } {stdlog $bad}
   if { $bad != "" } {puts stdout $bad}
   exit
 }
@@ -401,9 +402,9 @@ if { $OPTIONS(link) } {
   set topic [lindex $argv 1]
   set result none
   catch { set result [exec g++ -g -I. -I/opt/lsstsal/scripts/code/include/sal -I$OSPL_HOME/include/dcps/C++/SACPP -I$OSPL_HOME/include -I$OSPL_HOME/include/sys -I/opt/simd/include -I../include -pipe -Wall -std=c++0x -I../shmem-[set topic] svcSAL_$topic.o $program.cpp -o $program -L$OSPL_HOME/lib -ldcpsgapi -ldcpssacpp -lddsdatabase -lddsos -lboost_thread -lboost_program_options -lboost_system -lddsutil -lddsserialization -lddsserialization -lddskernel -lddsconf -lddsconfparser -lddsuser -L/opt/simd/lib -lSimD libdatamodel.a]} bad
-  if { $result == "none" } {errorexit "failure in g++ compilation" }
+  if { $result == "none" } {stdlog $bad}
   if { $bad != "" } {puts stdout $bad}
-  exit
+   exit
 }
 
 
@@ -415,12 +416,32 @@ if { $OPTIONS(tcl) || $OPTIONS(shmem) } {
      exec mkdir -p ./ospl-$topic
      set result none
      catch { set result [exec $SAL_DIR/genshmem-tcl.tcl $topic $SAL_WORK_DIR] } bad
-     if { $result == "none" } {errorexit "failure in genshmem-tcl.tcl" }
+       if { $result == "none" } {stdlog $bad}
+#     if { $bad } {
+#        errorexit "Tcl interface generation failed : \n $bad"
+#     }
      if { $OPTIONS(verbose) } {stdlog $bad}
   }
 }
 
- 
+  
+if { $OPTIONS(jni) } {
+  source $SAL_DIR/genjnicode.tcl
+  foreach subsys $TARGETS {
+     set topic [file rootname $subsys]
+     stdlog "Generating DDS java code for $topic"
+     stdlog "Generating SAL JNI code for $topic"
+     set result none
+     catch { set result [genjnicode $topic] } bad
+     if { $result == "none" } {stdlog $bad}
+     if { $bad } {
+        errorexit "SAL JNI generation failed : \n $bad"
+     }
+     if { $OPTIONS(verbose) } {stdlog $result}
+  }
+}
+
+
 if { $OPTIONS(db) } {
   source $SAL_DIR/simulatedb.tcl
   set k [lsearch $argv db]
@@ -453,11 +474,10 @@ if { $OPTIONS(sim) } {
    stdlog "Not yet implemented  - use VM web interface"
 }
 
+
 if { $OPTIONS(icd) } {
    set subsys [lindex [split $argv _] 0]
    stdlog "Generating ICD for OCS to $subsys"
    set SINGLESUBSYSTEM $subsys
    source $SAL_DIR/icd/icd.tcl
 }
-
-
