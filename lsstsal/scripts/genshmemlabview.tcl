@@ -122,7 +122,7 @@ global SAL_DIR SAL_WORK_DIR SYSDIC env
 
 
 proc genlabviewincl { base ptypes } {
-global SAL_DIR SAL_WORK_DIR SYSDIC TELEMETRY_ALIASES LVSTRINGS
+global SAL_DIR SAL_WORK_DIR SYSDIC TELEMETRY_ALIASES LVSTRINGS CMD_ALIASES
   set idarg ""
   if { [info exists SYSDIC($base,keyedID)] } {
      set idarg "unsigned int [set base]ID"
@@ -208,8 +208,10 @@ global SAL_DIR SAL_WORK_DIR SYSDIC TELEMETRY_ALIASES LVSTRINGS
       char [set lvs]_bufferIn\[[set slen]\];
     "
   }
-  puts $fout "	[set base]_ackcmdC shmemIncoming_ackcmd;"
-  puts $fout "  [set base]_ackcmdC shmemOutgoing_ackcmd;"
+  if { [info exists CMD_ALIASES($base)] } {
+    puts $fout "	[set base]_ackcmdC shmemIncoming_ackcmd;"
+    puts $fout "  [set base]_ackcmdC shmemOutgoing_ackcmd;"
+  }
   puts $fout "    \};
 
      struct [set base]_shmem \{
