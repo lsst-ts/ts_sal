@@ -21,7 +21,20 @@ details, it can be said binding for the following primitives are generated:
 [LSE-70](https://ls.st/LSE-70) provides more details, particularly starting at
 chapter 3.2.4.
 
-# Dependencies
+# Installing on docker image
+
+On lsstts/develop-env container, run the following:
+
+```bash
+cd ts_sal
+setup -r .
+scons
+scons install declare
+```
+
+# Installing outside of the container
+
+## Dependencies
 
 * **ts_openslice** for ADLink OpenSliceDDS to generate C++, Python, Java and LabView interfaces
 * **ts_idl** for IDL generation, needed for **ts_salobj**
@@ -36,7 +49,7 @@ yum -y update
 yum -y install git python3 which make java-1.8.0-openjdk-devel
 ```
 
-# Usage
+## Usage
 
 To get needed github projects and setup environment variables, do:
 
@@ -54,7 +67,7 @@ cp ts_xml/sal_interfaces/*.xml ts_sal/test
 cp ts_xml/sal_interfaces/MTMount/*.xml ts_sal/test
 ```
 
-## C++
+### C++
 
 For C++ development, install gcc-c++:
 
@@ -69,14 +82,14 @@ cd ts_sal/test
 salgenerator MTMount generate cpp
 ```
 
-## Java
+### Java
 
 ```bash
 cd  ts_sal/test
 salgenerator MTMount generate python
 ```
 
-## Python
+### Python
 
 For Python (please note you are encouraged to use
 [ts_salobj](https://github.com/lsstts/ts_salobj)):
@@ -88,4 +101,6 @@ cd MTMount/cpp
 make -f Makefile.sacpp_MTMount_types
 ```
 
+### LabView
 
+Unknown at the moment.
