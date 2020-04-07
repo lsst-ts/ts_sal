@@ -142,7 +142,7 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
            close $fout
         }
         set itemid 0
-        if { [info exists topics($value)] } { 
+        if { [info exists topics([string tolower $value])] } { 
            puts stdout "****************************************************************"
            puts stdout "****************************************************************"
            puts stdout "ERROR - duplicate EFDB_Topic = $value"
@@ -150,7 +150,7 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
            puts stdout "****************************************************************"
            exit
         }
-        set topics($value) 1
+        set topics([string tolower $value]) 1
         set tname $value
         puts stdout "Translating $tname"
         set fout [open $SAL_WORK_DIR/idl-templates/[set tname].idl w]
@@ -163,9 +163,15 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
         puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",5,\"private_origin\",\"int\",1,\"unitless\",1,\"\",\"\",\"PID code of sender\");"
         puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",6,\"private_host\",\"int\",1,\"unitless\",1,\"\",\"\",\"IP of sender\");"
         set itemid 6
+        if { [info exists SYSDIC($subsys,keyedID)] } {
+           puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",7,\"[set subsys]ID\",\"int\",1,\"unitless\",1,\"\",\"\",\"Index of $subsys instance\");"
+           set itemid 7
+        }
         set alias [getAlias $tname]
         if { $ctype == "command" } {
            set CMDS($subsys,$alias) $alias
+           set CMDS($subsys,$alias,plist) ""
+           set CMDS($subsys,$alias,param) ""
         }
         if { $ctype == "event" } {
            set EVTS($subsys,$alias) $alias

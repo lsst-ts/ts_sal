@@ -1,6 +1,14 @@
-This is release 4.1 of the SAL SDK (October 23th, 2019)
+This is release 4.1.0 of the SAL SDK (March 25th, 2020)
 
 Changes for 4.1
+
+Allow commands with no arguments
+
+Allow subsystems with no commands
+
+Add asset checking and exit on errors to salgenerator
+
+Remove redundant files
 
 Add  support for retreiving timestamp metadata in SALPY
 
@@ -19,6 +27,8 @@ Add support for adding SAL_VERSION and XML_VERSION to idl
 Add support for passing Unit and Description metadata to pydds via idl
 
 Update RPM's to be relocatable where possible
+
+Add seperate log files for each rpm build
 
 Update default ospl.xml to allow unlimited participants per node
 

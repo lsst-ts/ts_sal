@@ -542,7 +542,7 @@ global SAL_DIR SAL_WORK_DIR SYSDIC ONEPYTHON DONE_CMDEVT OPTIONS
       if { $OPTIONS(verbose) } {stdlog "###TRACE>>> makesalcmdevt $base $lang "}
       stdlog "Processing $base Types, Commands, and Events in $SAL_WORK_DIR"
       cd $SAL_WORK_DIR
-      set frep [open /tmp/sreplace4.sal w]
+      set frep [open /tmp/sreplace4_[set base][set lang].sal w]
       puts $frep "#!/bin/sh"
       if { $lang == "cpp" } {
         exec cp $SAL_DIR/code/templates/Makefile.sacpp_SAL_types.template [set base]/cpp/Makefile.sacpp_[set base]_types
@@ -573,8 +573,8 @@ global SAL_DIR SAL_WORK_DIR SYSDIC ONEPYTHON DONE_CMDEVT OPTIONS
         puts $frep "perl -pi -w -e 's/_SAL_/_[set base]_/g;' [set base]/java/Makefile.saj_[set base]_types"
       }
       close $frep
-      exec chmod 755 /tmp/sreplace4.sal
-      catch { set result [exec /tmp/sreplace4.sal] } bad
+      exec chmod 755 /tmp/sreplace4_[set base][set lang].sal
+      catch { set result [exec /tmp/sreplace4_[set base][set lang].sal] } bad
       if { $bad != "" } {stdlog $bad}
       if { $lang == "python" } {
          makepythoncmdevt $base
@@ -613,13 +613,13 @@ global SAL_DIR SAL_WORK_DIR SYSDIC ONEPYTHON DONE_CMDEVT OPTIONS
 
 
 proc makesalcode { idlfile base name lang } {
-global SAL_DIR SAL_WORK_DIR SYSDIC ONEPYTHON DONE_CMDEVT OPTIONS
+global SAL_DIR SAL_WORK_DIR SYSDIC ONEPYTHON DONE_CMDEVT OPTIONS CMD_ALIASES
       if { $OPTIONS(verbose) } {stdlog "###TRACE>>> makesalcode $idlfile $base $name $lang"}
       stdlog "Processing $base $name in $SAL_WORK_DIR"
       cd $SAL_WORK_DIR
       catch {makesaldirs $base $name}
       set id [set base]_[set name]
-      set frep [open /tmp/sreplace.sal w]
+      set frep [open /tmp/sreplace_[set base][set lang].sal w]
       puts $frep "#!/bin/sh"
       if { $lang == "cpp" } {
         exec cp $SAL_DIR/code/templates/Makefile-cpp.template [set id]/cpp/standalone/Makefile
@@ -711,8 +711,8 @@ global SAL_DIR SAL_WORK_DIR SYSDIC ONEPYTHON DONE_CMDEVT OPTIONS
         puts $frep "perl -pi -w -e 's/SALDATA.idl/[file tail $idlfile]/g;' [set id]/python/[set id]Subscriber.py"
       }
       close $frep
-      exec chmod 755 /tmp/sreplace.sal
-      catch { set result [exec /tmp/sreplace.sal] } bad
+      exec chmod 755 /tmp/sreplace_[set base][set lang].sal
+      catch { set result [exec /tmp/sreplace_[set base][set lang].sal] } bad
       if { $bad != "" } {stdlog $bad}
 ##      if { $name != "notused" } {
         stdlog "calling addSALDDStypes $idlfile $id $lang"
@@ -720,30 +720,32 @@ global SAL_DIR SAL_WORK_DIR SYSDIC ONEPYTHON DONE_CMDEVT OPTIONS
         stdlog "done addSALDDStypes $idlfile $id $lang"
 ##      }
       if { $lang == "cpp" } {
-        set revcode [getRevCode [set base]_ackcmd short]
-        set frep [open /tmp/sreplace2.sal w]
+        set frep [open /tmp/sreplace2_[set base][set lang].sal w]
         puts $frep "#!/bin/sh"
         puts $frep "perl -pi -w -e 's/SALData/$base/g;' [set base]/cpp/src/SAL_[set base].h"
         puts $frep "perl -pi -w -e 's/SALData/$base/g;' [set base]/cpp/src/SAL_[set base].cpp"
-        puts $frep "perl -pi -w -e 's/SALCommand/$base\:\:command/g;' [set base]/cpp/src/SAL_[set base].cpp"
-        puts $frep "perl -pi -w -e 's/SALResponse/$base\:\:ackcmd[set revcode]/g;' [set base]/cpp/src/SAL_[set base].cpp"
+        if { [info exists CMD_ALIASES($base)] } {
+          set revcode [getRevCode [set base]_ackcmd short]
+          puts $frep "perl -pi -w -e 's/SALResponse/$base\:\:ackcmd[set revcode]/g;' [set base]/cpp/src/SAL_[set base].cpp"
+        }
         close $frep
-        exec chmod 755 /tmp/sreplace2.sal
-        catch { set result [exec /tmp/sreplace2.sal] } bad
+        exec chmod 755 /tmp/sreplace2_[set base][set lang].sal
+        catch { set result [exec /tmp/sreplace2_[set base][set lang].sal] } bad
         stdlog "done sreplace2 $idlfile $id $lang"
       }
       if { $lang == "java" } {
-        set revcode [getRevCode [set base]_ackcmd short]
-        set frep [open /tmp/sreplace2.sal w]
+        set frep [open /tmp/sreplace2_[set base][set lang].sal w]
         puts $frep "#!/bin/sh"
         puts $frep "perl -pi -w -e 's/SALData/$base/g;' [set id]/java/src/org/lsst/sal/SAL_[set base].java"
-        puts $frep "perl -pi -w -e 's/SALResponse/ackcmd[set revcode]/g;' [set id]/java/src/org/lsst/sal/SAL_[set base].java"
         puts $frep "perl -pi -w -e 's/SALData/$base/g;' [set base]/java/src/org/lsst/sal/SAL_[set base].java"
-        puts $frep "perl -pi -w -e 's/SALCommand/command/g;' [set base]/java/src/org/lsst/sal/SAL_[set base].java"
-        puts $frep "perl -pi -w -e 's/SALResponse/ackcmd[set revcode]/g;' [set base]/java/src/org/lsst/sal/SAL_[set base].java"
+        if { [info exists CMD_ALIASES($base)] } {
+          set revcode [getRevCode [set base]_ackcmd short]
+          puts $frep "perl -pi -w -e 's/SALResponse/ackcmd[set revcode]/g;' [set id]/java/src/org/lsst/sal/SAL_[set base].java"
+          puts $frep "perl -pi -w -e 's/SALResponse/ackcmd[set revcode]/g;' [set base]/java/src/org/lsst/sal/SAL_[set base].java"
+        }
         close $frep
-        exec chmod 755 /tmp/sreplace2.sal
-        catch { set result [exec /tmp/sreplace2.sal] } bad
+        exec chmod 755 /tmp/sreplace2_[set base][set lang].sal
+        catch { set result [exec /tmp/sreplace2_[set base][set lang].sal] } bad
       }
       stdlog "calling salidlgen $base $lang"
       salidlgen $base $lang
@@ -885,12 +887,14 @@ global SAL_WORK_DIR OPTIONS DONE_CMDEVT
 
 source $SAL_DIR/add_system_dictionary.tcl
 source $SAL_DIR/gensalgetput.tcl
-if { [lindex [split $env(PYTHON_BUILD_VERSION) .] 0] == 2} {
-  stdlog "Enabling Boost::Python bindings for python 2.x"
-  source $env(SAL_DIR)/gensimplepython.tcl
-} else {
-  stdlog "Enabling pybind11 bindings for python 3+"
-  source $env(SAL_DIR)/gensimplepybind11.tcl
+if { [info exists env(PYTHON_BUILD_VERSION)] } {
+  if { [lindex [split $env(PYTHON_BUILD_VERSION) .] 0] == 2} {
+    stdlog "Enabling Boost::Python bindings for python 2.x"
+    source $env(SAL_DIR)/gensimplepython.tcl
+  } else {
+    stdlog "Enabling pybind11 bindings for python 3+"
+    source $env(SAL_DIR)/gensimplepybind11.tcl
+  }
 }
 source $SAL_DIR/managetypes.tcl
 source $SAL_DIR/activaterevcodes.tcl

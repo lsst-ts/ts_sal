@@ -17,7 +17,7 @@ global SAL_WORK_DIR OPTIONS
    if { $OPTIONS(verbose) } {stdlog "###TRACE>>> insertcfragments $fout $base $name"}
    if { $name == "command" || $name == "ackcmd" || $name == "logevent" || $name == "notused" } {return}
    set revcode [getRevCode [set base]_[set name] short]
-   puts stdout "Processing command $name , revcode = $revcode"
+   puts stdout "Processing topic $name , revcode = $revcode"
    puts $fout "
 salReturn SAL_[set base]::putSample_[set name]([set base]_[set name]C *data)
 \{
@@ -332,8 +332,9 @@ proc addActorIndexesJava { idlfile base fout } {
 
 proc copyfromjavasample { fout base name } {
 global CMDS TLMS EVTS
-               set alias [string range $name 9 end]
-        if { [info exists TLMS($base,$name,param)] } {
+        set ctype [string range $name 0 7]
+        if { $ctype != "logevent" && $ctype != "command_" } {
+         if { [info exists TLMS($base,$name,param)] } {
           foreach p $TLMS($base,$name,param) {
                     set tpar [lindex [string trim $p "\{\}"]]
                     if { [lindex $tpar 0] == "unsigned" } {
@@ -348,8 +349,11 @@ global CMDS TLMS EVTS
               puts $fout "           data.$apar = SALInstance.value\[j\].$apar;"
             }
           }
+         }
         }
-        if { [info exists EVTS($base,$alias,param)] } {
+        set alias [string range $name 9 end]
+        if { $ctype == "logevent" } {
+         if { [info exists EVTS($base,$alias,param)] } {
           foreach p $EVTS($base,$alias,param) {
                     set tpar [lindex [string trim $p "\{\}"]]
                     if { [lindex $tpar 0] == "unsigned" } {
@@ -364,9 +368,12 @@ global CMDS TLMS EVTS
               puts $fout "           data.$apar = SALInstance.value\[j\].$apar;"
             }
           }
+         }
         }
-        if { [info exists CMDS($base,$name,param)] } {
-          foreach p $CMDS($base,$name,param) {
+        set alias [string range $name 8 end]
+        if { $ctype == "command_" } {
+         if { [info exists CMDS($base,$alias,param)] } {
+          foreach p $CMDS($base,$alias,param) {
                     set tpar [lindex [string trim $p "\{\}"]]
                     if { [lindex $tpar 0] == "unsigned" } {
                 set apar [lindex [split [lindex $tpar 2] "()"] 0]
@@ -380,13 +387,15 @@ global CMDS TLMS EVTS
               puts $fout "           data.$apar = SALInstance.value\[j\].$apar;"
             }
           }
+         }
         }
 }
 
 proc copytojavasample { fout base name } {
 global CMDS TLMS EVTS
-               set alias [string range $name 9 end]
-        if { [info exists TLMS($base,$name,param)] } {
+        set ctype [string range $name 0 7]
+        if { $ctype != "logevent" && $ctype != "command_" } {
+         if { [info exists TLMS($base,$name,param)] } {
           foreach p $TLMS($base,$name,param) {
                     set tpar [lindex [string trim $p "\{\}"]]
                     if { [lindex $tpar 0] == "unsigned" } {
@@ -401,8 +410,11 @@ global CMDS TLMS EVTS
               puts $fout "           SALInstance.$apar = data.$apar;"
             }
           }
+         }
         }
-        if { [info exists EVTS($base,$alias,param)] } {
+        set alias [string range $name 9 end]
+        if { $ctype == "logevent" } {
+         if { [info exists EVTS($base,$alias,param)] } {
           foreach p $EVTS($base,$alias,param) {
                     set tpar [lindex [string trim $p "\{\}"]]
                     if { [lindex $tpar 0] == "unsigned" } {
@@ -417,9 +429,12 @@ global CMDS TLMS EVTS
               puts $fout "           SALInstance.$apar = data.$apar;"
             }
           }
+         }
         }
-        if { [info exists CMDS($base,$name,param)] } {
-          foreach p $CMDS($base,$name,param) {
+        set alias [string range $name 8 end]
+        if { $ctype == "command_" } {
+         if { [info exists CMDS($base,$alias,param)] } {
+          foreach p $CMDS($base,$alias,param) {
                     set tpar [lindex [string trim $p "\{\}"]]
                     if { [lindex $tpar 0] == "unsigned" } {
                 set apar [lindex [split [lindex $tpar 2] "()"] 0]
@@ -433,6 +448,7 @@ global CMDS TLMS EVTS
               puts $fout "          SALInstance.$apar = data.$apar;"
             }
           }
+         }
         }
 }
 
@@ -827,3 +843,4 @@ global SAL_DIR SAL_WORK_DIR OPTIONS
   close $fout
   if { $OPTIONS(verbose) } {stdlog "###TRACE<<< modpubsubexamples $id"}
 }
+

@@ -5,7 +5,7 @@ source $SAL_DIR/add_system_dictionary.tcl
 source $SAL_DIR/sal_version.tcl
 
 foreach s $SYSDIC(systems) {
-   puts stdout "Checking $s"
+   stdlog "Checking $s"
    if { [file exists [set s]_Commands.xml] } {
     set gotit 0
     catch {
@@ -17,7 +17,7 @@ foreach s $SYSDIC(systems) {
       set gotit 1
     }
     if { $gotit == 0 } {
-      puts stdout ".....Adding generic commands to $s"
+      stdlog ".....Adding generic commands to $s"
       set SALSubsys $s
       source $SAL_DIR/generateLifecycleCommands.tcl
       set fin [open [set s]_Commands.xml r]
@@ -32,7 +32,7 @@ foreach s $SYSDIC(systems) {
       exec mv [set s]_Commandsplus [set s]_Commands.xml
     }
    } else { 
-     puts stdout "$s has no commands"
+     stdlog "$s has no commands"
    }
    if { [file exists [set s]_Events.xml] } {
     set gotit 0
@@ -47,7 +47,7 @@ foreach s $SYSDIC(systems) {
     if { $gotit == 0 } {
       set SALSubsys $s
       source $SAL_DIR/generateGenericEvents.tcl
-      puts stdout ".....Adding generic events to $s"
+      stdlog ".....Adding generic events to $s"
       set fin [open [set s]_Events.xml r]
       set fout [open [set s]_Eventsplus w]
       gets $fin rec ; puts $fout $rec
@@ -60,7 +60,7 @@ foreach s $SYSDIC(systems) {
       exec mv [set s]_Eventsplus [set s]_Events.xml
     }
    } else {
-     puts stdout "$s has no events"
+     stdlog "$s has no events"
    }
 }
 

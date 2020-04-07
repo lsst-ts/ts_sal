@@ -313,6 +313,7 @@ if { $OPTIONS(sal) } {
   }
   cd $SAL_WORK_DIR
   set base [lindex [split [lindex $TARGETS 0] _] 0]
+  clearAssets $base
   source $SAL_DIR/gensimplesample.tcl
   source $SAL_DIR/gensalcodes.tcl
   checkTopicTypes $base
@@ -338,6 +339,7 @@ if { $OPTIONS(sal) } {
     exec rm -fr $SAL_WORK_DIR/[set base]/cpp
     exec cp $SAL_WORK_DIR/idl-templates/validated/sal/sal_revCoded_[set base].idl $SAL_WORK_DIR/[set base]/.
   }
+  checkAssets $base
 }
 
 if { $OPTIONS(lib) } {

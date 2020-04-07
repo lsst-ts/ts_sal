@@ -6,12 +6,25 @@ source $SAL_DIR/gencommandtestssinglefilejava.tcl
 source $SAL_DIR/gentestspython.tcl 
 source $SAL_DIR/activaterevcodes.tcl 
 
+proc addgenericcmdcode { fout lang } {
+global OPTIONS SAL_DIR
+  if { $OPTIONS(verbose) } {stdlog "###TRACE>>> addgenericcmdcode $lang $fout"}
+  stdlog "Generate command generic support for $lang"
+  set fin [open  $SAL_DIR/code/templates/SALDDS.[set lang]-cmd.template r]
+  while { [gets $fin rec] > -1 } {
+    puts $fout $rec
+  }
+  close $fin
+  if { $OPTIONS(verbose) } {stdlog "###TRACE<<< addgenericcmdcode $lang $fout"}
+}
+
+
 proc gencmdaliascode { subsys lang fout } {
 global CMD_ALIASES CMDS DONE_CMDEVT ACKREVCODE REVCODE SAL_WORK_DIR OPTIONS
  if { $OPTIONS(verbose) } {stdlog "###TRACE>>> gencmdaliascode $subsys $lang $fout"}
  source $SAL_WORK_DIR/idl-templates/validated/[set subsys]_revCodes.tcl
- set ACKREVCODE [getRevCode [set subsys]_ackcmd short]
  if { [info exists CMD_ALIASES($subsys)] } {
+  set ACKREVCODE [getRevCode [set subsys]_ackcmd short]
   stdlog "Generate command alias support for $lang"
   if { $lang == "include" } {
      foreach i $CMD_ALIASES($subsys) { 
@@ -28,15 +41,23 @@ global CMD_ALIASES CMDS DONE_CMDEVT ACKREVCODE REVCODE SAL_WORK_DIR OPTIONS
      }
   }
   if { $lang == "cpp" } {
+     addgenericcmdcode $fout $lang
+     set result none
      catch { set result [gencmdaliascpp $subsys $fout] } bad
+     if { $result == "none" } {errorexit "failure in gencmdaliascpp" }
      stdlog "$result"
      if { $DONE_CMDEVT == 0} {
+       set result none
        catch { set result [gencommandtestscpp $subsys] } bad
+       if { $result == "none" } {errorexit "failure in gencommandtestscpp" }
        stdlog "$result"
      }
   }
   if { $lang == "java" }  {
+     set result none
+     gencmdgenericjava $subsys $fout
      catch { set result [gencmdaliasjava $subsys $fout] } bad
+     if { $result == "none" } {errorexit "failure in gencmdaliasjava" }
      stdlog "$result"
      if { $DONE_CMDEVT == 0} {
        catch { set result [gencommandtestsjava $subsys] } bad
@@ -44,7 +65,9 @@ global CMD_ALIASES CMDS DONE_CMDEVT ACKREVCODE REVCODE SAL_WORK_DIR OPTIONS
      }
   }
   if { $lang == "python" } {
+     set result none
      catch { set result [gencmdaliaspython $subsys $fout] } bad
+     if { $result == "none" } {errorexit "failure in gencmdaliaspython" }
      stdlog "$result"
      if { $DONE_CMDEVT == 0} {
        catch { set result [gencommandtestspython $subsys] } bad
@@ -52,6 +75,9 @@ global CMD_ALIASES CMDS DONE_CMDEVT ACKREVCODE REVCODE SAL_WORK_DIR OPTIONS
      }
   }
   if { $lang == "isocpp" } {
+     set result none
+     if { $result == "none" } {errorexit "failure in addgenericcmdcode" }
+     addgenericcmdcode $fout $lang
      catch { set result [gencmdaliasisocpp $subsys $fout] } bad
      stdlog "$result"
   }
@@ -63,7 +89,8 @@ global CMD_ALIASES CMDS DONE_CMDEVT ACKREVCODE REVCODE SAL_WORK_DIR OPTIONS
 proc gencmdaliascpp { subsys fout } {
 global CMD_ALIASES CMDS SAL_WORK_DIR ACKREVCODE OPTIONS
    if { $OPTIONS(verbose) } {stdlog "###TRACE>>> gencmdaliascpp $subsys $fout"}
-   foreach i $CMD_ALIASES($subsys) {
+   if { [info exists CMD_ALIASES($subsys)] } {
+    foreach i $CMD_ALIASES($subsys) {
     if { [info exists CMDS($subsys,$i,param)] } {
       set revcode [getRevCode [set subsys]_command_[set i] short]
       stdlog "	: command alias = $i , revcode = $revcode"
@@ -453,6 +480,7 @@ salReturn SAL_SALData::ackCommand_[set i]C(SALData_ackcmdC *response )
      } else {
 #      stdlog "Alias $i has no parameters - uses standard [set subsys]_command"
      }
+    }
    }
    if { $OPTIONS(verbose) } {stdlog "###TRACE<<< gencmdaliascpp $subsys $fout"}
 }
@@ -461,6 +489,7 @@ salReturn SAL_SALData::ackCommand_[set i]C(SALData_ackcmdC *response )
 
 proc gencmdaliasjava { subsys fout } {
 global CMD_ALIASES CMDS SYSDIC ACKREVCODE
+  if { [info exists CMD_ALIASES($subsys)] } {
    foreach i $CMD_ALIASES($subsys) {
     set revcode [getRevCode [set subsys]_command_[set i] short]
     stdlog "	: alias = $i , revCode = $revcode"
@@ -486,7 +515,7 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
       } else {
         puts $fout "	  SALWriter.register_instance(SALInstance);"
       }
-      copytojavasample $fout $subsys $i
+      copytojavasample $fout $subsys command_[set i]
       puts $fout "
 	  if (debugLevel > 0) \{
 	    System.out.println( \"=== \[issueCommand\] $i writing a command\");
@@ -499,10 +528,11 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
       puts $fout "
 	public int acceptCommand_[set i]( SALData.command_[set i] data )
 	\{
-                command_[set i][set revcode]SeqHolder aCmd = new command_[set i][set revcode]SeqHolder();
+                command_[set i][set revcode]SeqHolder SALInstance = new command_[set i][set revcode]SeqHolder();
                 SALData.ackcmd[set ACKREVCODE] ackdata;
    		SampleInfoSeqHolder info;
    		int status = 0;
+                int j=0;
    		int istatus =  -1;
    		long ackHandle = HANDLE_NIL.value;
                 int actorIdx = SAL__SALData_command_[set i]_ACTOR;
@@ -513,36 +543,33 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
   		DataReader dreader = getReader(actorIdx);
   		command_[set i][set revcode]DataReader SALReader = command_[set i][set revcode]DataReaderHelper.narrow(dreader);
                 info = new SampleInfoSeqHolder();
-  		istatus = SALReader.take(aCmd, info, 1, NOT_READ_SAMPLE_STATE.value, ANY_VIEW_STATE.value, ALIVE_INSTANCE_STATE.value);
-		if (aCmd.value.length > 0) \{
+  		istatus = SALReader.take(SALInstance, info, 1, NOT_READ_SAMPLE_STATE.value, ANY_VIEW_STATE.value, ALIVE_INSTANCE_STATE.value);
+		if (SALInstance.value.length > 0) \{
    		  if (info.value\[0\].valid_data) \{
     		     if (debugLevel > 8) \{
       			System.out.println(  \"=== \[acceptCommand\] $i reading a command containing :\" );
-      			System.out.println(  \"    seqNum   : \" + aCmd.value\[0\].private_seqNum );
+      			System.out.println(  \"    seqNum   : \" + SALInstance.value\[0\].private_seqNum );
     		    \}
-    		    status = aCmd.value\[0\].private_seqNum;
+    		    status = SALInstance.value\[0\].private_seqNum;
     		    double rcvdTime = getCurrentTime();
-		    double dTime = rcvdTime - aCmd.value\[0\].private_sndStamp;
+		    double dTime = rcvdTime - SALInstance.value\[0\].private_sndStamp;
     		    if ( dTime < sal\[actorIdx\].sampleAge ) \{
-                      sal\[actorIdx\].activehost = aCmd.value\[0\].private_host;
-                      sal\[actorIdx\].activeorigin = aCmd.value\[0\].private_origin;
-                      sal\[actorIdx\].activecmdid = aCmd.value\[0\].private_seqNum;
+                      sal\[actorIdx\].activehost = SALInstance.value\[0\].private_host;
+                      sal\[actorIdx\].activeorigin = SALInstance.value\[0\].private_origin;
+                      sal\[actorIdx\].activecmdid = SALInstance.value\[0\].private_seqNum;
                       ackdata = new SALData.ackcmd[set ACKREVCODE]();"
       if { [info exists SYSDIC($subsys,keyedID)] } {
          puts $fout "	              ackdata.SALDataID = subsystemID;"
       }
-      puts $fout "		      ackdata.private_origin = aCmd.value\[0\].private_origin;
-		      ackdata.private_seqNum = aCmd.value\[0\].private_seqNum;
+      puts $fout "		      ackdata.private_origin = SALInstance.value\[0\].private_origin;
+		      ackdata.private_seqNum = SALInstance.value\[0\].private_seqNum;
 		      ackdata.error  = 0;
 		      ackdata.result = \"SAL ACK\";"
-           foreach p $CMDS($subsys,$i,param) {
-              set apar [lindex [split [lindex [string trim $p "\{\}"] end] "()"] 0] 
-              puts $fout "                      data.$apar = aCmd.value\[0\].$apar;"
-           }
+           copyfromjavasample $fout $subsys command_[set i]
            puts $fout "
-		      status = aCmd.value\[0\].private_seqNum;
+		      status = SALInstance.value\[0\].private_seqNum;
 		      rcvSeqNum = status;
-		      rcvOrigin = aCmd.value\[0\].private_origin;
+		      rcvOrigin = SALInstance.value\[0\].private_origin;
 		      ackdata.ack = SAL__CMD_ACK;"
       if { [info exists SYSDIC($subsys,keyedID)] } {
          puts $fout "		      ackdata.SALDataID = subsystemID;
@@ -560,7 +587,7 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
                 \} else \{
   	           status = 0;
                 \}
-                SALReader.return_loan(aCmd, info);
+                SALReader.return_loan(SALInstance, info);
 	        return status;
 	\}
 "
@@ -716,12 +743,24 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
 #      stdlog "Alias $i has no parameters - uses standard [set subsys]_command"
     }
   }
+ }
 }
 
 
 
 proc gencmdaliaspython { subsys fout } {
 global CMD_ALIASES CMDS
+  if { [info exists CMD_ALIASES($subsys)] } {
+   puts $fout "
+        .def( 
+            \"salCommand\"
+            , (::salReturn ( ::SAL_SALData::* )( char * ) )( &::SAL_SALData::salCommand )
+            , ( py::arg(\"topicName\") ) )    
+        .def( 
+            \"salProcessor\"
+            , (::salReturn ( ::SAL_SALData::* )( char * ) )( &::SAL_SALData::salProcessor )
+            , ( py::arg(\"topicName\") ) )    
+"
    foreach i $CMD_ALIASES($subsys) {
     if { [info exists CMDS($subsys,$i,param)] } {
       stdlog "	: alias = $i"
@@ -737,12 +776,14 @@ global CMD_ALIASES CMDS
       stdlog "Alias $i has no parameters - uses standard [set subsys]_command"
     }
    }
+  }
 }
 
 
 
 proc gencmdaliasisocpp { subsys fout } {
 global CMD_ALIASES CMDS
+  if { [info exists CMD_ALIASES($subsys)] } {
    foreach i $CMD_ALIASES($subsys) { 
     if { [info exists CMDS($subsys,$i,param)] } {
       stdlog "	: alias = $i"
@@ -750,9 +791,116 @@ global CMD_ALIASES CMDS
       stdlog "Alias $i has no parameters - uses standard [set subsys]_command"
     }
    }
+  }
 }
 
 
+proc gencmdgenericjava { subsys fout } {
+global SYSDIC
+   puts $fout "
+	public void salCommand(String cmdAlias)
+	\{
+          int actorIdx = getActorIndex(cmdAlias);
+	  String stopic1=\"keyedCommand\";
+	  String stopic2=\"keyedResponse\";
+	  String sresponse=\"SALData_ackcmd\";
+
+	  // create domain participant
+	  createParticipant(domainName);
+
+	  //create Publisher
+	  createPublisher(actorIdx);
+
+	  //create types
+	  salTypeSupport(actorIdx);
+
+	  //create Topics
+	  createTopic(actorIdx,cmdAlias);
+	  boolean autodispose_unregistered_instances = true;
+	  createWriter(actorIdx,autodispose_unregistered_instances);
+	  sal\[actorIdx\].isWriter = true;
+	  sal\[actorIdx\].isCommand = true;
+          sal\[SAL__SALData_ackcmd_ACTOR\].sampleAge = 1.0;
+          sal\[actorIdx\].sndSeqNum = (int)getCurrentTime() + 32768*actorIdx;
+	
+          if ( sal\[SAL__SALData_ackcmd_ACTOR\].isReader == false ) \{
+	    createSubscriber(SAL__SALData_ackcmd_ACTOR);
+	    SALResponseTypeSupport mtr = new SALResponseTypeSupport();
+	    registerType2(SAL__SALData_ackcmd_ACTOR,mtr);
+	    createTopic2(SAL__SALData_ackcmd_ACTOR,sresponse);
+	    //create a reader for responses
+"
+   if { [info exists SYSDIC($subsys,keyedID)] } {
+      puts $fout "
+  	    // Filter expr
+            String expr\[\] = new String\[0\];
+            String sFilter = \"SALDataID = \" + subsystemID;
+    	    createContentFilteredTopic2(SAL__SALData_ackcmd_ACTOR,\"filteredResponse\", sFilter, expr);
+
+	    // create DataReader
+ 	    createReader2(SAL__SALData_ackcmd_ACTOR,false);
+"
+   } else {
+      puts $fout "
+	    createReader2(SAL__SALData_ackcmd_ACTOR,false);
+"
+   }
+   puts $fout "
+ 	    sal\[SAL__SALData_ackcmd_ACTOR\].isReader = true;
+          \}
+
+	\}
+
+	public void salProcessor(String cmdAlias)
+	\{
+          int actorIdx = getActorIndex(cmdAlias);
+	  String stopic1=\"keyedCommand\";
+	  String stopic2=\"keyedResponse\";
+	  String sresponse=\"SALData_ackcmd\";
+
+	  // create domain participant
+	  createParticipant(domainName);
+
+	  createSubscriber(actorIdx);
+
+	  //create types
+	  salTypeSupport(actorIdx);
+
+	  //create Topics
+	  createTopic(actorIdx,cmdAlias);
+
+	  //create a reader for commands
+"
+   if { [info exists SYSDIC($subsys,keyedID)] } {
+      puts $fout "
+  	  // Filter expr
+          String expr\[\] = new String\[0\];
+          String sFilter = \"SALDataID = \" + subsystemID;
+          String fCmd = \"filteredCmd\" + sal\[actorIdx\].topicHandle;
+    	  createContentFilteredTopic(actorIdx,fCmd, sFilter, expr);
+ 	  createReader(actorIdx,false);
+"
+   } else {
+       puts $fout "
+	  createReader(actorIdx,false);
+"
+   }
+   puts $fout "
+          if (sal\[actorIdx\].isProcessor == false) \{
+  	    //create Publisher
+	    createPublisher(SAL__SALData_ackcmd_ACTOR);
+	    SALResponseTypeSupport mtr = new SALResponseTypeSupport();
+	    registerType2(SAL__SALData_ackcmd_ACTOR,mtr);
+	    createTopic2(SAL__SALData_ackcmd_ACTOR,sresponse);
+   	    boolean autodispose_unregistered_instances = true;
+	    createWriter2(SAL__SALData_ackcmd_ACTOR,autodispose_unregistered_instances);
+	    sal\[SAL__SALData_ackcmd_ACTOR\].isWriter = true;
+          \}
+	  sal\[actorIdx\].isProcessor = true;
+          sal\[actorIdx\].sampleAge = 1.0;
+	\}
+"
+}
 
 
 

@@ -56,22 +56,9 @@ auto make_array(T array) -> std::function<py::array(typename array_trait<T>::obj
 }
 
 
-
 PYBIND11_MODULE(SALPY_SALData,m){
- 
 
 // INSERT_SAL_PYTHON_DATATYPES
-    py::class_<SALData_ackcmdC>(m,"SALData_ackcmdC" )    
-        .def(py::init<>())
-        .def_readwrite( "ack", &SALData_ackcmdC::ack )    
-        .def_readwrite( "error", &SALData_ackcmdC::error )    
-        .def_readwrite( "result", &SALData_ackcmdC::result )    
-        .def_readwrite( "host", &SALData_ackcmdC::host )    
-        .def_readwrite( "origin", &SALData_ackcmdC::origin )    
-        .def_readwrite( "cmdtype", &SALData_ackcmdC::cmdtype )    
-        .def_readwrite( "timeout", &SALData_ackcmdC::timeout )    
-        ;
-
     py::class_<SAL_SALData>(m,"SAL_SALData")    
          .def(py::init<int>())   
 
@@ -129,14 +116,6 @@ PYBIND11_MODULE(SALPY_SALData,m){
         .def( 
             "salTelemetrySub"
             , (::salReturn ( ::SAL_SALData::* )( char * ) )( &::SAL_SALData::salTelemetrySub )
-            , ( py::arg("topicName") ) )    
-        .def( 
-            "salCommand"
-            , (::salReturn ( ::SAL_SALData::* )( char * ) )( &::SAL_SALData::salCommand )
-            , ( py::arg("topicName") ) )    
-        .def( 
-            "salProcessor"
-            , (::salReturn ( ::SAL_SALData::* )( char * ) )( &::SAL_SALData::salProcessor )
             , ( py::arg("topicName") ) )    
         .def( 
             "salEventSub"

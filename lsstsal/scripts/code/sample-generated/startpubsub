@@ -1,5 +1,0 @@
-#!/bin/sh
-xterm -e /home/saluser/tcs_kernel_Target/shmem-tcs_kernel_Target/objs/i86Linux2.6gcc3.4.3/tcs_kernel_Target_shmem_publisher &
-xterm -e /home/saluser/tcs_kernel_Target/shmem-tcs_kernel_Target/objs/i86Linux2.6gcc3.4.3/tcs_kernel_Target_subscriber &
-echo "Use /home/saluser/tcs_kernel_Target/shmem-tcs_kernel_Target/test_singleshot.tcl to test"
-

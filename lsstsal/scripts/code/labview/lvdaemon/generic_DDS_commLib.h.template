@@ -1,8 +1,0 @@
-#include <sys/time.h>
-extern int LVcomm_init(void *occArray);
-extern int LVcomm_read(int fd, int *key, int *type, int *subtype, int *length,
-                int *Psec, int *Pusec,
-                int *Ssec, int *Susec, LStrHandle buf);
-extern int LVcomm_write(int fd, int key, int type, int subtype, int length, LStrHandle buf);
-extern void LVcomm_close();
-

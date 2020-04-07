@@ -20,31 +20,45 @@ global EVENT_ALIASES EVTS DONE_CMDEVT
      }
   }
   if { $lang == "cpp" } {
+     set result none
      catch { set result [geneventaliascpp $subsys $fout] } bad
+     if { $result == "none" } {errorexit "failure in geneventaliascpp" }
      stdlog "$result"
      if { $DONE_CMDEVT == 0} {
+       set result none
        catch { set result [geneventtestscpp $subsys] } bad       
+       if { $result == "none" } {errorexit "failure in geneventtestscpp" }
        stdlog "$result"
      }
    }
   if { $lang == "java" }  {
+     set result none
      catch { set result [geneventaliasjava $subsys $fout] } bad
+     if { $result == "none" } {errorexit "failure in geneventaliasjava" }
      stdlog "$result"
      if { $DONE_CMDEVT == 0} {
+       set result none
        catch { set result [geneventtestsjava $subsys] } bad
+       if { $result == "none" } {errorexit "failure in geneventtestsjava" }
        stdlog "$result"
      }
   }
   if { $lang == "python" } {
+     set result none
      catch { set result [geneventaliaspython $subsys $fout] } bad
+     if { $result == "none" } {errorexit "failure in geneventaliaspython" }
      stdlog "$result"
      if { $DONE_CMDEVT == 0} {
+       set result none
        catch { set result [geneventtestspython $subsys] } bad
+       if { $result == "none" } {errorexit "failure in geneventtestspython" }
        stdlog "$result"
      }
   }
   if { $lang == "isocpp" } {
+     set result none
      catch { set result [geneventaliasisocpp $subsys $fout] } bad
+     if { $result == "none" } {errorexit "failure in geneventaliasisocpp" }
      stdlog "$result"
   }
  }
