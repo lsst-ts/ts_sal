@@ -1,9 +1,0 @@
-#!/bin/sh
-# invoke with . ~/setuporte
-#
-ORTEHOME=$(pwd)/orte
-export ORTEHOME
-LD_LIBRARY_PATH=${ORTEHOME}/lib:$(pwd)/lsstsal.1.0/lib
-export LD_LIBRARY_PATH
-PATH=${PATH}:${ORTEHOME}/bin
-export PATH

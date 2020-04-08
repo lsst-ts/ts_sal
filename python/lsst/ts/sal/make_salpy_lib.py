@@ -26,6 +26,9 @@ import os
 import shutil
 import subprocess
 
+import lsst.ts.xml
+from . import utils
+
 
 def get_env_dir(name, err_msg):
     path = os.environ.get(name)
@@ -47,8 +50,8 @@ class MakeSalpyLib:
     """
     def __init__(self, sal_name):
         self.sal_name = sal_name
-        self.sal_dir = get_env_dir("TS_SAL_DIR", "ts_sal not setup")
-        self.xml_dir = get_env_dir("TS_XML_DIR", "ts_xml not setup")
+        self.sal_dir = utils.get_pkg_root()
+        self.xml_dir = lsst.ts.xml.get_pkg_root()
         self.sal_work_dir = get_env_dir("SAL_WORK_DIR", "$SAL_WORK_DIR must be defined")
         self.ld_lib_path_name = "LD_LIBRARY_PATH"
         self.initial_ld_lib_path = os.environ[self.ld_lib_path_name]

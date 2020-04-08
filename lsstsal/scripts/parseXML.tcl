@@ -2,7 +2,8 @@
 
 proc parseXMLtoidl { fname } { 
 global IDLRESERVED SAL_WORK_DIR SAL_DIR CMDS CMD_ALIASES EVTS EVENT_ALIASES
-global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC
+global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIONS
+   if { $OPTIONS(verbose) } {stdlog "###TRACE>>> parseXMLtoidl $fname"}
    set fin [open $fname r]
    set fout ""
    set ctype ""
@@ -11,11 +12,13 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC
    set subsys [lindex [split [file tail $fname] _] 0]
    if { [lindex [split $fname "_."] 1] == "Generics" } {
      if { [info exists SYSDIC([set subsys],hasAllGenerics)] == 0} {
+       if { $OPTIONS(verbose) } {stdlog "###TRACE------ Checking which generics are in use"}
        set checkGenerics 1
        if { [info exists SYSDIC([set subsys],genericsUsed)] } {
          set gflag [split $SYSDIC([set subsys],genericsUsed) ,]
          foreach g $gflag {
-            set genericsUsed([set subsys]_[set g]) 1
+            set chkg [string trim $g]
+            set genericsUsed([set subsys]_[set chkg]) 1
          }
        }
      }
@@ -52,10 +55,15 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC
       if { $tag == "SALTelemetrySet" } {set ctype "telemetry"}
       if { $tag == "SALCommandSet" }   {set ctype "command"}
       if { $tag == "SALEventSet" }     {set ctype "event"}
-      if { $tag == "Alias" }           {
-          set alias $value
-          if { $ctype == "command" } {set CMDS($subsys,$alias) $alias}
-          if { $ctype == "event" }   {set EVTS($subsys,$alias) $alias}
+      if { $tag == "Alias" } {
+          if { $alias != $value } {
+             puts stdout "****************************************************************"
+             puts stdout "****************************************************************"
+             puts stdout "ERROR - Alias does not match EFDB_Topic declaration for $value"
+             puts stdout "****************************************************************"
+             puts stdout "****************************************************************"
+             exit -1
+          }
       }
       if { $tag == "Device" }          {set device $value}
       if { $tag == "Property" }        {set property $value}
@@ -75,15 +83,6 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC
       }
       if { $tag == "/SALEvent" } {
          set intopic 0
-         set shouldbe [join [lrange [split $tname _] 2 end] "_"]
-         if { $alias != $shouldbe } {
-             puts stdout "****************************************************************"
-             puts stdout "****************************************************************"
-             puts stdout "ERROR - Alias does not match EFDB_Topic declaration for $alias"
-             puts stdout "****************************************************************"
-             puts stdout "****************************************************************"
-             exit
-         }
          set EVTS($subsys,$alias) $alias
          set EVENT_ALIASES($subsys) [lappend EVENT_ALIASES($subsys) $alias]
          if { [info exists EVTS($subsys,$alias,plist)] } {
@@ -106,15 +105,6 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC
       }
       if { $tag == "/SALCommand" } {
          set intopic 0
-         set shouldbe [join [lrange [split $tname _] 2 end] "_"]
-         if { $alias != $shouldbe } {
-             puts stdout "****************************************************************"
-             puts stdout "****************************************************************"
-             puts stdout "ERROR - Alias does not match EFDB_Topic declaration for $alias"
-             puts stdout "****************************************************************"
-             puts stdout "****************************************************************"
-             exit
-         }
          set CMDS($subsys,$alias) "$device $property $action $vvalue"
          set CMD_ALIASES($subsys) [lappend CMD_ALIASES($subsys) $alias]
          if { $itemid == 6 } {
@@ -134,6 +124,7 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC
       if { $tag == "EFDB_Topic" } {
         if { $checkGenerics == 1 } {
            if { [info exists genericsUsed($value)] == 0 } {
+              if { $OPTIONS(verbose) } {stdlog "TRACE------ Skipping generic $value"}
               set skipping 1
               while { $skipping } {
                  set res [gets $fin rec]
@@ -151,7 +142,7 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC
            close $fout
         }
         set itemid 0
-        if { [info exists topics($value)] } { 
+        if { [info exists topics([string tolower $value])] } { 
            puts stdout "****************************************************************"
            puts stdout "****************************************************************"
            puts stdout "ERROR - duplicate EFDB_Topic = $value"
@@ -159,22 +150,33 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC
            puts stdout "****************************************************************"
            exit
         }
-        set topics($value) 1
+        set topics([string tolower $value]) 1
         set tname $value
         puts stdout "Translating $tname"
         set fout [open $SAL_WORK_DIR/idl-templates/[set tname].idl w]
         puts $fout "struct $tname \{"
         add_private_idl $fout
         puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",1,\"private_revCode\",\"char\",32,\"unitless\",1,\"\",\"\",\"Revision code of topic\");"
-        puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",2,\"private_sndStamp\",\"double\",1,\"secs\",1,\"\",\"\",\"TAI at sender\");"
-        puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",3,\"private_rcvStamp\",\"double\",1,\"secs\",1,\"\",\"\",\"TAI at receiver\");"
+        puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",2,\"private_sndStamp\",\"double\",1,\"second\",1,\"\",\"\",\"TAI at sender\");"
+        puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",3,\"private_rcvStamp\",\"double\",1,\"second\",1,\"\",\"\",\"TAI at receiver\");"
         puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",4,\"private_seqNum\",\"int\",1,\"unitless\",1,\"\",\"\",\"Sequence number\");"
         puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",5,\"private_origin\",\"int\",1,\"unitless\",1,\"\",\"\",\"PID code of sender\");"
         puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",6,\"private_host\",\"int\",1,\"unitless\",1,\"\",\"\",\"IP of sender\");"
         set itemid 6
-        if { $ctype == "telemetry" } {
-	   set alias [join [lrange [split $tname "_"] 1 end] "_"]
+        if { [info exists SYSDIC($subsys,keyedID)] } {
+           puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",7,\"[set subsys]ID\",\"int\",1,\"unitless\",1,\"\",\"\",\"Index of $subsys instance\");"
+           set itemid 7
         }
+        set alias [getAlias $tname]
+        if { $ctype == "command" } {
+           set CMDS($subsys,$alias) $alias
+           set CMDS($subsys,$alias,plist) ""
+           set CMDS($subsys,$alias,param) ""
+        }
+        if { $ctype == "event" } {
+           set EVTS($subsys,$alias) $alias
+        }
+        set DESC($subsys,$alias,help) ""
       }
       if { $tag == "EFDB_Name"} {
         set item $value ; set unit ""
@@ -190,8 +192,9 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC
            exit 1
         }
       }
-      if { $tag == "/SALEvent" || $tag == "/SALCommand" } {
+      if { $tag == "/SALEvent" || $tag == "/SALCommand" || $tag == "/SALTelemetry" } {
          enumsToIDL $subsys $alias $fout
+         puts $fsql "###Description $tname : $DESC($subsys,$alias,help)"
       }
       if { $tag == "IDL_Type"} {
          set type $value
@@ -199,7 +202,10 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC
          if { $type == "unsigned long long" } {set type "unsigned longlong"}
       }
       if { $tag == "IDL_Size"}        {set sdim $value}
-      if { $tag == "Description"}     {set desc [join [split $value ","] ";"]}
+      if { $tag == "Description"}     {
+         set desc [join [split $value ","] ";"]
+         if { $itemid == 6 } { set DESC($subsys,$alias,help) "$desc"}
+      }
       if { $tag == "Frequency"}       {set freq $value}
       if { $tag == "Range"}           {set range $value}
       if { $tag == "Sensor_location"} {set location $value}
@@ -238,7 +244,7 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC
          if { $desc != "" } {
             set DESC($subsys,$alias,$item) $desc
          } else {
-            set DESC($subsys,$alias,$item) "No description"
+            set DESC($subsys,$alias,$item) ""
          }
          if { $unit != "" } {set UNITS($subsys,$alias,$item) $unit}
          puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",$itemid,\"$item\",\"$type\",$idim,\"$unit\",$freq,\"$range\",\"$location\",\"$desc\");"
@@ -296,7 +302,9 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC
     genhtmltelemetrytable $subsys
    }
    close $fsql
+   if { $OPTIONS(verbose) } {stdlog "###TRACE<<< parseXMLtoidl $fname"}
 }
+
 
 proc enumsToIDL { subsys alias fout } {
 global EVENT_ENUM EDONE

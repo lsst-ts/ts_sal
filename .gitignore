@@ -45,4 +45,3 @@ lib/*.so
 python/*.so
 .out
 *.log
-bin/*.py

@@ -13,30 +13,35 @@ source $env(SAL_DIR)/gentelemetrytestssinglefile.tcl
 source $env(SAL_DIR)/gentelemetrytestssinglefilejava.tcl
 
 proc insertcfragments { fout base name } {
-global SAL_WORK_DIR
-   if { $name == "command" || $name == "ackcmd" || $name == "logevent" } {return}
+global SAL_WORK_DIR OPTIONS
+   if { $OPTIONS(verbose) } {stdlog "###TRACE>>> insertcfragments $fout $base $name"}
+   if { $name == "command" || $name == "ackcmd" || $name == "logevent" || $name == "notused" } {return}
    set revcode [getRevCode [set base]_[set name] short]
-   puts stdout "Processing command $name , revcode = $revcode"
+   puts stdout "Processing topic $name , revcode = $revcode"
    puts $fout "
 salReturn SAL_[set base]::putSample_[set name]([set base]_[set name]C *data)
 \{
-#ifdef SAL_BUILD_FOR_PYTHON
-  Py_BEGIN_ALLOW_THREADS
-#endif
   int actorIdx = SAL__[set base]_[set name]_ACTOR;
   if ( data == NULL ) \{
      throw std::runtime_error(\"NULL pointer for putSample_[set name]\");
   \}
-  if ( sal\[actorIdx\].isWriter == false ) \{
-    createWriter(actorIdx,false);
-    sal\[actorIdx\].isWriter = true;
-  \}
   DataWriter_var dwriter = getWriter(actorIdx);
+  if ( dwriter == NULL ) \{
+     throw std::runtime_error(\"No DataWriter for putSample_[set name]\");
+  \}"
+  set frag [open $SAL_WORK_DIR/include/SAL_[set base]_[set name]Cchk.tmp r]
+  while { [gets $frag rec] > -1} {puts $fout $rec}
+  close $frag
+  puts $fout "
+#ifdef SAL_BUILD_FOR_PYTHON
+  Py_BEGIN_ALLOW_THREADS
+#endif
   [set base]::[set name][set revcode]DataWriter_var SALWriter = [set base]::[set name][set revcode]DataWriter::_narrow(dwriter.in());
   [set base]::[set name][set revcode] Instance;
 
   Instance.private_revCode = DDS::string_dup(\"[string trim $revcode _]\");
   Instance.private_sndStamp = getCurrentTime();
+  sal\[actorIdx\].sndStamp = Instance.private_sndStamp;
   Instance.private_origin = getpid();
   Instance.private_host = ddsIPaddress;
   Instance.private_seqNum = sndSeqNum;
@@ -75,18 +80,17 @@ salReturn SAL_[set base]::getSample_[set name]([set base]_[set name]C *data)
   salReturn istatus = -1;
   unsigned int numsamp = 0;
 
-#ifdef SAL_BUILD_FOR_PYTHON
-  Py_BEGIN_ALLOW_THREADS
-#endif
   if ( data == NULL ) \{
      throw std::runtime_error(\"NULL pointer for getSample_[set name]\");
   \}
   int actorIdx = SAL__[set base]_[set name]_ACTOR;
-  if ( sal\[actorIdx\].isReader == false ) \{
-    createReader(actorIdx,false);
-    sal\[actorIdx\].isReader = true;
-  \}
   DataReader_var dreader = getReader(actorIdx);
+  if ( dreader == NULL ) \{
+     throw std::runtime_error(\"No DataReader for getSample_[set name]\");
+  \}
+#ifdef SAL_BUILD_FOR_PYTHON
+  Py_BEGIN_ALLOW_THREADS
+#endif
   [set base]::[set name][set revcode]DataReader_var SALReader = [set base]::[set name][set revcode]DataReader::_narrow(dreader.in());
   checkHandle(SALReader.in(), \"[set base]::[set name][set revcode]DataReader::_narrow\");
   status = SALReader->take(Instances, info, sal\[SAL__[set base]_[set name]_ACTOR\].maxSamples , NOT_READ_SAMPLE_STATE, ANY_VIEW_STATE, ANY_INSTANCE_STATE);
@@ -95,6 +99,8 @@ salReturn SAL_[set base]::getSample_[set name]([set base]_[set name]C *data)
   for (DDS::ULong j = 0; j < numsamp; j++)
   \{
     rcvdTime = getCurrentTime();
+    sal\[actorIdx\].rcvStamp = rcvdTime;
+    sal\[actorIdx\].sndStamp = Instances\[j\].private_sndStamp;
     if (debugLevel > 8) \{
       cout << \"=== \[GetSample\] message received :\" << numsamp << endl;
       cout << \"    revCode  : \" << Instances\[j\].private_revCode << endl;
@@ -166,6 +172,7 @@ salReturn SAL_[set base]::flushSamples_[set name]([set base]_[set name]C *data)
     return SAL__OK;
 \}
 "
+  if { $OPTIONS(verbose) } {stdlog "###TRACE<<< insertcfragments $fout $base $name"}
 }
 
 proc testifdef { } {
@@ -203,6 +210,40 @@ global SYSDIC
       }
    }
 }
+
+proc addSWVersionsCPP { fout } {
+global SALVERSION env
+   set xmldist [string trim [exec cat $env(SAL_WORK_DIR)/VERSION]]
+  puts $fout "
+string SAL_SALData::getSALVersion()
+\{
+    return \"$SALVERSION\";
+\}
+
+string SAL_SALData::getXMLVersion()
+\{
+    return \"$xmldist\";
+\}
+"
+}
+
+proc addSWVersionsJava { fout } {
+global SALVERSION env
+   set xmldist [string trim [exec cat $env(SAL_WORK_DIR)/VERSION]]
+  puts $fout "
+public String getSALVersion()
+\{
+    return \"$SALVERSION\";
+\}
+
+public String getXMLVersion()
+\{
+    return \"$xmldist\";
+\}
+"
+}
+
+
 
 proc addActorIndexesCPP { idlfile base fout } {
 global SAL_WORK_DIR
@@ -291,8 +332,9 @@ proc addActorIndexesJava { idlfile base fout } {
 
 proc copyfromjavasample { fout base name } {
 global CMDS TLMS EVTS
-               set alias [string range $name 9 end]
-        if { [info exists TLMS($base,$name,param)] } {
+        set ctype [string range $name 0 7]
+        if { $ctype != "logevent" && $ctype != "command_" } {
+         if { [info exists TLMS($base,$name,param)] } {
           foreach p $TLMS($base,$name,param) {
                     set tpar [lindex [string trim $p "\{\}"]]
                     if { [lindex $tpar 0] == "unsigned" } {
@@ -307,8 +349,11 @@ global CMDS TLMS EVTS
               puts $fout "           data.$apar = SALInstance.value\[j\].$apar;"
             }
           }
+         }
         }
-        if { [info exists EVTS($base,$alias,param)] } {
+        set alias [string range $name 9 end]
+        if { $ctype == "logevent" } {
+         if { [info exists EVTS($base,$alias,param)] } {
           foreach p $EVTS($base,$alias,param) {
                     set tpar [lindex [string trim $p "\{\}"]]
                     if { [lindex $tpar 0] == "unsigned" } {
@@ -323,9 +368,12 @@ global CMDS TLMS EVTS
               puts $fout "           data.$apar = SALInstance.value\[j\].$apar;"
             }
           }
+         }
         }
-        if { [info exists CMDS($base,$name,param)] } {
-          foreach p $CMDS($base,$name,param) {
+        set alias [string range $name 8 end]
+        if { $ctype == "command_" } {
+         if { [info exists CMDS($base,$alias,param)] } {
+          foreach p $CMDS($base,$alias,param) {
                     set tpar [lindex [string trim $p "\{\}"]]
                     if { [lindex $tpar 0] == "unsigned" } {
                 set apar [lindex [split [lindex $tpar 2] "()"] 0]
@@ -339,13 +387,15 @@ global CMDS TLMS EVTS
               puts $fout "           data.$apar = SALInstance.value\[j\].$apar;"
             }
           }
+         }
         }
 }
 
 proc copytojavasample { fout base name } {
 global CMDS TLMS EVTS
-               set alias [string range $name 9 end]
-        if { [info exists TLMS($base,$name,param)] } {
+        set ctype [string range $name 0 7]
+        if { $ctype != "logevent" && $ctype != "command_" } {
+         if { [info exists TLMS($base,$name,param)] } {
           foreach p $TLMS($base,$name,param) {
                     set tpar [lindex [string trim $p "\{\}"]]
                     if { [lindex $tpar 0] == "unsigned" } {
@@ -357,11 +407,14 @@ global CMDS TLMS EVTS
             if { $arr != "" } {
               puts $fout "           System.arraycopy(data.$apar,0,SALInstance.$apar,0,$arr);"
             } else {
-              puts $fout "           SALInstance.$apar = data.$apar ;"
+              puts $fout "           SALInstance.$apar = data.$apar;"
             }
           }
+         }
         }
-        if { [info exists EVTS($base,$alias,param)] } {
+        set alias [string range $name 9 end]
+        if { $ctype == "logevent" } {
+         if { [info exists EVTS($base,$alias,param)] } {
           foreach p $EVTS($base,$alias,param) {
                     set tpar [lindex [string trim $p "\{\}"]]
                     if { [lindex $tpar 0] == "unsigned" } {
@@ -376,9 +429,12 @@ global CMDS TLMS EVTS
               puts $fout "           SALInstance.$apar = data.$apar;"
             }
           }
+         }
         }
-        if { [info exists CMDS($base,$name,param)] } {
-          foreach p $CMDS($base,$name,param) {
+        set alias [string range $name 8 end]
+        if { $ctype == "command_" } {
+         if { [info exists CMDS($base,$alias,param)] } {
+          foreach p $CMDS($base,$alias,param) {
                     set tpar [lindex [string trim $p "\{\}"]]
                     if { [lindex $tpar 0] == "unsigned" } {
                 set apar [lindex [split [lindex $tpar 2] "()"] 0]
@@ -392,12 +448,14 @@ global CMDS TLMS EVTS
               puts $fout "          SALInstance.$apar = data.$apar;"
             }
           }
+         }
         }
 }
 
 
 proc addSALDDStypes { idlfile id lang base } {
-global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS
+global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS
+ if { $OPTIONS(verbose) } {stdlog "###TRACE>>>  addSALDDStypes $idlfile $id $lang $base "}
  set atypes $idlfile
  if { $lang == "java" } {
   exec cp $SAL_DIR/code/templates/salActor.java [set id]/java/src/org/lsst/sal/.
@@ -416,6 +474,7 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS
      }
      if { [string range $rec 0 21] == "// INSERT TYPE SUPPORT" } {
         addActorIndexesJava $idlfile $base $fout
+        addSWVersionsJava $fout
         puts $fout "        public int salTypeSupport(String topicName) \{
     String\[\] parts = topicName.split(\"_\");"
         foreach i $atypes {
@@ -542,7 +601,7 @@ puts $fout "
             int j=numsamp-1;
             if (infoSeq.value\[j\].valid_data) \{
         double rcvdTime = getCurrentTime();
-    double dTime = rcvdTime - SALInstance.value\[j\].private_sndStamp;
+        double dTime = rcvdTime - SALInstance.value\[j\].private_sndStamp;
         if ( dTime < sal\[actorIdx\].sampleAge ) \{
                    data.private_sndStamp = SALInstance.value\[j\].private_sndStamp;"
                 copyfromjavasample $fout $base $name
@@ -621,12 +680,14 @@ puts $fout "
   while { [gets $fin rec] > -1 } {
      if { [string range $rec 0 21] == "// INSERT TYPE SUPPORT" } {
         addActorIndexesCPP $idlfile $base $fout
+        addSWVersionsCPP $fout
         puts $fout " salReturn SAL_[set base]::salTypeSupport(char *topicName)
 \{"
         foreach i $atypes {
            puts $fout "    if (strncmp(\"$base\",topicName,[string length $base]) == 0) \{"
            set ptypes [split [exec grep pragma $i] \n]
            foreach j $ptypes {
+               if { $OPTIONS(verbose) } {stdlog "###TRACE--- Processing topic $j"}
                set name [lindex $j 2]
                set revcode [getRevCode [set base]_[set name] short]
                  puts $fout "
@@ -661,12 +722,16 @@ puts $fout "
         foreach i $atypes {
            set ptypes [split [exec grep pragma $i] \n]
            foreach j $ptypes {
+              if { $OPTIONS(verbose) } {stdlog "###TRACE------ Processing topic $j"}
               set name [lindex $j 2]
               set revcode [getRevCode [set base]_[set name] short]
 puts $fout "
 salReturn SAL_[set base]::putSample([set base]::[set name][set revcode] data)
 \{
   DataWriter_var dwriter = getWriter();
+  if ( dwriter == NULL ) \{
+     throw std::runtime_error(\"No DataWriter for putSample_[set name]\");
+  \}
   [set base]::[set name][set revcode]DataWriter_var SALWriter = [set base]::[set name][set revcode]DataWriter::_narrow(dwriter.in());
   data.private_revCode = DDS::string_dup(\"[string trim $revcode _]\");
   if (debugLevel > 0) \{
@@ -691,6 +756,9 @@ salReturn SAL_[set base]::getSample([set base]::[set name][set revcode]Seq data)
   ReturnCode_t status =  - 1;
   unsigned int numsamp = 0;
   DataReader_var dreader = getReader();
+  if ( dreader == NULL ) \{
+     throw std::runtime_error(\"No DataReader for getSample_[set name]\");
+  \}
   [set base]::[set name][set revcode]DataReader_var SALReader = [set base]::[set name][set revcode]DataReader::_narrow(dreader.in());
   checkHandle(SALReader.in(), \"[set base]::[set name][set revcode]DataReader::_narrow\");
   status = SALReader->take(data, infoSeq, LENGTH_UNLIMITED, NOT_READ_SAMPLE_STATE, ANY_VIEW_STATE, ANY_INSTANCE_STATE);
@@ -743,10 +811,12 @@ salReturn SAL_[set base]::getSample([set base]::[set name][set revcode]Seq data)
   close $finh
   close $fouth
  }
+ if { $OPTIONS(verbose) } {stdlog "###TRACE<<<  addSALDDStypes $idlfile $id $lang $base "}
 }
 
 proc modpubsubexamples { id } {
-global SAL_DIR SAL_WORK_DIR
+global SAL_DIR SAL_WORK_DIR OPTIONS
+  if { $OPTIONS(verbose) } {stdlog "###TRACE>>> modpubsubexamples $id"}
   set fin [open $SAL_DIR/code/templates/SALDataPublisher.cpp.template r]
   set fout [open $SAL_WORK_DIR/[set id]/cpp/src/[set id]DataPublisher.cpp w]
   while { [gets $fin rec] > -1 } {
@@ -771,4 +841,6 @@ global SAL_DIR SAL_WORK_DIR
   }
   close $fin
   close $fout
+  if { $OPTIONS(verbose) } {stdlog "###TRACE<<< modpubsubexamples $id"}
 }
+

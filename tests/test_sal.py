@@ -74,34 +74,71 @@ class BaseSalTestCase(unittest.TestCase):
 
 
 class BasicTestCase(BaseSalTestCase):
-    @unittest.skipIf(Time is None, "Could not import astropy")
     def test_get_current_time(self):
-        """Test that the value returned by getCurrentTime is reasonable.
-
-        The time will either be TAI, if SAL can see a time server,
-        or UTC if not.
+        """Test that getCurrentTime() - UTC matches the value reported
+        by getLeapSeconds().
 
         This tests DM-18637.
-        This test will have to be updated when TAI-UTC changes.
+
+        See also test_get_leap_seconds.
         """
-        def curr_tai():
-            """Get the current time as TAI in unix seconds.
+        # Run the test twice in the unlikely event that the first run
+        # occurs at a leap second transition.
+        for i in range(2):
+            leap_seconds = self.remote.getLeapSeconds()
+            self.assertIsInstance(leap_seconds, int)
+            measured_leap_seconds = self.remote.getCurrentTime() - time.time()
+            if abs(leap_seconds - measured_leap_seconds) - 1 < 0.1:
+                # We are probably at a leap second transition;
+                # sleep and try again.
+                time.sleep(2)
+                continue
+            break
+        self.assertAlmostEqual(leap_seconds, measured_leap_seconds, places=3)
 
-            This is the same format used by the ATPtg CSC.
+    @unittest.skipIf(Time is None, "Could not import astropy")
+    def test_get_leap_seconds(self):
+        """Test the value returned by getLeapSeconds.
+
+        The value will either be TAI-UTC, if SAL can see a time server,
+        or 0 if not.
+        """
+        def get_astropy_tai_minus_utc():
+            """Get TAI-UTC at the current time, in seconds, using astropy.
             """
-            # unfortunately I can't just output curr_time.tai.unix
-            # because that has the same value as curr_time.utc.unix
+            # Unfortunately I can't just output
+            # curr_time.tai.unix - curr_time.utc.unix
+            # because they are identical.
             curr_time = Time.now()
-            tai_minus_utc = (curr_time.tai.mjd - curr_time.utc.mjd)*24*60*60
-            return curr_time.utc.unix + tai_minus_utc
+            return (curr_time.tai.mjd - curr_time.utc.mjd)*24*60*60
 
-        sal_time = self.remote.getCurrentTime()
-        tai = curr_tai()
-        utc = time.time()
-        min_err = min(abs(sal_time - t) for t in (tai, utc))
-        self.assertLess(min_err, 0.1,
-                        msg=f"sal_time={sal_time:0.2f} is neither tai={tai:0.2f} nor utc={utc:0.2f}; "
-                        f"min_err={min_err:0.2f}")
+        # Run the test twice in the unlikely event that the first run
+        # occurs at a leap second transition.
+        for i in range(2):
+            leap_seconds = self.remote.getLeapSeconds()
+            self.assertIsInstance(leap_seconds, int)
+            if leap_seconds == 0:
+                print("Warning: leap second table not setup.")
+                return
+            astropy_leap_seconds = get_astropy_tai_minus_utc()
+            if abs(leap_seconds - astropy_leap_seconds) - 1 < 0.1:
+                # We are probably at a leap second transition;
+                # sleep and try again.
+                time.sleep(2)
+                continue
+            break
+        self.assertAlmostEqual(leap_seconds, astropy_leap_seconds, places=3)
+
+    def test_get_versions(self):
+        """Test getSALVersion and getXMLVersion.
+
+        We don't know what versions to expect, so this test simply
+        checks that the functions run and return strings.
+        """
+        sal_version = self.remote.getSALVersion()
+        self.assertIsInstance(sal_version, str)
+        xml_version = self.remote.getXMLVersion()
+        self.assertIsInstance(xml_version, str)
 
     def test_evt_get_oldest(self):
         """Write several logevent messages and make sure gettting the
@@ -391,16 +428,31 @@ class BasicTestCase(BaseSalTestCase):
         self.assertEqual(retcode, SALPY_Test.SAL__OK)
         self.test_data.assert_arrays_equal(data, data_list[-1])
 
+    def test_enumerations(self):
+        """Test enumerations."""
+        # Shared enum with default values
+        self.assertEqual(SALPY_Test.Test_shared_Enum_One, 1)
+        self.assertEqual(SALPY_Test.Test_shared_Enum_Two, 2)
+        self.assertEqual(SALPY_Test.Test_shared_Enum_Three, 3)
+        # Shared enum with specified values
+        self.assertEqual(SALPY_Test.Test_shared_ValueEnum_Zero, 0)
+        self.assertEqual(SALPY_Test.Test_shared_ValueEnum_Two, 2)
+        self.assertEqual(SALPY_Test.Test_shared_ValueEnum_Four, 4)
+        self.assertEqual(SALPY_Test.Test_shared_ValueEnum_Five, 5)
+        # Topic-specific enum with default values
+        self.assertEqual(SALPY_Test.scalars_Int0Enum_One, 1)
+        self.assertEqual(SALPY_Test.scalars_Int0Enum_Two, 2)
+        self.assertEqual(SALPY_Test.scalars_Int0Enum_Three, 3)
+        # Topic-specific enum with specified values
+        self.assertEqual(SALPY_Test.arrays_Int0ValueEnum_Zero, 0)
+        self.assertEqual(SALPY_Test.arrays_Int0ValueEnum_Two, 2)
+        self.assertEqual(SALPY_Test.arrays_Int0ValueEnum_Four, 4)
+        self.assertEqual(SALPY_Test.arrays_Int0ValueEnum_Five, 5)
+
 
 class ScriptTestCase(unittest.TestCase):
-    """A few tests require a non-CSC component or a SAL component
-    with enumerations. Script fits both criteria.
+    """A few tests require CSC that doesn't use generics, so we use Script.
     """
-    def test_enumerations_present(self):
-        """Test that enumeration values are present as constants."""
-        self.assertTrue(hasattr(SALPY_Script, "Script_shared_ScriptState_Done"))
-        self.assertTrue(hasattr(SALPY_Script, "Script_shared_MetadataCoordSys_ICRS"))
-
     def test_generics_no(self):
         """Test that setting generics to `no` avoids generics."""
         self.assertFalse(hasattr(SALPY_Script, "Test_command_enterControlC"))
@@ -441,8 +493,6 @@ class ErrorHandlingTestCase(BaseSalTestCase):
         with self.assertRaises(RuntimeError):
             self.remote.salTelemetrySub(bad_tel_name)
 
-    # TODO DM-19195: enable this test
-    @unittest.skip("this does not raise and may corrupt memory")
     def test_cmd_no_registration(self):
         """Test getting and putting topics without registering them first.
         """
@@ -450,8 +500,6 @@ class ErrorHandlingTestCase(BaseSalTestCase):
 
         self.check_cmd_get_put_raises(data=data, exception=RuntimeError)
 
-    # TODO DM-19195: enable this test
-    @unittest.skip("this segfaults instead of raising")
     def test_evt_no_registration(self):
         """Test getting and putting topics without registering them first.
         """
@@ -459,8 +507,6 @@ class ErrorHandlingTestCase(BaseSalTestCase):
 
         self.check_evt_get_put_raises(data=data, exception=RuntimeError)
 
-    # TODO DM-19195: enable this test
-    @unittest.skip("this segfaults instead of raising")
     def test_tel_no_registration(self):
         """Test getting and putting topics without registering them first.
         """
@@ -476,9 +522,9 @@ class ErrorHandlingTestCase(BaseSalTestCase):
         and indeed None segfaults! DM-18209
         """
         topic_name = "Test_command_setScalars"
-        self.controller.salCommand(topic_name)
+        self.controller.salProcessor(topic_name)
         time.sleep(STD_SLEEP)
-        self.remote.salProcessor(topic_name)
+        self.remote.salCommand(topic_name)
         time.sleep(STD_SLEEP)
 
         # make sure this worked
@@ -490,8 +536,7 @@ class ErrorHandlingTestCase(BaseSalTestCase):
         bad_data = SALPY_Test.Test_command_setArraysC()
         self.check_cmd_get_put_raises(data=bad_data, exception=TypeError)
 
-        # Unfortunately this does not raise
-        # self.check_cmd_get_put_raises(data=None, exception=TypeError)
+        self.check_cmd_get_put_raises(data=None, exception=RuntimeError)
 
     def test_evt_bad_data_types(self):
         """Test getting and putting invalid logevent data types.
@@ -513,8 +558,7 @@ class ErrorHandlingTestCase(BaseSalTestCase):
         bad_data = SALPY_Test.Test_logevent_arraysC()
         self.check_evt_get_put_raises(data=bad_data, exception=TypeError)
 
-        # TODO DM-18209: uncomment the following:
-        # self.check_evt_get_put_raises(data=None, exception=TypeError)
+        self.check_evt_get_put_raises(data=None, exception=RuntimeError)
 
     def test_tel_bad_data_types(self):
         """Test getting and putting invalid telemetry data types.
@@ -538,8 +582,7 @@ class ErrorHandlingTestCase(BaseSalTestCase):
         bad_data = SALPY_Test.Test_arraysC()
         self.check_tel_get_put_raises(data=bad_data, exception=TypeError)
 
-        # TODO DM-18209: uncomment the following:
-        # self.check_tel_get_put_raises(data=None, exception=TypeError)
+        self.check_tel_get_put_raises(data=None, exception=RuntimeError)
 
     def test_evt_overflow_buffer(self):
         """Write enough message to overflow the read buffer and check that
@@ -601,7 +644,6 @@ class ErrorHandlingTestCase(BaseSalTestCase):
             self.get_topic(self.remote.getNextSample_scalars, data)
             self.assertEqual(data.int0, start_value + i)
 
-    @unittest.expectedFailure
     def test_too_long_strings(self):
         """Check that sending too long a string causes an error.
 
@@ -619,20 +661,13 @@ class ErrorHandlingTestCase(BaseSalTestCase):
         time.sleep(STD_SLEEP)
 
         # from the XML file; unfortunately there is no way to ask SALPY
-        str_len = 20
         too_long_data = "0123456789"*10
         self.assertEqual(len(too_long_data), 100)
         data = SALPY_Test.Test_scalarsC()
         # string0 has a limit of 20 characters
         data.string0 = too_long_data
-        retcode = self.controller.putSample_scalars(data)
-        time.sleep(STD_SLEEP)
-        self.assertEqual(retcode, SALPY_Test.SAL__OK)
-
-        data = SALPY_Test.Test_scalarsC()
-        retcode = self.get_topic(self.remote.getNextSample_scalars, data)
-        # this fails because the data is not truncated!
-        self.assertEqual(data.string0, too_long_data[0:str_len])
+        with self.assertRaises(ValueError):
+            self.controller.putSample_scalars(data)
 
     def test_wrong_length_arrays(self):
         """Check that setting sending too long an array causes an error.
@@ -690,8 +725,11 @@ class ErrorHandlingTestCase(BaseSalTestCase):
             self.controller.logEvent_scalars(data, 1)
 
     def check_tel_get_put_raises(self, data, exception):
-        """Test getting and putting telemetry topics where a raise is expected,
-        e.g. due to invalid data or not registering the topic first.
+        """Test getting and putting the telemetry scalars topic
+        where a raise is expected.
+
+        Reasons this may raise include: incorrect data type,
+        invalid data and not registering the topic first.
 
         Parameters
         ----------
@@ -708,7 +746,7 @@ class ErrorHandlingTestCase(BaseSalTestCase):
             self.remote.flushSamples_scalars(data)
 
         with self.assertRaises(exception):
-            self.controller.putSample_scalars(data, 1)
+            self.controller.putSample_scalars(data)
 
 
 class TestTestData(unittest.TestCase):

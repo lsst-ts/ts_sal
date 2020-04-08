@@ -1,0 +1,17 @@
+language: python
+dist: xenial
+matrix:
+  include:
+    - python: '3.7'
+install:
+  - pip install -r doc/requirements.txt
+  - pip install "ltd-conveyor==0.5.0a1"
+script:
+  - package-docs build
+after_success:
+  - ltd upload --travis --dir doc/_build/html --product ts-sal
+env:
+  global:
+    - LTD_USERNAME=tstravis
+    # LTD_PASSWORD
+    - secure: "EfS7JvsdMv+WOtX8s4koqn4ARuEnMIGGvRQgEeAjdBkPeh4ZGwqjQF/Ng0GJjcxDIFycUm0bCbvQOWdmES5/GXsYUmPl76RmyFEbPODStLY0tULb5zokzKNdf7HpmwxFPcfQEsNkE/qG/XFBWBfJAyZxHDoRUkGY0OiRqxOABWRl0oXCi1DuvG3Kge5M6nJh4Tj05ub0rWYwkq6ly4OoPNhcR4nP2c0Vo80vZUp16pCIi0VCdh78ZF3bVBfeaoZ0VKRWu/CUOrcUhAwQ876dRyJGIbpKj9jRKCO/j8L+9sbVu3qcqY6AY6/ikZkwEX4/tu93AhGalGqDSYAqQ0hG+pji25/w29mjiOtF0Cj85O0cWJD86eanmSqQ/OpCreBpCQZy1SYLDFudirmZmek7sTCbusiMDdhSgHIyvAuyARVnQbUFnJt5LlUB76S0Nio0gMnP/+f33Zs/4VnupdebFZDRd+aTCTydwuSZB52vrXTeY2LQWdv5J8DsyZORnR9Q5UdHs7b2skHWukwD7VV2+ld7oDz6b1jn5djoK9zRET5Fe6v2L/H3tlhxVfrmb+CaRliSbGUTN5Zwp3w2OI4+YTV9DzQCoVAHPerg+nuSVlCXPFeT3UgoNXeNqq63+T0F3iftZu/b7dcw8lIw6Z9/Enm8SGfmcaeJcCd1/vUpJek="

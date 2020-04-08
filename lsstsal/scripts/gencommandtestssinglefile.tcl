@@ -160,7 +160,11 @@ proc insertControllers { subsys file_writer } {
 }
 
 proc insertMakeFile { subsys file_writer } {
-    
+global SYSDIC
+    set keyed ""
+    if { [info exists SYSDIC($subsys,KEYID)] } {
+       set keyed "-DSAL_SUBSYSTEM_ID_IS_KEYED
+    }
     puts $file_writer "#----------------------------------------------------------------------------"
     puts $file_writer "#       Macros"
     puts $file_writer "#----------------------------------------------------------------------------"
@@ -171,7 +175,7 @@ proc insertMakeFile { subsys file_writer } {
     puts $file_writer "LD            = \$(CXX) \$(CCFLAGS) \$(CPPFLAGS)"
     puts $file_writer "AR            = ar"
     puts $file_writer "PICFLAGS      = -fPIC"
-    puts $file_writer "CPPFLAGS      = \$(PICFLAGS) \$(GENFLAGS) -g \$(SAL_CPPFLAGS) -D_REENTRANT -Wall -I\".\" -I\"\$(OSPL_HOME)/examples/include\" -I\"\$(OSPL_HOME)/examples\" -I\"\$(OSPL_HOME)/include\" -I\"\$(OSPL_HOME)/include/sys\" -I\"\$(OSPL_HOME)/include/dcps/C++/SACPP\" -I../../[set subsys]/cpp/src -I\"\$(SAL_HOME)/include\" -I.. -I\"\$(SAL_WORK_DIR)/include\" -Wno-write-strings -DSAL_SUBSYSTEM_ID_IS_KEYED"
+    puts $file_writer "CPPFLAGS      = \$(PICFLAGS) \$(GENFLAGS) -g \$(SAL_CPPFLAGS) -D_REENTRANT -Wall -I\".\" -I\"\$(OSPL_HOME)/examples/include\" -I\"\$(OSPL_HOME)/examples\" -I\"\$(OSPL_HOME)/include\" -I\"\$(OSPL_HOME)/include/sys\" -I\"\$(OSPL_HOME)/include/dcps/C++/SACPP\" -I../../[set subsys]/cpp/src -I\"\$(SAL_HOME)/include\" -I.. -I\"\$(SAL_WORK_DIR)/include\" -Wno-write-strings $keyed"
     puts $file_writer "OBJEXT        = .o"
     puts $file_writer "OUTPUT_OPTION = -o \"\$@\""
     puts $file_writer "COMPILE.c     = \$(CC) \$(CFLAGS) \$(CPPFLAGS) -c"
@@ -211,8 +215,11 @@ proc insertMakeFile { subsys file_writer } {
     puts $file_writer "#----------------------------------------------------------------------------"
     puts $file_writer "#       Local targets"
     puts $file_writer "#----------------------------------------------------------------------------"
-
     puts $file_writer "all: \$(BIN1) \$(BIN2)"
+
+    puts $file_writer ".obj/SAL_[set subsys]\$(OBJEXT): ../src/SAL_[set subsys].cpp"
+    puts $file_writer "	@\$(TESTDIRSTART) \".obj/../src\" \$(TESTDIREND) \$(MKDIR) \".obj/../src\""
+    puts $file_writer "	\$(COMPILE.cc) \$(EXPORTFLAGS) \$(OUTPUT_OPTION) ../src/SAL_[set subsys].cpp"
 
     puts $file_writer ".obj/sacpp_[set subsys]_all_commander.o: ../src/sacpp_[set subsys]_all_commander.cpp"
     puts $file_writer "	@\$(TESTDIRSTART) \".obj/../src\" \$(TESTDIREND) \$(MKDIR) \".obj/../src\""

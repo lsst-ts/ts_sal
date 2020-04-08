@@ -12,10 +12,8 @@ if { $argc < 2 } {
    where flag(s) may be
 
 		validate - check the XML Telemetry/Command/LogEvent definitions
-		idl      - generate the Interface Definition Language files
-                sal      - generate SAL wrappers for cpp, java, isocpp, python
+                sal      - generate SAL wrappers for specified language : cpp, idl, java, python, pydds
                 lib      - generate shared library
-		tcl      - generate tcl interface
 		html     - generate web form interfaces
 		labview  - generate LabVIEW low-level interface
 		maven    - generate a maven repository
@@ -25,11 +23,10 @@ if { $argc < 2 } {
  
 		    db start-time end-time interval
 
-                    where the times are formatted like \"2008-11-12 16:20:01\"
+                    where the times are formatted like \"2019-11-12 16:20:01\"
                     and the interval is in seconds
 
 		sim      - generate simulation configuration
-		icd      - generate ICD document
 		link     - link a SAL program
                 rpm	 - generate runtime RPM
 		verbose  - be more verbose ;-)
@@ -39,6 +36,13 @@ if { $argc < 2 } {
 
 set SAL_DIR $env(SAL_DIR)
 set OSPL_HOME $env(OSPL_HOME)
+set COMMANDS "validate efd writers code compile cpp idl isocpp java jni lib link maven tcl db icd labview python pydds html rpm sal shmem sim simd verbose fastest" 
+foreach o $COMMANDS {
+  set OPTIONS($o) 0
+  if { [lsearch [string tolower $argv] $o] > -1 } {
+     set OPTIONS($o) 1
+  }
+}
 source $SAL_DIR/versioning.tcl
 source $SAL_DIR/utilities.tcl
 source $SAL_DIR/activaterevcodes.tcl
@@ -53,9 +57,24 @@ if { [string range [lindex $argv end] 0 7] == "version=" } {
 
 puts stdout "SAL generator - [set SALVERSION]"
 
+if { [file exists $env(SAL_WORK_DIR)/VERSION] == 0 } {
+   puts stdout "
+*******************************************************************************
+******************** ERROR - Subsystem not defined ****************************
+*******************************************************************************
+
+	$env(SAL_WORK_DIR)/VERSION does not exist to specify XML version
+
+*******************************************************************************
+*******************************************************************************"
+   exit -1
+}
+
+
 set TSUBSYSTEMS ""
 foreach i $argv {
-  if { [lsearch "validate efd writers code compile cpp idl isocpp java jni lib link maven tcl db icd labview python pydds html rpm sal shmem sim simd verbose fastest" $i] < 0 } {
+puts stdout "checking $i"
+  if { [lsearch $COMMANDS $i] < 0 } {
     if { [lsearch $SYSDIC(systems) $i] < 0 } {
       puts stdout "
 *******************************************************************************
@@ -102,13 +121,6 @@ if { [file exists $SAL_WORK_DIR] == 0 } {
 
 cd $SAL_WORK_DIR
 set SAL_WORK_DIR [file normalize .]
-foreach o "validate efd writers code compile cpp idl isocpp java jni lib link maven tcl db icd labview python pydds html rpm sal shmem sim simd  verbose fastest" {
-  set OPTIONS($o) 0
-  if { [lsearch [string tolower $argv] $o] > -1 } {
-     set OPTIONS($o) 1
-  }
-}
-
 
 catch {exec mkdir saltemptest} ok
 if { [file exists saltemptest] == 0 } {
@@ -152,8 +164,6 @@ if { $OPTIONS(html) } {
    cd $SAL_WORK_DIR
    stdlog "Generating Subsystem simulation control html"
    source $SAL_DIR/gensimhtml.tcl
-   cd $SAL_WORK_DIR/html
-   source $SAL_DIR/genhtml.tcl
    exit
 }
 
@@ -165,14 +175,14 @@ if { $OPTIONS(validate) || $OPTIONS(idl) } {
   set all $TSUBSYSTEMS
   stdlog "Processing $all"
   foreach i $all {
-    if { [file exists [set i]_Telemetry.xml] == 0 } {
-        stdlog "Add minimal Telemetry"
-        set SALSubsys $i
-        source $SAL_DIR/generateMinimalTelemetry.tcl
-        set fxml [open $SAL_WORK_DIR/[set i]_Telemetry.xml w]
-        puts $fxml $SAL_MIN_TELEMETRY 
-        close $fxml
-    }
+#    if { [file exists [set i]_Telemetry.xml] == 0 } {
+#        stdlog "Add minimal Telemetry"
+#        set SALSubsys $i
+#        source $SAL_DIR/generateMinimalTelemetry.tcl
+#        set fxml [open $SAL_WORK_DIR/[set i]_Telemetry.xml w]
+#        puts $fxml $SAL_MIN_TELEMETRY 
+#        close $fxml
+#    }
     if { [file exists $SAL_WORK_DIR/SALGenerics.xml] } {
       if { [info exists SYSDIC($i,hasGenerics)] || [info exists SYSDIC($i,hasAllGenerics)] } {
         set x none
@@ -208,7 +218,10 @@ if { $OPTIONS(validate) || $OPTIONS(idl) } {
       }
     }
     stdlog "Validating $i interface IDL format definitions"
-    createackcmdidl $i [info exists SYSDIC($i,keyedID)] 
+    catch {
+        set hascmd [glob $SAL_WORK_DIR/idl-templates/[set i]_command_*.idl]
+        createackcmdidl $i [info exists SYSDIC($i,keyedID)] 
+    }
     set new [lsort [glob $SAL_WORK_DIR/idl-templates/[set i]_*.idl]]
     foreach n $new {
       checkidl [file tail $n]
@@ -284,109 +297,33 @@ if { $OPTIONS(sal) } {
   }
   cd $SAL_WORK_DIR
   set base [lindex [split [lindex $TARGETS 0] _] 0]
+  clearAssets $base
   source $SAL_DIR/gensimplesample.tcl
-  if { [file exists $SAL_WORK_DIR/idl-templates/validated/[set base]_cmddef.tcl] } {
-        source $SAL_WORK_DIR/idl-templates/validated/[set base]_cmddef.tcl
-  } else {
-        stdlog "================================================"
-        stdlog "WARNING : No Command definitions found for $base"
-        stdlog "================================================"
-  }
-  if { [file exists $SAL_WORK_DIR/idl-templates/validated/[set base]_evtdef.tcl] } {
-        source $SAL_WORK_DIR/idl-templates/validated/[set base]_evtdef.tcl
-  } else {
-        stdlog "WARNING : No Event definitions found for $base"
-  }
-  if { [file exists $SAL_WORK_DIR/idl-templates/validated/[set base]_tlmdef.tcl] } {
-        source $SAL_WORK_DIR/idl-templates/validated/[set base]_tlmdef.tcl
-  } else {
-        stdlog "ERROR : No Telemetry definitions found for $base"
-        stdlog "        Install [set base]_Telemetry.xml in $SAL_WORK_DIR"
-        stdlog "        and run the validate step again."
-        exit 1
-  }
+  source $SAL_DIR/gensalcodes.tcl
+  checkTopicTypes $base
   source $SAL_WORK_DIR/idl-templates/validated/[set base]_revCodes.tcl
   catch { set idlfile [makesalidl $base] } bad
-puts stdout $bad
-puts stdout $idlfile
+  puts stdout $bad
+  puts stdout $idlfile
   updateRevCodes $base
   if { $OPTIONS(idl) == 0 } {
     source $SAL_WORK_DIR/idl-templates/validated/[set base]_revCodes.tcl
-    foreach subsys $TARGETS {
-      set spl [file rootname [split $subsys _]]
-      set base [lindex $spl 0]
-      if { [lindex $spl 1] != "command" && [lindex $spl 1] != "logevent" && [lindex $spl 1] != "ackcmd" } {
-       set name [join [lrange $spl 1 end] _]
-       if { $OPTIONS(cpp) } {
-         stdlog "Generating SAL CPP code for $subsys"
-         set result none
-         catch { set result [makesalcode $idlfile $base $name cpp] } bad
-         if { $result == "none" } {stdlog $bad}
-         if { $OPTIONS(verbose) } {stdlog $result}
-       } 
-       if { $OPTIONS(java) } {
-         stdlog "Generating SAL Java code for $subsys"
-         set result none
-         catch { set result [exec $SAL_DIR/make_salUtils] } bad
-         if { $result == "none" } {puts stderr $bad}
-         set result none
-         catch { set result [makesalcode $idlfile $base $name java] } bad
-         if { $result == "none" } {puts stderr $bad}
-         if { $OPTIONS(verbose) } {stdlog $result}
-       }
-       if { $OPTIONS(isocpp) } {
-         stdlog "Generating SAL ISOCPP code for $subsys"
-         set result none
-         catch { set result [makesalcode $idlfile $base $name isocpp] } bad
-         if { $result == "none" } {stdlog $bad}
-         if { $OPTIONS(verbose) } {stdlog $result}
-       }
-       if { $OPTIONS(python) && $ONEPYTHON == 0 } {
-         stdlog "Generating SAL Python code for $subsys $ONEPYTHON"
-         set result none
-         catch { set result [makesalcode $idlfile $base $name python] } bad
-         if { $result == "none" } {stdlog $bad}
-         set ONEPYTHON 1
-         if { $OPTIONS(verbose) } {stdlog $result}
-       }
-       set DONE_CMDEVT 1
-     }
+    genGenericCodes $base
+    genTelemetryCodes $idlfile $TARGETS
+    genSingleProcessTests $base
+    if { $OPTIONS(pydds) } {
+      exec mkdir -p $SAL_WORK_DIR/python
+      set spl [lindex [file rootname [split [lindex $TARGETS 0] _]] 0]
+      stdlog "Building native DDS python support for $spl subsystem"
+      set result none
+      catch { set result [exec $SAL_DIR/genddspython.tcl $spl] } bad
+      if { $OPTIONS(verbose) } {stdlog $result}
     }
+  } else {
+    exec rm -fr $SAL_WORK_DIR/[set base]/cpp
+    exec cp $SAL_WORK_DIR/idl-templates/validated/sal/sal_revCoded_[set base].idl $SAL_WORK_DIR/[set base]/.
   }
-  if { $OPTIONS(cpp) } {
-    set result none
-    if { [info exists CMD_ALIASES($base)] } {
-       catch { set result [gencommandtestsinglefilescpp $base] } bad
-       if { $result == "none" } {stdlog $bad}
-       if { $OPTIONS(verbose) } {stdlog $result}
-    }
-    set result none
-    catch { set result [geneventtestssinglefilescpp $base] } bad
-    if { $result == "none" } {stdlog $bad}
-    if { $OPTIONS(verbose) } {stdlog $result}
-    set result none
-    catch { set result [gentelemetrytestsinglefilescpp $base] } bad
-    if { $result == "none" } {stdlog $bad}
-    if { $OPTIONS(verbose) } {stdlog $result}
-  }
-  if { $OPTIONS(java) } {
-    if { [info exists CMD_ALIASES($base)] } {
-       catch { set result [gencommandtestssinglefilejava $base] } bad
-       if { $OPTIONS(verbose) } {stdlog $result}
-    }
-    catch { set result [geneventtestssinglefilejava $base] } bad
-    if { $OPTIONS(verbose) } {stdlog $result}
-    catch { set result [gentelemetrytestssinglefilejava $base] } bad
-    if { $OPTIONS(verbose) } {stdlog $result}
-  }
-  if { $OPTIONS(pydds) } {
-    exec mkdir -p $SAL_WORK_DIR/python
-    set spl [lindex [file rootname [split [lindex $TARGETS 0] _]] 0]
-    stdlog "Building native DDS python support for $spl subsystem"
-    set result none
-    catch { set result [exec $SAL_DIR/genddspython.tcl $spl] } bad
-    if { $OPTIONS(verbose) } {stdlog $result}
-  }
+  checkAssets $base
 }
 
 if { $OPTIONS(lib) } {
@@ -537,11 +474,10 @@ if { $OPTIONS(sim) } {
    stdlog "Not yet implemented  - use VM web interface"
 }
 
+
 if { $OPTIONS(icd) } {
    set subsys [lindex [split $argv _] 0]
    stdlog "Generating ICD for OCS to $subsys"
    set SINGLESUBSYSTEM $subsys
    source $SAL_DIR/icd/icd.tcl
 }
-
-

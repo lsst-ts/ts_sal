@@ -20,31 +20,45 @@ global EVENT_ALIASES EVTS DONE_CMDEVT
      }
   }
   if { $lang == "cpp" } {
+     set result none
      catch { set result [geneventaliascpp $subsys $fout] } bad
+     if { $result == "none" } {errorexit "failure in geneventaliascpp" }
      stdlog "$result"
      if { $DONE_CMDEVT == 0} {
+       set result none
        catch { set result [geneventtestscpp $subsys] } bad       
+       if { $result == "none" } {errorexit "failure in geneventtestscpp" }
        stdlog "$result"
      }
    }
   if { $lang == "java" }  {
+     set result none
      catch { set result [geneventaliasjava $subsys $fout] } bad
+     if { $result == "none" } {errorexit "failure in geneventaliasjava" }
      stdlog "$result"
      if { $DONE_CMDEVT == 0} {
+       set result none
        catch { set result [geneventtestsjava $subsys] } bad
+       if { $result == "none" } {errorexit "failure in geneventtestsjava" }
        stdlog "$result"
      }
   }
   if { $lang == "python" } {
+     set result none
      catch { set result [geneventaliaspython $subsys $fout] } bad
+     if { $result == "none" } {errorexit "failure in geneventaliaspython" }
      stdlog "$result"
      if { $DONE_CMDEVT == 0} {
+       set result none
        catch { set result [geneventtestspython $subsys] } bad
+       if { $result == "none" } {errorexit "failure in geneventtestspython" }
        stdlog "$result"
      }
   }
   if { $lang == "isocpp" } {
+     set result none
      catch { set result [geneventaliasisocpp $subsys $fout] } bad
+     if { $result == "none" } {errorexit "failure in geneventaliasisocpp" }
      stdlog "$result"
   }
  }
@@ -52,7 +66,8 @@ global EVENT_ALIASES EVTS DONE_CMDEVT
 
 
 proc geneventaliascpp { subsys fout } {
-global EVENT_ALIASES EVTS SAL_WORK_DIR
+global EVENT_ALIASES EVTS SAL_WORK_DIR OPTIONS
+   if { $OPTIONS(verbose) } {stdlog "###TRACE>>> geneventaliascpp $subsys $fout"}
    foreach i $EVENT_ALIASES($subsys) {
     if { [info exists EVTS($subsys,$i,param)] } {
       stdlog "	: alias = $i"
@@ -84,6 +99,7 @@ salReturn SAL_SALData::logEvent_[set i]( SALData_logevent_[set i]C *data, int pr
 #      stdlog "Alias $i has no parameters - uses standard [set subsys]_logevent"
     }
    }
+   if { $OPTIONS(verbose) } {stdlog "###TRACE<<< geneventaliascpp $subsys $fout"}
 }
 
 

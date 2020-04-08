@@ -1,9 +1,0 @@
-#!/bin/sh
-
-echo "Compiling LabView SAL interface"
-make -f makefile.lvsal
-ar r libsvcSAL.a svcSAL_*.h svcSAL_*.c
-ar r libSAL_1.0_tcs.a *tcs*.h *tcs*.c *tcs*.cpp
-rm -f tcs*.h *tcs*.c *tcs*.cpp *tcs*.txt
-rm -fr Static Shared
-

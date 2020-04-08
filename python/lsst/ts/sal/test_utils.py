@@ -29,8 +29,6 @@ import time
 
 import numpy as np
 
-import SALPY_Test
-
 # standard sleep time for SAL (sec)
 STD_SLEEP = 0.001
 
@@ -185,6 +183,9 @@ class TestData:
         """Make random data for scalars or setScalars topic."""
         # also make an empty arrays struct to get dtype of int fields,
         # since that information is lost in the scalars pybind11 wrapper
+        # Defer this import so other contents of test_utils
+        # can be used without SALPY_Test.
+        import SALPY_Test
         empty_arrays = SALPY_Test.Test_arraysC()
         data.boolean0 = np.random.choice([False, True])
         printable_chars = [c for c in string.ascii_letters + string.digits]

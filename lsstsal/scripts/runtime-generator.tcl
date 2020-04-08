@@ -1,6 +1,10 @@
 #!/usr/bin/env tclsh
 
+set OPTIONS(verbose) 0
+set SAL_DIR $env(SAL_DIR)
+set SAL_WORK_DIR $env(SAL_WORK_DIR)
 source $env(SAL_DIR)/add_system_dictionary.tcl
+
 set EVERYTHING [lsort $SYSDIC(systems)]
 foreach subsys $EVERYTHING {
    catch {
@@ -91,6 +95,21 @@ if { $argv == "" || [lsearch $argv lib] > -1 } {
  }
 }
 
+
+if { $argv == "" || [lsearch $argv idl] > -1 } {
+ puts stdout  "Updating IDL only"
+ foreach subsys $EVERYTHING {
+  if { [info exists DO($subsys)] } {
+   set bad ""
+   set result ""
+   catch { set results [exec salgenerator $subsys idl] } bad
+   puts stdout "$result $bad"
+  }
+ }
+}
+
+
+
 if { $argv == "" || [lsearch $argv java] > -1 } {
  puts stdout  "Generating Java"
  foreach subsys $EVERYTHING {
@@ -109,23 +128,6 @@ if { $argv == "" || [lsearch $argv java] > -1 } {
   }
  }
 }
-
-
-if { $argv == "" || [lsearch $argv efd] > -1 } {
- puts stdout  "Updating EFD SQL writers"
- source $env(SAL_DIR)/gengenericefd_array.tcl
- set bad ""
- set result ""
- catch { set results [updateefdschema] } bad
- puts stdout "$result $bad"
- puts stdout  "Updating EFD kafka writers"
- source $env(SAL_DIR)/genkafkaefd.tcl
- set bad ""
- set result ""
- catch { set results [updatekafkaschema] } bad
- puts stdout "$result $bad"
-}
-
 
 
 cd $env(SAL_WORK_DIR)
@@ -148,10 +150,6 @@ if { $argv == "" || [lsearch $argv rpm] > -1 } {
  set bad ""
  set result ""
  catch { set results [generateATmetarpm] } bad
- puts stdout "$result $bad"
- set bad ""
- set result ""
- catch { set results [generateEFDrpm] } bad
  puts stdout "$result $bad"
 }
 
