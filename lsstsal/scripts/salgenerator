@@ -167,6 +167,9 @@ if { $OPTIONS(html) } {
    exit
 }
 
+if { $OPTIONS(idl) && $OPTIONS(sal) == 0 } {
+   errorexit "Use the sal option in conjunction with the idl option"
+}
 
 
 if { $OPTIONS(validate) || $OPTIONS(idl) } {
