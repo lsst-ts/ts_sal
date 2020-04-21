@@ -156,6 +156,7 @@ foreach subsys $TSUBSYSTEMS {
 # Generate runs all steps needed to get lib for given language
 if { $OPTIONS(generate) } {
   set result [exec salgenerator $TSUBSYSTEMS validate] ; puts stdout $result
+  catch { set result [exec salgenerator $TSUBSYSTEMS html] } ok ; puts stdout $ok
   if { $OPTIONS(cpp) } { set result [exec salgenerator $TSUBSYSTEMS sal cpp] ; puts stdout $result }
   if { $OPTIONS(python) } { 
      set result [exec salgenerator $TSUBSYSTEMS sal cpp] ; puts stdout $result
