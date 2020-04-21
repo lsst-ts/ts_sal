@@ -157,12 +157,18 @@ foreach subsys $TSUBSYSTEMS {
 if { $OPTIONS(generate) } {
   set result [exec salgenerator $TSUBSYSTEMS validate] ; puts stdout $result
   if { $OPTIONS(cpp) } { set result [exec salgenerator $TSUBSYSTEMS sal cpp] ; puts stdout $result }
-  if { $OPTIONS(python) } { set result [exec salgenerator $TSUBSYSTEMS sal python] ; puts stdout $result }
+  if { $OPTIONS(python) } { 
+     set result [exec salgenerator $TSUBSYSTEMS sal cpp] ; puts stdout $result
+     set result [exec salgenerator $TSUBSYSTEMS sal python] ; puts stdout $result
+  }
   if { $OPTIONS(java) } { 
      set result [exec salgenerator $TSUBSYSTEMS sal java] ; puts stdout $result
      set result [exec salgenerator $TSUBSYSTEMS maven] ; puts stdout $result
   }
-  if { $OPTIONS(labview) } { set result [exec salgenerator $TSUBSYSTEMS labview] ; puts stdout $result }
+  if { $OPTIONS(labview) } {
+     set result [exec salgenerator $TSUBSYSTEMS sal cpp] ; puts stdout $result
+     set result [exec salgenerator $TSUBSYSTEMS labview] ; puts stdout $result
+  }
   set result [exec salgenerator $TSUBSYSTEMS lib] ; puts stdout $result
   exit 0
 }
