@@ -39,7 +39,7 @@ exec cp -rv /data/gitrepo/ts_visit_simulator/SAL_TCS_Simulator_User_Guide.pdf $D
 exec cp -rv /data/gitrepo/ts_visit_simulator/setup.env $DEST/.
 
 puts stdout "Copying OpenSplice"
-exec tar -C $env(LSST_SDK_INSTALL) -cvf - OpenSpliceDDS | tar -C $DEST -xvf -
+exec tar -C $env(TS_SAL_ROOT) -cvf - OpenSpliceDDS | tar -C $DEST -xvf -
 
 puts stdout "Updating XML"
 set all [glob $SAL_WORK_DIR/*.xml]
