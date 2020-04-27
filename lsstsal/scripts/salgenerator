@@ -4,13 +4,14 @@
 # Command line tool for SAL code/document/etc generation.
 #
 
-if { $argc < 2 } {
+proc print_help {} {
    puts stdout "SAL generator tool - Usage :
 
-	salgenerator subsystem flag(s)
+	salgenerator subsystem (command \[args\] ...)
 
-   where flag(s) may be
+   where command may be
 
+		generate - all steps to generate SAL wrappers for specified language
 		validate - check the XML Telemetry/Command/LogEvent definitions
                 sal      - generate SAL wrappers for specified language : cpp, idl, java, python, pydds
                 lib      - generate shared library
@@ -34,15 +35,19 @@ if { $argc < 2 } {
   exit 2
 }
 
+if { $argc < 2 } { print_help }
+
+
 set SAL_DIR $env(SAL_DIR)
 set OSPL_HOME $env(OSPL_HOME)
-set COMMANDS "validate efd writers code compile cpp idl isocpp java jni lib link maven tcl db icd labview python pydds html rpm sal shmem sim simd verbose fastest" 
+set COMMANDS "validate efd writers compile cpp idl isocpp java jni lib link maven tcl db icd labview python pydds html rpm sal shmem sim simd verbose fastest generate" 
 foreach o $COMMANDS {
   set OPTIONS($o) 0
   if { [lsearch [string tolower $argv] $o] > -1 } {
      set OPTIONS($o) 1
   }
 }
+
 source $SAL_DIR/versioning.tcl
 source $SAL_DIR/utilities.tcl
 source $SAL_DIR/activaterevcodes.tcl
@@ -50,15 +55,14 @@ source $SAL_DIR/add_system_dictionary.tcl
 
 puts stdout "argv = $argv"
 if { [string range [lindex $argv end] 0 7] == "version=" } {
-    set SALVERSION [string range [lindex $argv end] 8 end]
-    set argv [lrange $argv 0 [expr [llength $argv]-2]]
+  set SALVERSION [string range [lindex $argv end] 8 end]
+  set argv [lrange $argv 0 [expr [llength $argv]-2]]
 }
-
 
 puts stdout "SAL generator - [set SALVERSION]"
 
 if { [file exists $env(SAL_WORK_DIR)/VERSION] == 0 } {
-   puts stdout "
+  puts stdout "
 *******************************************************************************
 ******************** ERROR - Subsystem not defined ****************************
 *******************************************************************************
@@ -67,13 +71,12 @@ if { [file exists $env(SAL_WORK_DIR)/VERSION] == 0 } {
 
 *******************************************************************************
 *******************************************************************************"
-   exit -1
+  exit -1
 }
-
 
 set TSUBSYSTEMS ""
 foreach i $argv {
-puts stdout "checking $i"
+  puts stdout "checking $i"
   if { [lsearch $COMMANDS $i] < 0 } {
     if { [lsearch $SYSDIC(systems) $i] < 0 } {
       puts stdout "
@@ -88,11 +91,11 @@ puts stdout "checking $i"
 
 *******************************************************************************
 *******************************************************************************"
-     exit 3
-   }
-   set xml ""
-   catch { set xml [glob [set i]_*.xml] }
-   if { $xml == "" } {
+      exit 3
+    }
+    set xml ""
+    catch { set xml [glob [set i]_*.xml] }
+    if { $xml == "" } {
       puts stdout "
 *******************************************************************************
 ******************** ERROR - Subsystem not defined ****************************
@@ -105,11 +108,11 @@ puts stdout "checking $i"
 
 *******************************************************************************
 *******************************************************************************"
-     exit 4
-   }
-   if { [lsearch $SYSDIC(systems) $i] > -1 } {
+      exit 4
+    }
+    if { [lsearch $SYSDIC(systems) $i] > -1 } {
       lappend TSUBSYSTEMS $i
-   }
+    }
   }
 }
 
@@ -121,6 +124,8 @@ if { [file exists $SAL_WORK_DIR] == 0 } {
 
 cd $SAL_WORK_DIR
 set SAL_WORK_DIR [file normalize .]
+
+puts stdout "SAL_WORK_DIR=$SAL_WORK_DIR"
 
 catch {exec mkdir saltemptest} ok
 if { [file exists saltemptest] == 0 } {
@@ -148,29 +153,30 @@ foreach subsys $TSUBSYSTEMS {
   }
 }
 
-
-# For html option , process everything
-if { $OPTIONS(html) } {
-   cd $SAL_WORK_DIR
-   source $SAL_DIR/updatedetails.tcl
-   source $SAL_DIR/genidlshmem_array.tcl
-   exec mkdir -p $SAL_WORK_DIR/sql
-   set sqlf [glob *.sqldef *.sqlwrt]
-   foreach f $sqlf { exec mv $f $SAL_WORK_DIR/sql/. }
-   stdlog "Generating telemetry stream definition editor html"
-   exec mkdir -p $SAL_WORK_DIR/html
-   stdlog "Generating Facility database table creation html"
-   source $SAL_DIR/gendbhtml.tcl
-   cd $SAL_WORK_DIR
-   stdlog "Generating Subsystem simulation control html"
-   source $SAL_DIR/gensimhtml.tcl
-   exit
+# Generate runs all steps needed to get lib for given language
+if { $OPTIONS(generate) } {
+  set result [exec salgenerator $TSUBSYSTEMS validate] ; puts stdout $result
+  catch { set result [exec salgenerator $TSUBSYSTEMS html] } ok ; puts stdout $ok
+  if { $OPTIONS(cpp) } { set result [exec salgenerator $TSUBSYSTEMS sal cpp] ; puts stdout $result }
+  if { $OPTIONS(python) } { 
+     set result [exec salgenerator $TSUBSYSTEMS sal cpp] ; puts stdout $result
+     set result [exec salgenerator $TSUBSYSTEMS sal python] ; puts stdout $result
+  }
+  if { $OPTIONS(java) } { 
+     set result [exec salgenerator $TSUBSYSTEMS sal java] ; puts stdout $result
+     set result [exec salgenerator $TSUBSYSTEMS maven] ; puts stdout $result
+  }
+  if { $OPTIONS(labview) } {
+     set result [exec salgenerator $TSUBSYSTEMS sal cpp] ; puts stdout $result
+     set result [exec salgenerator $TSUBSYSTEMS labview] ; puts stdout $result
+  }
+  set result [exec salgenerator $TSUBSYSTEMS lib] ; puts stdout $result
+  exit 0
 }
 
 if { $OPTIONS(idl) && $OPTIONS(sal) == 0 } {
    errorexit "Use the sal option in conjunction with the idl option"
 }
-
 
 if { $OPTIONS(validate) || $OPTIONS(idl) } {
   exec mkdir -p $SAL_WORK_DIR/idl-templates/validated
@@ -198,10 +204,10 @@ if { $OPTIONS(validate) || $OPTIONS(idl) } {
     gentopicdefsql $i
     foreach t "Telemetry Commands Events Generics" {
       if { [file exists [set i]_[set t].xml] } {
-       if { [file size [set i]_[set t].xml] > 0 } {
-        foreach d "idl-templates idl-templates/validated" {
-          set old ""
-          switch $t {
+        if { [file size [set i]_[set t].xml] > 0 } {
+          foreach d "idl-templates idl-templates/validated" {
+            set old ""
+            switch $t {
               Telemetry { catch {set old [glob $SAL_WORK_DIR/$d/[set i]_*.idl]}
                           foreach o $old { set v [lindex [split $o _] 1]
                                           if { $v != "command" && $v != "logevent" } { exec rm $o }
@@ -213,17 +219,17 @@ if { $OPTIONS(validate) || $OPTIONS(idl) } {
               Events    { catch {set old [glob $SAL_WORK_DIR/$d/[set i]_logevent_*.idl]}
                           foreach o $old { exec rm $o }
                         }
+            }
           }
+          parseXMLtoidl [set i]_[set t].xml
+          stdlog "Imported $i $t interface definitions"
         }
-        parseXMLtoidl [set i]_[set t].xml
-        stdlog "Imported $i $t interface definitions"
-       }
       }
     }
     stdlog "Validating $i interface IDL format definitions"
     catch {
-        set hascmd [glob $SAL_WORK_DIR/idl-templates/[set i]_command_*.idl]
-        createackcmdidl $i [info exists SYSDIC($i,keyedID)] 
+      set hascmd [glob $SAL_WORK_DIR/idl-templates/[set i]_command_*.idl]
+      createackcmdidl $i [info exists SYSDIC($i,keyedID)] 
     }
     set new [lsort [glob $SAL_WORK_DIR/idl-templates/[set i]_*.idl]]
     foreach n $new {
@@ -235,35 +241,58 @@ if { $OPTIONS(validate) || $OPTIONS(idl) } {
 }
 
 
-if { $OPTIONS(efd) && $OPTIONS(writers) } {
-   source $SAL_DIR/gengenericefd_array.tcl
-   cd $SAL_WORK_DIR
-   updateefdschema
-   updateefdtables
-   exit
+# For html option , process everything
+if { $OPTIONS(html) } {
+  global SAL_WORK_DIR
+  global SAL_DIR
+  cd $SAL_WORK_DIR
+  source $SAL_DIR/updatedetails.tcl
+  source $SAL_DIR/genidlshmem_array.tcl
+  exec mkdir -p $SAL_WORK_DIR/sql
+  set sqlf [glob *.sqldef *.sqlwrt]
+  foreach f $sqlf { exec mv $f $SAL_WORK_DIR/sql/. }
+  stdlog "Generating telemetry stream definition editor html"
+  exec mkdir -p $SAL_WORK_DIR/html
+  stdlog "Generating Facility database table creation html"
+  source $SAL_DIR/gendbhtml.tcl
+  cd $SAL_WORK_DIR
+  stdlog "Generating Subsystem simulation control html"
+  source $SAL_DIR/gensimhtml.tcl
+  cd $SAL_WORK_DIR/html
+  source $SAL_DIR/genhtml.tcl
 }
+
+
+if { $OPTIONS(efd) && $OPTIONS(writers) } {
+  source $SAL_DIR/gengenericefd_array.tcl
+  cd $SAL_WORK_DIR
+  updateefdschema
+  updateefdtables
+  exit
+}
+
 
 if { $OPTIONS(maven) } {
   cd $SAL_WORK_DIR
   source $SAL_DIR/mavenize.tcl
   foreach subsys $TSUBSYSTEMS {
-     set result ""
-     set bad ""
-     puts stdout "Creating maven directories maven/[set subsys]_[set SALVERSION]"
-     catch { set result [mavenize $subsys] } bad
-     puts stdout "$result"
-     puts stderr "$bad"
+    set result ""
+    set bad ""
+    puts stdout "Creating maven directories maven/[set subsys]_[set SALVERSION]"
+    catch { set result [mavenize $subsys] } bad
+    puts stdout "$result"
+    puts stderr "$bad"
 #     puts stdout "Creating unit tests maven/[set subsys]_[set SALVERSION]"
 #     catch { set result [mavenunittests $subsys] } bad
 #     puts stdout "$result"
 #     puts stderr "$bad"
-     cd maven/[set subsys]_[set SALVERSION]  
-     puts stdout "Running maven install"
-     set result ""
-     set bad ""
-     catch { set result [exec mvn -Dmaven.javadoc.skip=true -DskipTests install] } bad
-     puts stdout "$result"
-     puts stderr "$bad"
+    cd maven/[set subsys]_[set SALVERSION]  
+    puts stdout "Running maven install"
+    set result ""
+    set bad ""
+    catch { set result [exec mvn -Dmaven.javadoc.skip=true -DskipTests install] } bad
+    puts stdout "$result"
+    puts stderr "$bad"
 #     puts stdout "Updating local repository"
 #     catch { set result [exec mvn install -DperformRelease=true -DcreateChecksum=true] } bad
 #     puts stdout "$result"
@@ -275,15 +304,15 @@ if { $OPTIONS(maven) } {
 catch {exec rmdir saltemptest}
 exec mkdir -p .salwork
 set TARGETS ""
-if { $OPTIONS(lib) == 0 } {
+if { $OPTIONS(lib) == 0 || $OPTIONS(generate) == 1 } {
   set matches $TSUBSYSTEMS
   foreach f [glob $SAL_WORK_DIR/idl-templates/validated/[set matches]_*.idl] {
-     set TARGETS "$TARGETS [file tail $f]"
+    set TARGETS "$TARGETS [file tail $f]"
   }
   if { $TARGETS == "" } {
-   errorexit "No validated Interface Definition files match $TSUBSYSTEMS"
+    errorexit "No validated Interface Definition files match $TSUBSYSTEMS"
   } else {
-   stdlog "Targets for build : $TARGETS"
+    stdlog "Targets for build : $TARGETS"
   }
 }
 
@@ -293,10 +322,10 @@ if { $OPTIONS(sal) } {
   set ONEDDSGEN 0
   set ONEPYTHON 0
   if { [expr $OPTIONS(cpp) + $OPTIONS(isocpp) + $OPTIONS(java) + $OPTIONS(python) + $OPTIONS(pydds) + $OPTIONS(idl)] == 0 } {
-     stdlog "=========================================================================="
-     stdlog "ERROR :  sal option requires a language choice , cpp/idl/java/python/pydds"
-     stdlog "=========================================================================="
-     exit 6
+    stdlog "=========================================================================="
+    stdlog "ERROR :  sal option requires a language choice , cpp/idl/java/python/pydds"
+    stdlog "=========================================================================="
+    exit 6
   }
   cd $SAL_WORK_DIR
   set base [lindex [split [lindex $TARGETS 0] _] 0]
@@ -330,42 +359,42 @@ if { $OPTIONS(sal) } {
 }
 
 if { $OPTIONS(lib) } {
-   foreach s $TSUBSYSTEMS {
-     if { $s != "lib" } {
-       stdlog "Building shared library for $s subsystem"
-       set result none
-       catch { set result [exec $SAL_DIR/buildsharedlib $s] } bad
-       if { $OPTIONS(verbose) } {stdlog $result}
-     }
-     if { [file exists $SAL_WORK_DIR/[set s]/cpp/src/SALPY_[set s].so] } {
-       exec cp $SAL_WORK_DIR/[set s]/cpp/src/SALPY_[set s].so $SAL_WORK_DIR/lib/.
-     }
-     if { [file exists $SAL_WORK_DIR/[set s]/labview/SALLV_[set s].so] } {
-       exec cp $SAL_WORK_DIR/[set s]/labview/SALLV_[set s].so $SAL_WORK_DIR/lib/.
-     }
-     if { [file exists $SAL_WORK_DIR/[set s]/cpp/libsacpp_[set s]_types.so] } {
-       exec cp $SAL_WORK_DIR/[set s]/cpp/libsacpp_[set s]_types.so $SAL_WORK_DIR/lib/.
-     }
-   }
+  foreach s $TSUBSYSTEMS {
+    if { $s != "lib" } {
+      stdlog "Building shared library for $s subsystem"
+      set result none
+      catch { set result [exec $SAL_DIR/buildsharedlib $s] } bad
+      if { $OPTIONS(verbose) } {stdlog $result}
+    }
+    if { [file exists $SAL_WORK_DIR/[set s]/cpp/src/SALPY_[set s].so] } {
+      exec cp $SAL_WORK_DIR/[set s]/cpp/src/SALPY_[set s].so $SAL_WORK_DIR/lib/.
+    }
+    if { [file exists $SAL_WORK_DIR/[set s]/labview/SALLV_[set s].so] } {
+      exec cp $SAL_WORK_DIR/[set s]/labview/SALLV_[set s].so $SAL_WORK_DIR/lib/.
+    }
+    if { [file exists $SAL_WORK_DIR/[set s]/cpp/libsacpp_[set s]_types.so] } {
+      exec cp $SAL_WORK_DIR/[set s]/cpp/libsacpp_[set s]_types.so $SAL_WORK_DIR/lib/.
+    }
+  }
 }
 
 
 if { $OPTIONS(rpm) } {
-   source $SAL_DIR/gensalrpms.tcl
-   foreach s $TSUBSYSTEMS {
-     if { $s != "rpm" } {
-       stdlog "Building runtime RPM for $s subsystem"
-       set result none
-       catch { set result [updateruntime $s] } bad
-       if { $result == "none" } {stdlog $bad}
-       if { $OPTIONS(verbose) } {stdlog $result}
-       stdlog "Building test runtime RPM for $s subsystem"
-       set result none
-       catch { set result [updateruntime $s 1] } bad
-       if { $result == "none" } {stdlog $bad}
-       if { $OPTIONS(verbose) } {stdlog $result}
-     }
-   }
+  source $SAL_DIR/gensalrpms.tcl
+  foreach s $TSUBSYSTEMS {
+    if { $s != "rpm" } {
+      stdlog "Building runtime RPM for $s subsystem"
+      set result none
+      catch { set result [updateruntime $s] } bad
+      if { $result == "none" } {stdlog $bad}
+      if { $OPTIONS(verbose) } {stdlog $result}
+      stdlog "Building test runtime RPM for $s subsystem"
+      set result none
+      catch { set result [updateruntime $s 1] } bad
+      if { $result == "none" } {stdlog $bad}
+      if { $OPTIONS(verbose) } {stdlog $result}
+    }
+  }
 }
 
 
@@ -376,10 +405,10 @@ if { $OPTIONS(labview) } {
   cd $SAL_WORK_DIR
   stdlog "Generating LabVIEW low level code for $subsys"
   if { [file exists $SAL_WORK_DIR/idl-templates/validated/[set subsys]_cmddef.tcl] } {
-     source $SAL_WORK_DIR/idl-templates/validated/[set subsys]_cmddef.tcl
+    source $SAL_WORK_DIR/idl-templates/validated/[set subsys]_cmddef.tcl
   }
   if { [file exists $SAL_WORK_DIR/idl-templates/validated/[set subsys]_evtdef.tcl] } {
-     source $SAL_WORK_DIR/idl-templates/validated/[set subsys]_evtdef.tcl
+    source $SAL_WORK_DIR/idl-templates/validated/[set subsys]_evtdef.tcl
   }
   set result none
   catch { set result [genshmemlabview $subsys] } bad
@@ -391,13 +420,14 @@ if { $OPTIONS(labview) } {
 
 ### TSUBSYSTEMS is svcSAL_topicname
 if { $OPTIONS(compile) } {
-   set topic [string range [file rootname $TSUBSYSTEMS] 7 end]
-   set result none
-   catch {set result [exec g++  -g -I. -I/opt/lsstsal/scripts/code/include/sal -I$OSPL_HOME/include/dcps/C++/SACPP -I$OSPL_HOME/include -I$OSPL_HOME/include/sys -I/opt/simd/include -I../include -pipe -Wall  -c -std=c++0x -I../shmem-[set topic] $TSUBSYSTEMS.cpp] } bad
+  set topic [string range [file rootname $TSUBSYSTEMS] 7 end]
+  set result none
+  catch {set result [exec g++  -g -I. -I/opt/lsstsal/scripts/code/include/sal -I$OSPL_HOME/include/dcps/C++/SACPP -I$OSPL_HOME/include -I$OSPL_HOME/include/sys -I/opt/simd/include -I../include -pipe -Wall  -c -std=c++0x -I../shmem-[set topic] $TSUBSYSTEMS.cpp] } bad
   if { $result == "none" } {stdlog $bad}
   if { $bad != "" } {puts stdout $bad}
   exit
 }
+
 
 ### usage is topicname program-name (no .cpp) link
 if { $OPTIONS(link) } {
@@ -407,23 +437,23 @@ if { $OPTIONS(link) } {
   catch { set result [exec g++ -g -I. -I/opt/lsstsal/scripts/code/include/sal -I$OSPL_HOME/include/dcps/C++/SACPP -I$OSPL_HOME/include -I$OSPL_HOME/include/sys -I/opt/simd/include -I../include -pipe -Wall -std=c++0x -I../shmem-[set topic] svcSAL_$topic.o $program.cpp -o $program -L$OSPL_HOME/lib -ldcpsgapi -ldcpssacpp -lddsdatabase -lddsos -lboost_thread -lboost_program_options -lboost_system -lddsutil -lddsserialization -lddsserialization -lddskernel -lddsconf -lddsconfparser -lddsuser -L/opt/simd/lib -lSimD libdatamodel.a]} bad
   if { $result == "none" } {stdlog $bad}
   if { $bad != "" } {puts stdout $bad}
-   exit
+  exit
 }
 
 
 if { $OPTIONS(tcl) || $OPTIONS(shmem) } {
   cd $SAL_WORK_DIR
   foreach subsys $TARGETS {
-     set topic [file rootname $subsys]
-     stdlog "Generating shmem tools for $topic"
-     exec mkdir -p ./ospl-$topic
-     set result none
-     catch { set result [exec $SAL_DIR/genshmem-tcl.tcl $topic $SAL_WORK_DIR] } bad
-       if { $result == "none" } {stdlog $bad}
+    set topic [file rootname $subsys]
+    stdlog "Generating shmem tools for $topic"
+    exec mkdir -p ./ospl-$topic
+    set result none
+    catch { set result [exec $SAL_DIR/genshmem-tcl.tcl $topic $SAL_WORK_DIR] } bad
+    if { $result == "none" } {stdlog $bad}
 #     if { $bad } {
 #        errorexit "Tcl interface generation failed : \n $bad"
 #     }
-     if { $OPTIONS(verbose) } {stdlog $bad}
+    if { $OPTIONS(verbose) } {stdlog $bad}
   }
 }
 
@@ -431,16 +461,16 @@ if { $OPTIONS(tcl) || $OPTIONS(shmem) } {
 if { $OPTIONS(jni) } {
   source $SAL_DIR/genjnicode.tcl
   foreach subsys $TARGETS {
-     set topic [file rootname $subsys]
-     stdlog "Generating DDS java code for $topic"
-     stdlog "Generating SAL JNI code for $topic"
-     set result none
-     catch { set result [genjnicode $topic] } bad
-     if { $result == "none" } {stdlog $bad}
-     if { $bad } {
-        errorexit "SAL JNI generation failed : \n $bad"
-     }
-     if { $OPTIONS(verbose) } {stdlog $result}
+    set topic [file rootname $subsys]
+    stdlog "Generating DDS java code for $topic"
+    stdlog "Generating SAL JNI code for $topic"
+    set result none
+    catch { set result [genjnicode $topic] } bad
+    if { $result == "none" } {stdlog $bad}
+    if { $bad } {
+      errorexit "SAL JNI generation failed : \n $bad"
+    }
+    if { $OPTIONS(verbose) } {stdlog $result}
   }
 }
 
@@ -457,30 +487,30 @@ if { $OPTIONS(db) } {
   stdlog "   Interval   = $dbfreq"
   set sid [lindex [split [lindex $TARGETS 0] _] 0]
   if { [file exists $SAL_WORK_DIR/[set sid]_telemetry_simulation.tcl] } {
-     stdlog "Loading simulation routines from $SAL_WORK_DIR/[set sid]_telemetry_simulation.tcl"
-     source $SAL_WORK_DIR/[set sid]_telemetry_simulation.tcl
+    stdlog "Loading simulation routines from $SAL_WORK_DIR/[set sid]_telemetry_simulation.tcl"
+    source $SAL_WORK_DIR/[set sid]_telemetry_simulation.tcl
   }
   foreach subsys $TARGETS {
-     set topic [file rootname $subsys]
-     if { [file exists $SAL_WORK_DIR/sql/[set topic].sqldef] } {
-       stdlog "Generating simulated facility database table for $topic"
-       set fout [open $SAL_WORK_DIR/sql/$topic-[join $dbstart -]_to_[join $dbend -].sql w]
-       simulateperiod $fout $topic "$dbstart" "$dbend" $dbfreq
-       close $fout
-       stdlog "   data in $SAL_WORK_DIR/sql/$topic-[join $dbstart -]_to_[join $dbend -].sql"
-     }
-   }
+    set topic [file rootname $subsys]
+    if { [file exists $SAL_WORK_DIR/sql/[set topic].sqldef] } {
+      stdlog "Generating simulated facility database table for $topic"
+      set fout [open $SAL_WORK_DIR/sql/$topic-[join $dbstart -]_to_[join $dbend -].sql w]
+      simulateperiod $fout $topic "$dbstart" "$dbend" $dbfreq
+      close $fout
+      stdlog "   data in $SAL_WORK_DIR/sql/$topic-[join $dbstart -]_to_[join $dbend -].sql"
+    }
+  }
 }
 
 
 if { $OPTIONS(sim) } {
-   stdlog "Not yet implemented  - use VM web interface"
+  stdlog "Not yet implemented  - use VM web interface"
 }
 
 
 if { $OPTIONS(icd) } {
-   set subsys [lindex [split $argv _] 0]
-   stdlog "Generating ICD for OCS to $subsys"
-   set SINGLESUBSYSTEM $subsys
-   source $SAL_DIR/icd/icd.tcl
+  set subsys [lindex [split $argv _] 0]
+  stdlog "Generating ICD for OCS to $subsys"
+  set SINGLESUBSYSTEM $subsys
+  source $SAL_DIR/icd/icd.tcl
 }
