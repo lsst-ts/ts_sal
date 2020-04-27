@@ -4,7 +4,7 @@
 PYTHONVER     = $(PYTHON_BUILD_VERSION)
 CC            = gcc
 CXX           = g++
-CPPFLAGS      = $(PICFLAGS) $(GENFLAGS) $(SAL_CPPFLAGS) -Wno-write-strings -std=c++11 -D_REENTRANT -Wall -I"." -I"$(OSPL_HOME)/examples/include" -I"$(OSPL_HOME)/examples" -I"$(OSPL_HOME)/include" -I"$(OSPL_HOME)/include/sys" -I"$(OSPL_HOME)/include/dcps/C++/SACPP" -I"$(PYTHON_BUILD_LOCATION)/include/python$(PYTHONVER)" -I"$(SAL_HOME)/include" -I"$(PYTHON_BUILD_LOCATION)/include/python$(PYTHONVER)" -I../../../SALSubsys/cpp/src -I../../../SALSubsys/cpp -DSAL_BUILD_FOR_PYTHON #-DSAL_SUBSYSTEM_ID_IS_KEYED
+CPPFLAGS      = $(PICFLAGS) $(GENFLAGS) $(SAL_CPPFLAGS) -Wno-write-strings -std=c++11 -D_REENTRANT -Wall -I"." -I"$(OSPL_HOME)/examples/include" -I"$(OSPL_HOME)/examples" -I"$(OSPL_HOME)/include" -I"$(OSPL_HOME)/include/sys" -I"$(OSPL_HOME)/include/dcps/C++/SACPP" -I"$(PYTHON_INCLUDE_DIR)" -I"$(SAL_HOME)/include" -I../../../SALSubsys/cpp/src -I../../../SALSubsys/cpp -DSAL_BUILD_FOR_PYTHON #-DSAL_SUBSYSTEM_ID_IS_KEYED
 LD            = $(CXX) $(CCFLAGS) $(CPPFLAGS)
 AR            = ar
 PICFLAGS      = -fPIC
@@ -13,7 +13,7 @@ SHLIBEXT      = .so
 OUTPUT_OPTION = -o "$@"
 COMPILE.c     = $(CC) $(CFLAGS) $(CPPFLAGS) -c
 COMPILE.cc    = $(CXX) $(CCFLAGS) $(CPPFLAGS) -c
-LDFLAGS       = -shared -fPIC -L"." -L"$(OSPL_HOME)/lib" -Wl,-rpath,\$$ORIGIN -Wl,-rpath,\$$ORIGIN/$(OSPL_HOME)/lib -L"$(SAL_WORK_DIR)/lib" -L"$(PYTHON_BUILD_LOCATION)/lib" -l"python$(PYTHONVER)"
+LDFLAGS       = -shared -fPIC -L"." -L"$(OSPL_HOME)/lib" -Wl,-rpath,\$$ORIGIN -Wl,-rpath,\$$ORIGIN/$(OSPL_HOME)/lib -L"$(SAL_WORK_DIR)/lib" -L"$(PYTHON_LIBRARY_DIR)" -l"python$(PYTHONVER)"
 CCC           = $(CXX)
 MAKEFILE      = Makefile.sacpp_SALData_pybind11
 DEPENDENCIES  = 
@@ -45,6 +45,18 @@ EXPORTFLAGS   =
 all: $(BIN)
 
 $(BIN): $(OBJS)
+ifneq "${PYTHON_INCLUDE_DIR}" ""
+	@echo "Got PYTHON_INCLUDE_DIR"
+else
+	PYTHON_INCLUDE_DIR=${PYTHON_BUILD_LOCATION}/include/python${PYTHON_BUILD_VERSION}
+endif
+ifneq "${PYTHON_LIBRARY_DIR}" ""
+	@echo "Got PYTHON_LIBRARY_DIR"
+else
+	PYTHON_LIBRARY_DIR=${PYTHON_BUILD_LOCATION}/lib
+endif
+	@echo ${PYTHON_INCLUDE_DIR}
+	@echo ${PYTHON_LIBRARY_DIR}
 	@$(TESTDIRSTART) "$(BTARGETDIR)" $(TESTDIREND) $(MKDIR) "$(BTARGETDIR)"
 	$(LINK.cc) $(OBJS) $(LDLIBS) $(OUTPUT_OPTION)
 
