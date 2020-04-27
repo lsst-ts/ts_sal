@@ -37,7 +37,7 @@ global SAL_WORK_DIR SALVERSION OPTIONS
    }
    if { $OPTIONS(idl) } {
        catch {
-         exec rm -f $SAL_WORK_DIR/idl-templates/validated/sal/sal_revCoded_[set subsys].idl
+         exec rm -f $SAL_WORK_DIR/[set subsys]/sal_revCoded_[set subsys].idl
              } res
    }
    if { $OPTIONS(java) } {
@@ -52,8 +52,11 @@ global SAL_WORK_DIR SALVERSION OPTIONS
    }
    if { $OPTIONS(lib) } {
        catch {
-         set files [glob $SAL_WORK_DIR/lib/*_[set subsys]*]
-         foreach i $files { exec rm -fr $i }
+         exec rm -f $SAL_WORK_DIR/lib/libsacpp_[set subsys]_types.so
+         exec rm -f $SAL_WORK_DIR/lib/libSAL_[set subsys].so
+         exec rm -f $SAL_WORK_DIR/lib/SALLV_[set subsys].so
+         exec rm -f $SAL_WORK_DIR/lib/SALPY_[set subsys].so
+         exec rm -f $SAL_WORK_DIR/lib/saj_[set subsys]_types.jar
              } res
    }
    if { $OPTIONS(verbose) } {stdlog "###TRACE<<< clearAssets $subsys"}
@@ -63,7 +66,7 @@ proc checkAssets { subsys } {
 global SAL_WORK_DIR OPTIONS CMD_ALIASES EVENT_ALIASES TLM_ALIASES
    if { $OPTIONS(verbose) } {stdlog "###TRACE>>> checkAssets $subsys"}
    if { $OPTIONS(idl) } {
-        checkFileAsset $SAL_WORK_DIR/idl-templates/validated/sal/sal_revCoded_[set subsys].idl
+        checkFileAsset $SAL_WORK_DIR/[set subsys]/sal_revCoded_[set subsys].idl
    }
    if { $OPTIONS(cpp) } {
         checkFileAsset $SAL_WORK_DIR/[set subsys]/cpp/libsacpp_[set subsys]_types.so
