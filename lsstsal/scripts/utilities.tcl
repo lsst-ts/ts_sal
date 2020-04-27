@@ -52,7 +52,7 @@ global SAL_WORK_DIR SALVERSION OPTIONS
    }
    if { $OPTIONS(lib) } {
        catch {
-         set files [glob $SAL_WORK_DIR/lib/*[set subsys]*]
+         set files [glob $SAL_WORK_DIR/lib/*_[set subsys]*]
          foreach i $files { exec rm -fr $i }
              } res
    }

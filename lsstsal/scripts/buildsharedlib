@@ -7,7 +7,7 @@ echo "work dir is $SAL_WORK_DIR"
 echo "ospl home is $OSPL_HOME"
 rm -fr tmplib
 mkdir -p tmplib
-cp $1_*/cpp/standalone/.obj/SAL_$1.o tmplib/.
+cp $1/cpp/src/.obj/SAL_$1.o tmplib/.
 cp $1/cpp/.obj/* tmplib/.
 g++ -o lib/libSAL_$1.so -shared  -fPIC -L"." -L$OSPL_HOME/lib -Wl,-rpath,$OSPL_HOME/lib tmplib/*.o -l"dcpssacpp" -l"dcpsgapi" -l"ddsuser" -l"ddskernel" -l"ddsserialization" -l"ddsconfparser" -l"ddsconf" -l"ddsdatabase" -l"ddsutil" -l"ddsos" -ldl -lrt -lpthread
 cp $1/cpp/src/*.h include/.
