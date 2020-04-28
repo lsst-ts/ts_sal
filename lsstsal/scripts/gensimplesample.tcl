@@ -389,7 +389,7 @@ global VPROPS TYPEFORMAT
     \}"
          puts $fcod2 "    Instance.$VPROPS(name) = DDS::string_dup(data->$VPROPS(name).c_str());"
          puts $fcod3 "    cout << \"    $VPROPS(name) : \" << SALInstance.$VPROPS(name) << endl;"
-         puts $fcod4 "    myData.$VPROPS(name)=\"LSST\";"
+         puts $fcod4 "    myData.$VPROPS(name)=\"RO\";"
          puts $fcod5 "    myData.$VPROPS(name)=argv\[$idx\];"
          puts $fcod6 "    cout << \"    $VPROPS(name) : \" << data->$VPROPS(name) << endl;"
          if { [lsearch "device property action itemValue" $VPROPS(name)] < 0 } {
@@ -405,7 +405,7 @@ global VPROPS TYPEFORMAT
            for (int i=0;i<$VPROPS(name)Size;i++)\{(*(data->$VPROPS(name)))->data\[i\] = [set VPROPS(base)]_memIO->client\[LVClient\].[set VPROPS(topic)]LV_$VPROPS(name)_bufferIn\[i\];\}"
          }
          puts $fcod10 "myData.$VPROPS(name)=sys.argv\[$idx\]"
-         puts $fcod11 "myData.$VPROPS(name)=\"LSST\""
+         puts $fcod11 "myData.$VPROPS(name)=\"RO\""
          if { [lsearch "device property action itemValue" $VPROPS(name)] < 0 } {
                puts $fcod12 "             Outgoing_[set VPROPS(topic)]->[set VPROPS(name)]=[set VPROPS(base)]_memIO->client\[LVClient\].[set VPROPS(topic)]LV_[set VPROPS(name)]_bufferOut;"
                puts $fcod13 "             strcpy([set VPROPS(base)]_memIO->client\[LVClient\].[set VPROPS(topic)]LV_[set VPROPS(name)]_bufferIn,Incoming_[set VPROPS(topic)]->[set VPROPS(name)].c_str());"
