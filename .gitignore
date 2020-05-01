@@ -1,4 +1,5 @@
 *~
+test/*.xml
 lsstsal/lib/*types.so
 lsstsal/scripts/code/include/sal/svcSAL*.h
 lsstsal/scripts/code/sql/*.sql
