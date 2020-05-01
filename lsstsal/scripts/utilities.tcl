@@ -31,7 +31,9 @@ global SAL_WORK_DIR SALVERSION OPTIONS
    if { $OPTIONS(verbose) } {stdlog "###TRACE>>> clearAssets $subsys"}
    if { $OPTIONS(cpp) } {
        catch {
-         set files [glob $SAL_WORK_DIR/[set subsys]*/cpp]
+         set files [glob $SAL_WORK_DIR/[set subsys]/cpp]
+         foreach i $files { exec rm -fr $i }
+         set files [glob $SAL_WORK_DIR/[set subsys]_*/cpp]
          foreach i $files { exec rm -fr $i }
              } res
    }
@@ -42,7 +44,9 @@ global SAL_WORK_DIR SALVERSION OPTIONS
    }
    if { $OPTIONS(java) } {
        catch {
-         set files [glob $SAL_WORK_DIR/[set subsys]*/java]
+         set files [glob $SAL_WORK_DIR/[set subsys]/java]
+         foreach i $files { exec rm -fr $i }
+         set files [glob $SAL_WORK_DIR/[set subsys]_*/java]
          foreach i $files { exec rm -fr $i }
          exec rm -fr $SAL_WORK_DIR/maven/[set subsys]_[set SALVERSION]
              } res

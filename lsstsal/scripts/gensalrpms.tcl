@@ -114,27 +114,27 @@ global SAL_WORK_DIR SALVERSION SAL_DIR
   listfilesforrpm $rpmname
   if { $withtest } {
     generatetestrpm $subsys
-    set frpm [open /tmp/makerpm w]
+    set frpm [open /tmp/makerpm-runtime-[set subsys] w]
     puts $frpm "#!/bin/sh
 export QA_RPATHS=0x001F
 rpmbuild -bi -bl -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_[set subsys]_test.spec
 rpmbuild -bb -bl -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_[set subsys]_test.spec
 "
     close $frpm
-    exec chmod 755 /tmp/makerpm
-    exec /tmp/makerpm  >& /tmp/makerpm_[set subsys]_test.log
+    exec chmod 755 /tmp/makerpm-runtime-[set subsys]
+    exec /tmp/makerpm-runtime-[set subsys]  >& /tmp/makerpm_[set subsys]_test.log
     exec cat /tmp/makerpm_[set subsys]_test.log
   } else {
     generaterpm $subsys
-    set frpm [open /tmp/makerpm w]
+    set frpm [open /tmp/makerpm-runtime-[set subsys] w]
     puts $frpm "#!/bin/sh
 export QA_RPATHS=0x001F
 rpmbuild -bi -bl -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_[set subsys].spec
 rpmbuild -bb -bl -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_[set subsys].spec
 "
     close $frpm
-    exec chmod 755 /tmp/makerpm
-    exec /tmp/makerpm  >& /tmp/makerpm_[set subsys].log
+    exec chmod 755 /tmp/makerpm-runtime-[set subsys]
+    exec /tmp/makerpm-runtime-[set subsys]  >& /tmp/makerpm_[set subsys].log
     exec cat /tmp/makerpm_[set subsys].log
   }
   cd $SAL_WORK_DIR
@@ -354,14 +354,14 @@ This metapackage is used to install all the SAL runtime packages at once
 %files
 "
    close $fout
-  set frpm [open /tmp/makerpm w]
+  set frpm [open /tmp/makerpm-meta w]
   puts $frpm "#!/bin/sh
 rpmbuild -ba -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_runtime.spec
 "
   close $frpm
-  exec chmod 755 /tmp/makerpm
-  exec /tmp/makerpm  >& /tmp/makerpm.log
-  exec cat /tmp/makerpm.log
+  exec chmod 755 /tmp/makerpm-meta
+  exec /tmp/makerpm-meta  >& /tmp/makerpm-meta.log
+  exec cat /tmp/makerpm-meta.log
 }
 
 proc generateATmetarpm { } {
@@ -411,14 +411,14 @@ This metapackage is used to install all the SAL Aux telescope related runtime pa
 %files
 "
    close $fout
-  set frpm [open /tmp/makerpm w]
+  set frpm [open /tmp/makerpm-atmeta w]
   puts $frpm "#!/bin/sh
 rpmbuild -ba -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_ATruntime.spec
 "
   close $frpm
-  exec chmod 755 /tmp/makerpm
-  exec /tmp/makerpm  >& /tmp/makerpm.log
-  exec cat /tmp/makerpm.log
+  exec chmod 755 /tmp/makerpm-atmeta
+  exec /tmp/makerpm-atmeta  >& /tmp/makerpm-atmeta.log
+  exec cat /tmp/makerpm-atmeta.log
 }
 
 proc generaterpm { subsys } {
@@ -732,16 +732,16 @@ WantedBy=ts_sal_settai.service
   exec tar cvzf $SAL_WORK_DIR/rpmbuild/SOURCES/ts_sal_utils-$SALVERSION.tgz ts_sal_utils-$SALVERSION
   exec rm -fr $SAL_WORK_DIR/rpmbuild/BUILD/ts_sal_utils-$SALVERSION/*
   exec cp -r ts_sal_utils-$SALVERSION $SAL_WORK_DIR/rpmbuild/BUILD/.
-  set frpm [open /tmp/makerpm w]
+  set frpm [open /tmp/makerpm-utils w]
   puts $frpm "#!/bin/sh
 export QA_RPATHS=0x001F
 rpmbuild -bi -bl -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_utils.spec
 rpmbuild -bb -bl -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_utils.spec
 "
   close $frpm
-  exec chmod 755 /tmp/makerpm
-  exec /tmp/makerpm  >& /tmp/makerpm.log
-  exec cat /tmp/makerpm.log
+  exec chmod 755 /tmp/makerpm-utils
+  exec /tmp/makerpm-utils  >& /tmp/makerpm-utils.log
+  exec cat /tmp/makerpm-utils.log
 }
 
 proc generaterddsrpm { version } {
