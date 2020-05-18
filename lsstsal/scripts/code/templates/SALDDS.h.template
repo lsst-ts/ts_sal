@@ -28,10 +28,14 @@
 
 #ifndef _SAL_SALActorMGR_
   #define _SAL_SALActorMGR_
+
+/// The maximum number of Actors for a SAL_SALData object, equal to the number of DDS topic types for SALData
   #define SAL__ACTORS_MAXCOUNT	256
+
+/// The maximum length of a Actor (aka DDS topic) name
   #define SAL__ACTORS_NAMESIZE	128
 
-/* Array to hold the names for all ReturnCodes. */
+/// Array to hold the names for all the DDS Return Codes.
   static string RetCodeName[13] = 
   {
 	    "DDS_RETCODE_OK", "DDS_RETCODE_ERROR", "DDS_RETCODE_UNSUPPORTED", 
@@ -42,57 +46,107 @@
 	    "DDS_RETCODE_ILLEGAL_OPERATION"
   };
 
-
+/** The SAL_SALData object is instantiated with an array of salActor data structures.
+  * Each salActor maintains the state information for a single DDS topic in the SALData namespace.
+  * This includes DDS datatypes , and well as SAL specific information
+ */ 
   struct salActor {
+/// baseName holds the name of the SALData object
       char 			baseName[SAL__ACTORS_NAMESIZE];
+/// topicName holds the root name of the DDS topic
       char 			topicName[SAL__ACTORS_NAMESIZE];
+/// topicHandle holds the actual name of the DDS topic with an IDL versioned hash appended 
       char 			topicHandle[SAL__ACTORS_NAMESIZE];
+/// sFilter is used to build the filtering pattern for indexed DDS topics
       DDS::String_var 		sFilter;
+/// typeName holds the DDS type, in our case it is the same as the topicHandle
       DDS::String_var 		typeName;
+/// typeName2 holds the complementary type of the ackCmd when typeName is a command topic
       DDS::String_var 		typeName2;
+/// topic holds a pointer to the internal DDS Topic object
       Topic_var 		topic;
+/// topic2 holds a pointer to the internal DDS Topic object
       Topic_var 		topic2;
+/// reader holds a pointer to the internal DDS DataReader object
       DataReader_var 		reader;
+/// reader2 holds a pointer to the internal DDS DataReader object
       DataReader_var 		reader2;
+/// filteredtopic holds a pointer to the internal DDS topic for indexed DDS topics
       ContentFilteredTopic_var  filteredtopic;
+/// filteredtopic2 holds a pointer to the internal DDS topic for indexed DDS topics
       ContentFilteredTopic_var  filteredtopic2;
+/// writer holds a pointer to the internal DDS DataReader object
       DataWriter_var 		writer;
+/// writer2 holds a pointer to the internal DDS DataWriter object
       DataWriter_var 		writer2;
+/// publisher holds a pointer to the internal DDS Publisher object
       Publisher_var 		publisher;
+/// subscriber holds a pointer to the internal DDS Subscriber object
       Subscriber_var 		subscriber;
  
-      /* QosPolicy holders */
+/// reliable_topic_qos holds a pointer to the internal DDS TopicQos object
       TopicQos 			reliable_topic_qos;
+/// reliable_topic_qos2 holds a pointer to the internal DDS TopicQos object
       TopicQos 			reliable_topic_qos2;
+/// pub_qos holds a pointer to the internal DDS PublisherQos object
       PublisherQos 		pub_qos;
+/// sub_qos holds a pointer to the internal DDS SubscriberQos object
       SubscriberQos 		sub_qos;
+/// dr_qos holds a pointer to the internal DDS DataReaderQos object
       DataReaderQos 		dr_qos;
+/// dw_qos holds a pointer to the internal DDS DataWriterQos object
       DataWriterQos 		dw_qos;
+/// isActive is true when the Actor has been connected to DDS
       bool			isActive;
+/// isReader is true when the Actor is a DDS reader
       bool 			isReader;
+/// isWriter is true when the Actor is a DDS writer
       bool 			isWriter;
+/// isCommand is true when the Actor is a managing a SAL commander
       bool 			isCommand;
+/// isEventReader is true when the Actor is a managing a SAL event subscriber
       bool 			isEventReader;
+/// isEventWriter is true when the Actor is a managing a SAL event publisher
       bool 			isEventWriter;
+/// isCommand is true when the Actor is a managing a SAL command processor
       bool 			isProcessor;
+/// debugLevel is the numerical level of verbosity controlling the output of debug messages
       int 			debugLevel;
+/// sndSeqNum holds the sequence number of the most recent DDS message sent for this topic
       int 			sndSeqNum;
+/// cmdSeqNum holds the sequence number of the most recent DDS command sent for this topic
       int                       cmdSeqNum;
+/// sndSeqNum holds the sequence number of the most recent DDS message received for this topic
       int 			rcvSeqNum;
+/// rcvOrigin holds the private_origin filed from the last DDS message received for this topic
       int 			rcvOrigin;
+/// maxSamples is used to control the maximum number of DDS messages received by getSample/getNextSample methods
       int			maxSamples;
+/// error is the error field for the most recent ackCmd message (commands)
       int			error;
+/// ack is the ack field for the most recent ackCmd message (commands)
       int			ack;
+/// activehost is the private_identity field of the most recent command
       int			activehost;
+/// activeorigin is the priate_origin field of the most recent command
       int			activeorigin;
+/// activecmdid is the command sequence number of the most recent command
       int			activecmdid;
+/// timeout is the number of seconds the command is expected to take to execute
       double			timeout;
+/// result is the text message result of the most recent command
       char			result[256];
+/// sndStamp is the TAI timestamp of the most recent command sent
       double	 		sndStamp;
+/// rcvStamp is the TAI timestamp of the most recent command received
       double			rcvStamp;
+/// sampleAge is the time in seconds between command send and receive
       double			sampleAge;
+/// historyDepth is the maximum size (in samples) of the DDS message cache for the topic
       int                       historyDepth;
+/// tuneableQos is true when the SAL hardcoded QoS tuning is being used
       int                       tuneableQos;
+/// durability holds the DDS durability setting is use with the topic
       DDS::DurabilityQosPolicyKind durability;
   };
 #endif
@@ -151,47 +205,138 @@
 
     public:
 
+/** Constructor for the SAL_SALData object. It obtains information about the execution environment
+  *
+  * + LSST_DDS_DOMAIN is the name of the partition being used
+  * + LSST_DDS_IP is the IP address of the DDS ethernet interface
+  * + LSST_DDS_QOS is the optional path to the DDS QoS XML description
+  * + LSST_DDS_HISTORYSYNC is the maximum number of seconds to wait to obtain historical messages on a topic
+  *
+  @param aKey is used to specify the index of an indexed component, or 0 for non-indexed ones
+ */
      SAL_SALData(int aKey);
      SAL_SALData();
 
-// INSERT TYPE SUPPORT      
-      salReturn salTypeSupport(char *topicName);
+/** Sets up the DDS Publisher support for the named DDS type
+  @param topicName is the name of the DDS topic
+  @throws "Unknown Topic" if the topic is not defined
+ */    
       salReturn salTelemetryPub(char *topicName);
+
+/** Sets up the DDS Subscriber support for the named DDS type
+  @param topicName is the name of the DDS topic
+  @throws "Unknown Topic" if the topic is not defined
+ */    
       salReturn salTelemetrySub(char *topicName);
 
-      string getErrorName(DDS::ReturnCode_t status);
-      void checkStatus(DDS::ReturnCode_t status, const char *info);
-      void checkHandle(void *handle, string info);
-
-
-      double getCurrentTime();
-      double getRcvdTime(char *topicName);
-      double getSentTime(char *topicName);
-      std::string getSALVersion();
-      std::string getXMLVersion();
-      int getLeapSeconds();
-      void setTuneableQos(char *topicName);
-      void setDefaultQos(char *topicName);
+/// Returns of vector::string consisting of the topic names of all SAL_SALData telemetry topics
       std::vector<std::string> getTelemetryNames();
+
+/// Returns of vector::string consisting of the topic names of all SAL_SALData command topics
       std::vector<std::string> getCommandNames();
+
+/// Returns of vector::string consisting of the topic names of all SAL_SALData logevent topics
       std::vector<std::string> getEventNames();
 
-      void salShutdown();
-// INSERT CMDALIAS SUPPORT  for issueCommandC and acceptCommandC, acceptAnyCommand   
-      salReturn cancelCommand( int cmdSeqNum );
-      salReturn abortCommand( int cmdSeqNum );
-      salReturn setDebugLevel( int level );
-      int getDebugLevel( int level );
-      int getOrigin();
-      int getProperty(salCHAR *property, salCHAR *value);
-      int setProperty(salCHAR *property, salCHAR *value);
-      int getIntProperty(int actorIdx,salCHAR *property);
-      double getDblProperty(int actorIdx,salCHAR *property);
-      bool getBoolProperty(int actorIdx,salCHAR *property);
-      void setMaxSamples(int actorIdx, int n);
-      void logError(salReturn status);
+// INSERT CMDALIAS SUPPORT  for issueCommandC and acceptCommandC, acceptAnyCommand
 
 // INSERT EVENTALIAS SUPPORT for getEventC and logEventC , getAnyEvent
+
+// INSERT TYPE SUPPORT  
+
+/// Return the text string corresponding to a DDS internal error code
+      string getErrorName(DDS::ReturnCode_t status);
+
+/// Check the status of any DDS methods return code, can cause the program to throw DDS exceptions
+      void checkStatus(DDS::ReturnCode_t status, const char *info);
+
+/// Check the validity of a DDS low level object pointer, can cause the program to throw DDS exceptions
+      void checkHandle(void *handle, string info);
+
+/** Get the time from the system. The TAI time will be used, which assumes that the kernel 
+  * leap seconds offset has been correctly set. The getLeapSeconds method can be used to 
+  * do a simple sanity check
+  @return The current TAI system time
+ */
+      double getCurrentTime();
+
+/** Get the timestamp from the most recent DDS message received for a topic
+  @param Name of the topic as defined in the XML
+  @return The TAI timestamp (private_rcvStamp) from the message
+ */
+      double getRcvdTime(char *topicName);
+
+/** Get the sender timestamp from the most recent DDS message received for a topic
+  @param Name of the topic as defined in the XML
+  @return The TAI timestamp (private_sndStamp) from the message
+ */
+      double getSentTime(char *topicName);
+
+/// Returns the integer number of leap seconds that the kernel has set
+      int getLeapSeconds();
+
+/// Returns the current SAL version e.g. "4.1.0"
+      std::string getSALVersion();
+
+/// Returns the current XML version e.g. "5.0.0"
+      std::string getXMLVersion();
+
+
+/** Sets up the DDS data type low level support for the named DDS type
+  @param topicName is the name of the DDS topic
+  @throws "Unknown Topic" if the topic is not defined
+ */    
+      salReturn salTypeSupport(char *topicName);
+
+/** Sets up the topic to use SAL QoS tuning, it must be called BEFORE the topic is instantiated
+  @param topicName is the name of the DDS topic
+  @throws "Unknown Topic" if the topic is not defined
+ */    
+      void setTuneableQos(char *topicName);
+
+/** Sets up the topic to use default QoS tuning, it must be called BEFORE the topic is instantiated
+  * The default behavior can be found in the OpenSplice deployment guide and can be modified by configuring a
+  * DDS_DefaultQoS_all.xml file and pointing to it with the LSST_DDS_QOS environment vairable.
+  @param topicName is the name of the DDS topic
+  @throws "Unknown Topic" if the topic is not defined
+ */    
+      void setDefaultQos(char *topicName);
+
+/// Set the debug message output verbosity level for this SAL_SALData object
+      salReturn setDebugLevel( int level );
+
+/// Get the current value of the debug message verbosity level for this SAL_SALData object
+      int getDebugLevel( int level );
+
+/// Get the current IP address
+      int getOrigin();
+
+/// Generic method to read the value of a SAL_SALData object internal state
+      int getProperty(salCHAR *property, salCHAR *value);
+
+/// Generic method to set the value of a SAL_SALData object internal state
+      int setProperty(salCHAR *property, salCHAR *value);
+
+/// Generic method to read the integer value of a SAL_SALData object internal state
+      int getIntProperty(int actorIdx,salCHAR *property);
+
+/// Generic method to read the double value of a SAL_SALData object internal state
+      double getDblProperty(int actorIdx,salCHAR *property);
+
+/// Generic method to read the boolean value of a SAL_SALData object internal state
+      bool getBoolProperty(int actorIdx,salCHAR *property);
+
+/** Set the value of maxSamples for the Actor specified
+  @param actorIdx is the index into the salActors array
+  @param n is the new number of maxSamples to use
+ */
+      void setMaxSamples(int actorIdx, int n);
+
+/// Placeholder routine to be replaced by system wide logging once available
+      void logError(salReturn status);
+
+/// Close down the DDS support for this SAL_SALData object
+      void salShutdown();
 
       void createParticipant(const char *partitiontName);
       void deleteParticipant();
