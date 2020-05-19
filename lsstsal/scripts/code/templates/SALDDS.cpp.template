@@ -35,7 +35,7 @@ SAL_SALData::SAL_SALData(int aKey)
    if (ipaddr != NULL) {
       sscanf(ipaddr,"%d.%d.%d.%d", &v1 , &v2 , &v3 , &v4);
       ddsIPaddress = 256*256*256*v1 + 256*256*v2 + 256*v3 + v4;
-   } 
+   }
    hasReader = false;
    hasWriter = false;
    hasCommand = false;
@@ -73,7 +73,7 @@ SAL_SALData::SAL_SALData()
    if (ipaddr != NULL) {
       sscanf(ipaddr,"%d.%d.%d.%d", &v1 , &v2, &v3, &v4);
       ddsIPaddress = 256*256*256*v1 + 256*256*v2 + 256*v3 + v4;
-   } 
+   }
    hasReader = false;
    hasWriter = false;
    hasCommand = false;
@@ -123,15 +123,12 @@ void SAL_SALData::checkHandle(void *handle, string info)
 
 double SAL_SALData::getCurrentTime()
 {
-   struct timex tx;
-   struct timespec now;
-   double taiTime;
-
-   memset(&tx, 0, sizeof(tx));
-   adjtimex(&tx);
-   clock_gettime(CLOCK_TAI,&now);
-   taiTime = (double)now.tv_sec + (double)now.tv_nsec/1000000000.;
-   return taiTime;
+     struct timeval now;
+     struct timezone zone;
+     double ts;
+     gettimeofday(&now, &zone);
+     ts = (double)now.tv_sec + (double)now.tv_usec/1000000.;
+     return ts;
 }
 
 int SAL_SALData::getLeapSeconds()
@@ -251,7 +248,7 @@ int SAL_SALData::getIntProperty(int actorIdx,salCHAR *property)
 
 
 
-// INSERT TYPE SUPPORT      
+// INSERT TYPE SUPPORT
 
 salReturn SAL_SALData::salTelemetryPub(char *topicName)
 {
@@ -282,7 +279,7 @@ salReturn SAL_SALData::salTelemetrySub(char *topicName)
   }
   return status;
 }
- 
+
 
 salReturn SAL_SALData::salTelemetryPub(int actorIdx)
 {
@@ -310,7 +307,7 @@ salReturn SAL_SALData::salTelemetryPub(int actorIdx)
 
 
 
-       
+
 salReturn SAL_SALData::salTelemetrySub(int actorIdx)
 {
    // create domain participant
@@ -348,9 +345,9 @@ salReturn SAL_SALData::salTelemetrySub(int actorIdx)
 
 
 
-void SAL_SALData::logError(salReturn status) 
+void SAL_SALData::logError(salReturn status)
 {
-   cout << "=== ERROR return value = " << status << endl; 
+   cout << "=== ERROR return value = " << status << endl;
 }
 
 /*
@@ -361,13 +358,13 @@ using std::chrono::duration_cast;
 
 salTIME SAL_SALData::currentTime()
 {
-    Time_point tp = Clock::now();   
+    Time_point tp = Clock::now();
     return (salTIME duration_cast<milliseconds>tp.count());
 }
 */
 
 
-// INSERT CMDALIAS SUPPORT  for issueCommandC and acceptCommandC, acceptAnyCommand   
+// INSERT CMDALIAS SUPPORT  for issueCommandC and acceptCommandC, acceptAnyCommand
 
 
 
@@ -420,7 +417,7 @@ int SAL_SALData::getOrigin()
    }
    return status;
 }
-      
+
 void SAL_SALData::setMaxSamples(int actorIdx, int n)
 {
     if ( n < 0 ) {
@@ -453,7 +450,7 @@ salReturn SAL_SALData::setProperty(salCHAR *property, salCHAR *value)
    }
    return status;
 }
- 
+
 
 
 // INSERT EVENTALIAS SUPPORT
@@ -519,7 +516,7 @@ void SAL_SALData::salShutdown()
 
 void SAL_SALData::createParticipant(const char *partitiontName)
 {
-  
+
   if (participant == NULL) {
     domain = DOMAIN_ID_DEFAULT;
     dpf = DomainParticipantFactory::get_instance();
@@ -729,7 +726,7 @@ void SAL_SALData::deleteTopics()
       status = participant->delete_contentfilteredtopic(sal[i].filteredtopic2);
       checkStatus(status, "DDS.DomainParticipant.delete_topic");
     }
-  }  
+  }
 
 }
 
@@ -1022,7 +1019,3 @@ DomainParticipant_ptr SAL_SALData::getParticipant()
 SAL_SALData::~SAL_SALData(){
     salShutdown();
 }
-
-
-
-
