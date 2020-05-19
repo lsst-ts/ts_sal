@@ -28,11 +28,11 @@ MKDIR         = mkdir -p
 TESTDIRSTART  = test -d
 TESTDIREND    = ||
 TOUCH         = touch
-EXEEXT        = 
+EXEEXT        =
 LIBPREFIX     = lib
-LIBSUFFIX     = 
+LIBSUFFIX     =
 GENFLAGS      = -O
-LDLIBS        = -l"dcpsisocpp$(LIBSUFFIX)" -l"dcpssacpp" -l"dcpsgapi" -l"ddsuser" -l"ddskernel" -l"ddsserialization" -l"ddsconfparser" -l"ddsconf" -l"ddsdatabase" -l"ddsutil" -l"ddsos" -ldl $(subst lib,-l,$(sort $(basename $(notdir $(wildcard /usr/lib/librt.so /lib/librt.so))))) -lpthread
+LDLIBS        = -l"dcpsisocpp$(LIBSUFFIX)" -l"dcpssacpp" -l"dcpsgapi" -l"ddsuser" -l"ddskernel" -l"ddsserialization" -l"ddsconfparser" -l"ddsconf" -l"ddsdatabase" -l"ddsutil" -l"ddsos" -ldl  -lpthread
 OBJS          = .obj/SALDataDcps$(OBJEXT) .obj/SALData$(OBJEXT) .obj/SALDataDcps_impl$(OBJEXT) .obj/SALDataSplDcps$(OBJEXT)
 AREXT         = .a
 LIB           = $(LTARGETDIR)$(LIBPREFIX)ISO_Cxx_SAL_Typesupport$(LIBSUFFIX)$(AREXT)
@@ -70,11 +70,11 @@ MKDIR         = mkdir -p
 TESTDIRSTART  = test -d
 TESTDIREND    = ||
 TOUCH         = touch
-EXEEXT        = 
+EXEEXT        =
 LIBPREFIX     = lib
-LIBSUFFIX     = 
+LIBSUFFIX     =
 GENFLAGS      = -g
-LDLIBS        = -l"dcpsisocpp$(LIBSUFFIX)" -l"dcpssacpp" -l"dcpsgapi" -l"ddsuser" -l"ddskernel" -l"ddsserialization" -l"ddsconfparser" -l"ddsconf" -l"ddsdatabase" -l"ddsutil" -l"ddsos" -ldl $(subst lib,-l,$(sort $(basename $(notdir $(wildcard /usr/lib/librt.so /lib/librt.so))))) -lpthread
+LDLIBS        = -l"dcpsisocpp$(LIBSUFFIX)" -l"dcpssacpp" -l"dcpsgapi" -l"ddsuser" -l"ddskernel" -l"ddsserialization" -l"ddsconfparser" -l"ddsconf" -l"ddsdatabase" -l"ddsutil" -l"ddsos" -ldl  -lpthread
 OBJS          = .obj/SALDataDcps$(OBJEXT) .obj/SALData$(OBJEXT) .obj/SALDataDcps_impl$(OBJEXT) .obj/SALDataSplDcps$(OBJEXT)
 AREXT         = .a
 LIB           = $(LTARGETDIR)$(LIBPREFIX)ISO_Cxx_SAL_Typesupport$(LIBSUFFIX)$(AREXT)
@@ -100,7 +100,7 @@ $(SHLIB): $(OBJS)
 
 $(LIB): $(OBJS)
 	@$(TESTDIRSTART) "$(LTARGETDIR)" $(TESTDIREND) $(MKDIR) "$(LTARGETDIR)"
-	$(AR) $(ARFLAGS) $(LIB) $(OBJS) 
+	$(AR) $(ARFLAGS) $(LIB) $(OBJS)
 
 SPACE           = $(should_be_unset) $(should_be_unset)
 GENERATED_DIRTY = ./SALDataSplDcps.h ./SALDataDcps.cpp ./SALData.cpp ./SALDataDcps_impl.cpp ./SALDataSplDcps.cpp ./SALData_DCPS.hpp ./SALDataDcps_impl.h ./SALDataDcps.h ./SALData.h
