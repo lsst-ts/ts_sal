@@ -7,6 +7,10 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/time.h>
+
+#ifndef CLOCK_TAI
+#define CLOCK_TAI 11
+#endif
  
 typedef unsigned int 	salUINT;   
 typedef int 		salINT;  
