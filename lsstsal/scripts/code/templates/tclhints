@@ -16,5 +16,5 @@ swig -tcl -c++ -DSAL_SUBSYSTEM_ID_IS_KEYED SAL_hexapod.i
 
 g++ -g -I. -c SAL_hexapod_wrap.cxx -I/opt/test/include -I/opt/lsstsal/include -fPIC  -g $(SAL_CPPFLAGS) -D_REENTRANT -Wall -I"." -I"$(OSPL_HOME)/examples/include" -I"$(OSPL_HOME)/examples" -I"$(OSPL_HOME)/include" -I"$(OSPL_HOME)/include/sys" -I"$(OSPL_HOME)/include/dcps/C++/SACPP"   -DSAL_SUBSYSTEM_ID_IS_KEYED
 
-g++ -o libSAL_hexapod.so -shared SAL_hexapod_wrap.o -ltcl -fPIC -L"." -L"$(OSPL_HOME)/lib" -Wl,-rpath,\$ORIGIN -Wl,-rpath,\$ORIGIN/$(OSPL_HOME)/lib -L"/opt/lsstsal/lib" .obj/CheckStatus.o .obj/SAL_hexapod.o  -l"sacpp_hexapod_types" -l"dcpssacpp" -l"dcpsgapi" -l"ddsuser" -l"ddskernel" -l"ddsserialization" -l"ddsconfparser" -l"ddsconf" -l"ddsdatabase" -l"ddsutil" -l"ddsos" -ldl -lrt -lpthread -lsacpp_hexapod_types
+g++ -o libSAL_hexapod.so -shared SAL_hexapod_wrap.o -ltcl -fPIC -L"." -L"$(OSPL_HOME)/lib" -Wl,-rpath,\$ORIGIN -Wl,-rpath,\$ORIGIN/$(OSPL_HOME)/lib -L"/opt/lsstsal/lib" .obj/CheckStatus.o .obj/SAL_hexapod.o  -l"sacpp_hexapod_types" -l"dcpssacpp" -l"dcpsgapi" -l"ddsuser" -l"ddskernel" -l"ddsserialization" -l"ddsconfparser" -l"ddsconf" -l"ddsdatabase" -l"ddsutil" -l"ddsos" -ldl -lrt -lrt -lpthread -lsacpp_hexapod_types
 
