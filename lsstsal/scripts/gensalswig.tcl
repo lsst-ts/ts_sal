@@ -1,8 +1,8 @@
 #!/usr/bin/env tclsh
 #
 # Generate SALDDS swig input file
-# 
-# To test : 
+#
+# To test :
 #   set SAL_DIR $env(SAL_DIR)
 #   set SAL_WORK_DIR $env(SAL_WORK_DIR)
 #   set subsys camera
@@ -30,7 +30,7 @@ global SAL_DIR SAL_WORK_DIR SYSDIC
   foreach i $atypes {
        set ptypes [split [exec grep pragma $i] \n]
            foreach j $ptypes {
-              set name [lindex $j 2]        
+              set name [lindex $j 2]
                puts $fouth "
       salReturn putSample_[set name]([set base]_[set name]C *data);
       salReturn getSample_[set name]([set base]_[set name]C *data);
@@ -69,15 +69,10 @@ all:
 		-L\$(OSPL_HOME)/lib -L../cpp \\
 		-lsacpp_[set base]_types -ldcpssacpp -ldcpsgapi -lddsuser -lddskernel \\
 		-lddsserialization -lddsconfparser -lddsconf -lddsdatabase -lddsutil -lddsos \\
-		-ldl  -lpthread \\
+		-ldl  -lrt -lpthread \\
 		-lpython\$(PYTHON_BUILD_VERSION) -lstdc++
 "
   close $fout
   cd $SAL_WORK_DIR/[set base]/python
   exec make -f Makefile_[set base].swig
 }
-
-
-
-
-
