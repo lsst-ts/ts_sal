@@ -30,12 +30,43 @@ global CMD_ALIASES CMDS DONE_CMDEVT ACKREVCODE REVCODE SAL_WORK_DIR OPTIONS
      foreach i $CMD_ALIASES($subsys) { 
        if { [info exists CMDS($subsys,$i,param)] } {
          puts $fout "
+/** Issue the [set i] command to the SALData subsystem
+  * @param data is the command payload
+  * @returns the sequence number aka command id
+  */
       int issueCommand_[set i]( SALData_command_[set i]C *data );
+
+/** Accept the [set i] command. The SAL will automatically generate an ackCmd message with an ack = SAL__CMD_ACK
+  * @param data is the command payload
+  */
       int acceptCommand_[set i]( SALData_command_[set i]C *data );
+
+/** Wait for the arrival of command ack. If no instance arrives before the timeout then return SAL__CMD_NOACK
+  * else returns SAL__OK if a command message has been received.
+  * @param cmdSeqNum is the sequence number of the command involved, as returned by issueCommand
+  */
       salReturn waitForCompletion_[set i]( int cmdSeqNum , unsigned int timeout );
+
+/** Acknowledge a command by sending an ackCmd message
+  * @param cmdSeqNum is the sequence number of the command involved as obtained from private_seqNum in the command message
+  * @param ack is the status , one of the SAL__CMD_ACK/NOACK/INPROGRESS/STALLED/NOPERM/FAILED/ABORTED/TIMEOUT/COMPLETE codes
+  * @param error is a more detailed per subssystem specific error code for failed commands
+  * @param result is an informative message to be displayed to the operator,stored in the EFD etc
+  */
       salReturn ackCommand_[set i]( int cmdSeqNum, salLONG  ack, salLONG error, char *result );
+
+/** Acknowledge a command by sending an ackCmd message, this time with access to all the ackCmd message payload
+  * @param data is the ackCmd topic data
+  */
       salReturn ackCommand_[set i]C( SALData_ackcmdC *data );
+
       salReturn getResponse_[set i]( SALData::ackcmd[set ACKREVCODE]Seq data );
+
+/** Get the response (ack) from a command transaction. It is up to the application to validate against the 
+  * command sequence number and command type if multiple commands may be in-progress simultaneously
+  * @param data is the ackCmd payload
+  * @returns SAL__CMD_NOACK if no ackCmd is available, or SAL__OK if there is
+  */
       salReturn getResponse_[set i]C (SALData_ackcmdC *data );"
        }
      }

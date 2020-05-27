@@ -370,29 +370,6 @@ salTIME SAL_SALData::currentTime()
 // INSERT CMDALIAS SUPPORT  for issueCommandC and acceptCommandC, acceptAnyCommand   
 
 
-
-salReturn SAL_SALData::cancelCommand( int cmdSeqNum )
-{
-   salReturn status = SAL__OK;
-   if (status != SAL__OK) {
-      if (debugLevel >= SAL__LOG_ROUTINES) {
-          logError(status);
-      }
-   }
-   return status;
-}
-
-salReturn SAL_SALData::abortCommand( int cmdSeqNum )
-{
-   salReturn status = SAL__OK;
-   if (status != SAL__OK) {
-      if (debugLevel >= SAL__LOG_ROUTINES) {
-          logError(status);
-      }
-   }
-   return status;
-}
-
 salReturn SAL_SALData::setDebugLevel( int level )
 {
    debugLevel = level;
