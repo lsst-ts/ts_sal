@@ -1,7 +1,7 @@
 proc gentelemetrytestsinglefilescpp { subsys } {
     # Creates multiple files which contains an implementation of all the
     # telemtry defined within this subsys.
-    
+
     global SAL_WORK_DIR
 
     # Create the file writers for the publisher, subscriber and makefile.
@@ -25,7 +25,7 @@ proc gentelemetrytestsinglefilescpp { subsys } {
     close $subscriber_cpp_file_writer
     close $makefile_file_writer
 
-    # Execute the makefile. 
+    # Execute the makefile.
     cd $SAL_WORK_DIR/$subsys/cpp/src
     exec make -f $SAL_WORK_DIR/$subsys/cpp/src/Makefile.sacpp_[set subsys]_all_testtelemetry
     cd $SAL_WORK_DIR
@@ -52,7 +52,7 @@ proc insertTelemetryHeader { subsys file_writer } {
 
 proc insertPublishers { subsys file_writer } {
 
-    global SYSDIC SAL_WORK_DIR TLM_ALIASES 
+    global SYSDIC SAL_WORK_DIR TLM_ALIASES
 
     puts $file_writer "int main (int argc, char *argv\[\])"
     puts $file_writer "\{"
@@ -73,7 +73,7 @@ proc insertPublishers { subsys file_writer } {
     puts $file_writer "  cout << \"===== [set subsys] all publishers ready =====\" << endl;"
 
     foreach alias $TLM_ALIASES($subsys) {
-        puts $file_writer "\n  \{" 
+        puts $file_writer "\n  \{"
         puts $file_writer "    cout << \"=== [set subsys]_[set alias] start of topic ===\" << endl;"
         puts $file_writer "    int iseq = 0;"
         puts $file_writer "    os_time delay_1s = { 1, 0 };"
@@ -100,7 +100,7 @@ proc insertPublishers { subsys file_writer } {
 
 proc insertSubscribers { subsys file_writer } {
 
-    global SYSDIC SAL_WORK_DIR TLM_ALIASES 
+    global SYSDIC SAL_WORK_DIR TLM_ALIASES
 
     puts $file_writer "\n/* entry point exported and demangled so symbol can be found in shared library */"
     puts $file_writer "extern \"C\""
@@ -130,7 +130,7 @@ proc insertSubscribers { subsys file_writer } {
 
     foreach alias $TLM_ALIASES($subsys) {
         puts $file_writer "  cout << \"=== [set subsys]_[set alias] start of topic ===\" << endl;"
-        puts $file_writer "  \{" 
+        puts $file_writer "  \{"
         puts $file_writer "    [set subsys]_[set alias]C SALInstance;"
         puts $file_writer "    ReturnCode_t status = -1;"
         puts $file_writer "    int count = 0;"
@@ -147,7 +147,7 @@ proc insertSubscribers { subsys file_writer } {
         close $fragment_reader
         puts $file_writer "        os_nanoSleep(delay_10ms);"
         puts $file_writer "        ++count;"
-        
+
         puts $file_writer "      \}"
         puts $file_writer "    \}"
         puts $file_writer "  \}"
@@ -210,7 +210,7 @@ proc insertTelemetryMakeFile { subsys file_writer } {
     puts $file_writer "LIBPREFIX     = lib"
     puts $file_writer "LIBSUFFIX     ="
     puts $file_writer "GENFLAGS      = -g"
-    puts $file_writer "LDLIBS        = -l\"sacpp_[set subsys]_types\$(LIBSUFFIX)\" -l\"dcpssacpp\" -l\"dcpsgapi\" -l\"ddsuser\" -l\"ddskernel\" -l\"ddsserialization\" -l\"ddsconfparser\" -l\"ddsconf\" -l\"ddsdatabase\" -l\"ddsutil\" -l\"ddsos\" -ldl \$(subst lib,-l,\$(sort \$(basename \$(notdir \$(wildcard /usr/lib/librt.so /lib/librt.so))))) -lpthread"
+    puts $file_writer "LDLIBS        = -l\"sacpp_[set subsys]_types\$(LIBSUFFIX)\" -l\"dcpssacpp\" -l\"dcpsgapi\" -l\"ddsuser\" -l\"ddskernel\" -l\"ddsserialization\" -l\"ddsconfparser\" -l\"ddsconf\" -l\"ddsdatabase\" -l\"ddsutil\" -l\"ddsos\" -ldl \$(subst lib,-l,\$(sort \$(basename \$(notdir \$(wildcard /usr/lib/librt.so /lib/librt.so))))) -lrt -lpthread"
     puts $file_writer "LINK.cc       = \$(LD) \$(LDFLAGS)"
     puts $file_writer "EXPORTFLAGS   ="
     puts $file_writer "endif"

@@ -11,7 +11,7 @@
 #ifndef CLOCK_TAI
 #define CLOCK_TAI 11
 #endif
- 
+
 typedef unsigned int 	salUINT;   
 typedef int 		salINT;  
 typedef unsigned long 	salULONG;   
