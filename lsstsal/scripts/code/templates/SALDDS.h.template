@@ -48,7 +48,7 @@
 
 /** The SAL_SALData object is instantiated with an array of salActor data structures.
   * Each salActor maintains the state information for a single DDS topic in the SALData namespace.
-  * This includes DDS datatypes , and well as SAL specific information
+  * This includes DDS datatypes , as well as SAL CSC specific information
  */ 
   struct salActor {
 /// baseName holds the name of the SALData object
@@ -57,11 +57,12 @@
       char 			topicName[SAL__ACTORS_NAMESIZE];
 /// topicHandle holds the actual name of the DDS topic with an IDL versioned hash appended 
       char 			topicHandle[SAL__ACTORS_NAMESIZE];
-/// sFilter is used to build the filtering pattern for indexed DDS topics
+/// sFilter is used to build the filtering pattern for indexed DDS topics, for example HexapodID=2
       DDS::String_var 		sFilter;
 /// typeName holds the DDS type, in our case it is the same as the topicHandle
       DDS::String_var 		typeName;
 /// typeName2 holds the complementary type of the ackCmd when typeName is a command topic
+/// a commander needs an ackCmd subscriber , and a processor needs an ackCmd publisher
       DDS::String_var 		typeName2;
 /// topic holds a pointer to the internal DDS Topic object
       Topic_var 		topic;
