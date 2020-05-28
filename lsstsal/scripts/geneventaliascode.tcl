@@ -14,7 +14,16 @@ global EVENT_ALIASES EVTS DONE_CMDEVT
      foreach i $EVENT_ALIASES($subsys) { 
       if { [info exists EVTS($subsys,$i,param)] } {
          puts $fout "
+/** Publish a [set i] logevent message
+  * @param data is the logevent payload
+  * @priority is a user configurable priority, larger is higher priority
+  */
       salReturn logEvent_[set i]( SALData_logevent_[set i]C *data, int priority );      
+
+/** Receive a logevent message.
+  * @param data is the logevent payload
+  * @returns SAL__NO_UPDATES if no data is available, or SAL__OK otherwise
+  */
       int getEvent_[set i]( SALData_logevent_[set i]C *data );"
       }
      }

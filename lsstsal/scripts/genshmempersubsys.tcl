@@ -82,7 +82,7 @@ global SHC TOPICPROPS
   puts $fcod $SHC(genericshclient.cpp)
   close $fcod
   exec g++ -shared -g shmem_[set subsys]_server.cpp -o libshm_[set subsys]_server.so -lstdc++
-  exec gcc -g test_shmem_[set subsys].cpp -o test_[set subsys] -lpthread -L. -lshm_[set subsys]_server
+  exec gcc -g test_shmem_[set subsys].cpp -o test_[set subsys] -lrt -lpthread -L. -lshm_[set subsys]_server
  }
 }
 

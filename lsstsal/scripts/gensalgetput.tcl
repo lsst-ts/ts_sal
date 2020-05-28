@@ -782,10 +782,38 @@ salReturn SAL_[set base]::getSample([set base]::[set name][set revcode]Seq data)
                puts $fouth "
       salReturn putSample([set base]::[set name][set revcode] data);
       salReturn getSample([set base]::[set name][set revcode]Seq data);
+
+/** Publish a sample of the [set base]_[set name] DDS topic. A publisher must already have been set up
+  * @param data The payload of the sample as defined in the XML for SALData
+  */
       salReturn putSample_[set name]([set base]_[set name]C *data);
+
+
+/** Receive the latest sample of the [set base]_[set name] DDS topic. A subscriber must already have been set up.
+  * If there are no samples available then SAL__NO_UPDATES is returned, otherwise SAL__OK is returned.
+  * If there are multiple samples in the history cache, they are skipped over and only the most recent is supplied.
+  * @param data The payload of the sample as defined in the XML for SALData
+  */
       salReturn getSample_[set name]([set base]_[set name]C *data);
+
+
+/** Receive the next sample of the [set base]_[set name] DDS topic from the history cache. A subscriber must already have been set up
+  * If there are no samples available then SAL__NO_UPDATES is returned, otherwise SAL__OK is returned.
+  * If there are multiple samples in the history cache, they are iterated over by consecutive calls to getNextSample_[set name]
+  * @param data The payload of the sample as defined in the XML for SALData
+  */
       salReturn getNextSample_[set name]([set base]_[set name]C *data);
+
+/** Empty the history cache of samples. After this only newly published samples will be available to getSample_[set name] or 
+  * getNextSample_[set name]
+  */
       salReturn flushSamples_[set name]([set base]_[set name]C *data);
+
+/** Provides the data from the most recently received sample. This may be a new sample that has not been read before
+  * by the caller, or it may be a copy of the last received sample if no new data has since arrived.
+  * If there are no samples available then SAL__NO_UPDATES is returned, otherwise SAL__OK is returned.
+  * @param data The payload of the sample as defined in the XML for SALData
+  */
       salReturn getLastSample_[set name]([set base]_[set name]C *data);
       [set base]_[set name]C lastSample_[set base]_[set name];
 "
