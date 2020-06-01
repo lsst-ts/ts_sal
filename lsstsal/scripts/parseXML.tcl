@@ -46,6 +46,15 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
       }
       set tag   [lindex [split $rec "<>"] 1]
       set value [lindex [split $rec "<>"] 2]
+      if { $tag == "Enumeration" } {
+        if { [lindex [split $rec "<>"] 3] != "/[set tag]" } {
+           gets $fin rec
+           while { [lindex [split $rec <>] 1] != "/[set tag]" } {
+             set value "$value $rec"
+             gets $fin rec
+           }
+        }
+      }
       if { $tag == "SALTelemetry" }    {set ctype "telemetry" ; set intopic 1 ; set explanation ""}
       if { $tag == "SALCommand" }      {
           set ctype "command" ; set intopic 1 ; set alias "" ; set explanation ""
@@ -254,6 +263,7 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
       puts $fout "\};"
       puts $fout "#pragma keylist $tname"
       enumsToIDL $subsys $alias $fout
+      indexedEnumsToIDL $subsys $fout
       close $fout
       set alias ""
    }
@@ -303,6 +313,19 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
    }
    close $fsql
    if { $OPTIONS(verbose) } {stdlog "###TRACE<<< parseXMLtoidl $fname"}
+}
+
+proc indexedEnumsToIDL { subsys fout } {
+global SYSDIC IDXENUMDONE
+   if { [info exists SYSDIC($subsys,IndexEnumeration)] && $IDXENUMDONE($subsys) == 0 } {
+      foreach e $SYSDIC($subsys,IndexEnumeration) {
+         set enum [string trim $e "\{\}"]
+         set id [lindex [split $enum :] 0]
+         set i  [lindex [split $enum :] 1]
+         puts $fout " const long indexEnumeration_[set i]=$id;"
+      }
+      set IDXENUMDONE($subsys) 1
+   }
 }
 
 

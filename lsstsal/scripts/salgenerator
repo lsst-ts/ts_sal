@@ -184,6 +184,7 @@ if { $OPTIONS(validate) || $OPTIONS(idl) } {
   set all $TSUBSYSTEMS
   stdlog "Processing $all"
   foreach i $all {
+     set IDXENUMDONE($i) 0
 #    if { [file exists [set i]_Telemetry.xml] == 0 } {
 #        stdlog "Add minimal Telemetry"
 #        set SALSubsys $i
