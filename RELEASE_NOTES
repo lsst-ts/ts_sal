@@ -1,4 +1,14 @@
-This is release 4.1.0 of the SAL SDK (March 25th, 2020)
+This is release 4.1.4 of the SAL SDK (March 25th, 2020)
+
+Changes for 4.1.4
+
+Hot fix to support changes to SALSubsystems.xml (IndexEnumeration tag)
+Copy XML VERSION from TS_XML_DIR
+
+Changes for 4.1.3
+
+Hotfix to allow building in the LSST stack environment
+using old compilers and libraries (provide CLOCK_TAI define)
 
 Changes for 4.1
 
