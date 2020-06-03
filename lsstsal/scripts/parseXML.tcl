@@ -338,8 +338,8 @@ global EVENT_ENUM EDONE
           set cnst [lindex [split $enum :] 1]
           foreach id [split $cnst ,] {
               if { [llength [split $id "="]] > 1 } {
-                 set i [lindex [split $id "="] 1]
-                 set id [lindex [split $id "="] 0]
+                 set i [string trim [lindex [split $id "="] 1]]
+                 set id [string trim [lindex [split $id "="] 0]]
               }
               puts $fout " const long [set alias]_[string trim $id " "]=$i;"
               incr i 1
@@ -354,8 +354,8 @@ global EVENT_ENUM EDONE
           set cnst [lindex [split $enum :] 1]
           foreach id [split $cnst ,] {
               if { [llength [split $id "="]] > 1 } {
-                 set i [lindex [split $id "="] 1]
-                 set id [lindex [split $id "="] 0]
+                 set i [string trim [lindex [split $id "="] 1]]
+                 set id [string trim [lindex [split $id "="] 0]]
               }
               puts $fout " const long [set subsys]_shared_[string trim $id " "]=$i;"
               incr i 1
