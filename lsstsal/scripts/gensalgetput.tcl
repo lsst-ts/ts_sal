@@ -224,6 +224,12 @@ string SAL_SALData::getXMLVersion()
 \{
     return \"$xmldist\";
 \}
+
+string SAL_SALData::getOSPLVersion()
+\{
+     string osplver = getenv(\"OSPL_RELEASE\");
+     return osplver;
+\}
 "
 }
 
@@ -239,6 +245,12 @@ public String getSALVersion()
 public String getXMLVersion()
 \{
     return \"$xmldist\";
+\}
+
+public String getOSPLVersion()
+\{
+    String osplver = System.getenv(\"OSPL_RELEASE\");
+    return osplver;
 \}
 "
 }

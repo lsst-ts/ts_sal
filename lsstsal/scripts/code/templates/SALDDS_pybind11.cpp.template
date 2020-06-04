@@ -92,6 +92,9 @@ PYBIND11_MODULE(SALPY_SALData,m){
             "getXMLVersion"
             , &::SAL_SALData::getXMLVersion )
         .def( 
+            "getOSPLVersion"
+            , &::SAL_SALData::getOSPLVersion )
+        .def( 
             "getCurrentTime"
             , (double ( ::SAL_SALData::* )(  ) )( &::SAL_SALData::getCurrentTime ) )
         .def( 
