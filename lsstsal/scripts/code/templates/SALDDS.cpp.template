@@ -36,6 +36,7 @@ SAL_SALData::SAL_SALData(int aKey)
       sscanf(ipaddr,"%d.%d.%d.%d", &v1 , &v2 , &v3 , &v4);
       ddsIPaddress = 256*256*256*v1 + 256*256*v2 + 256*v3 + v4;
    } 
+   sprintf(CSC_identity,"SALData:%d",aKey);
    hasReader = false;
    hasWriter = false;
    hasCommand = false;
@@ -74,6 +75,7 @@ SAL_SALData::SAL_SALData()
       sscanf(ipaddr,"%d.%d.%d.%d", &v1 , &v2, &v3, &v4);
       ddsIPaddress = 256*256*256*v1 + 256*256*v2 + 256*v3 + v4;
    } 
+   sprintf(CSC_identity,"SALData");
    hasReader = false;
    hasWriter = false;
    hasCommand = false;

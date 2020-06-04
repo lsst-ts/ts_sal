@@ -169,12 +169,13 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
         puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",2,\"private_sndStamp\",\"double\",1,\"second\",1,\"\",\"\",\"TAI at sender\");"
         puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",3,\"private_rcvStamp\",\"double\",1,\"second\",1,\"\",\"\",\"TAI at receiver\");"
         puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",4,\"private_seqNum\",\"int\",1,\"unitless\",1,\"\",\"\",\"Sequence number\");"
-        puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",5,\"private_origin\",\"int\",1,\"unitless\",1,\"\",\"\",\"PID code of sender\");"
-        puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",6,\"private_host\",\"int\",1,\"unitless\",1,\"\",\"\",\"IP of sender\");"
-        set itemid 6
+        puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",5,\"private_identity\",\"int\",1,\"unitless\",1,\"\",\"\",\"Identity of originator\");"
+        puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",6,\"private_origin\",\"int\",1,\"unitless\",1,\"\",\"\",\"PID code of sender\");"
+        puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",7,\"private_host\",\"int\",1,\"unitless\",1,\"\",\"\",\"IP of sender\");"
+        set itemid 7
         if { [info exists SYSDIC($subsys,keyedID)] } {
-           puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",7,\"[set subsys]ID\",\"int\",1,\"unitless\",1,\"\",\"\",\"Index of $subsys instance\");"
-           set itemid 7
+           puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",8,\"[set subsys]ID\",\"int\",1,\"unitless\",1,\"\",\"\",\"Index of $subsys instance\");"
+           set itemid 8
         }
         set alias [getAlias $tname]
         if { $ctype == "command" } {
