@@ -151,7 +151,11 @@ global XMLVERSION
     set found [glob $SAL_WORK_DIR/rpmbuild/RPMS/x86_64/[set name]-$XMLVERSION*]
   }
   if { $found == "" } {
-     eval $process
+     switch $name } {
+        ts_sal_utils     { generateUtilsrpm }
+        ts_sal_runtime   { generatemetarpm }
+        ts_sal_ATruntime { generateATmetarpm } 
+     }
   }
 }
 
