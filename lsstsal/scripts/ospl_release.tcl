@@ -1,7 +1,6 @@
 #!/usr/bin/env tclsh
 
-set vers [split [exec strings $env(OSPL_HOME)/bin/idlpp | grep OSPL_V] "/_"]
-set nfld [lsearch $vers OSPL]
-set OSPL_RELEASE [string range [join [lrange $vers [expr $nfld+1] [expr $nfld+3]] "."] 1 end]
+set OSPL_RELEASE 6.9
+catch {set OSPL_RELEASE [lindex [exec $env(OSPL_HOME)/bin/idlpp -v] 3]}
 puts stdout $OSPL_RELEASE
 
