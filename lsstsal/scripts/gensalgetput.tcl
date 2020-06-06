@@ -42,7 +42,7 @@ salReturn SAL_[set base]::putSample_[set name]([set base]_[set name]C *data)
   Instance.private_revCode = DDS::string_dup(\"[string trim $revcode _]\");
   Instance.private_sndStamp = getCurrentTime();
   sal\[actorIdx\].sndStamp = Instance.private_sndStamp;
-  Instance.private_identity = CSC_identity;
+  Instance.private_identity = DDS::string_dup(CSC_identity);
   Instance.private_host = ddsIPaddress;
   Instance.private_seqNum = sndSeqNum;
   Instance.private_host = 1;

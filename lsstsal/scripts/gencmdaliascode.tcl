@@ -149,7 +149,7 @@ int SAL_SALData::issueCommand_[set i]( SALData_command_[set i]C *data )
 
   Instance.private_revCode =  DDS::string_dup(\"[string trim $revcode _]\");
   Instance.private_sndStamp = getCurrentTime();
-  Instance.private_identity = CSC_identity;
+  Instance.private_identity = DDS::string_dup(CSC_identity);
   Instance.private_seqNum =   sal\[actorIdx\].sndSeqNum;
   Instance.private_host =     ddsIPaddress;"
         set fin [open $SAL_WORK_DIR/include/SAL_[set subsys]_command_[set i]Cput.tmp r]
@@ -401,7 +401,6 @@ salReturn SAL_SALData::getResponse_[set i]C(SALData_ackcmdC *response)
     response->ack = data\[j\].ack;
     response->error = data\[j\].error;
     response->host = data\[j\].host;
-    response->identity = DDS::string_dup(data\[j\].identity);
     response->cmdtype = data\[j\].cmdtype;
     response->timeout = data\[j\].timeout;
     response->result= DDS::string_dup(data\[j\].result);
@@ -431,11 +430,11 @@ salReturn SAL_SALData::ackCommand_[set i]( int cmdId, salLONG ack, salLONG error
 
    ackdata.private_seqNum = cmdId;
    ackdata.private_host = ddsIPaddress;
+   ackdata.private_identity = DDS::string_dup(CSC_identity);
    ackdata.error = error;
    ackdata.ack = ack;
    ackdata.result = DDS::string_dup(result);
    ackdata.host = sal\[actorIdxCmd\].activehost;
-   ackdata.identity = DDS::string_dup(sal\[actorIdxCmd\].activeidentity.c_str());
    ackdata.cmdtype = actorIdxCmd;
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
    ackdata.SALDataID = subsystemID;
@@ -446,7 +445,7 @@ salReturn SAL_SALData::ackCommand_[set i]( int cmdId, salLONG ack, salLONG error
       cout << \"    ack      : \" << ackdata.ack << endl;
       cout << \"    error    : \" << ackdata.error << endl;
       cout << \"    host     : \" << ackdata.host << endl;
-      cout << \"    identity    : \" << ackdata.identity << endl;
+      cout << \"    identity    : \" << ackdata.private_identity << endl;
       cout << \"    result   : \" << ackdata.result << endl;
    \}
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
@@ -477,11 +476,11 @@ salReturn SAL_SALData::ackCommand_[set i]C(SALData_ackcmdC *response )
 
    ackdata.private_seqNum = sal\[actorIdxCmd\].activecmdid;
    ackdata.private_host = ddsIPaddress;
+   ackdata.private_identity = DDS::string_dup(CSC_identity);
    ackdata.error = response->error;
    ackdata.ack = response->ack;
    ackdata.result = DDS::string_dup(response->result.c_str());
    ackdata.host = sal\[actorIdxCmd\].activehost;
-   ackdata.identity = DDS::string_dup(sal\[actorIdxCmd\].activeidentity.c_str());
    ackdata.cmdtype = actorIdxCmd;
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
    ackdata.SALDataID = subsystemID;
@@ -737,7 +736,6 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
    		DataWriter dwriter = getWriter2(actorIdx2);
    		ackcmd[set ACKREVCODE]DataWriter SALWriter = ackcmd[set ACKREVCODE]DataWriterHelper.narrow(dwriter);
                 ackdata = new SALData.ackcmd[set ACKREVCODE]();
-   		ackdata.private_identity = sal\[actorIdx\].rcvIdentity;
    		ackdata.private_seqNum = cmdId;
    		ackdata.error = error;
    		ackdata.ack = ack;

@@ -203,7 +203,7 @@
       int lastActor_telemetry;
       int lastActor_command;
       int lastActor_event;
-      char CSC_identity[128];
+      char *CSC_identity;
 
     public:
 

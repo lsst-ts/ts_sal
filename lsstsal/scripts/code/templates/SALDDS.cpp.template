@@ -17,6 +17,7 @@ SAL_SALData::SAL_SALData(int aKey)
    char *qname = getenv("LSST_DDS_QOS");
    char *sname = getenv("LSST_DDS_HISTORYSYNC");
    char *ipaddr = getenv("LSST_DDS_IP");
+   CSC_identity=(char *)malloc(128);
    if ( dname != NULL ) {
       strncpy(domainName, dname, 128);
    } else {
@@ -56,6 +57,7 @@ SAL_SALData::SAL_SALData()
    char *qname = getenv("LSST_DDS_QOS");
    char *sname = getenv("LSST_DDS_HISTORYSYNC");
    char *ipaddr = getenv("LSST_DDS_IP");
+   CSC_identity=(char *)malloc(128);
    if ( dname != NULL ) {
       strncpy(domainName, dname, 128);
    } else {
