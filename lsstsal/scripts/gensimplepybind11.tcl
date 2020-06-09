@@ -16,6 +16,7 @@ global SAL_DIR SAL_WORK_DIR SYSDIC VPROPS CMD_ALIASES
         .def_readwrite( \"error\", &SALData_ackcmdC::error )    
         .def_readwrite( \"result\", &SALData_ackcmdC::result )    
         .def_readwrite( \"host\", &SALData_ackcmdC::host )    
+        .def_readwrite( \"identity\", &SALData_ackcmdC::identity )    
         .def_readwrite( \"origin\", &SALData_ackcmdC::origin )    
         .def_readwrite( \"cmdtype\", &SALData_ackcmdC::cmdtype )    
         .def_readwrite( \"timeout\", &SALData_ackcmdC::timeout )    

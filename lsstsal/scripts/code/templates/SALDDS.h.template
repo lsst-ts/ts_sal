@@ -119,8 +119,8 @@
       int                       cmdSeqNum;
 /// sndSeqNum holds the sequence number of the most recent DDS message received for this topic
       int 			rcvSeqNum;
-/// rcvOrigin holds the private_origin filed from the last DDS message received for this topic
-      int 			rcvOrigin;
+/// rcvIdentity holds the private_identity filled from the last DDS message received for this topic
+      string 			rcvIdentity;
 /// maxSamples is used to control the maximum number of DDS messages received by getSample/getNextSample methods
       int			maxSamples;
 /// error is the error field for the most recent ackCmd message (commands)
@@ -129,8 +129,8 @@
       int			ack;
 /// activehost is the private_identity field of the most recent command
       int			activehost;
-/// activeorigin is the priate_origin field of the most recent command
-      int			activeorigin;
+/// activeidentity is the priate_identity field of the most recent command
+      string			activeidentity;
 /// activecmdid is the command sequence number of the most recent command
       int			activecmdid;
 /// timeout is the number of seconds the command is expected to take to execute
@@ -193,7 +193,7 @@
       int cmdSeqNum;
       int sndSeqNum;
       int rcvSeqNum;
-      int rcvOrigin;
+      string rcvIdentity;
       int historySync;
       double rcvdTime;
       salU64  origin;
@@ -203,6 +203,7 @@
       int lastActor_telemetry;
       int lastActor_command;
       int lastActor_event;
+      char *CSC_identity;
 
     public:
 
@@ -282,6 +283,8 @@
 /// Returns the current XML version e.g. "5.0.0"
       std::string getXMLVersion();
 
+/// Returns the current OpenSpliceDDS version e.g. "6.9.181127OSS"
+      std::string getOSPLVersion();
 
 /** Sets up the DDS data type low level support for the named DDS type
   @param topicName is the name of the DDS topic

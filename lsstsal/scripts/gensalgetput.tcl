@@ -42,7 +42,7 @@ salReturn SAL_[set base]::putSample_[set name]([set base]_[set name]C *data)
   Instance.private_revCode = DDS::string_dup(\"[string trim $revcode _]\");
   Instance.private_sndStamp = getCurrentTime();
   sal\[actorIdx\].sndStamp = Instance.private_sndStamp;
-  Instance.private_origin = getpid();
+  Instance.private_identity = DDS::string_dup(CSC_identity);
   Instance.private_host = ddsIPaddress;
   Instance.private_seqNum = sndSeqNum;
   Instance.private_host = 1;
@@ -105,10 +105,10 @@ salReturn SAL_[set base]::getSample_[set name]([set base]_[set name]C *data)
       cout << \"=== \[GetSample\] message received :\" << numsamp << endl;
       cout << \"    revCode  : \" << Instances\[j\].private_revCode << endl;
       cout << \"    sndStamp  : \" << Instances\[j\].private_sndStamp << endl;
-      cout << \"    origin  : \" << Instances\[j\].private_origin << endl;
+      cout << \"    identity  : \" << Instances\[j\].private_identity << endl;
       cout << \"    host  : \" << Instances\[j\].private_host << endl;
     \}
-    if ( (rcvdTime - Instances\[j\].private_sndStamp) < sal\[actorIdx\].sampleAge && (Instances\[j\].private_origin != 0)) \{
+    if ( (rcvdTime - Instances\[j\].private_sndStamp) < sal\[actorIdx\].sampleAge ) \{
 "
   set frag [open $SAL_WORK_DIR/include/SAL_[set base]_[set name]Cget.tmp r]
   while { [gets $frag rec] > -1} {puts $fout $rec}
@@ -224,6 +224,12 @@ string SAL_SALData::getXMLVersion()
 \{
     return \"$xmldist\";
 \}
+
+string SAL_SALData::getOSPLVersion()
+\{
+     string osplver = getenv(\"OSPL_RELEASE\");
+     return osplver;
+\}
 "
 }
 
@@ -239,6 +245,12 @@ public String getSALVersion()
 public String getXMLVersion()
 \{
     return \"$xmldist\";
+\}
+
+public String getOSPLVersion()
+\{
+    String osplver = System.getenv(\"OSPL_RELEASE\");
+    return osplver;
 \}
 "
 }
@@ -533,7 +545,7 @@ puts $fout "
     [set name][set revcode]DataWriter SALWriter = [set name][set revcode]DataWriterHelper.narrow(dwriter);
     SALInstance.private_revCode = \"[string trim $revcode _]\";
           SALInstance.private_sndStamp = getCurrentTime();
-          SALInstance.private_origin = 1;
+          SALInstance.private_identity = CSC_identity;
     if (debugLevel > 0) \{
       System.out.println(\"=== \[putSample $name\] writing a message containing :\");
       System.out.println(\"    revCode  : \" + SALInstance.private_revCode);
@@ -767,10 +779,8 @@ salReturn SAL_[set base]::getSample([set base]::[set name][set revcode]Seq data)
   for (DDS::ULong j = 0; j < numsamp; j++)
   \{
     rcvdTime = getCurrentTime();
-    if (data\[j\].private_origin != 0) \{
       cout << \"=== \[GetSample\] message received :\" << endl;
       cout << \"    revCode  : \" << data\[j\].private_revCode << endl;
-    \}
   \}
   status = SALReader->return_loan(data, infoSeq);
   checkStatus(status, \"[set base]::[set name][set revcode]DataReader::return_loan\");

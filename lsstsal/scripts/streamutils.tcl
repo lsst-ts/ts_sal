@@ -84,6 +84,7 @@ proc idlpreamble { fid id } {
   double	private_sndStamp; //private
   double	private_rcvStamp; //private
   long		private_seqNum; //private
+  string        private_identity; //private
   long		private_origin; //private
   long		private_host; //private" 
 }
@@ -95,6 +96,7 @@ proc sqlpreamble { fid id } {
   private_sndStamp double,
   private_rcvStamp double,
   private_seqNum int,
+  private_identity varchar,
   private_origin int,
   private_host int,"
 }

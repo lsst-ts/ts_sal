@@ -69,7 +69,7 @@ public class SAL_SALData {
         private int debugLevel;
         private int sndSeqNum;
         private int rcvSeqNum;
-        private int rcvOrigin;
+        private String rcvIdentity;
         private int subsystemID;
         private int origin;
         private int ddsIPaddress;
@@ -77,6 +77,7 @@ public class SAL_SALData {
         private int lastActor_telemetry;
         private int lastActor_command;
         private int lastActor_event;
+        private String CSC_identity;
  
         salUtils salUtil = new salUtils();
         salActor[] sal = new salActor[SAL__ACTORS_MAXCOUNT];
@@ -219,6 +220,7 @@ public class SAL_SALData {
                   myQosProvider = new QosProvider(qname,"DDS DefaultQosProfile");
                   tuneableQos = 0;
                 }
+                CSC_identity = String.format("SALData:%d" , aKey);
                 origin = (int)randGen.nextInt(99999999);
 		hasReader = false;
 		hasWriter = false;
@@ -228,7 +230,6 @@ public class SAL_SALData {
 		hasEventWriter = false;
 		subsystemID = aKey;
 		debugLevel = 0;
-                rcvOrigin = 0;
                 System.loadLibrary("salUtils");
                 initSalActors(tuneableQos);
 	}
@@ -261,6 +262,7 @@ public class SAL_SALData {
                   myQosProvider = new QosProvider(qname,"DDS DefaultQosProfile");
                   tuneableQos = 0;
                 }
+                CSC_identity = "SALData";
                 origin = (int)randGen.nextInt(99999999);
 		hasReader = false;
 		hasWriter = false;
@@ -270,7 +272,6 @@ public class SAL_SALData {
 		hasProcessor = false;
 		subsystemID = 0;
 		debugLevel = 0;
-                rcvOrigin = 0;
                 System.loadLibrary("salUtils");
                 initSalActors(tuneableQos);
 	}
@@ -487,7 +488,9 @@ public class SAL_SALData {
 			checkStatus(status,
 				"DomainParticipant.set_default_topic_qos");
 		}
-		System.out.println("=== [createTopic] : topicName " + sal[actorIdx].topicName + " type = " + sal[actorIdx].typeName);
+                if (debugLevel > 1) {
+  		  System.out.println("=== [createTopic] : topicName " + sal[actorIdx].topicName + " type = " + sal[actorIdx].typeName);
+                }
 		sal[actorIdx].topic = participant.create_topic(sal[actorIdx].topicHandle, sal[actorIdx].typeName, sal[actorIdx].topicQos.value,
 				null, STATUS_MASK_NONE.value);
 		checkHandle(sal[actorIdx].topic, "DomainParticipant.create_topic");
@@ -509,8 +512,9 @@ public class SAL_SALData {
 			checkStatus(status,
 				"DomainParticipant.set_default_topic_qos");
 		}
-		System.out.println("=== [createTopic2] : topicName " + sal[actorIdx].topicName + " type = " + sal[actorIdx].typeName2);
-
+                if (debugLevel > 1) {
+		  System.out.println("=== [createTopic2] : topicName " + sal[actorIdx].topicName + " type = " + sal[actorIdx].typeName2);
+                }
 		sal[actorIdx].topic2 = participant.create_topic(sal[actorIdx].topicHandle, sal[actorIdx].typeName2, sal[actorIdx].topicQos2.value,
 				null, STATUS_MASK_NONE.value);
 		checkHandle(sal[actorIdx].topic2, "DomainParticipant.create_topic");
@@ -532,7 +536,9 @@ public class SAL_SALData {
 			checkStatus(status,
 				"DomainParticipant.set_default_topic_qos");
 		}
-		System.out.println("=== [createTopic] : topicName " + topicName + " type = " + sal[actorIdx].typeName);
+                if (debugLevel > 1) {
+		  System.out.println("=== [createTopic] : topicName " + topicName + " type = " + sal[actorIdx].typeName);
+                }
 		sal[actorIdx].topic = participant.create_topic(sal[actorIdx].topicHandle, sal[actorIdx].typeName, sal[actorIdx].topicQos.value,
 				null, STATUS_MASK_NONE.value);
 		checkHandle(sal[actorIdx].topic, "DomainParticipant.create_topic");
@@ -554,7 +560,9 @@ public class SAL_SALData {
 			checkStatus(status,
 				"DomainParticipant.set_default_topic_qos");
 		}
-		System.out.println("=== [createTopic2] : topicName " + topicName + " type = " + sal[actorIdx].typeName2);
+                if (debugLevel > 1) {
+		  System.out.println("=== [createTopic2] : topicName " + topicName + " type = " + sal[actorIdx].typeName2);
+                }
 
 		sal[actorIdx].topic2 = participant.create_topic(sal[actorIdx].topicHandle, sal[actorIdx].typeName2, sal[actorIdx].topicQos2.value,
 				null, STATUS_MASK_NONE.value);
@@ -735,7 +743,9 @@ public class SAL_SALData {
 		sal[actorIdx].WQosH.value.writer_data_lifecycle.autodispose_unregistered_instances = autodispose;
 		sal[actorIdx].writer = sal[actorIdx].publisher.create_datawriter(sal[actorIdx].topic, sal[actorIdx].WQosH.value, null,STATUS_MASK_NONE.value);
 		checkHandle(sal[actorIdx].writer, "Publisher.create_datawriter");
-		System.out.println("=== [createwriter idx] : topic " + sal[actorIdx].topic + " writer = " + sal[actorIdx].writer);
+                if (debugLevel > 1) {
+		  System.out.println("=== [createwriter idx] : topic " + sal[actorIdx].topic + " writer = " + sal[actorIdx].writer);
+                }
                 sal[actorIdx].isWriter = true;
 	}
         
@@ -745,7 +755,9 @@ public class SAL_SALData {
 		sal[actorIdx].WQosH.value.writer_data_lifecycle.autodispose_unregistered_instances = autodispose;
 		sal[actorIdx].writer2 = sal[actorIdx].publisher.create_datawriter(sal[actorIdx].topic2, sal[actorIdx].WQosH.value, null,STATUS_MASK_NONE.value);
 		checkHandle(sal[actorIdx].writer2, "Publisher.create_datawriter");
-		System.out.println("=== [createwriter2 idx] : topic " + sal[actorIdx].topic2 + " writer = " + sal[actorIdx].writer2);
+                if (debugLevel > 1) {
+		  System.out.println("=== [createwriter2 idx] : topic " + sal[actorIdx].topic2 + " writer = " + sal[actorIdx].writer2);
+                }
                 sal[actorIdx].isWriter = true;
 	}
 
@@ -822,11 +834,15 @@ public class SAL_SALData {
 	  if (filtered) {
 	  	 sal[actorIdx].reader = sal[actorIdx].subscriber.create_datareader(sal[actorIdx].filteredtopic,
 		   	 DATAREADER_QOS_USE_TOPIC_QOS.value, null, STATUS_MASK_NONE.value);
-		System.out.println("=== [createreader idx] : topic " + sal[actorIdx].filteredtopic + " reader = " + sal[actorIdx].reader);
+                if (debugLevel > 1) {
+		  System.out.println("=== [createreader idx] : topic " + sal[actorIdx].filteredtopic + " reader = " + sal[actorIdx].reader);
+                }
 	  } else {
 		sal[actorIdx].reader = sal[actorIdx].subscriber.create_datareader(sal[actorIdx].topic,
 			DATAREADER_QOS_USE_TOPIC_QOS.value, null, STATUS_MASK_NONE.value);
-		System.out.println("=== [createreader idx] : topic " + sal[actorIdx].topic + " reader = " + sal[actorIdx].reader);
+                if (debugLevel > 1) {
+		  System.out.println("=== [createreader idx] : topic " + sal[actorIdx].topic + " reader = " + sal[actorIdx].reader);
+                }
 	  }
 	  checkHandle(sal[actorIdx].reader, "Subscriber.create_datareader");
 	  DDS.Duration_t a_timeout = new Duration_t();
@@ -841,11 +857,15 @@ public class SAL_SALData {
 	  if (filtered) {
 	   	sal[actorIdx].reader2 = sal[actorIdx].subscriber.create_datareader(sal[actorIdx].filteredtopic2,
 		   	 DATAREADER_QOS_USE_TOPIC_QOS.value, null, STATUS_MASK_NONE.value);
-		System.out.println("=== [createreader2 idx] : topic " + sal[actorIdx].filteredtopic2 + " reader = " + sal[actorIdx].reader2);
+                if (debugLevel > 1) {
+		  System.out.println("=== [createreader2 idx] : topic " + sal[actorIdx].filteredtopic2 + " reader = " + sal[actorIdx].reader2);
+                }
 	  } else {
 		sal[actorIdx].reader2 = sal[actorIdx].subscriber.create_datareader(sal[actorIdx].topic2,
 			DATAREADER_QOS_USE_TOPIC_QOS.value, null, STATUS_MASK_NONE.value);
-		System.out.println("=== [createreader2 idx] : topic " + sal[actorIdx].topic2 + " reader = " + sal[actorIdx].reader2);
+                if (debugLevel > 1) {
+		  System.out.println("=== [createreader2 idx] : topic " + sal[actorIdx].topic2 + " reader = " + sal[actorIdx].reader2);
+                }
 	  }
 	  checkHandle(sal[actorIdx].reader2, "Subscriber.create_datareader");
 	  DDS.Duration_t a_timeout = new Duration_t();

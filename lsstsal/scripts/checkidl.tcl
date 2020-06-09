@@ -222,14 +222,6 @@ global XMLTOPICS XMLTLM IDLRESERVED XMLITEMS
               if { $KEYINDEX != "" } {puts $fdet "#index $KEYINDEX"; set KEYINDEX ""}
               set fcmt [open $SAL_WORK_DIR/idl-templates/validated/$nt.comments w]
               idlpreamble $fout $nt
-# use streamutils version
-#              puts $fout "struct $nt \{
-#  string<8> private_revCode;  //private
-#  double     private_sndStamp; //private
-#  double     private_rcvStamp; //private
-#  long       private_seqNum;   //private
-#  long       private_origin;   //private
-#  long       private_host;     //private"
               set NEWTOPICS($hid) 1
               set NEWSIZES($hid)  0
            } else {
@@ -382,6 +374,7 @@ global SAL_WORK_DIR OPTIONS
       string<8>	private_revCode;
       double		private_sndStamp;
       double		private_rcvStamp;
+      string		private_identity;
       long		private_origin;
       long 		private_host;
       long		private_seqNum;"
@@ -391,6 +384,7 @@ global SAL_WORK_DIR OPTIONS
    puts $fack "      long 		ack;
       long 		error;
       string<256>	result;
+      string            identity;
       long		host;
       long		origin;
       long		cmdtype;

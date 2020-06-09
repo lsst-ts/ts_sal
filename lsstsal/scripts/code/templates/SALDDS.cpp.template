@@ -17,6 +17,7 @@ SAL_SALData::SAL_SALData(int aKey)
    char *qname = getenv("LSST_DDS_QOS");
    char *sname = getenv("LSST_DDS_HISTORYSYNC");
    char *ipaddr = getenv("LSST_DDS_IP");
+   CSC_identity=(char *)malloc(128);
    if ( dname != NULL ) {
       strncpy(domainName, dname, 128);
    } else {
@@ -36,6 +37,7 @@ SAL_SALData::SAL_SALData(int aKey)
       sscanf(ipaddr,"%d.%d.%d.%d", &v1 , &v2 , &v3 , &v4);
       ddsIPaddress = 256*256*256*v1 + 256*256*v2 + 256*v3 + v4;
    } 
+   sprintf(CSC_identity,"SALData:%d",aKey);
    hasReader = false;
    hasWriter = false;
    hasCommand = false;
@@ -55,6 +57,7 @@ SAL_SALData::SAL_SALData()
    char *qname = getenv("LSST_DDS_QOS");
    char *sname = getenv("LSST_DDS_HISTORYSYNC");
    char *ipaddr = getenv("LSST_DDS_IP");
+   CSC_identity=(char *)malloc(128);
    if ( dname != NULL ) {
       strncpy(domainName, dname, 128);
    } else {
@@ -74,6 +77,7 @@ SAL_SALData::SAL_SALData()
       sscanf(ipaddr,"%d.%d.%d.%d", &v1 , &v2, &v3, &v4);
       ddsIPaddress = 256*256*256*v1 + 256*256*v2 + 256*v3 + v4;
    } 
+   sprintf(CSC_identity,"SALData");
    hasReader = false;
    hasWriter = false;
    hasCommand = false;
@@ -350,7 +354,7 @@ salReturn SAL_SALData::salTelemetrySub(int actorIdx)
 
 void SAL_SALData::logError(salReturn status) 
 {
-   cout << "=== ERROR return value = " << status << endl; 
+   cerr << "=== ERROR return value = " << status << endl; 
 }
 
 /*
@@ -742,7 +746,9 @@ void SAL_SALData::deletePublisher()
     }
     for (int i=0; i<SAL__ACTORS_MAXCOUNT;i++) {
         if ( sal[i].publisher != NULL) {
-       cout << "    deletePublisher : " << i << endl;
+          if (debugLevel > 1) {
+            cerr << "    deletePublisher : " << i << endl;
+          }
           status = participant->delete_publisher(sal[i].publisher.in());
           checkStatus(status, "DDS::DomainParticipant::delete_publisher ");
         }
@@ -761,7 +767,9 @@ void SAL_SALData::createWriter(int actorIdx,bool autodispose_unregistered_instan
   sal[actorIdx].writer = sal[actorIdx].publisher->create_datawriter(sal[actorIdx].topic.in(), sal[actorIdx].dw_qos, NULL, STATUS_MASK_NONE);
   checkHandle(sal[actorIdx].writer, "DDS::Publisher::create_datawriter");
   sal[actorIdx].isWriter = true;
-  cout << "createWriter : " << sal[actorIdx].topic << " , " << sal[actorIdx].typeName << " , " << sal[actorIdx].topicHandle << endl;
+  if (debugLevel > 1) {
+    cerr << "createWriter : " << sal[actorIdx].topic << " , " << sal[actorIdx].typeName << " , " << sal[actorIdx].topicHandle << endl;
+  }
 }
 
 void SAL_SALData::createWriter2(int actorIdx,bool autodispose_unregistered_instances)
@@ -774,7 +782,9 @@ void SAL_SALData::createWriter2(int actorIdx,bool autodispose_unregistered_insta
   sal[actorIdx].writer2 = sal[actorIdx].publisher->create_datawriter(sal[actorIdx].topic2.in(), sal[actorIdx].dw_qos, NULL, STATUS_MASK_NONE);
   checkHandle(sal[actorIdx].writer2, "DDS::Publisher::create_datawriter");
   sal[actorIdx].isWriter = true;
-  cout << "createWriter2 : " << sal[actorIdx].topic2 << " , "  << sal[actorIdx].typeName2 << " , " << sal[actorIdx].topicHandle << endl;
+  if (debugLevel > 1) {
+    cerr << "createWriter2 : " << sal[actorIdx].topic2 << " , "  << sal[actorIdx].typeName2 << " , " << sal[actorIdx].topicHandle << endl;
+  }
 }
 
 void SAL_SALData::deleteWriter()
@@ -856,7 +866,9 @@ void SAL_SALData::createReader(int actorIdx,bool filtered)
   a_timeout.nanosec = 10000000;
   sal[actorIdx].sampleAge = 1.0e20;
   status = sal[actorIdx].reader->wait_for_historical_data(a_timeout);
-  cout << "createReader : " << sal[actorIdx].topic << " , " << sal[actorIdx].typeName << " , "  << sal[actorIdx].topicHandle << endl;
+  if (debugLevel > 1) {
+    cerr << "createReader : " << sal[actorIdx].topic << " , " << sal[actorIdx].typeName << " , "  << sal[actorIdx].topicHandle << endl;
+  }
 }
 
 void SAL_SALData::createReader2(int actorIdx,bool filtered)
@@ -879,7 +891,9 @@ void SAL_SALData::createReader2(int actorIdx,bool filtered)
   a_timeout.nanosec = 10000000;
   sal[actorIdx].sampleAge = 1.0e20;
   status = sal[actorIdx].reader2->wait_for_historical_data(a_timeout);
-  cout << "createReader2 : " << sal[actorIdx].topic2 << " , " << sal[actorIdx].typeName2 << " , " << sal[actorIdx].topicHandle << endl;
+  if (debugLevel > 1) {
+    cerr << "createReader2 : " << sal[actorIdx].topic2 << " , " << sal[actorIdx].typeName2 << " , " << sal[actorIdx].topicHandle << endl;
+  }
 }
 
 

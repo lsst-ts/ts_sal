@@ -54,8 +54,9 @@ source $SAL_DIR/activaterevcodes.tcl
 source $SAL_DIR/add_system_dictionary.tcl
 
 puts stdout "argv = $argv"
+set RELVERSION ""
 if { [string range [lindex $argv end] 0 7] == "version=" } {
-  set SALVERSION [string range [lindex $argv end] 8 end]
+  set RELVERSION [string range [lindex $argv end] 8 end]
   set argv [lrange $argv 0 [expr [llength $argv]-2]]
 }
 
@@ -174,8 +175,8 @@ if { $OPTIONS(generate) } {
   exit 0
 }
 
-set xmlversion [exec cat $SAL_WORK_DIR/VERSION]
-if { $xmlversion == "1.0.0" } {
+set XMLVERSION [exec cat $SAL_WORK_DIR/VERSION]
+if { $XMLVERSION == "1.0.0" } {
    if { [file exists $env(TS_XML_DIR)/VERSION] } {
       exec cp  $env(TS_XML_DIR)/VERSION $SAL_WORK_DIR/VERSION
    } else {
@@ -183,6 +184,12 @@ if { $xmlversion == "1.0.0" } {
    }
 }
 
+
+if { $RELVERSION != "" } {
+  set SALRELEASE "[set XMLVERSION]-[exec cat $env(TS_SAL_DIR)/VERSION].$RELVERSION"
+} else {
+  set SALRELEASE "[set XMLVERSION]-[exec cat $env(TS_SAL_DIR)/VERSION]"
+}
 
 if { $OPTIONS(idl) && $OPTIONS(sal) == 0 } {
    errorexit "Use the sal option in conjunction with the idl option"
@@ -289,15 +296,15 @@ if { $OPTIONS(maven) } {
   foreach subsys $TSUBSYSTEMS {
     set result ""
     set bad ""
-    puts stdout "Creating maven directories maven/[set subsys]_[set SALVERSION]"
+    puts stdout "Creating maven directories maven/[set subsys]_[set SALRELEASE]"
     catch { set result [mavenize $subsys] } bad
     puts stdout "$result"
     puts stderr "$bad"
-#     puts stdout "Creating unit tests maven/[set subsys]_[set SALVERSION]"
+#     puts stdout "Creating unit tests maven/[set subsys]_[set SALRELEASE]"
 #     catch { set result [mavenunittests $subsys] } bad
 #     puts stdout "$result"
 #     puts stderr "$bad"
-    cd maven/[set subsys]_[set SALVERSION]  
+    cd maven/[set subsys]_[set SALRELEASE]  
     puts stdout "Running maven install"
     set result ""
     set bad ""
@@ -309,7 +316,7 @@ if { $OPTIONS(maven) } {
 #     puts stdout "$result"
 #     puts stderr "$bad"
   }
-  puts stdout "Using version $SALVERSION for the maven project"
+  puts stdout "Using version $SALRELEASE for the maven project"
 }
 
 catch {exec rmdir saltemptest}
