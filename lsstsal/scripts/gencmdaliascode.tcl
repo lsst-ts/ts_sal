@@ -192,9 +192,6 @@ int SAL_SALData::issueCommand_[set i]( SALData_command_[set i]C *data )
       puts $fout "
 int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
 \{
-#ifdef SAL_BUILD_FOR_PYTHON
-  Py_BEGIN_ALLOW_THREADS
-#endif
      SampleInfoSeq info;
    ReturnCode_t status = 0;
    ReturnCode_t istatus =  -1;
@@ -211,6 +208,9 @@ int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
   if (sal\[actorIdx\].isProcessor == false) \{
       throw std::runtime_error(\"No controller for acceptCommand_[set i]\");
   \}
+#ifdef SAL_BUILD_FOR_PYTHON
+  Py_BEGIN_ALLOW_THREADS
+#endif
   DataWriter_var dwriter = getWriter2(SAL__SALData_ackcmd_ACTOR);
   SALData::ackcmd[set ACKREVCODE]DataWriter_var SALWriter = SALData::ackcmd[set ACKREVCODE]DataWriter::_narrow(dwriter.in());
   DataReader_var dreader = getReader(actorIdx);
