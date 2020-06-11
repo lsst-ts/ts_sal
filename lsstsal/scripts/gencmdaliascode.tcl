@@ -192,7 +192,7 @@ int SAL_SALData::issueCommand_[set i]( SALData_command_[set i]C *data )
       puts $fout "
 int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
 \{
-     SampleInfoSeq info;
+   SampleInfoSeq info;
    ReturnCode_t status = 0;
    ReturnCode_t istatus =  -1;
    SALData::command_[set i][set revcode]Seq Instances;
@@ -509,10 +509,7 @@ salReturn SAL_SALData::ackCommand_[set i]( int cmdId, salLONG ack, salLONG error
    puts $fout "
 salReturn SAL_SALData::ackCommand_[set i]C(SALData_ackcmdC *response )
 \{
-#ifdef SAL_BUILD_FOR_PYTHON
-  Py_BEGIN_ALLOW_THREADS
-#endif
-     ReturnCode_t istatus = -1;
+   ReturnCode_t istatus = -1;
    InstanceHandle_t ackHandle = DDS::HANDLE_NIL;
    int actorIdx = SAL__SALData_ackcmd_ACTOR;
    int actorIdxCmd = SAL__SALData_command_[set i]_ACTOR;
@@ -520,6 +517,9 @@ salReturn SAL_SALData::ackCommand_[set i]C(SALData_ackcmdC *response )
       throw std::runtime_error(\"NULL pointer for ackCommand_[set i]\");
    \}
 
+#ifdef SAL_BUILD_FOR_PYTHON
+  Py_BEGIN_ALLOW_THREADS
+#endif
    SALData::ackcmd[set ACKREVCODE] ackdata;
    DataWriter_var dwriter = getWriter2(actorIdx);
    SALData::ackcmd[set ACKREVCODE]DataWriter_var SALWriter = SALData::ackcmd[set ACKREVCODE]DataWriter::_narrow(dwriter.in());
