@@ -43,6 +43,7 @@ salReturn SAL_[set base]::putSample_[set name]([set base]_[set name]C *data)
   Instance.private_sndStamp = getCurrentTime();
   sal\[actorIdx\].sndStamp = Instance.private_sndStamp;
   Instance.private_identity = DDS::string_dup(CSC_identity);
+  Instance.private_origin = getpid();
   Instance.private_host = ddsIPaddress;
   Instance.private_seqNum = sndSeqNum;
   Instance.private_host = 1;
@@ -105,10 +106,11 @@ salReturn SAL_[set base]::getSample_[set name]([set base]_[set name]C *data)
       cout << \"=== \[GetSample\] message received :\" << numsamp << endl;
       cout << \"    revCode  : \" << Instances\[j\].private_revCode << endl;
       cout << \"    sndStamp  : \" << Instances\[j\].private_sndStamp << endl;
+      cout << \"    origin  : \" << Instances\[j\].private_origin << endl;
       cout << \"    identity  : \" << Instances\[j\].private_identity << endl;
       cout << \"    host  : \" << Instances\[j\].private_host << endl;
     \}
-    if ( (rcvdTime - Instances\[j\].private_sndStamp) < sal\[actorIdx\].sampleAge ) \{
+    if ( (rcvdTime - Instances\[j\].private_sndStamp) < sal\[actorIdx\].sampleAge && Instances\[j\].private_origin != 0 ) \{
 "
   set frag [open $SAL_WORK_DIR/include/SAL_[set base]_[set name]Cget.tmp r]
   while { [gets $frag rec] > -1} {puts $fout $rec}
@@ -546,6 +548,7 @@ puts $fout "
     SALInstance.private_revCode = \"[string trim $revcode _]\";
           SALInstance.private_sndStamp = getCurrentTime();
           SALInstance.private_identity = CSC_identity;
+          SALInstance.private_origin = origin;
     if (debugLevel > 0) \{
       System.out.println(\"=== \[putSample $name\] writing a message containing :\");
       System.out.println(\"    revCode  : \" + SALInstance.private_revCode);

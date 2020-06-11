@@ -69,6 +69,7 @@ public class SAL_SALData {
         private int debugLevel;
         private int sndSeqNum;
         private int rcvSeqNum;
+        private int rcvOrigin;
         private String rcvIdentity;
         private int subsystemID;
         private int origin;

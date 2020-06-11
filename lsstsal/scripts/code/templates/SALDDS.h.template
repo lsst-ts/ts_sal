@@ -119,6 +119,7 @@
       int                       cmdSeqNum;
 /// sndSeqNum holds the sequence number of the most recent DDS message received for this topic
       int 			rcvSeqNum;
+      int                       rcvOrigin;
 /// rcvIdentity holds the private_identity filled from the last DDS message received for this topic
       string 			rcvIdentity;
 /// maxSamples is used to control the maximum number of DDS messages received by getSample/getNextSample methods
@@ -129,8 +130,10 @@
       int			ack;
 /// activehost is the private_identity field of the most recent command
       int			activehost;
-/// activeidentity is the priate_identity field of the most recent command
+/// activeidentity is the private_identity field of the most recent command
       string			activeidentity;
+/// activeorigin is the private_origin field of the most recent command
+      int activeorigin;
 /// activecmdid is the command sequence number of the most recent command
       int			activecmdid;
 /// timeout is the number of seconds the command is expected to take to execute
@@ -193,6 +196,7 @@
       int cmdSeqNum;
       int sndSeqNum;
       int rcvSeqNum;
+      int rcvOrigin;
       string rcvIdentity;
       int historySync;
       double rcvdTime;
