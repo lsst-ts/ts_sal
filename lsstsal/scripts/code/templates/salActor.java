@@ -55,10 +55,12 @@ public class salActor {
         public int sndSeqNum;
         public int cmdSeqNum;
         public int rcvSeqNum;
+        public int rcvOrigin;
         public String rcvIdentity;
         public int error;
         public int ack;
         public int activehost;
+        public int activeorigin;
         public String activeidentity;
         public int activecmdid;
         public double timeout;

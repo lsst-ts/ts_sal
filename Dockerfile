@@ -16,3 +16,4 @@ WORKDIR /home/saluser/repos/ts_sal
 RUN source /home/saluser/.setup.sh && \
     setup ts_sal -t current && \
     scons --clean && scons
+

@@ -128,7 +128,6 @@ global CMD_ALIASES CMDS SAL_WORK_DIR ACKREVCODE OPTIONS
       puts $fout "
 int SAL_SALData::issueCommand_[set i]( SALData_command_[set i]C *data )
 \{
-  
   if ( data == NULL ) \{
      throw std::runtime_error(\"NULL pointer for issueCommand_[set i]\");
   \}
@@ -149,6 +148,7 @@ int SAL_SALData::issueCommand_[set i]( SALData_command_[set i]C *data )
 
   Instance.private_revCode =  DDS::string_dup(\"[string trim $revcode _]\");
   Instance.private_sndStamp = getCurrentTime();
+  Instance.private_origin = getpid();
   Instance.private_identity = DDS::string_dup(CSC_identity);
   Instance.private_seqNum =   sal\[actorIdx\].sndSeqNum;
   Instance.private_host =     ddsIPaddress;"
@@ -168,6 +168,9 @@ int SAL_SALData::issueCommand_[set i]( SALData_command_[set i]C *data )
         puts $fout "
   \}
   Instance.private_sndStamp = getCurrentTime();
+#ifdef SAL_BUILD_FOR_PYTHON
+  Py_BEGIN_ALLOW_THREADS
+#endif
   ReturnCode_t status = SALWriter->write(Instance, cmdHandle);
   sal\[actorIdx\].sndSeqNum++;
 //  if(sal\[actorIdx\].sndSeqNum >= 32768*(actorIdx+1) ) \{
@@ -175,12 +178,15 @@ int SAL_SALData::issueCommand_[set i]( SALData_command_[set i]C *data )
 //  \}
   checkStatus(status, \"SALData::command_[set i][set revcode]DataWriter::write\");  
 //    SALWriter->unregister_instance(Instance, cmdHandle);
+#ifdef SAL_BUILD_FOR_PYTHON
+  Py_END_ALLOW_THREADS
+#endif
   if (status != SAL__OK) \{
       if (debugLevel >= SAL__LOG_ROUTINES) \{
           logError(status);
       \}
   \}
-  return (sal\[actorIdx\].sndSeqNum-1);
+    return (sal\[actorIdx\].sndSeqNum-1);
 \}
 "
       puts $fout "
@@ -202,6 +208,9 @@ int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
   if (sal\[actorIdx\].isProcessor == false) \{
       throw std::runtime_error(\"No controller for acceptCommand_[set i]\");
   \}
+#ifdef SAL_BUILD_FOR_PYTHON
+  Py_BEGIN_ALLOW_THREADS
+#endif
   DataWriter_var dwriter = getWriter2(SAL__SALData_ackcmd_ACTOR);
   SALData::ackcmd[set ACKREVCODE]DataWriter_var SALWriter = SALData::ackcmd[set ACKREVCODE]DataWriter::_narrow(dwriter.in());
   DataReader_var dreader = getReader(actorIdx);
@@ -216,6 +225,7 @@ int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
       cout << \"=== \[acceptCommandC $i\] reading a command containing :\" << endl;
       cout << \"    seqNum   : \" << Instances\[j\].private_seqNum << endl;
       cout << \"    host     : \" << Instances\[j\].private_host << endl;
+      cout << \"    origin   : \" << Instances\[j\].private_origin << endl;
       cout << \"    identity   : \" << Instances\[j\].private_identity << endl;
       cout << \"    sample-state   : \" << info\[j\].sample_state << endl;
       cout << \"    view-state     : \" << info\[j\].view_state << endl;
@@ -225,6 +235,7 @@ int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
     ackdata.SALDataID = subsystemID;
 #endif
     ackdata.identity = Instances\[j\].private_identity;
+    ackdata.origin = Instances\[j\].private_origin;
     ackdata.host = Instances\[j\].private_host;
     ackdata.private_seqNum = Instances\[j\].private_seqNum;
     ackdata.cmdtype = actorIdx;
@@ -236,8 +247,10 @@ int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
     sal\[actorIdx\].sndStamp = Instances\[j\].private_sndStamp;
     if ( (rcvdTime - Instances\[j\].private_sndStamp) < sal\[actorIdx\].sampleAge ) \{
       rcvSeqNum = status;
+      rcvOrigin = Instances\[j\].private_origin;
       rcvIdentity = Instances\[j\].private_identity;
       sal\[actorIdx\].activehost = Instances\[j\].private_host;
+      sal\[actorIdx\].activeorigin = Instances\[j\].private_origin;
       sal\[actorIdx\].activeidentity = Instances\[j\].private_identity;
       sal\[actorIdx\].activecmdid = Instances\[j\].private_seqNum;
       ackdata.ack = SAL__CMD_ACK;"
@@ -268,13 +281,19 @@ int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
   \}
   istatus = SALReader->return_loan(Instances, info);
   checkStatus(istatus, \"SALData::command_[set i][set revcode]DataReader::return_loan\");
-  return status;
+#ifdef SAL_BUILD_FOR_PYTHON
+  Py_END_ALLOW_THREADS
+#endif
+    return status;
 \}
 "
    puts $fout "
 salReturn SAL_SALData::waitForCompletion_[set i]( int cmdSeqNum , unsigned int timeout )
 \{
-   salReturn status = SAL__OK;
+#ifdef SAL_BUILD_FOR_PYTHON
+  Py_BEGIN_ALLOW_THREADS
+#endif
+     salReturn status = SAL__OK;
    int countdown = timeout*100;
    SALData::ackcmd[set ACKREVCODE]Seq response;
    int actorIdx = SAL__SALData_command_[set i]_ACTOR;
@@ -301,7 +320,10 @@ salReturn SAL_SALData::waitForCompletion_[set i]( int cmdSeqNum , unsigned int t
          cout << \"=== \[waitForCompletion_[set i]\] command \" << cmdSeqNum << \" completed ok :\" << endl;
       \} 
    \}
-   return status;
+#ifdef SAL_BUILD_FOR_PYTHON
+  Py_END_ALLOW_THREADS
+#endif
+     return status;
 \}
 "
    puts $fout "
@@ -316,8 +338,15 @@ salReturn SAL_SALData::getResponse_[set i](SALData::ackcmd[set ACKREVCODE]Seq da
   DataReader_var dreader = getReader2(actorIdx);
   SALData::ackcmd[set ACKREVCODE]DataReader_var SALReader = SALData::ackcmd[set ACKREVCODE]DataReader::_narrow(dreader.in());
   checkHandle(SALReader.in(), \"SALData::ackcmd[set ACKREVCODE]DataReader::_narrow\");
+#ifdef SAL_BUILD_FOR_PYTHON
+  Py_BEGIN_ALLOW_THREADS
+#endif
   istatus = SALReader->take(data, info, 1, NOT_READ_SAMPLE_STATE, ANY_VIEW_STATE, ALIVE_INSTANCE_STATE);
+#ifdef SAL_BUILD_FOR_PYTHON
+  Py_END_ALLOW_THREADS
+#endif
   sal\[actorIdxCmd\].rcvSeqNum = 0;
+  sal\[actorIdxCmd\].rcvOrigin = 0;
   sal\[actorIdxCmd\].rcvIdentity = \"\";
   checkStatus(istatus, \"SALData::ackcmd[set ACKREVCODE]DataReader::take\");
   if (data.length() > 0) \{
@@ -339,6 +368,7 @@ salReturn SAL_SALData::getResponse_[set i](SALData::ackcmd[set ACKREVCODE]Seq da
     sal\[actorIdxCmd\].rcvStamp = rcvdTime;
     sal\[actorIdxCmd\].sndStamp = data\[j\].private_sndStamp;
     sal\[actorIdxCmd\].rcvSeqNum = data\[j\].private_seqNum;
+    sal\[actorIdxCmd\].rcvOrigin = data\[j\].private_origin;
     sal\[actorIdxCmd\].rcvIdentity = data\[j\].private_identity;
     sal\[actorIdxCmd\].ack = data\[j\].ack;
     sal\[actorIdxCmd\].error = data\[j\].error;
@@ -371,8 +401,15 @@ salReturn SAL_SALData::getResponse_[set i]C(SALData_ackcmdC *response)
   DataReader_var dreader = getReader2(actorIdx);
   SALData::ackcmd[set ACKREVCODE]DataReader_var SALReader = SALData::ackcmd[set ACKREVCODE]DataReader::_narrow(dreader.in());
   checkHandle(SALReader.in(), \"SALData::ackcmdDataReader::_narrow\");
+#ifdef SAL_BUILD_FOR_PYTHON
+  Py_BEGIN_ALLOW_THREADS
+#endif
   istatus = SALReader->take(data, info, 1, NOT_READ_SAMPLE_STATE, ANY_VIEW_STATE, ALIVE_INSTANCE_STATE);
+#ifdef SAL_BUILD_FOR_PYTHON
+  Py_END_ALLOW_THREADS
+#endif
   sal\[actorIdxCmd\].rcvSeqNum = 0;
+  sal\[actorIdxCmd\].rcvOrigin = 0;
   sal\[actorIdxCmd\].rcvIdentity = \"\";
   checkStatus(istatus, \"SALData::ackcmd[set ACKREVCODE]DataReader::take\");
   if (data.length() > 0) \{
@@ -394,6 +431,7 @@ salReturn SAL_SALData::getResponse_[set i]C(SALData_ackcmdC *response)
     sal\[actorIdxCmd\].rcvStamp = rcvdTime;
     sal\[actorIdxCmd\].sndStamp = data\[j\].private_sndStamp;
     sal\[actorIdxCmd\].rcvSeqNum = data\[j\].private_seqNum;
+    sal\[actorIdxCmd\].rcvOrigin = data\[j\].private_origin;
     sal\[actorIdxCmd\].rcvIdentity = data\[j\].private_identity;
     sal\[actorIdxCmd\].ack = data\[j\].ack;
     sal\[actorIdxCmd\].error = data\[j\].error;
@@ -401,6 +439,7 @@ salReturn SAL_SALData::getResponse_[set i]C(SALData_ackcmdC *response)
     response->ack = data\[j\].ack;
     response->error = data\[j\].error;
     response->host = data\[j\].host;
+    response->origin = data\[j\].origin;
     response->cmdtype = data\[j\].cmdtype;
     response->timeout = data\[j\].timeout;
     response->result= DDS::string_dup(data\[j\].result);
@@ -419,7 +458,10 @@ salReturn SAL_SALData::getResponse_[set i]C(SALData_ackcmdC *response)
    puts $fout "
 salReturn SAL_SALData::ackCommand_[set i]( int cmdId, salLONG ack, salLONG error, char *result )
 \{
-   ReturnCode_t istatus = -1;
+#ifdef SAL_BUILD_FOR_PYTHON
+  Py_BEGIN_ALLOW_THREADS
+#endif
+     ReturnCode_t istatus = -1;
    InstanceHandle_t ackHandle = DDS::HANDLE_NIL;
    int actorIdx = SAL__SALData_ackcmd_ACTOR;
    int actorIdxCmd = SAL__SALData_command_[set i]_ACTOR;
@@ -434,6 +476,7 @@ salReturn SAL_SALData::ackCommand_[set i]( int cmdId, salLONG ack, salLONG error
    ackdata.error = error;
    ackdata.ack = ack;
    ackdata.result = DDS::string_dup(result);
+   ackdata.origin = sal\[actorIdxCmd\].activeorigin;
    ackdata.host = sal\[actorIdxCmd\].activehost;
    ackdata.cmdtype = actorIdxCmd;
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
@@ -445,6 +488,7 @@ salReturn SAL_SALData::ackCommand_[set i]( int cmdId, salLONG ack, salLONG error
       cout << \"    ack      : \" << ackdata.ack << endl;
       cout << \"    error    : \" << ackdata.error << endl;
       cout << \"    host     : \" << ackdata.host << endl;
+      cout << \"    origin    : \" << ackdata.private_origin << endl;
       cout << \"    identity    : \" << ackdata.private_identity << endl;
       cout << \"    result   : \" << ackdata.result << endl;
    \}
@@ -456,7 +500,10 @@ salReturn SAL_SALData::ackCommand_[set i]( int cmdId, salLONG ack, salLONG error
    istatus = SALWriter->write(ackdata, ackHandle);
    checkStatus(istatus, \"SALData::ackcmd[set ACKREVCODE]DataWriter::return_loan\");
 //    SALWriter->unregister_instance(ackdata, ackHandle);
-   return SAL__OK;
+#ifdef SAL_BUILD_FOR_PYTHON
+  Py_END_ALLOW_THREADS
+#endif
+     return SAL__OK;
 \}
 "
    puts $fout "
@@ -470,16 +517,21 @@ salReturn SAL_SALData::ackCommand_[set i]C(SALData_ackcmdC *response )
       throw std::runtime_error(\"NULL pointer for ackCommand_[set i]\");
    \}
 
+#ifdef SAL_BUILD_FOR_PYTHON
+  Py_BEGIN_ALLOW_THREADS
+#endif
    SALData::ackcmd[set ACKREVCODE] ackdata;
    DataWriter_var dwriter = getWriter2(actorIdx);
    SALData::ackcmd[set ACKREVCODE]DataWriter_var SALWriter = SALData::ackcmd[set ACKREVCODE]DataWriter::_narrow(dwriter.in());
 
    ackdata.private_seqNum = sal\[actorIdxCmd\].activecmdid;
+   ackdata.private_origin = getpid();
    ackdata.private_host = ddsIPaddress;
    ackdata.private_identity = DDS::string_dup(CSC_identity);
    ackdata.error = response->error;
    ackdata.ack = response->ack;
    ackdata.result = DDS::string_dup(response->result.c_str());
+   ackdata.origin = sal\[actorIdxCmd\].activeorigin;
    ackdata.host = sal\[actorIdxCmd\].activehost;
    ackdata.cmdtype = actorIdxCmd;
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
@@ -491,6 +543,7 @@ salReturn SAL_SALData::ackCommand_[set i]C(SALData_ackcmdC *response )
       cout << \"    ack      : \" << ackdata.ack << endl;
       cout << \"    error    : \" << ackdata.error << endl;
       cout << \"    host     : \" << ackdata.host << endl;
+      cout << \"    origin    : \" << ackdata.origin << endl;
       cout << \"    identity    : \" << ackdata.identity << endl;
       cout << \"    result   : \" << ackdata.result << endl;
    \}
@@ -502,7 +555,10 @@ salReturn SAL_SALData::ackCommand_[set i]C(SALData_ackcmdC *response )
    istatus = SALWriter->write(ackdata, ackHandle);
    checkStatus(istatus, \"SALData::ackcmd[set ACKREVCODE]DataWriter::return_loan\");
 //    SALWriter->unregister_instance(ackdata, ackHandle);
-   return SAL__OK;
+#ifdef SAL_BUILD_FOR_PYTHON
+  Py_END_ALLOW_THREADS
+#endif
+     return SAL__OK;
 \}
 "
      } else {
@@ -535,6 +591,7 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
 	  SALInstance.private_revCode = \"[string trim $revcode _]\";
 	  SALInstance.private_seqNum = sal\[actorIdx\].sndSeqNum;
           SALInstance.private_identity = CSC_identity;
+          SALInstance.private_origin = origin;
           SALInstance.private_host = ddsIPaddress;
           SALInstance.private_sndStamp = getCurrentTime();"
       if { [info exists SYSDIC($subsys,keyedID)] } {
@@ -582,6 +639,7 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
     		    double rcvdTime = getCurrentTime();
 		    double dTime = rcvdTime - SALInstance.value\[0\].private_sndStamp;
     		    if ( dTime < sal\[actorIdx\].sampleAge ) \{
+                      sal\[actorIdx\].activeorigin = SALInstance.value\[0\].private_origin;
                       sal\[actorIdx\].activehost = SALInstance.value\[0\].private_host;
                       sal\[actorIdx\].activeidentity = SALInstance.value\[0\].private_identity;
                       sal\[actorIdx\].activecmdid = SALInstance.value\[0\].private_seqNum;
@@ -590,6 +648,7 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
          puts $fout "	              ackdata.SALDataID = subsystemID;"
       }
       puts $fout "		      ackdata.private_identity = SALInstance.value\[0\].private_identity;
+		      ackdata.private_origin = SALInstance.value\[0\].private_origin;
 		      ackdata.private_seqNum = SALInstance.value\[0\].private_seqNum;
 		      ackdata.error  = 0;
 		      ackdata.result = \"SAL ACK\";"
@@ -597,6 +656,7 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
            puts $fout "
 		      status = SALInstance.value\[0\].private_seqNum;
 		      rcvSeqNum = status;
+		      rcvOrigin = SALInstance.value\[0\].private_origin;
 		      rcvIdentity = SALInstance.value\[0\].private_identity;
 		      ackdata.ack = SAL__CMD_ACK;"
       if { [info exists SYSDIC($subsys,keyedID)] } {
@@ -712,6 +772,7 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
                     lastsample = i;
 		\}
 	 	status = data.value\[lastsample\].ack;
+	  	sal\[actorIdxCmd\].rcvOrigin = data.value\[lastsample\].private_origin;
 	  	sal\[actorIdxCmd\].rcvSeqNum = data.value\[lastsample\].private_seqNum;
 	  	sal\[actorIdxCmd\].rcvIdentity = data.value\[lastsample\].private_identity;
 	  \} else \{
@@ -739,9 +800,11 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
    		ackdata.private_seqNum = cmdId;
    		ackdata.error = error;
    		ackdata.ack = ack;
+                ackdata.origin = sal\[actorIdx\].activeorigin;
                 ackdata.identity = sal\[actorIdx\].activeidentity;
                 ackdata.host = sal\[actorIdx\].activehost;
                 ackdata.private_host = ddsIPaddress;
+                ackdata.private_origin = origin;
                 ackdata.private_identity = CSC_identity;
    		ackdata.result = result;"
       if { [info exists SYSDIC($subsys,keyedID)] } {
@@ -754,6 +817,7 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
       			System.out.println(  \"    ack      : \" + ackdata.ack );
       			System.out.println(  \"    error    : \" + ackdata.error );
       			System.out.println(  \"    host     : \" + ackdata.host );
+      			System.out.println(  \"    origin : \" + ackdata.origin );
       			System.out.println(  \"    identity : \" + ackdata.identity );
       			System.out.println(  \"    result   : \" + ackdata.result );
    		\}"
