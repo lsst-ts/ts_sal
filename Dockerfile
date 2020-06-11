@@ -13,7 +13,7 @@ WORKDIR /home/saluser/repos/ts_xml
 RUN /home/saluser/.checkout_repo.sh ${xml_v}
 
 WORKDIR /home/saluser/repos/ts_sal
-RUN source /opt/lsst/software/stack/loadLSST.bash && setup lsst_distrib && \
-    source /home/saluser/repos/ts_sal/setup.env && \
+RUN source /home/saluser/.setup.sh && \
     setup ts_sal -t current && \
     scons --clean && scons
+
