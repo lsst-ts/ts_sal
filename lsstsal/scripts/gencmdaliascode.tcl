@@ -329,10 +329,7 @@ salReturn SAL_SALData::waitForCompletion_[set i]( int cmdSeqNum , unsigned int t
    puts $fout "
 salReturn SAL_SALData::getResponse_[set i](SALData::ackcmd[set ACKREVCODE]Seq data)
 \{
-#ifdef SAL_BUILD_FOR_PYTHON
-  Py_BEGIN_ALLOW_THREADS
-#endif
-    int actorIdx = SAL__SALData_ackcmd_ACTOR;
+  int actorIdx = SAL__SALData_ackcmd_ACTOR;
   int actorIdxCmd = SAL__SALData_command_[set i]_ACTOR;
   SampleInfoSeq info;
   ReturnCode_t status = SAL__CMD_NOACK;
@@ -341,7 +338,13 @@ salReturn SAL_SALData::getResponse_[set i](SALData::ackcmd[set ACKREVCODE]Seq da
   DataReader_var dreader = getReader2(actorIdx);
   SALData::ackcmd[set ACKREVCODE]DataReader_var SALReader = SALData::ackcmd[set ACKREVCODE]DataReader::_narrow(dreader.in());
   checkHandle(SALReader.in(), \"SALData::ackcmd[set ACKREVCODE]DataReader::_narrow\");
+#ifdef SAL_BUILD_FOR_PYTHON
+  Py_BEGIN_ALLOW_THREADS
+#endif
   istatus = SALReader->take(data, info, 1, NOT_READ_SAMPLE_STATE, ANY_VIEW_STATE, ALIVE_INSTANCE_STATE);
+#ifdef SAL_BUILD_FOR_PYTHON
+  Py_END_ALLOW_THREADS
+#endif
   sal\[actorIdxCmd\].rcvSeqNum = 0;
   sal\[actorIdxCmd\].rcvOrigin = 0;
   sal\[actorIdxCmd\].rcvIdentity = \"\";
@@ -379,19 +382,13 @@ salReturn SAL_SALData::getResponse_[set i](SALData::ackcmd[set ACKREVCODE]Seq da
   \}
   istatus = SALReader->return_loan(data, info);
   checkStatus(istatus, \"SALData::ackcmd[set ACKREVCODE]DataReader::return_loan\");
-#ifdef SAL_BUILD_FOR_PYTHON
-  Py_END_ALLOW_THREADS
-#endif
-    return status;
+  return status;
 \}
 "
    puts $fout "
 salReturn SAL_SALData::getResponse_[set i]C(SALData_ackcmdC *response)
 \{
-#ifdef SAL_BUILD_FOR_PYTHON
-  Py_BEGIN_ALLOW_THREADS
-#endif
-    int actorIdx = SAL__SALData_ackcmd_ACTOR;
+  int actorIdx = SAL__SALData_ackcmd_ACTOR;
   int actorIdxCmd = SAL__SALData_command_[set i]_ACTOR;
   SampleInfoSeq info;
   SALData::ackcmd[set ACKREVCODE]Seq data;
@@ -404,7 +401,13 @@ salReturn SAL_SALData::getResponse_[set i]C(SALData_ackcmdC *response)
   DataReader_var dreader = getReader2(actorIdx);
   SALData::ackcmd[set ACKREVCODE]DataReader_var SALReader = SALData::ackcmd[set ACKREVCODE]DataReader::_narrow(dreader.in());
   checkHandle(SALReader.in(), \"SALData::ackcmdDataReader::_narrow\");
+#ifdef SAL_BUILD_FOR_PYTHON
+  Py_BEGIN_ALLOW_THREADS
+#endif
   istatus = SALReader->take(data, info, 1, NOT_READ_SAMPLE_STATE, ANY_VIEW_STATE, ALIVE_INSTANCE_STATE);
+#ifdef SAL_BUILD_FOR_PYTHON
+  Py_END_ALLOW_THREADS
+#endif
   sal\[actorIdxCmd\].rcvSeqNum = 0;
   sal\[actorIdxCmd\].rcvOrigin = 0;
   sal\[actorIdxCmd\].rcvIdentity = \"\";
@@ -449,10 +452,7 @@ salReturn SAL_SALData::getResponse_[set i]C(SALData_ackcmdC *response)
   \}
   istatus = SALReader->return_loan(data, info);
   checkStatus(istatus, \"SALData::ackcmd[set ACKREVCODE]DataReader::return_loan\");
-#ifdef SAL_BUILD_FOR_PYTHON
-  Py_END_ALLOW_THREADS
-#endif
-    return status;
+  return status;
 \}
 "
    puts $fout "
