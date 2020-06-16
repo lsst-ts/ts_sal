@@ -322,6 +322,7 @@ global SYSDIC SALRELEASE SALVERSION SAL_WORK_DIR OSPL_VERSION RELVERSION env
    }
    set xmldist [string trim [exec cat $env(SAL_WORK_DIR)/VERSION]]
    set fout [open $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_runtime.spec w]
+   set rpmversion [exec cat $env(TS_XML_DIR)/VERSION]
    puts $fout "
 %global __os_install_post %{nil}
 %define debug_package %{nil}
@@ -333,7 +334,7 @@ global SYSDIC SALRELEASE SALVERSION SAL_WORK_DIR OSPL_VERSION RELVERSION env
 %define packager		dmills@lsst.org
 
 Name:      %{name}
-Version: [exec cat $env(TS_XML_DIR)/VERSION]
+Version: [set rpmversion]
 Release: [set release]%\{?dist\}
 Packager:  %{packager}
 Vendor:    %{vendor}
@@ -349,7 +350,7 @@ Requires: OpenSpliceDDS = $OSPL_VERSION
 Requires: ts_sal_utils
 "
    foreach subsys $SYSDIC(systems) {
-      puts $fout "Requires: $subsys = $SALRELEASE"
+      puts $fout "Requires: $subsys = $rpmversion"
    }
    puts $fout "
 %description
@@ -381,6 +382,7 @@ global SYSDIC SALRELEASE SALVERSION SAL_WORK_DIR OSPL_VERSION RELVERSION env
    }
    set xmldist [string trim [exec cat $env(SAL_WORK_DIR)/VERSION]]
    set fout [open $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_ATruntime.spec w]
+   set rpmversion [exec cat $env(TS_XML_DIR)/VERSION]
    puts $fout "
 %global __os_install_post %{nil}
 %define debug_package %{nil}
@@ -392,7 +394,7 @@ global SYSDIC SALRELEASE SALVERSION SAL_WORK_DIR OSPL_VERSION RELVERSION env
 %define packager		dmills@lsst.org
 
 Name:      %{name}
-Version: [exec cat $env(TS_XML_DIR)/VERSION]
+Version: [set rpmversion]
 Release: [set release]%\{?dist\}
 Packager:  %{packager}
 Vendor:    %{vendor}
@@ -409,7 +411,7 @@ Requires: ts_sal_utils
 "
    foreach subsys $SYSDIC(systems) {
       if { [string range $subsys 0 1] == "AT" } {
-        puts $fout "Requires: $subsys = $SALRELEASE"
+        puts $fout "Requires: $subsys = $rpmversion"
       }
    }
    puts $fout "
@@ -505,8 +507,9 @@ global SAL_WORK_DIR SALVERSION SALRELEASE RPMFILES OSPL_VERSION RELVERSION XMLVE
   } else {
      set release $SALVERSION
   }
+   set rpmversion [exec cat $env(TS_XML_DIR)/VERSION]
   puts $fout "Name: [set subsys]_test
-Version: [exec cat $env(TS_XML_DIR)/VERSION]
+Version: [set rpmversion]
 Release: [set release]%\{?dist\}
 Summary: SAL runtime for $subsys Subsystem with tests
 Vendor: LSST
@@ -519,7 +522,7 @@ Prefix: /opt
 BuildRoot: $SAL_WORK_DIR/rpmbuild/%\{name\}-%\{version\}_[set release]
 Packager: dmills@lsst.org
 Requires: OpenSpliceDDS = $OSPL_VERSION
-Requires : [set subsys] = $SALVERSION
+Requires : [set subsys] = $rpmversion
 Requires: ts_sal_utils
 %global __os_install_post %{nil}
 %define debug_package %{nil}

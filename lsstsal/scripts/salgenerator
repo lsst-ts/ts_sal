@@ -293,18 +293,19 @@ if { $OPTIONS(efd) && $OPTIONS(writers) } {
 if { $OPTIONS(maven) } {
   cd $SAL_WORK_DIR
   source $SAL_DIR/mavenize.tcl
+  set mvnrelease [set XMLVERSION]_[exec cat $env(TS_SAL_DIR)/VERSION][set RELVERSION]
   foreach subsys $TSUBSYSTEMS {
     set result ""
     set bad ""
-    puts stdout "Creating maven directories maven/[set subsys]_[set SALRELEASE]"
+    puts stdout "Creating maven directories maven/[set subsys]-[set mvnrelease]"
     catch { set result [mavenize $subsys] } bad
     puts stdout "$result"
     puts stderr "$bad"
-#     puts stdout "Creating unit tests maven/[set subsys]_[set SALRELEASE]"
+#     puts stdout "Creating unit tests maven/[set subsys]-[set mvnrelease]"
 #     catch { set result [mavenunittests $subsys] } bad
 #     puts stdout "$result"
 #     puts stderr "$bad"
-    cd maven/[set subsys]_[set SALRELEASE]  
+    cd maven/[set subsys]-[set mvnrelease]  
     puts stdout "Running maven install"
     set result ""
     set bad ""
@@ -316,7 +317,7 @@ if { $OPTIONS(maven) } {
 #     puts stdout "$result"
 #     puts stderr "$bad"
   }
-  puts stdout "Using version $SALRELEASE for the maven project"
+  puts stdout "Using version $mvnrelease for the maven project"
 }
 
 catch {exec rmdir saltemptest}
