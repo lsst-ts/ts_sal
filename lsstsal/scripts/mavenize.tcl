@@ -30,11 +30,12 @@
 #    </build>
 
 proc mavenize { subsys } {
-global env SAL_WORK_DIR SAL_DIR SALRELEASE OSPL_VERSION
-  exec mkdir -p $SAL_WORK_DIR/maven/[set subsys]_[set SALRELEASE]/src/main/java/org/lsst/sal/[set subsys]
-  exec mkdir -p $SAL_WORK_DIR/maven/[set subsys]_[set SALRELEASE]/src/test/java
-  exec mkdir -p $SAL_WORK_DIR/maven/[set subsys]_[set SALRELEASE]/src/main/resources
-  set fout [open $SAL_WORK_DIR/maven/[set subsys]_[set SALRELEASE]/pom.xml w]
+global env SAL_WORK_DIR SAL_DIR OSPL_VERSION XMLVERSION RELVERSION TS_SAL_DIR
+  set mvnrelease [set XMLVERSION]_[exec cat $env(TS_SAL_DIR)/VERSION][set RELVERSION]
+  exec mkdir -p $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/java/org/lsst/sal/[set subsys]
+  exec mkdir -p $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/test/java
+  exec mkdir -p $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/resources
+  set fout [open $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/pom.xml w]
   puts $fout "
 <project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"
   xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">
@@ -44,7 +45,7 @@ global env SAL_WORK_DIR SAL_DIR SALRELEASE OSPL_VERSION
   <artifactId>sal_[set subsys]</artifactId>
   <packaging>jar</packaging>
   <name>sal_[set subsys]</name>
-  <version>$SALRELEASE</version>
+  <version>$mvnrelease</version>
 
   <url>http://lsst-tsvm.lsst.org</url>
   <licenses>
@@ -139,20 +140,20 @@ global env SAL_WORK_DIR SAL_DIR SALRELEASE OSPL_VERSION
      set id [join [lrange [split [file tail [file rootname $i]] _] 1 end] _]
      set type [lindex [split $id _] 0]
      if { $type != "command" && $type != "logevent" && $type != "ackcmd"} {
-       exec cp $SAL_WORK_DIR/[set subsys]_[set id]/java/src/[set subsys]_[set id]DataPublisher.java $SAL_WORK_DIR/maven/[set subsys]_[set SALRELEASE]/src/test/java/.
-       exec cp $SAL_WORK_DIR/[set subsys]_[set id]/java/src/[set subsys]_[set id]DataSubscriber.java $SAL_WORK_DIR/maven/[set subsys]_[set SALRELEASE]/src/test/java/.
+       exec cp $SAL_WORK_DIR/[set subsys]_[set id]/java/src/[set subsys]_[set id]DataPublisher.java $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/test/java/.
+       exec cp $SAL_WORK_DIR/[set subsys]_[set id]/java/src/[set subsys]_[set id]DataSubscriber.java $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/test/java/.
        puts stdout "Processed $id"
      }
   }
   set allj [glob $SAL_WORK_DIR/$subsys/java/src/*.java]
   foreach fj $allj {
-     exec cp $fj $SAL_WORK_DIR/maven/[set subsys]_[set SALRELEASE]/src/test/java/.
+     exec cp $fj $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/test/java/.
      puts stdout "Processed $fj"
   }
-  exec cp $SAL_WORK_DIR/$subsys/java/src/org/lsst/sal/SAL_[set subsys].java $SAL_WORK_DIR/maven/[set subsys]_[set SALRELEASE]/src/main/java/org/lsst/sal/.
-  exec cp $SAL_WORK_DIR/$subsys/java/src/org/lsst/sal/salActor.java $SAL_WORK_DIR/maven/[set subsys]_[set SALRELEASE]/src/main/java/org/lsst/sal/.
-  exec cp $SAL_WORK_DIR/$subsys/java/src/org/lsst/sal/salUtils.java $SAL_WORK_DIR/maven/[set subsys]_[set SALRELEASE]/src/main/java/org/lsst/sal/.
-  exec cp -r $SAL_WORK_DIR/$subsys/java/$subsys $SAL_WORK_DIR/maven/[set subsys]_[set SALRELEASE]/src/main/java/.
+  exec cp $SAL_WORK_DIR/$subsys/java/src/org/lsst/sal/SAL_[set subsys].java $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/java/org/lsst/sal/.
+  exec cp $SAL_WORK_DIR/$subsys/java/src/org/lsst/sal/salActor.java $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/java/org/lsst/sal/.
+  exec cp $SAL_WORK_DIR/$subsys/java/src/org/lsst/sal/salUtils.java $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/java/org/lsst/sal/.
+  exec cp -r $SAL_WORK_DIR/$subsys/java/$subsys $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/java/.
   exec mkdir -p $SAL_WORK_DIR/maven/libs
   exec cp $env(OSPL_HOME)/jar/dcpssaj.jar $SAL_WORK_DIR/maven/libs/.
   exec cp $SAL_DIR/../lib/junit.jar $SAL_WORK_DIR/maven/libs/.
@@ -160,13 +161,14 @@ global env SAL_WORK_DIR SAL_DIR SALRELEASE OSPL_VERSION
 
 
 proc mavenunittests { subsys } {
-global env SAL_WORK_DIR SAL_DIR SALRELEASE CMD_ALIASES CMDS SYSDIC 
+global env SAL_WORK_DIR SAL_DIR CMD_ALIASES CMDS SYSDIC XMLVERSION RELVERSION TS_SAL_DIR 
+   set mvnrelease [set XMLVERSION]_[exec cat $env(TS_SAL_DIR)/VERSION][set RELVERSION]
    if { [info exists SYSDIC($subsys,keyedID)] } {
        set initializer "( (short) 1)"
    } else {
        set initializer "()"
    }
-  set fout [open $SAL_WORK_DIR/maven/[set subsys]_[set SALRELEASE]/src/test/java/[set subsys]CommanderTest.java w]
+  set fout [open $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/test/java/[set subsys]CommanderTest.java w]
   puts $fout "
 package org.lsst.sal.junit.[set subsys];
 
@@ -217,7 +219,7 @@ public class [set subsys]CommanderTest extends TestCase \{
   puts $fout "
 \}"
   close $fout
-  set fout [open $SAL_WORK_DIR/maven/[set subsys]_[set SALRELEASE]/src/test/java/[set subsys]ControllerTest.java w]
+  set fout [open $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/test/java/[set subsys]ControllerTest.java w]
   puts $fout "
 package org.lsst.sal.junit.[set subsys];
 
