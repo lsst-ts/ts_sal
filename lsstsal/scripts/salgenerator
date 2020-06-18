@@ -175,15 +175,14 @@ if { $OPTIONS(generate) } {
   exit 0
 }
 
-set XMLVERSION [exec cat $SAL_WORK_DIR/VERSION]
-if { $XMLVERSION == "1.0.0" } {
-   if { [file exists $env(TS_XML_DIR)/VERSION] } {
-      exec cp  $env(TS_XML_DIR)/VERSION $SAL_WORK_DIR/VERSION
-   } else {
-      errorexit "Please adjust setup.env so that TS_XML_DIR is correct"
-   }
+if { [file exists $env(TS_XML_DIR)/VERSION] } {
+   exec cp  $env(TS_XML_DIR)/VERSION $SAL_WORK_DIR/VERSION
+ } else {
+   errorexit "Please adjust setup.env so that TS_XML_DIR is correct"
 }
 
+set XMLVERSION [exec cat $env(TS_XML_DIR)/VERSION]
+puts stdout "XMLVERSION = $XMLVERSION"
 
 if { $RELVERSION != "" } {
   set SALRELEASE "[set XMLVERSION]-[exec cat $env(TS_SAL_DIR)/VERSION].$RELVERSION"
@@ -533,3 +532,11 @@ if { $OPTIONS(icd) } {
   set SINGLESUBSYSTEM $subsys
   source $SAL_DIR/icd/icd.tcl
 }
+
+
+
+puts stdout "SALVERSION = $SALVERSION"
+puts stdout "XMLVERSION = $XMLVERSION"
+puts stdout "SAL_WORK_DIR = $SAL_WORK_DIR"
+puts stdout "OSPL_HOME = $OSPL_HOME"
+
