@@ -122,9 +122,26 @@ proc getAlias { topic } {
 
 
 proc skipPrivate { fidl } {
-  foreach i "1 2 3 4 5 6 7" {gets $fidl rec}
+  foreach i "1 2 3 4 5 6 7 8" {gets $fidl rec}
 }
 
+
+proc getTopicNames { subsys {type all} } {
+global SAL_WORK_DIR
+  switch $type {
+     command {
+          set res [split [exec grep "pragma keylist command_" $SAL_WORK_DIR/idl-templates/validated/sal/sal_[set subsys].idl] \n]
+             }
+     logevent {
+          set res [split [exec grep "pragma keylist logevent_" $SAL_WORK_DIR/idl-templates/validated/sal/sal_[set subsys].idl] \n]
+             }
+     all {
+          set res [split [exec grep pragma $SAL_WORK_DIR/idl-templates/validated/sal/sal_[set subsys].idl] \n]
+             }
+  }
+  foreach i $res { lappend names [lindex $i 2] }
+  return [lsort $names]
+}
 
 
 
