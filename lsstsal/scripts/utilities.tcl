@@ -144,4 +144,15 @@ global SAL_WORK_DIR
 }
 
 
+proc updateMetaData { subsys } {
+global METADATA SAL_WORK_DIR
+  set fmeta [open $SAL_WORK_DIR/idl-templates/validated/[set subsys]_metadata.tcl w]
+  foreach i [lsort [array names METADATA]] {
+     puts $fmeta "set METADATA($i) \"$METADATA($i)\""
+  }
+  close $fmeta
+}
+
+
+
 

@@ -253,6 +253,7 @@ if { $OPTIONS(validate) || $OPTIONS(idl) } {
       checkidl [file tail $n]
     }
     updateRevCodes $i
+    updateMetaData $i
     stdlog "Completed $i validation\n\n"
   }
 }

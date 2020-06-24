@@ -2,7 +2,7 @@
 
 proc parseXMLtoidl { fname } { 
 global IDLRESERVED SAL_WORK_DIR SAL_DIR CMDS CMD_ALIASES EVTS EVENT_ALIASES
-global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIONS
+global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIONS METADATA
    if { $OPTIONS(verbose) } {stdlog "###TRACE>>> parseXMLtoidl $fname"}
    set fin [open $fname r]
    set fout ""
@@ -205,6 +205,7 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
       if { $tag == "/SALEvent" || $tag == "/SALCommand" || $tag == "/SALTelemetry" } {
          enumsToIDL $subsys $alias $fout
          puts $fsql "###Description $tname : $DESC($subsys,$alias,help)"
+         set METADATA($tname,description) $DESC($subsys,$alias,help)
       }
       if { $tag == "IDL_Type"} {
          set type $value
@@ -256,7 +257,11 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
          } else {
             set DESC($subsys,$alias,$item) ""
          }
-         if { $unit != "" } {set UNITS($subsys,$alias,$item) $unit}
+         if { $unit != "" } {
+            set UNITS($subsys,$alias,$item) $unit
+            set METADATA($tname,$item,units) $unit
+         }
+         set METADATA($tname,$item,description) $desc
          puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",$itemid,\"$item\",\"$type\",$idim,\"$unit\",$freq,\"$range\",\"$location\",\"$desc\");"
       }
    }
