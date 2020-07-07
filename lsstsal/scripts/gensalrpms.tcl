@@ -12,11 +12,8 @@ set SAL_DIR $env(SAL_DIR)
 
 source $SAL_DIR/add_system_dictionary.tcl
 source $SAL_DIR/ospl_version.tcl
-source $SAL_DIR/genkafkaefd.tcl
 source $SAL_DIR/sal_version.tcl
-source $SAL_DIR/geninfluxefd-multi.tcl
 
-set SYSDIC(forEFD) "ATAOS ATArchiver ATBuilding ATCamera ATDome ATDomeTrajectory ATHeaderService ATHexapod ATMCS ATMonochromator ATPneumatics ATPtg ATSpectrograph ATTCS ATWhiteLight EFD Electrometer"
 
 proc copyasset { asset dest } {
     if { [file exists $asset] } {
@@ -177,139 +174,6 @@ global XMLVERSION env RPMFILES SAL_WORK_DIR
           lappend RPMFILES [string range $f 1 end]
        }
    }
-}
-
-proc listfilesEFDrpm { } {
-global SALVERSION env RPMFILES SAL_WORK_DIR SYSDIC
-   set RPMFILES "/opt/lsst/ts_sal/setupEFD.env"
-   cd $SAL_WORK_DIR/rpmbuild/BUILD/ts_EFDruntime-$SALVERSION
-   set fl [split [exec find . -type f  -print] \n]
-   foreach f $fl { 
-       if { [string range $f 0 4] == "./opt" } {
-          lappend RPMFILES [string range $f 1 end]
-       }
-   }
-   foreach subsys $SYSDIC(forEFD) {
-    foreach dtyp "efd kafka influx" {
-     lappend RPMFILES "/etc/systemd/system/[set subsys]_command_[set dtyp]writer.service"
-     lappend RPMFILES "/etc/systemd/system/[set subsys]_event_[set dtyp]writer.service"
-     lappend RPMFILES "/etc/systemd/system/[set subsys]_telemetry_[set dtyp]writer.service"
-    }
-   }
-}
-
-proc generateEFDrpm { } {
-global SAL_WORK_DIR SALVERSION SAL_DIR SYSDIC
-  exec rm -fr ts_EFDruntime-$SALVERSION/opt/lsst/ts_sal/*
-  exec mkdir -p $SAL_WORK_DIR/rpmbuild/BUILD
-  exec mkdir -p $SAL_WORK_DIR/rpmbuild/BUILDROOT
-  exec mkdir -p $SAL_WORK_DIR/rpmbuild/RPMS
-  exec mkdir -p $SAL_WORK_DIR/rpmbuild/SOURCES
-  exec mkdir -p $SAL_WORK_DIR/rpmbuild/SPECS
-  exec mkdir -p $SAL_WORK_DIR/rpmbuild/SRPMS
-  exec mkdir -p ts_EFDruntime-$SALVERSION/opt/lsst/ts_sal
-  exec mkdir -p ts_EFDruntime-$SALVERSION/opt/lsst/ts_sal/sql
-  exec mkdir -p ts_EFDruntime-$SALVERSION/opt/lsst/ts_sal/bin
-  exec mkdir -p ts_EFDruntime-$SALVERSION/opt/lsst/ts_sal/scripts
-  exec mkdir -p ts_EFDruntime-$SALVERSION/opt/lsst/ts_sal/lib
-  exec mkdir -p ts_EFDruntime-$SALVERSION/etc/systemd/system
-  foreach subsys $SYSDIC(forEFD) {
-     catch {genefdwriters $subsys}
-     catch {genkafkawriters $subsys}
-     catch {geninfluxwriters $subsys}
-     cd $SAL_WORK_DIR
-     genefdsetup $subsys
-     foreach type "command event telemetry" { 
-        copyasset $SAL_WORK_DIR/[set subsys]/cpp/src/sacpp_[set subsys]_[set type]_efdwriter ts_EFDruntime-$SALVERSION/opt/lsst/ts_sal/bin/.
-        copyasset $SAL_WORK_DIR/[set subsys]/cpp/src/sacpp_[set subsys]_[set type]_kafkawriter ts_EFDruntime-$SALVERSION/opt/lsst/ts_sal/bin/.
-        copyasset $SAL_WORK_DIR/[set subsys]/cpp/src/sacpp_[set subsys]_[set type]_influxwriter ts_EFDruntime-$SALVERSION/opt/lsst/ts_sal/bin/.
-     }
-     copyasset $SAL_WORK_DIR/idl-templates/validated/[set subsys]_revCodes.tcl ts_EFDruntime-$SALVERSION/opt/lsst/ts_sal/scripts/.
-     copyasset $SAL_WORK_DIR/lib/libsacpp_[set subsys]_types.so ts_EFDruntime-$SALVERSION/opt/lsst/ts_sal/lib/.
-     copyasset $SAL_WORK_DIR/lib/libSAL_[set subsys].so ts_EFDruntime-$SALVERSION/opt/lsst/ts_sal/lib/.
-     set fsql [open /tmp/dosql w]
-     puts $fsql "cat $SAL_WORK_DIR/sql/[set subsys]_*.sqlwrt > ts_EFDruntime-$SALVERSION/opt/lsst/ts_sal/sql/[set subsys].sqlwrt"
-     puts $fsql "cp $SAL_WORK_DIR/sql/[set subsys]_*.sqldef ts_EFDruntime-$SALVERSION/opt/lsst/ts_sal/sql/."
-     puts $fsql "cat $SAL_WORK_DIR/sql/[set subsys]_*.sql > ts_EFDruntime-$SALVERSION/opt/lsst/ts_sal/sql/[set subsys].sql"
-     close $fsql
-     exec chmod 755 /tmp/dosql
-     exec /tmp/dosql
-  }
-  copyasset $SAL_WORK_DIR/EFD/cpp/src/sacpp_EFD_largeFileObjectAvailable_send ts_EFDruntime-$SALVERSION/opt/lsst/ts_sal/bin/.
-  copyasset $SAL_WORK_DIR/EFD/cpp/src/sacpp_EFD_largeFileObjectAvailable_log ts_EFDruntime-$SALVERSION/opt/lsst/ts_sal/bin/.
-  copyasset $SAL_DIR/migrateEFDtable.tcl ts_EFDruntime-$SALVERSION/opt/lsst/ts_sal/scripts/.
-  copyasset $SAL_DIR/process_LFO_logevent ts_EFDruntime-$SALVERSION/opt/lsst/ts_sal/bin/.
-  generateEFDenv
-  exec tar cvzf $SAL_WORK_DIR/rpmbuild/SOURCES/ts_EFDruntime-$SALVERSION.tgz ts_EFDruntime-$SALVERSION
-  exec rm -fr $SAL_WORK_DIR/rpmbuild/BUILD/ts_EFDruntime-$SALVERSION/*
-  exec cp -r ts_EFDruntime-$SALVERSION $SAL_WORK_DIR/rpmbuild/BUILD/.
-  listfilesEFDrpm
-  generateEFDspec
-  set frpm [open /tmp/makerpm w]
-  puts $frpm "#!/bin/sh
-export QA_RPATHS=0x001F
-rpmbuild -bi -bl -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_EFDruntime.spec
-rpmbuild -bb -bl -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_EFDruntime.spec
-"
-  close $frpm
-  exec chmod 755 /tmp/makerpm
-  exec /tmp/makerpm  >& /tmp/makerpm.log
-  exec cat /tmp/makerpm.log
-}
-
-proc generateEFDenv { } {
-global OSPL_VERSION SALVERSION
-   set fenv [open ts_EFDruntime-$SALVERSION/opt/lsst/ts_sal/setupEFD.env w]
-   puts $fenv "
-OSPL_URI=file:///opt/OpenSpliceDDS/V[set OSPL_VERSION]/HDE/x86_64.linux/etc/config/ospl.xml
-HOSTNAME=ts-efd-mysql-01.vm.dev.lsst.org
-SHELL=/bin/bash
-OSPL_HOME=/opt/OpenSpliceDDS/V[set OSPL_VERSION]/HDE/x86_64.linux
-SPLICE_ORB=DDS_OpenFusion_1_6_1
-USER=salmgr
-LD_LIBRARY_PATH=/opt/OpenSpliceDDS/V[set OSPL_VERSION]/HDE/x86_64.linux/lib:/lib:/opt/lsst/ts_sal/lib
-CPATH=/opt/OpenSpliceDDS/V[set OSPL_VERSION]/HDE/x86_64.linux/include:/opt/OpenSpliceDDS/V[set OSPL_VERSION]/HDE/x86_64.linux/include/sys:
-PATH=/opt/OpenSpliceDDS/V[set OSPL_VERSION]/HDE/x86_64.linux/bin:/opt/lsst/ts_sal/lsstsal/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/puppetlabs/bin:/home/salmgr/.local/bin:/home/salmgr/bin
-LANG=en_US.UTF-8
-SPLICE_JDK=jdk
-SHLVL=1
-HOME=/home/salmgr
-SPLICE_JAVAC=javac
-LOGNAME=salmgr
-LESSOPEN=||/usr/bin/lesspipe.sh %s
-OSPL_TMPL_PATH=/opt/OpenSpliceDDS/V[set OSPL_VERSION]/HDE/x86_64.linux/etc/idlpp
-LSST_KAFKA_BROKERS=efd-kafka0.lsst.codes:9094,efd-kafka1.lsst.codes:9094,efd-kafka2.lsst.codes:9094​
-LSST_EFD_HOST=localhost
-LSST_DDS_DOMAIN=auxtelpath
-SPLICE_JAVA=java"
-   close $fenv
-}
-
-
-proc genefdsetup { subsys } {
-global SALVERSION
-   foreach wtype "command event telemetry" {
-    foreach dtyp "efd kafka influx" {
-     set fout [open ts_EFDruntime-$SALVERSION/etc/systemd/system/[set subsys]_[set wtype]_[set dtyp]writer.service w]
-     puts $fout "
-\[Unit\]
-Description=EFD $subsys $wtype $dtyp writer
-Wants=network-online.target
-
-\[Service\]
-Type=simple
-EnvironmentFile=/opt/lsst/ts_sal/setupEFD.env
-WorkingDirectory=/opt/lsst/ts_sal/bin
-ExecStart=/opt/lsst/ts_sal/bin/sacpp_[set subsys]_[set wtype]_[set dtyp]writer
-Restart=on-failure
-User=salmgr
-
-\[Install\]
-WantedBy=[set subsys]_[set dtyp]writer.service
-"
-     close $fout
-   }
-  }
 }
 
 
@@ -560,61 +424,6 @@ rm -fr \$RPM_BUILD_ROOT
 #  eval $ctar
 }
 
-
-proc generateEFDspec { } {
-global SAL_WORK_DIR SALVERSION RPMFILES OSPL_VERSION env
-  set xmldist [string trim [exec cat $env(SAL_WORK_DIR)/VERSION]]
-  set fout [open $SAL_WORK_DIR/rpmbuild/SPECS/ts_EFDruntime.spec w]
-  set ospldist [join [split $OSPL_VERSION .] ""]
-  puts $fout "Name: ts_EFDruntime
-Version: [set SALVERSION]
-Release: [set xmldist]%\{?dist\}
-Summary: SAL runtime for EFD runtime Subsystem
-Vendor: LSST
-License: GPL
-URL: http://project.lsst.org/ts
-Group: Telescope and Site SAL
-AutoReqProv: no
-Source0: ts_EFDruntime-[set SALVERSION].tgz
-BuildRoot: $SAL_WORK_DIR/rpmbuild/%\{name\}-%\{version\}
-Packager: dmills@lsst.org
-Requires: OpenSpliceDDS >= $OSPL_VERSION
-Requires: mariadb-devel
-Requires: tcl
-Requires: librdkafka
-Requires: ts_sal_utils
-
-%global __os_install_post %{nil}
-%define debug_package %{nil}
-
-%description
-This is a EFD runtime and environment for the LSST Telescope and Site subsystems.
-It provides table definitions and database writers for all supported subsystems.
-
-%prep
-
-%setup
- 
-%build
-#source /opt/lsst/ts_sal/setup.env
-
-%install
-cp -fr * %{buildroot}/.
-
-%files"
-  foreach f $RPMFILES {
-     puts $fout $f
-  }
-  puts $fout "
-%clean
-
-%post
-%postun
-/opt/lsst/ts_sal/scripts/migrateEFDtable.tcl > /tmp/migrateEFDtable.log
-%changelog
-"
-  close $fout
-}
 
 ###
 ### sudo mv /usr/local /usr/local.save
