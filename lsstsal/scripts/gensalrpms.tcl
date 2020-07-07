@@ -489,7 +489,7 @@ puts $fout "
 }
 
 proc generateUtilsrpm { } {
-global SYSDIC SALVERSION SAL_WORK_DIR OSPL_VERSION SAL_DIR
+global SYSDIC SALVERSION SAL_WORK_DIR OSPL_VERSION SAL_DIR env
    set fout [open $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_utils.spec w]
    puts $fout "
 %global __os_install_post %{nil}
@@ -553,9 +553,9 @@ User=root
 WantedBy=ts_sal_settai.service
 "
   close $fser
-  exec $SAL_DIR/make_salUtils
+  exec make_salUtils
   copyasset $SAL_WORK_DIR/salUtils/set-tai ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/bin/.
-  copyasset $SAL_DIR/update_leapseconds ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/bin/.
+  copyasset $env(TS_SAL_DIR)/bin/update_leapseconds ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/bin/.
   copyasset $SAL_WORK_DIR/lib/libsalUtils.so ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/lib/.
   copyasset $SAL_DIR/leap-seconds.list ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/etc/.
   copyasset $SAL_DIR/setup.env ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/.

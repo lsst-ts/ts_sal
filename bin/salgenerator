@@ -200,15 +200,7 @@ if { $OPTIONS(validate) || $OPTIONS(idl) } {
   set all $TSUBSYSTEMS
   stdlog "Processing $all"
   foreach i $all {
-     set IDXENUMDONE($i) 0
-#    if { [file exists [set i]_Telemetry.xml] == 0 } {
-#        stdlog "Add minimal Telemetry"
-#        set SALSubsys $i
-#        source $SAL_DIR/generateMinimalTelemetry.tcl
-#        set fxml [open $SAL_WORK_DIR/[set i]_Telemetry.xml w]
-#        puts $fxml $SAL_MIN_TELEMETRY 
-#        close $fxml
-#    }
+    set IDXENUMDONE($i) 0
     if { [file exists $SAL_WORK_DIR/SALGenerics.xml] } {
       if { [info exists SYSDIC($i,hasGenerics)] || [info exists SYSDIC($i,hasAllGenerics)] } {
         set x none
@@ -384,7 +376,7 @@ if { $OPTIONS(lib) } {
     if { $s != "lib" } {
       stdlog "Building shared library for $s subsystem"
       set result none
-      catch { set result [exec $SAL_DIR/buildsharedlib $s] } bad
+      catch { set result [exec $env(TS_SAL_DIR)/bin/buildsharedlib $s] } bad
       if { $OPTIONS(verbose) } {stdlog $result}
     }
     if { [file exists $SAL_WORK_DIR/[set s]/cpp/src/SALPY_[set s].so] } {
