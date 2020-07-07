@@ -401,9 +401,6 @@ global SAL_WORK_DIR OPTIONS
 set SAL_WORK_DIR $env(SAL_WORK_DIR)
 set SAL_DIR $env(SAL_DIR)
 source $env(SAL_DIR)/streamutils.tcl
-source $env(SAL_DIR)/unitsdesc.tcl
-source $env(SAL_DIR)/datastream_desc.tcl
-source $env(SAL_DIR)/camera-subsysdesc.tcl
 source $env(SAL_DIR)/utilities.tcl
 source $env(SAL_DIR)/SALTopicTemplateXML.tcl
 source $env(SAL_DIR)/add_system_dictionary.tcl

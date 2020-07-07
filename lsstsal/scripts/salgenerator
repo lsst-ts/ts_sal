@@ -14,10 +14,10 @@ proc print_help {} {
 		generate - all steps to generate SAL wrappers for specified language
 		validate - check the XML Telemetry/Command/LogEvent definitions
                 sal      - generate SAL wrappers for specified language : cpp, idl, java, python, pydds
+                apidoc   - generate interface documentation for the specified language : cpp, java, python
                 lib      - generate shared library
-		html     - generate web form interfaces
 		labview  - generate LabVIEW low-level interface
-		maven    - generate a maven repository
+		maven    - generate a maven project
 		db       - generate telemetry database table
 
                     Arguments required are
@@ -261,23 +261,25 @@ if { $OPTIONS(validate) || $OPTIONS(idl) } {
 
 # For html option , process everything
 if { $OPTIONS(html) } {
-  global SAL_WORK_DIR
-  global SAL_DIR
-  cd $SAL_WORK_DIR
-  source $SAL_DIR/updatedetails.tcl
-  source $SAL_DIR/genidlshmem_array.tcl
-  exec mkdir -p $SAL_WORK_DIR/sql
-  set sqlf [glob *.sqldef *.sqlwrt]
-  foreach f $sqlf { exec mv $f $SAL_WORK_DIR/sql/. }
-  stdlog "Generating telemetry stream definition editor html"
-  exec mkdir -p $SAL_WORK_DIR/html
-  stdlog "Generating Facility database table creation html"
-  source $SAL_DIR/gendbhtml.tcl
-  cd $SAL_WORK_DIR
-  stdlog "Generating Subsystem simulation control html"
-  source $SAL_DIR/gensimhtml.tcl
-  cd $SAL_WORK_DIR/html
-  source $SAL_DIR/genhtml.tcl
+#  global SAL_WORK_DIR
+#  global SAL_DIR
+#  cd $SAL_WORK_DIR
+#  source $SAL_DIR/updatedetails.tcl
+#  source $SAL_DIR/genidlshmem_array.tcl
+#  exec mkdir -p $SAL_WORK_DIR/sql
+#  set sqlf [glob *.sqldef *.sqlwrt]
+#  foreach f $sqlf { exec mv $f $SAL_WORK_DIR/sql/. }
+#  stdlog "Generating telemetry stream definition editor html"
+#  exec mkdir -p $SAL_WORK_DIR/html
+#  stdlog "Generating Facility database table creation html"
+#  source $SAL_DIR/gendbhtml.tcl
+#  cd $SAL_WORK_DIR
+#  stdlog "Generating Subsystem simulation control html"
+#  source $SAL_DIR/gensimhtml.tcl
+#  cd $SAL_WORK_DIR/html
+#  source $SAL_DIR/genhtml.tcl
+  stdlog "WARNING : html option is deprecated, please use the apidoc option in future"
+  exit 0
 }
 
 

@@ -185,7 +185,7 @@ public class [set subsys]CommanderTest extends TestCase \{
 "
   set cmds [split [exec grep "pragma keylist command_" $SAL_WORK_DIR/idl-templates/validated/sal/sal_[set subsys].idl] \n]
   foreach i $cmds {
-     set alias [lindex [split [lindex $i 2] _] 1]
+     set alias [join [lrange [split [lindex $i 2] _] 1 end] _]
      set revcode [getRevCode [set subsys]_command_[set alias] short]
      puts $fout "
   public void test[set subsys]Commander_[set alias]() \{

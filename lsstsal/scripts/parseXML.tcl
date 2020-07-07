@@ -114,7 +114,6 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
       }
       if { $tag == "/SALCommand" } {
          set intopic 0
-         set CMDS($subsys,$alias) "$device $property $action $vvalue"
          set CMD_ALIASES($subsys) [lappend CMD_ALIASES($subsys) $alias]
          if { $itemid == 6 } {
             puts stdout "WARNING : Command $alias has no data fields , adding default value item"
