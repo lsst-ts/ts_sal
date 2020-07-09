@@ -9,47 +9,35 @@
 #include "QosProvider.h"
 using namespace SALData;
 
+SAL_SALData::SAL_SALData(int aKey, char *identity)
+{
+   CSC_identity=(char *)malloc(128);
+   sprintf(CSC_identity,"%s",identity);
+   initSalEnvironment(aKey);
+}
+
 SAL_SALData::SAL_SALData(int aKey)
 {
-   int v1,v2,v3,v4;
-   bool tuneableQos = 1;
-   char *dname = getenv("LSST_DDS_DOMAIN");
-   char *qname = getenv("LSST_DDS_QOS");
-   char *sname = getenv("LSST_DDS_HISTORYSYNC");
-   char *ipaddr = getenv("LSST_DDS_IP");
    CSC_identity=(char *)malloc(128);
-   if ( dname != NULL ) {
-      strncpy(domainName, dname, 128);
-   } else {
-      strncpy(domainName, "LSST", 128);
-   }
-   if ( qname != NULL ) {
-      QosProvider qosProvider(qname,"DDS DefaultQosProfile");
-      tuneableQos = 0;
-   }
-   if ( sname != NULL ) {
-      sscanf(sname,"%d",&historySync);
-   } else {
-      historySync = 30;
-   }
-   ddsIPaddress = rand();
-   if (ipaddr != NULL) {
-      sscanf(ipaddr,"%d.%d.%d.%d", &v1 , &v2 , &v3 , &v4);
-      ddsIPaddress = 256*256*256*v1 + 256*256*v2 + 256*v3 + v4;
-   } 
    sprintf(CSC_identity,"SALData:%d",aKey);
-   hasReader = false;
-   hasWriter = false;
-   hasCommand = false;
-   hasProcessor = false;
-   hasEventReader = false;
-   hasEventWriter = false;
-   subsystemID = aKey;
-   debugLevel = 1;
-   initSalActors(tuneableQos);
+   initSalEnvironment(aKey);
+}
+
+SAL_SALData::SAL_SALData(char *identity)
+{
+   CSC_identity=(char *)malloc(128);
+   sprintf(CSC_identity,"%s",identity);
+   initSalEnvironment(0);
 }
 
 SAL_SALData::SAL_SALData()
+{
+   CSC_identity=(char *)malloc(128);
+   sprintf(CSC_identity,"SALData");
+   initSalEnvironment(0);
+}
+
+void SAL_SALData::initSalEnvironment(int aKey)
 {
    int v1,v2,v3,v4;
    int tuneableQos = 1;
@@ -57,7 +45,6 @@ SAL_SALData::SAL_SALData()
    char *qname = getenv("LSST_DDS_QOS");
    char *sname = getenv("LSST_DDS_HISTORYSYNC");
    char *ipaddr = getenv("LSST_DDS_IP");
-   CSC_identity=(char *)malloc(128);
    if ( dname != NULL ) {
       strncpy(domainName, dname, 128);
    } else {
@@ -77,14 +64,13 @@ SAL_SALData::SAL_SALData()
       sscanf(ipaddr,"%d.%d.%d.%d", &v1 , &v2, &v3, &v4);
       ddsIPaddress = 256*256*256*v1 + 256*256*v2 + 256*v3 + v4;
    } 
-   sprintf(CSC_identity,"SALData");
    hasReader = false;
    hasWriter = false;
    hasCommand = false;
    hasEventReader = false;
    hasEventWriter = false;
    hasProcessor = false;
-   subsystemID = 0;
+   subsystemID = aKey;
    debugLevel = 1;
    initSalActors(tuneableQos);
 }

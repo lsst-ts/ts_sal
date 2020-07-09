@@ -211,7 +211,18 @@
 
     public:
 
-/** Constructor for the SAL_SALData object. It obtains information about the execution environment
+/** Constructor for the SAL_SALData object.
+  *
+  @param aKey is used to specify the index of an indexed component, or 0 for non-indexed ones
+  @param identity is used to specify the private_identity of a commander
+
+ */
+     SAL_SALData(int aKey, char *identity);
+     SAL_SALData(int aKey);
+     SAL_SALData(char *identity);
+     SAL_SALData();
+
+/** Environment setup for a SAL_SALData object.
   *
   * + LSST_DDS_DOMAIN is the name of the partition being used
   * + LSST_DDS_IP is the IP address of the DDS ethernet interface
@@ -220,8 +231,7 @@
   *
   @param aKey is used to specify the index of an indexed component, or 0 for non-indexed ones
  */
-     SAL_SALData(int aKey);
-     SAL_SALData();
+     void initSalEnvironment(int aKey);
 
 /** Sets up the DDS Publisher support for the named DDS type
   @param topicName is the name of the DDS topic
