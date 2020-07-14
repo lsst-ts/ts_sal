@@ -558,7 +558,7 @@ WantedBy=ts_sal_settai.service
   copyasset $env(TS_SAL_DIR)/bin/update_leapseconds ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/bin/.
   copyasset $SAL_WORK_DIR/lib/libsalUtils.so ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/lib/.
   copyasset $SAL_DIR/leap-seconds.list ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/etc/.
-  copyasset $SAL_DIR/setup.env ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/.
+  copyasset $env(TS_SAL_DIR)/setup.env ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/.
   copyasset $SAL_DIR/../../VERSION ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/.
   exec tar cvzf $SAL_WORK_DIR/rpmbuild/SOURCES/ts_sal_utils-$SALVERSION.tgz ts_sal_utils-$SALVERSION
   exec rm -fr $SAL_WORK_DIR/rpmbuild/BUILD/ts_sal_utils-$SALVERSION/*
