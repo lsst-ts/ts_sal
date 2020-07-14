@@ -193,49 +193,31 @@ public class SAL_SALData {
 
         
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
+        public SAL_SALData(int aKey, String identity)
+	{
+                CSC_identity = String.format("%s" , identity);
+		initSalEnvironment(aKey);
+	}
+
         public SAL_SALData(int aKey)
 	{
-                int tuneableQos = 1;
- 		Random randGen = new java.util.Random();
-                String dname = System.getenv("LSST_DDS_DOMAIN");
-                String ipaddress = System.getenv("LSST_DDS_IP");
-                String qname = System.getenv("LSST_DDS_QOS");
-                if (dname != null) {
-                   domainName = dname;
-                } else {
-                   domainName = "LSST";
-                }
-		if (ipaddress == null) {
-		  ddsIPaddress = (int)randGen.nextInt(99999999);
-                } else {
-                  int ipasint = 0;
-                  String[] ipAddressinArray = ipaddress.split("\\.");
-		  for (int i=0;i<ipAddressinArray.length;i++) {
-		     int power = 3-i;
-		     int ip = Integer.parseInt(ipAddressinArray[i]);
-                     ipasint += ip * Math.pow(256,power);
-                  }
-		  ddsIPaddress = ipasint;
-                }
-                if (qname != null) {
-                  myQosProvider = new QosProvider(qname,"DDS DefaultQosProfile");
-                  tuneableQos = 0;
-                }
                 CSC_identity = String.format("SALData:%d" , aKey);
-                origin = (int)randGen.nextInt(99999999);
-		hasReader = false;
-		hasWriter = false;
-		hasCommand = false;
-		hasProcessor = false;
-		hasEventReader = false;
-		hasEventWriter = false;
-		subsystemID = aKey;
-		debugLevel = 0;
-                System.loadLibrary("salUtils");
-                initSalActors(tuneableQos);
+		initSalEnvironment(aKey);
 	}
 #else
+        public SAL_SALData(String identity)
+	{
+                CSC_identity = String.format("%s" , identity);
+		initSalEnvironment(0);
+	}
 	public SAL_SALData()
+	{
+                CSC_identity = "SALData";
+		initSalEnvironment(0);
+	}
+#endif
+
+        public void initSalEnvironment(int aKey)
 	{
                 int tuneableQos = 1;
 		Random randGen = new java.util.Random();
@@ -276,7 +258,6 @@ public class SAL_SALData {
                 System.loadLibrary("salUtils");
                 initSalActors(tuneableQos);
 	}
-#endif
 
 	public void setTuneableQos (String topicName)
 	{

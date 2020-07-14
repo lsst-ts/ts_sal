@@ -39,10 +39,6 @@ if { $argv == "" || [lsearch $argv validate] > -1} {
    set result ""
    catch { set results [exec salgenerator $subsys validate ] } bad
    puts stdout "$result $bad"
-   set bad ""
-   set result ""
-   catch {exec salgenerator $subsys html}
-   puts stdout "$result $bad"
    }
   }
 }
