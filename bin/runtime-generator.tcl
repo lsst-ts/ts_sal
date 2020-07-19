@@ -127,15 +127,6 @@ if { $argv == "" || [lsearch $argv rpm] > -1 } {
    puts stdout "$result $bad"
   }
  }
- source $env(SAL_DIR)/gensalrpms.tcl
- set bad ""
- set result ""
- catch { set results [generatemetarpm] } bad
- puts stdout "$result $bad"
- set bad ""
- set result ""
- catch { set results [generateATmetarpm] } bad
- puts stdout "$result $bad"
 }
 
 
