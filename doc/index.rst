@@ -11,6 +11,8 @@ lsst.ts.sal
 .. _Service Abstraction Layer: https://docushare.lsstcorp.org/docushare/dsweb/Get/Document-21527
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
+   :titlesonly:
+   :glob:
 
-   command_acknowledgement_codes
+   *
