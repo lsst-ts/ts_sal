@@ -18,9 +18,6 @@ source $SAL_DIR/sal_version.tcl
 proc copyasset { asset dest } {
     if { [file exists $asset] } {
        exec cp $asset $dest
-    } else {
-       puts stdout "ERROR : Asset required for rpm -  $asset does not exist"
-#       exit
     }
 }
 
