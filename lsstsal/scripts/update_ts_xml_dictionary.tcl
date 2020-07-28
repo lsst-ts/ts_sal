@@ -55,14 +55,23 @@ global env SYSDIC SAL_WORK_DIR OPTIONS
             }
          }
       }
-      if { $tag == "Enumeration" } {
-         if { $value != "" } {
+      if { $tag == "Enumeration" || $tag == "IndexEnumeration" } {
+         if { $value != "" && $value != "no" } {
            set ids [split $value ,]
            set SYSDIC($name,keyedID) 1
+           set SYSDIC($name,IndexEnumeration) ""
            set idx 1
            foreach i $ids { 
-              set SYSDIC($name,$idx) $i
-              incr idx 1
+              if { [llength [split $i "="]] > 1 } {
+                set idx  [string trim [lindex [split $i "="] 1]]
+                set eval [string trim [lindex [split $i "="] 0]]
+                set SYSDIC($name,$idx) $eval
+                lappend SYSDIC($name,IndexEnumeration) "$idx:$eval"
+              } else {
+                set SYSDIC($name,$idx) $i
+                lappend SYSDIC($name,IndexEnumeration) "$idx:$i"
+                incr idx 1
+              }
            }
          }
       }

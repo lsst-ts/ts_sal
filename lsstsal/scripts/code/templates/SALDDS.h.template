@@ -48,7 +48,7 @@
 
 /** The SAL_SALData object is instantiated with an array of salActor data structures.
   * Each salActor maintains the state information for a single DDS topic in the SALData namespace.
-  * This includes DDS datatypes , and well as SAL specific information
+  * This includes DDS datatypes , as well as SAL CSC specific information
  */ 
   struct salActor {
 /// baseName holds the name of the SALData object
@@ -57,11 +57,12 @@
       char 			topicName[SAL__ACTORS_NAMESIZE];
 /// topicHandle holds the actual name of the DDS topic with an IDL versioned hash appended 
       char 			topicHandle[SAL__ACTORS_NAMESIZE];
-/// sFilter is used to build the filtering pattern for indexed DDS topics
+/// sFilter is used to build the filtering pattern for indexed DDS topics, for example HexapodID=2
       DDS::String_var 		sFilter;
 /// typeName holds the DDS type, in our case it is the same as the topicHandle
       DDS::String_var 		typeName;
 /// typeName2 holds the complementary type of the ackCmd when typeName is a command topic
+/// a commander needs an ackCmd subscriber , and a processor needs an ackCmd publisher
       DDS::String_var 		typeName2;
 /// topic holds a pointer to the internal DDS Topic object
       Topic_var 		topic;
@@ -118,8 +119,9 @@
       int                       cmdSeqNum;
 /// sndSeqNum holds the sequence number of the most recent DDS message received for this topic
       int 			rcvSeqNum;
-/// rcvOrigin holds the private_origin filed from the last DDS message received for this topic
-      int 			rcvOrigin;
+      int                       rcvOrigin;
+/// rcvIdentity holds the private_identity filled from the last DDS message received for this topic
+      string 			rcvIdentity;
 /// maxSamples is used to control the maximum number of DDS messages received by getSample/getNextSample methods
       int			maxSamples;
 /// error is the error field for the most recent ackCmd message (commands)
@@ -128,8 +130,10 @@
       int			ack;
 /// activehost is the private_identity field of the most recent command
       int			activehost;
-/// activeorigin is the priate_origin field of the most recent command
-      int			activeorigin;
+/// activeidentity is the private_identity field of the most recent command
+      string			activeidentity;
+/// activeorigin is the private_origin field of the most recent command
+      int activeorigin;
 /// activecmdid is the command sequence number of the most recent command
       int			activecmdid;
 /// timeout is the number of seconds the command is expected to take to execute
@@ -193,6 +197,7 @@
       int sndSeqNum;
       int rcvSeqNum;
       int rcvOrigin;
+      string rcvIdentity;
       int historySync;
       double rcvdTime;
       salU64  origin;
@@ -202,10 +207,22 @@
       int lastActor_telemetry;
       int lastActor_command;
       int lastActor_event;
+      char *CSC_identity;
 
     public:
 
-/** Constructor for the SAL_SALData object. It obtains information about the execution environment
+/** Constructor for the SAL_SALData object.
+  *
+  @param aKey is used to specify the index of an indexed component, or 0 for non-indexed ones
+  @param identity is used to specify the private_identity of a commander
+
+ */
+     SAL_SALData(int aKey, char *identity);
+     SAL_SALData(int aKey);
+     SAL_SALData(char *identity);
+     SAL_SALData();
+
+/** Environment setup for a SAL_SALData object.
   *
   * + LSST_DDS_DOMAIN is the name of the partition being used
   * + LSST_DDS_IP is the IP address of the DDS ethernet interface
@@ -214,8 +231,7 @@
   *
   @param aKey is used to specify the index of an indexed component, or 0 for non-indexed ones
  */
-     SAL_SALData(int aKey);
-     SAL_SALData();
+     void initSalEnvironment(int aKey);
 
 /** Sets up the DDS Publisher support for the named DDS type
   @param topicName is the name of the DDS topic
@@ -281,6 +297,8 @@
 /// Returns the current XML version e.g. "5.0.0"
       std::string getXMLVersion();
 
+/// Returns the current OpenSpliceDDS version e.g. "6.9.181127OSS"
+      std::string getOSPLVersion();
 
 /** Sets up the DDS data type low level support for the named DDS type
   @param topicName is the name of the DDS topic

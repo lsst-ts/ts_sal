@@ -1,4 +1,29 @@
-This is release 4.1.0 of the SAL SDK (March 25th, 2020)
+This is release 4.2.0 of the SAL SDK (June 5th, 2020)
+
+Changes for 4.2.0
+
+Update rpm naming scheme
+
+Make debug output available only in higher debug level
+
+Fix XML version in runtimes for getXMLVersion
+
+Add getOSPLVersion for runtimes
+
+Test runtime builds in CentOS 8 environment
+
+Generate rpm/deb for Raspberry pi 4 (Raspian and CentOS 7)
+
+
+Changes for 4.1.4
+
+Hot fix to support changes to SALSubsystems.xml (IndexEnumeration tag)
+Copy XML VERSION from TS_XML_DIR
+
+Changes for 4.1.3
+
+Hotfix to allow building in the LSST stack environment
+using old compilers and libraries (provide CLOCK_TAI define)
 
 Changes for 4.1
 

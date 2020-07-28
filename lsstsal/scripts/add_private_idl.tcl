@@ -5,6 +5,7 @@ proc add_private_idl { fidl {spc "   "} } {
 [set spc]double private_sndStamp;    //private
 [set spc]double private_rcvStamp;    //private
 [set spc]long private_seqNum;        //private
+[set spc]string private_identity;    //private
 [set spc]long private_origin;        //private
 [set spc]long private_host;          //private"
 }

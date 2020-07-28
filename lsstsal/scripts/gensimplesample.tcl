@@ -464,6 +464,7 @@ global OPTIONS
       string<8>	private_revCode;
       double		private_sndStamp;
       double		private_rcvStamp;
+      string		private_identity;
       long		private_origin;
       long 		private_host;
       long		private_seqNum;
@@ -471,6 +472,7 @@ global OPTIONS
       long 		error;
       string<256>	result;
       long		host;
+      string            identity;
       long		origin;
       long		cmdtype;
       double		timeout;
@@ -486,6 +488,7 @@ global SAL_WORK_DIR OPTIONS
       string<8>	private_revCode;
       double		private_sndStamp;
       double		private_rcvStamp;
+      string            private_identity;
       long		private_origin;
       long 		private_host;
       long		private_seqNum;
@@ -493,6 +496,7 @@ global SAL_WORK_DIR OPTIONS
       long 		ack;
       long 		error;
       string<256>	result;
+      string            identity;
       long		host;
       long		origin;
       long		cmdtype;
@@ -512,6 +516,7 @@ struct [set subsys]_ackcmdC
       int 		ack;
       int 		error;
       std::string	result;
+      std::string       identity;
       long		host;
       long		origin;
       long		cmdtype;

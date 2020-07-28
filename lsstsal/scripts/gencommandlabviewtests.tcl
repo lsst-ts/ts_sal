@@ -30,7 +30,7 @@ int main (int argc, char *argv\[\])
   if (argc < [expr [llength $CMDS([set subsys],[set alias],plist)] +1] ) \{
      printf(\"Usage :  input parameters...\\n\");"
    set fidl [open $SAL_WORK_DIR/idl-templates/validated/[set subsys]_command_[set alias].idl r]
-   gets $fidl rec ; gets $fidl rec ;gets $fidl rec ;gets $fidl rec ;gets $fidl rec ;gets $fidl rec ;gets $fidl rec
+   skipPrivate $fidl
    while { [gets $fidl rec] > -1 } {
       if { [lindex $rec 0] != "#pragma" && [lindex $rec 0]!= "\};" } {
          puts $fcmd "     printf(\"$rec\\n\");"

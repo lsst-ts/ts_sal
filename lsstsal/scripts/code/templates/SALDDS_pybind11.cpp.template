@@ -59,8 +59,12 @@ auto make_array(T array) -> std::function<py::array(typename array_trait<T>::obj
 PYBIND11_MODULE(SALPY_SALData,m){
 
 // INSERT_SAL_PYTHON_DATATYPES
-    py::class_<SAL_SALData>(m,"SAL_SALData")    
+    py::class_<SAL_SALData>(m,"SAL_SALData")
+         .def(py::init<int, char*>())
+
          .def(py::init<int>())   
+
+         .def(py::init<char*>())
 
          .def(py::init<>())   
 
@@ -91,6 +95,9 @@ PYBIND11_MODULE(SALPY_SALData,m){
         .def( 
             "getXMLVersion"
             , &::SAL_SALData::getXMLVersion )
+        .def( 
+            "getOSPLVersion"
+            , &::SAL_SALData::getOSPLVersion )
         .def( 
             "getCurrentTime"
             , (double ( ::SAL_SALData::* )(  ) )( &::SAL_SALData::getCurrentTime ) )
