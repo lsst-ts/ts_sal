@@ -1,6 +1,10 @@
-This is release 4.2.0 of the SAL SDK (June 5th, 2020)
+This is release 4.2.0RC1 of the SAL SDK (July 5th, 2020)
 
 Changes for 4.2.0
+
+Remove unused files
+
+Do not call history sync if LSST_DDS_HISTORYSYNC < 0
 
 Update rpm naming scheme
 
