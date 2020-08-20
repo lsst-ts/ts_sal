@@ -174,10 +174,18 @@ using namespace std;
       set fcod6 [open $SAL_WORK_DIR/include/SAL_[set subsys]_[set name]Cout.tmp w]
       set fcod7 [open $SAL_WORK_DIR/include/SAL_[set subsys]_[set name]shmout.tmp w]
       set fcod8 [open $SAL_WORK_DIR/include/SAL_[set subsys]_[set name]shmin.tmp w]
+      puts $fcod8 "
+           data->private_sndStamp = [set subsys]_memIO->client\[LVClient\].shmemIncoming_[set subsys]_[set name].private_sndStamp;
+           data->private_rcvStamp = [set subsys]_memIO->client\[LVClient\].shmemIncoming_[set subsys]_[set name].private_rcvStamp;
+           data->private_seqNum = [set subsys]_memIO->client\[LVClient\].shmemIncoming_[set subsys]_[set name].private_seqNum;"
       set fcod10 [open $SAL_WORK_DIR/include/SAL_[set subsys]_[set name]Pargs.tmp w]
       set fcod11 [open $SAL_WORK_DIR/include/SAL_[set subsys]_[set name]Ppub.tmp w]
       set fcod12 [open $SAL_WORK_DIR/include/SAL_[set subsys]_[set name]monout.tmp w]
       set fcod13 [open $SAL_WORK_DIR/include/SAL_[set subsys]_[set name]monin.tmp w]
+      puts $fcod13 "
+             Test_memIO->client\[LVClient\].shmemIncoming_[set subsys]_[set name].private_sndStamp = Incoming_[set subsys]_[set name]->private_sndStamp;
+             Test_memIO->client\[LVClient\].shmemIncoming_[set subsys]_[set name].private_rcvStamp = Incoming_[set subsys]_[set name]->private_rcvStamp;
+             Test_memIO->client\[LVClient\].shmemIncoming_[set subsys]_[set name].private_seqNum = Incoming_[set subsys]_[set name]->private_seqNum;"
 ###      set fcod14 [open $SAL_WORK_DIR/include/SAL_[set subsys]_[set name]Jsub.tmp w]
       puts $fout "	struct $name \{"
       puts $fhdr "struct [set subsys]_[set name]C
@@ -345,7 +353,7 @@ global VPROPS TYPEFORMAT
       puts $fcod11 "for i in range(0,$VPROPS(dim)):
   myData.$VPROPS(name)\[i\]=i"
       puts $fcod12 "    for (int i=0;i<$VPROPS(dim);i++) \{Outgoing_[set VPROPS(topic)]->$VPROPS(name)\[i\]=[set VPROPS(base)]_memIO->client\[LVClient\].shmemOutgoing_[set VPROPS(topic)].$VPROPS(name)\[i\];\}"
-      puts $fcod13 "    for (int i=0;i<$VPROPS(dim);i++) \{[set VPROPS(base)]_memIO->client\[LVClient\].shmemIncoming_[set VPROPS(topic)].$VPROPS(name)\[i\]=Incoming_[set VPROPS(topic)]->$VPROPS(name)\[i\];\}"
+      puts $fcod13 "              for (int i=0;i<$VPROPS(dim);i++) \{[set VPROPS(base)]_memIO->client\[LVClient\].shmemIncoming_[set VPROPS(topic)].$VPROPS(name)\[i\]=Incoming_[set VPROPS(topic)]->$VPROPS(name)\[i\];\}"
       set idlim [expr $idx + $VPROPS(dim)]
       set myidx 0
       while { $idx < $idlim } {
