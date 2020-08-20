@@ -44,7 +44,7 @@ salReturn SAL_[set base]::putSample_[set name]([set base]_[set name]C *data)
   sal\[actorIdx\].sndStamp = Instance.private_sndStamp;
   Instance.private_origin = getpid();
   Instance.private_host = ddsIPaddress;
-  Instance.private_seqNum = sndSeqNum;
+  Instance.private_seqNum = sal\[actorIdx\].sndSeqNum;
   Instance.private_host = 1;
    "
   set frag [open $SAL_WORK_DIR/include/SAL_[set base]_[set name]Cput.tmp r]
@@ -52,7 +52,7 @@ salReturn SAL_[set base]::putSample_[set name]([set base]_[set name]C *data)
   close $frag
   puts $fout "
 
-  sndSeqNum++;
+  sal\[actorIdx\].sndSeqNum++;
   if (debugLevel > 0) \{
     cout << \"=== \[putSample\] [set base]::[set name][set revcode] writing a message containing :\" << endl;
     cout << \"    revCode  : \" << Instance.private_revCode << endl;
@@ -532,8 +532,10 @@ puts $fout "
     DataWriter dwriter = getWriter(actorIdx);
     [set name][set revcode]DataWriter SALWriter = [set name][set revcode]DataWriterHelper.narrow(dwriter);
     SALInstance.private_revCode = \"[string trim $revcode _]\";
-          SALInstance.private_sndStamp = getCurrentTime();
-          SALInstance.private_origin = 1;
+    SALInstance.private_sndStamp = getCurrentTime();
+    SALInstance.private_origin = 1;
+    SALInstance.private_seqNum = sal\[actorIdx\].sndSeqNum;
+    sal\[actorIdx\].sndSeqNum++;
     if (debugLevel > 0) \{
       System.out.println(\"=== \[putSample $name\] writing a message containing :\");
       System.out.println(\"    revCode  : \" + SALInstance.private_revCode);
