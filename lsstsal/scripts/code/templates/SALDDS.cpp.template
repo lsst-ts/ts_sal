@@ -848,7 +848,7 @@ void SAL_SALData::createReader(int actorIdx,bool filtered)
   checkHandle(sal[actorIdx].reader, "DDS::Subscriber::create_datareader ()");
   sal[actorIdx].isReader = true;
   sal[actorIdx].sampleAge = 1.0e20;
-  if (historySync > 0) {
+  if ( (sal[actorIdx].durability != VOLATILE_DURABILITY_QOS) && (historySync > 0) ) {
     DDS::Duration_t a_timeout;
     a_timeout.sec = historySync;
     a_timeout.nanosec = 10000000;
@@ -875,7 +875,7 @@ void SAL_SALData::createReader2(int actorIdx,bool filtered)
   checkHandle(sal[actorIdx].reader2, "DDS::Subscriber::create_datareader ()");
   sal[actorIdx].isReader = true;
   sal[actorIdx].sampleAge = 1.0e20;
-  if (historySync > 0) {
+  if ( (sal[actorIdx].durability != VOLATILE_DURABILITY_QOS) && (historySync > 0) ) {
     DDS::Duration_t a_timeout;
     a_timeout.sec = historySync;
     a_timeout.nanosec = 10000000;
