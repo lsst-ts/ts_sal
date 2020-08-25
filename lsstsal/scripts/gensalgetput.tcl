@@ -301,7 +301,7 @@ void SAL_SALData::initSalActors (int qos)
       set revcode [getRevCode [set base]_[set name] short]
       puts $fout "    strcpy(sal\[$idx\].topicHandle,\"[set base]_[set name][set revcode]\");"
       puts $fout "    strcpy(sal\[$idx\].topicName,\"[set base]_[set name]\");"
-      if { $type == "command" || $type == "ackcmd" } {
+      if { $type != "logevent" } {
          puts $fout "    sal\[$idx\].durability = VOLATILE_DURABILITY_QOS;"
       } else {
          puts $fout "    sal\[$idx\].durability = TRANSIENT_DURABILITY_QOS;"
@@ -333,7 +333,7 @@ proc addActorIndexesJava { idlfile base fout } {
       puts $fout "    sal\[$idx\]=new salActor(qos);" 
       puts $fout "    sal\[$idx\].topicHandle=\"[set base]_[set name][set revcode]\";"
       puts $fout "    sal\[$idx\].topicName=\"[set base]_[set name]\";"
-      if { $type == "command" || $type == "ackcmd" } {
+      if { $type != "logevent" } {
          puts $fout "   sal\[$idx\].durability = DurabilityQosPolicyKind.VOLATILE_DURABILITY_QOS;"
       } else {
          puts $fout "   sal\[$idx\].durability = DurabilityQosPolicyKind.TRANSIENT_DURABILITY_QOS;"
