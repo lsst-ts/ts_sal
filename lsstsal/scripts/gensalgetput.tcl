@@ -301,7 +301,7 @@ void SAL_SALData::initSalActors (int qos)
       set revcode [getRevCode [set base]_[set name] short]
       puts $fout "    strcpy(sal\[$idx\].topicHandle,\"[set base]_[set name][set revcode]\");"
       puts $fout "    strcpy(sal\[$idx\].topicName,\"[set base]_[set name]\");"
-      if { $type == "command" || $type == "ackcmd" } {
+      if { $type != "logevent" } {
          puts $fout "    sal\[$idx\].durability = VOLATILE_DURABILITY_QOS;"
       } else {
          puts $fout "    sal\[$idx\].durability = TRANSIENT_DURABILITY_QOS;"
@@ -333,7 +333,7 @@ proc addActorIndexesJava { idlfile base fout } {
       puts $fout "    sal\[$idx\]=new salActor(qos);" 
       puts $fout "    sal\[$idx\].topicHandle=\"[set base]_[set name][set revcode]\";"
       puts $fout "    sal\[$idx\].topicName=\"[set base]_[set name]\";"
-      if { $type == "command" || $type == "ackcmd" } {
+      if { $type != "logevent" } {
          puts $fout "   sal\[$idx\].durability = DurabilityQosPolicyKind.VOLATILE_DURABILITY_QOS;"
       } else {
          puts $fout "   sal\[$idx\].durability = DurabilityQosPolicyKind.TRANSIENT_DURABILITY_QOS;"
@@ -546,9 +546,11 @@ puts $fout "
     DataWriter dwriter = getWriter(actorIdx);
     [set name][set revcode]DataWriter SALWriter = [set name][set revcode]DataWriterHelper.narrow(dwriter);
     SALInstance.private_revCode = \"[string trim $revcode _]\";
-          SALInstance.private_sndStamp = getCurrentTime();
-          SALInstance.private_identity = CSC_identity;
-          SALInstance.private_origin = origin;
+    SALInstance.private_sndStamp = getCurrentTime();
+    SALInstance.private_identity = CSC_identity;
+    SALInstance.private_origin = origin;
+    SALInstance.private_seqNum = sal\[actorIdx\].sndSeqNum;
+    sal\[actorIdx\].sndSeqNum++;
     if (debugLevel > 0) \{
       System.out.println(\"=== \[putSample $name\] writing a message containing :\");
       System.out.println(\"    revCode  : \" + SALInstance.private_revCode);

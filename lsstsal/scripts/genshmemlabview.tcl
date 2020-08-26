@@ -55,7 +55,7 @@ global SAL_WORK_DIR EVENT_ENUMS
    set fin  [open $SAL_WORK_DIR/idl-templates/validated/sal/sal_[set subsys].idl r]
    set fout [open $SAL_WORK_DIR/[set subsys]/labview/sal_[set subsys].idl w]
    set topic none
-   set addedSummaryEnum 1
+   set addSharedEnums 1
    while { [gets $fin rec] > -1 } {
       set it [string trim $rec "\{\}"]
       if { [lindex $it 0] == "struct" } {
@@ -69,24 +69,20 @@ global SAL_WORK_DIR EVENT_ENUMS
       if { [lsearch "ack\;" [lindex $it 1]] > -1 } {
          puts $fout "      long	cmdSeqNum;"
       }
-      if { [string range [lindex $it 1] 0 7] != "private_" && [lindex $it 1] != "[set subsys]ID;" } {
-       if { [lsearch "device\; property\; action\; itemValue\;" [lindex $it 1]] < 0 } {
-         set name [string trim [lindex $it 1] ";"]
-         if { [info exists EVENT_ENUMS($topic,$name)] } {
-           puts $fout "$rec	// enum : $EVENT_ENUMS($topic,$name)"
-         } else {
-           puts $fout $rec
-         }
-       }
+      set name [string trim [lindex $it 1] ";"]
+      if { [info exists EVENT_ENUMS($topic,$name)] } {
+        puts $fout "$rec	// enum : $EVENT_ENUMS($topic,$name)"
+      } else {
+        puts $fout $rec
       }
-      if { $addedSummaryEnum == 1 } {
-	   #add the generic summary state constants:
-	   set i 1
-	   foreach id "DisabledState EnabledState FaultState OfflineState StandbyState" {
-	       puts $fout "	 const long [set subsys]_shared_SummaryState_[string trim $id " "]=$i;"
-	       incr i 1
-	   }
-	   set addedSummaryEnum 0
+      if { $addSharedEnums == 1 } {
+	#add the generic summary state constants:
+	set i 1
+	foreach id "DisabledState EnabledState FaultState OfflineState StandbyState" {
+          puts $fout "	 const long [set subsys]_shared_SummaryState_[string trim $id " "]=$i;"
+          incr i 1
+	}
+        set addSharedEnums 0
       }
    }
    close $fin
@@ -138,12 +134,18 @@ global SAL_DIR SAL_WORK_DIR SYSDIC TELEMETRY_ALIASES LVSTRINGS CMD_ALIASES
      if { [lindex $crec 0] == "StrHdl" && $sname != "" } {
        set param [string trim [lindex $crec 1] "*;"]
        set slen [lindex $crec 3]
-       if { [lsearch "device property action itemValue" $param] < 0 } {
-         set LVSTRINGS([set sname]_[set param]) $slen
-         puts $fout $rec
-       }
+       set LVSTRINGS([set sname]_[set param]) $slen
+       puts $fout $rec
      } else {
        puts $fout $rec
+     }
+     if { [string range $rec 0 [expr 14+[string length $base]]] == "typedef struct [set base]" } {
+        puts $fout "  StrHdl	private_revCode; /* 8 */"
+	puts $fout "  double	private_sndStamp;"
+	puts $fout "  double	private_rcvStamp;"
+	puts $fout "  long	private_seqNum;"
+	puts $fout "  long	private_origin;"
+	puts $fout "  long	private_host;"
      }
  }
  puts $fout "#endif
