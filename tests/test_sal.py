@@ -364,9 +364,10 @@ class BasicTestCase(BaseSalTestCase):
         self.test_data.assert_arrays_equal(data, data_list[-1])
 
     def test_tel_late_joiner_oldest(self):
-        """Test that a late joiner can see telemetry using getNextSample.
+        """Test that a late joiner cannot see historical telemetry
+        using getNextSample.
 
-        Only one value is retrievable.
+        Telemetry is volatile so there should be no late joiner data.
         """
         self.controller.salTelemetryPub("Test_arrays")
         time.sleep(STD_SLEEP)
@@ -382,9 +383,9 @@ class BasicTestCase(BaseSalTestCase):
 
         self.remote.salTelemetrySub("Test_arrays")
         time.sleep(STD_SLEEP)
+
         retcode = self.remote.getNextSample_arrays(data)
-        self.assertEqual(retcode, SALPY_Test.SAL__OK)
-        self.test_data.assert_arrays_equal(data, data_list[-1])
+        self.assertEqual(retcode, SALPY_Test.SAL__NO_UPDATES)
 
     def test_evt_late_joiner_newest(self):
         """Test that a late joiner can see an event using getEvent.
@@ -408,7 +409,10 @@ class BasicTestCase(BaseSalTestCase):
         self.test_data.assert_arrays_equal(data, data_list[-1])
 
     def test_tel_late_joiner_newest(self):
-        """Test that a late joiner can see telemetry using getSample.
+        """Test that a late joiner cannot see historical telemetry
+        using getSample.
+
+        Telemetry is volatile so there should be no late joiner data.
         """
         self.controller.salTelemetryPub("Test_arrays")
         time.sleep(STD_SLEEP)
@@ -425,8 +429,7 @@ class BasicTestCase(BaseSalTestCase):
         self.remote.salTelemetrySub("Test_arrays")
         time.sleep(STD_SLEEP)
         retcode = self.remote.getSample_arrays(data)
-        self.assertEqual(retcode, SALPY_Test.SAL__OK)
-        self.test_data.assert_arrays_equal(data, data_list[-1])
+        self.assertEqual(retcode, SALPY_Test.SAL__NO_UPDATES)
 
     def test_enumerations(self):
         """Test enumerations."""
