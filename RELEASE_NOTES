@@ -6,9 +6,6 @@ Modify DDS durability to be VOLATILE for everything except logevent topics
 
 Add private fields to LabVIEW ctl's
 
-
-Changes for 4.2.0
-
 Remove unused files
 
 Do not call history sync if LSST_DDS_HISTORYSYNC < 0
