@@ -183,13 +183,17 @@ using namespace std;
       set fcod12 [open $SAL_WORK_DIR/include/SAL_[set subsys]_[set name]monout.tmp w]
       set fcod13 [open $SAL_WORK_DIR/include/SAL_[set subsys]_[set name]monin.tmp w]
       puts $fcod13 "
-             Test_memIO->client\[LVClient\].shmemIncoming_[set subsys]_[set name].private_sndStamp = Incoming_[set subsys]_[set name]->private_sndStamp;
-             Test_memIO->client\[LVClient\].shmemIncoming_[set subsys]_[set name].private_rcvStamp = Incoming_[set subsys]_[set name]->private_rcvStamp;
-             Test_memIO->client\[LVClient\].shmemIncoming_[set subsys]_[set name].private_seqNum = Incoming_[set subsys]_[set name]->private_seqNum;"
+             [set subsys]_memIO->client\[LVClient\].shmemIncoming_[set subsys]_[set name].private_sndStamp = Incoming_[set subsys]_[set name]->private_sndStamp;
+             [set subsys]_memIO->client\[LVClient\].shmemIncoming_[set subsys]_[set name].private_rcvStamp = Incoming_[set subsys]_[set name]->private_rcvStamp;
+             [set subsys]_memIO->client\[LVClient\].shmemIncoming_[set subsys]_[set name].private_seqNum = Incoming_[set subsys]_[set name]->private_seqNum;"
 ###      set fcod14 [open $SAL_WORK_DIR/include/SAL_[set subsys]_[set name]Jsub.tmp w]
       puts $fout "	struct $name \{"
       puts $fhdr "struct [set subsys]_[set name]C
-\{"
+\{
+	double	private_sndStamp;
+	double  private_rcvStamp;
+	long 	private_seqNum;
+"
       puts $fhlv "typedef struct [set subsys]_[set name]LV \{"
       puts $fbst "   bp::class_<[set subsys]_[set name]C>(\"[set subsys]_[set name]C\")"
       puts $fpyb "   py::class_<[set subsys]_[set name]C>(m,\"[set subsys]_[set name]C\")
@@ -521,6 +525,9 @@ global OPTIONS
    puts $fhdr "
 struct [set subsys]_ackcmdC
 \{
+      double		private_sndStamp;
+      double  		private_rcvStamp;
+      long 		private_seqNum;
       int 		ack;
       int 		error;
       std::string	result;
@@ -532,15 +539,13 @@ struct [set subsys]_ackcmdC
 \};
 "
    puts $fhlv "
-typedef struct [set subsys]_ackcmdLV
-\{
+typedef struct [set subsys]_ackcmdLV \{
       int       cmdSeqNum;
       int 	ack;
       int 	error;
       StrHdl	result; /* 256 */
 \} [set subsys]_ackcmd_Ctl;
-typedef struct [set subsys]_waitCompleteLV
-\{
+typedef struct [set subsys]_waitCompleteLV \{
       int       cmdSeqNum;
       unsigned int timeout;
 \} [set subsys]_waitComplete_Ctl;
