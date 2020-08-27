@@ -1,6 +1,11 @@
-This is release 4.2.0RC1 of the SAL SDK (July 5th, 2020)
+This is release 5.0.0 of the SAL SDK (August 25th 2020)
 
-Changes for 4.2.0
+
+Changes for 5.0.0
+
+Modify DDS durability to be VOLATILE for everything except logevent topics
+
+Add private fields to LabVIEW ctl's
 
 Remove unused files
 
