@@ -1,5 +1,6 @@
 This is release 5.0.0 of the SAL SDK (August 25th 2020)
 
+
 Changes for 5.0.0
 
 Modify DDS durability to be VOLATILE for everything except logevent topics
