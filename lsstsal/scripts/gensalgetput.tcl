@@ -311,18 +311,22 @@ void SAL_SALData::initSalActors (int qos)
          puts $fout "
     if ( strcmp(partitionPrefix,\"NA\") == 0) \{
       sal\[$idx\].partition = DDS::string_dup(domainName);
+      if (debugLevel > 0) \{printf(\"[set base]_[set name] partition is %s\\n\",&domainName);\}
     \} else \{
       sprintf(pname,\"%s.[set base].cmd\",partitionPrefix);
       sal\[$idx\].partition = DDS::string_dup(pname);
+      if (debugLevel > 0) \{printf(\"[set base]_[set name] partition is %s\\n\",&pname);\}
     \}
 "
       } else {
          puts $fout "
     if ( strcmp(partitionPrefix,\"NA\") == 0) \{
       sal\[$idx\].partition = DDS::string_dup(domainName);
+      if (debugLevel > 0) \{printf(\"[set base]_[set name] partition is %s\\n\",&domainName);\}
     \} else \{
       sprintf(pname,\"%s.[set base].data\",partitionPrefix);
       sal\[$idx\].partition = DDS::string_dup(pname);
+      if (debugLevel > 0) \{printf(\"[set base]_[set name] partition is %s\\n\",&pname);\}
     \}
 "
       }
