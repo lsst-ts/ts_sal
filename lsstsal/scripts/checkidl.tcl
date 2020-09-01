@@ -370,25 +370,19 @@ proc createackcmdidl { base {keyid 0} } {
 global SAL_WORK_DIR OPTIONS
    if { $OPTIONS(verbose) } {stdlog "###TRACE>>> createackcmdidl $base $keyid"}
    set fack [open $SAL_WORK_DIR/idl-templates/[set base]_ackcmd.idl w]
-   puts $fack "struct [set base]_ackcmd \{
-      string<8>	private_revCode;
-      double		private_sndStamp;
-      double		private_rcvStamp;
-      string		private_identity;
-      long		private_origin;
-      long 		private_host;
-      long		private_seqNum;"
+   puts $fack "struct [set base]_ackcmd \{"
+   add_private_idl $fack
 #   if { $keyid } {
 #      puts $fack "      long	[set base]ID;"
 #   }
-   puts $fack "      long 		ack;
-      long 		error;
-      string<256>	result;
-      string            identity;
-      long		host;
-      long		origin;
-      long		cmdtype;
-      double		timeout;
+   puts $fack "	  long	ack;
+	  long	error;
+	  string<256>	result;
+	  string	identity;
+	  long	host;
+	  long	origin;
+	  long	cmdtype;
+	  double	timeout;
 	\};
 #pragma keylist [set base]_ackcmd
 "
@@ -404,6 +398,7 @@ source $env(SAL_DIR)/streamutils.tcl
 source $env(SAL_DIR)/utilities.tcl
 source $env(SAL_DIR)/SALTopicTemplateXML.tcl
 source $env(SAL_DIR)/add_system_dictionary.tcl
+source $env(SAL_DIR)/add_private_idl.tcl
 
 set IDLTYPES "boolean char byte octet short int long longlong float double string unsigned const"
 set IDLSIZES(byte)     1

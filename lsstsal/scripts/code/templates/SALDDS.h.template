@@ -55,6 +55,8 @@
       char 			baseName[SAL__ACTORS_NAMESIZE];
 /// topicName holds the root name of the DDS topic
       char 			topicName[SAL__ACTORS_NAMESIZE];
+/// partition holds the DDS partition to which the topic is associated with
+      DDS::String_var		partition;
 /// topicHandle holds the actual name of the DDS topic with an IDL versioned hash appended 
       char 			topicHandle[SAL__ACTORS_NAMESIZE];
 /// sFilter is used to build the filtering pattern for indexed DDS topics, for example HexapodID=2
@@ -202,7 +204,8 @@
       double rcvdTime;
       salU64  origin;
       long ddsIPaddress;
-      char   domainName[128];
+      char domainName[128];
+      char partitionPrefix[128];
       salActor sal[SAL__ACTORS_MAXCOUNT];
       int lastActor_telemetry;
       int lastActor_command;
@@ -366,7 +369,6 @@
                                       const StringSeq &expr);
       void createContentFilteredTopic2(const char *topicName, const char *filter,
                                        const StringSeq &expr);
-      void createPublisher();
       void deletePublisher();
       void deleteTopics();
       void createWriter();
@@ -374,7 +376,6 @@
       void createWriter(bool autodispose_unregistered_instances);
       void createWriter2(bool autodispose_unregistered_instances);
       void deleteWriter();
-      void createSubscriber();
       void deleteSubscriber();
       void createReader(bool filtered);
       void createReader2(bool filtered);

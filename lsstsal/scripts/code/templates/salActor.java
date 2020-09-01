@@ -23,6 +23,7 @@ public class salActor {
 	public String baseName;
 	public String topicName;
 	public String topicHandle;
+        public String partition;
 	public Topic topic;
         public Topic topic2;
         public ContentFilteredTopic filteredtopic;

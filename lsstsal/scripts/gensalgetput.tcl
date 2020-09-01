@@ -279,6 +279,7 @@ global SAL_WORK_DIR
    puts $fout "
 void SAL_SALData::initSalActors (int qos)
 \{
+    char pname\[128\];
     for (int i=0; i<SAL__ACTORS_MAXCOUNT;i++) \{
       sal\[i\].isReader = false;
       sal\[i\].isWriter = false;
@@ -306,6 +307,25 @@ void SAL_SALData::initSalActors (int qos)
       } else {
          puts $fout "    sal\[$idx\].durability = TRANSIENT_DURABILITY_QOS;"
       }
+      if { $type == "command" } {
+         puts $fout "
+    if ( strcmp(partitionPrefix,\"NA\") == 0) \{
+      sal\[$idx\].partition = DDS::string_dup(domainName);
+    \} else \{
+      sprintf(pname,\"%s.[set base].cmd\",partitionPrefix);
+      sal\[$idx\].partition = DDS::string_dup(pname);
+    \}
+"
+      } else {
+         puts $fout "
+    if ( strcmp(partitionPrefix,\"NA\") == 0) \{
+      sal\[$idx\].partition = DDS::string_dup(domainName);
+    \} else \{
+      sprintf(pname,\"%s.[set base].data\",partitionPrefix);
+      sal\[$idx\].partition = DDS::string_dup(pname);
+    \}
+"
+      }
       incr idx 1
    }
   puts $fout "
@@ -324,6 +344,7 @@ proc addActorIndexesJava { idlfile base fout } {
    puts $fout "
   public void initSalActors (int qos)
   \{
+     String pname;
 "
    set idx 0
    foreach j $ptypes {
@@ -337,6 +358,25 @@ proc addActorIndexesJava { idlfile base fout } {
          puts $fout "   sal\[$idx\].durability = DurabilityQosPolicyKind.VOLATILE_DURABILITY_QOS;"
       } else {
          puts $fout "   sal\[$idx\].durability = DurabilityQosPolicyKind.TRANSIENT_DURABILITY_QOS;"
+      }
+      if { $type == "command" } {
+         puts $fout "
+    if ( partitionPrefix == \"NA\") \{
+      sal\[$idx\].partition = domainName;
+    \} else \{
+      pname = partitionPrefix + \".[set base].cmd\";
+      sal\[$idx\].partition = pname;
+    \}
+"
+      } else {
+         puts $fout "
+    if ( partitionPrefix == \"NA\") \{
+      sal\[$idx\].partition = domainName;
+    \} else \{
+      pname = partitionPrefix + \".[set base].data\";
+      sal\[$idx\].partition = pname;
+    \}
+"
       }
       incr idx 1
    }
