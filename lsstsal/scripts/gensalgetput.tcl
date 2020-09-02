@@ -279,7 +279,7 @@ global SAL_WORK_DIR
    puts $fout "
 void SAL_SALData::initSalActors (int qos)
 \{
-    char pname\[128\];
+    char *pname = (char *)malloc(128);
     for (int i=0; i<SAL__ACTORS_MAXCOUNT;i++) \{
       sal\[i\].isReader = false;
       sal\[i\].isWriter = false;
@@ -309,25 +309,15 @@ void SAL_SALData::initSalActors (int qos)
       }
       if { $type == "command" } {
          puts $fout "
-    if ( strcmp(partitionPrefix,\"NA\") == 0) \{
-      sal\[$idx\].partition = DDS::string_dup(domainName);
-      if (debugLevel > 0) \{printf(\"[set base]_[set name] partition is %s\\n\",&domainName);\}
-    \} else \{
       sprintf(pname,\"%s.[set base].cmd\",partitionPrefix);
       sal\[$idx\].partition = DDS::string_dup(pname);
-      if (debugLevel > 0) \{printf(\"[set base]_[set name] partition is %s\\n\",&pname);\}
-    \}
+      if (debugLevel > 0) \{ cout << \"[set base]_[set name] partition is \" << pname << endl;\}
 "
       } else {
          puts $fout "
-    if ( strcmp(partitionPrefix,\"NA\") == 0) \{
-      sal\[$idx\].partition = DDS::string_dup(domainName);
-      if (debugLevel > 0) \{printf(\"[set base]_[set name] partition is %s\\n\",&domainName);\}
-    \} else \{
       sprintf(pname,\"%s.[set base].data\",partitionPrefix);
       sal\[$idx\].partition = DDS::string_dup(pname);
-      if (debugLevel > 0) \{printf(\"[set base]_[set name] partition is %s\\n\",&pname);\}
-    \}
+      if (debugLevel > 0) \{ cout << \"[set base]_[set name] partition is \" << pname << endl;\}
 "
       }
       incr idx 1
@@ -365,21 +355,13 @@ proc addActorIndexesJava { idlfile base fout } {
       }
       if { $type == "command" } {
          puts $fout "
-    if ( partitionPrefix == \"NA\") \{
-      sal\[$idx\].partition = domainName;
-    \} else \{
       pname = partitionPrefix + \".[set base].cmd\";
       sal\[$idx\].partition = pname;
-    \}
 "
       } else {
          puts $fout "
-    if ( partitionPrefix == \"NA\") \{
-      sal\[$idx\].partition = domainName;
-    \} else \{
       pname = partitionPrefix + \".[set base].data\";
       sal\[$idx\].partition = pname;
-    \}
 "
       }
       incr idx 1

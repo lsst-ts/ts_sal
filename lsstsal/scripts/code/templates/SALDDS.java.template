@@ -227,15 +227,14 @@ public class SAL_SALData {
                 String ipaddress = System.getenv("LSST_DDS_IP");
                 String qname = System.getenv("LSST_DDS_QOS");
                 if (dname != null) {
-                   domainName = dname;
+                   partitionPrefix = dname;
                 } else {
-                   domainName = "LSST";
+                   partitionPrefix = "LSST";
                 }
                 if (pname != null) {
                    partitionPrefix = pname;
                 } else {
-                   partitionPrefix = "NA";
-                   System.out.println("=== WARNING : Using legacy partition from LSST_DDS_DOMAIN");
+                   System.out.println("=== WARNING : LSST_DDS_PARTITION_PREFIX not defined, using deprecated alias LSST_DDS_DOMAIN\n This will stop working in SAL 6");
                 }
 		if (ipaddress == null) {
 		  ddsIPaddress = (int)randGen.nextInt(99999999);

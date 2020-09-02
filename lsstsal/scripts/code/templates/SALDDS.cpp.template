@@ -47,15 +47,14 @@ void SAL_SALData::initSalEnvironment(int aKey)
    char *sname = getenv("LSST_DDS_HISTORYSYNC");
    char *ipaddr = getenv("LSST_DDS_IP");
    if ( dname != NULL ) {
-      strncpy(domainName, dname, 128);
+      strncpy(partitionPrefix, dname, 128);
    } else {
-      strncpy(domainName, "LSST", 128);
+      strncpy(partitionPrefix, "LSST", 128);
    }
    if ( pname != NULL ) {
       strncpy(partitionPrefix, pname, 128);
    } else {
-      cout << "=== WARNING : Using legacy partition from LSST_DDS_DOMAIN" << endl;
-      strncpy(partitionPrefix, "NA", 128);
+      cout << "=== WARNING : LSST_DDS_PARTITION_PREFIX not defined, using deprecated alias LSST_DDS_DOMAIN" << endl << "This will stop working in SAL 6" << endl;
    }
    if ( qname != NULL ) {
       QosProvider qosProvider(qname,"DDS DefaultQosProfile");
