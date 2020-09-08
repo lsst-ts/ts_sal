@@ -67,7 +67,7 @@ global SAL_WORK_DIR EVENT_ENUMS
          }
       }
       if { [lsearch "ack\;" [lindex $it 1]] > -1 } {
-         puts $fout "      long	cmdSeqNum;"
+         puts $fout "	  long	cmdSeqNum;"
       }
       set name [string trim [lindex $it 1] ";"]
       if { [info exists EVENT_ENUMS($topic,$name)] } {
@@ -140,10 +140,14 @@ global SAL_DIR SAL_WORK_DIR SYSDIC TELEMETRY_ALIASES LVSTRINGS CMD_ALIASES
        puts $fout $rec
      }
      if { [string range $rec 0 [expr 14+[string length $base]]] == "typedef struct [set base]" } {
+        if { [info exists SYSDIC($base,keyedID)] } {
+  	  puts $fout "  long	[set base]ID;"
+        }
         puts $fout "  StrHdl	private_revCode; /* 8 */"
 	puts $fout "  double	private_sndStamp;"
 	puts $fout "  double	private_rcvStamp;"
 	puts $fout "  long	private_seqNum;"
+        puts $fout "  StrHdl	private_identity; /* 128 */"
 	puts $fout "  long	private_origin;"
 	puts $fout "  long	private_host;"
      }
@@ -283,9 +287,7 @@ global SAL_DIR SAL_WORK_DIR
    set fout [open $SAL_DIR/../../ts_SALLabVIEW/SALTypeGenerator/IDLs/sal_[set subsys].idl w]
    while { [gets $fin rec] > -1 } {
       set t [string trim $rec "\{\}"]
-      if { [string range [lindex $t 1] 0 7] != "private_" } {
-         puts $fout $rec
-      }
+      puts $fout $rec
    }
    close $fin
    close $fout

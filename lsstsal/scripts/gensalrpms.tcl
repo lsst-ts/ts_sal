@@ -178,6 +178,11 @@ proc generatemetarpm { } {
 global SYSDIC SALRELEASE SALVERSION SAL_WORK_DIR OSPL_VERSION RELVERSION env
    if { $RELVERSION != "" } {
      set release [set SALVERSION].[set RELVERSION]
+     if { [string range $RELVERSION 0 0] == "_" } {
+       set release [set SALVERSION][set RELVERSION]
+     } else {
+       set release [set SALVERSION].[set RELVERSION]
+     }
    } else {
      set release $SALVERSION
    }
@@ -238,6 +243,11 @@ proc generateATmetarpm { } {
 global SYSDIC SALRELEASE SALVERSION SAL_WORK_DIR OSPL_VERSION RELVERSION env
    if { $RELVERSION != "" } {
      set release [set SALVERSION].[set RELVERSION]
+     if { [string range $RELVERSION 0 0] == "_" } {
+       set release [set SALVERSION][set RELVERSION]
+     } else {
+       set release [set SALVERSION].[set RELVERSION]
+     }
    } else {
      set release $SALVERSION
    }
@@ -303,7 +313,11 @@ global SAL_WORK_DIR SALVERSION SALRELEASE RPMFILES OSPL_VERSION RELVERSION XMLVE
   set xmldist [string trim [exec cat $env(SAL_WORK_DIR)/VERSION]]
   set fout [open $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_[set subsys].spec w]
   if { $RELVERSION != "" } {
-     set release [set SALVERSION].[set RELVERSION]
+     if { [string range $RELVERSION 0 0] == "_" } {
+       set release [set SALVERSION][set RELVERSION]
+     } else {
+       set release [set SALVERSION].[set RELVERSION]
+     }
   } else {
      set release $SALVERSION
   }
@@ -365,6 +379,11 @@ global SAL_WORK_DIR SALVERSION SALRELEASE RPMFILES OSPL_VERSION RELVERSION XMLVE
   set fout [open $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_[set subsys]_test.spec w]
   if { $RELVERSION != "" } {
      set release [set SALVERSION].[set RELVERSION]
+     if { [string range $RELVERSION 0 0] == "_" } {
+       set release [set SALVERSION][set RELVERSION]
+     } else {
+       set release [set SALVERSION].[set RELVERSION]
+     }
   } else {
      set release $SALVERSION
   }

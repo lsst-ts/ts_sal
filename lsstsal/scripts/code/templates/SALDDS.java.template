@@ -75,6 +75,7 @@ public class SAL_SALData {
         private int origin;
         private int ddsIPaddress;
         private String domainName;
+        private String partitionPrefix;
         private int lastActor_telemetry;
         private int lastActor_command;
         private int lastActor_event;
@@ -222,12 +223,18 @@ public class SAL_SALData {
                 int tuneableQos = 1;
 		Random randGen = new java.util.Random();
                 String dname = System.getenv("LSST_DDS_DOMAIN");
+                String pname = System.getenv("LSST_DDS_PARTITION_PREFIX");
                 String ipaddress = System.getenv("LSST_DDS_IP");
                 String qname = System.getenv("LSST_DDS_QOS");
                 if (dname != null) {
-                   domainName = dname;
+                   partitionPrefix = dname;
                 } else {
-                   domainName = "LSST";
+                   partitionPrefix = "LSST";
+                }
+                if (pname != null) {
+                   partitionPrefix = pname;
+                } else {
+                   System.out.println("=== WARNING : LSST_DDS_PARTITION_PREFIX not defined, using deprecated alias LSST_DDS_DOMAIN\n This will stop working in SAL 6");
                 }
 		if (ipaddress == null) {
 		  ddsIPaddress = (int)randGen.nextInt(99999999);
@@ -621,27 +628,13 @@ public class SAL_SALData {
 	}
 
 
-	public void createPublisher() {
-		int status = participant.get_default_publisher_qos(pubQos);
-		checkStatus(status,
-				"DomainParticipant.get_default_publisher_qos");
-
-		pubQos.value.partition.name = new String[1];
-		pubQos.value.partition.name[0] = partitionName;
-		publisher = participant.create_publisher(pubQos.value, null,
-				STATUS_MASK_NONE.value);
-		checkHandle(publisher,
-				"DomainParticipant.create_publisher");
-	}
-
-
 	public void createPublisher(int actorIdx) {
 		int status = participant.get_default_publisher_qos(sal[actorIdx].pubQos);
 		checkStatus(status,
 				"DomainParticipant.get_default_publisher_qos");
 
 		sal[actorIdx].pubQos.value.partition.name = new String[1];
-		sal[actorIdx].pubQos.value.partition.name[0] = partitionName;
+		sal[actorIdx].pubQos.value.partition.name[0] = sal[actorIdx].partition;
 		sal[actorIdx].publisher = participant.create_publisher(sal[actorIdx].pubQos.value, null,
 				STATUS_MASK_NONE.value);
 		checkHandle(sal[actorIdx].publisher,
@@ -744,28 +737,13 @@ public class SAL_SALData {
 	}
 
 
-
-	public void createSubscriber() {
-		int status = participant.get_default_subscriber_qos(subQos);
-		checkStatus(status,
-				"DomainParticipant.get_default_subscriber_qos");
-
-		subQos.value.partition.name = new String[1];
-		subQos.value.partition.name[0] = partitionName;
-		subscriber = participant.create_subscriber(subQos.value, null,
-				STATUS_MASK_NONE.value);
-		checkHandle(subscriber,
-				"DomainParticipant.create_subscriber");
-	}
-
-
 	public void createSubscriber(int actorIdx) {
 		int status = participant.get_default_subscriber_qos(sal[actorIdx].subQos);
 		checkStatus(status,
 				"DomainParticipant.get_default_subscriber_qos");
 
 		sal[actorIdx].subQos.value.partition.name = new String[1];
-		sal[actorIdx].subQos.value.partition.name[0] = partitionName;
+		sal[actorIdx].subQos.value.partition.name[0] = sal[actorIdx].partition;
 		sal[actorIdx].subscriber = participant.create_subscriber(sal[actorIdx].subQos.value, null,
 				STATUS_MASK_NONE.value);
 		checkHandle(sal[actorIdx].subscriber,

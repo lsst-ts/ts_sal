@@ -79,14 +79,8 @@ proc dogen { fid id {cmd yes} } {
 
 
 proc idlpreamble { fid id } {
-  puts $fid "struct [join [split $id .] _] \{
-  string<8>	private_revCode; //private
-  double	private_sndStamp; //private
-  double	private_rcvStamp; //private
-  long		private_seqNum; //private
-  string        private_identity; //private
-  long		private_origin; //private
-  long		private_host; //private" 
+  puts $fid "struct [join [split $id .] _] \{"
+  add_private_idl $fid
 }
 
 proc sqlpreamble { fid id } {
@@ -109,5 +103,5 @@ if { [info exists env(workingDir)] } {
    set WORKING $env(workingDir)
 }
 
-
+source $env(SAL_DIR)/add_private_idl.tcl
 

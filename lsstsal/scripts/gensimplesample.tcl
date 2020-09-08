@@ -221,7 +221,7 @@ using namespace std;
   .def(\"getNextSample_[set name]\" ,  &SAL_[set subsys]::getNextSample_[set name] )"
       }
       if { [info exists SYSDIC($subsys,keyedID)] } {
-          puts $fout "	  long	[set subsys]ID;"
+          puts $fout "	  long	[set subsys]ID;	//private"
       }
       set argidx 1
       while { [gets $fin rec] > -1 } {
@@ -472,22 +472,16 @@ global VPROPS TYPEFORMAT
 proc gennonkeyedidl { fout } {
 global OPTIONS
    if { $OPTIONS(verbose) } {stdlog "###TRACE>>> gennonkeyedidl $fout"}
-     puts $fout "	struct ackcmd \{
-      string<8>	private_revCode;
-      double		private_sndStamp;
-      double		private_rcvStamp;
-      string		private_identity;
-      long		private_origin;
-      long 		private_host;
-      long		private_seqNum;
-      long 		ack;
-      long 		error;
-      string<256>	result;
-      long		host;
-      string            identity;
-      long		origin;
-      long		cmdtype;
-      double		timeout;
+     puts $fout "	struct ackcmd \{"
+     add_private_idl $fout
+     puts $fout "	  long	ack;
+	  long	error;
+	  string<256>	result;
+	  long	host;
+	  string	identity;
+	  long	origin;
+	  long	cmdtype;
+	  double	timeout;
 	\};
 	#pragma keylist ackcmd"
    if { $OPTIONS(verbose) } {stdlog "###TRACE<<< gennonkeyedidl $fout"}
@@ -496,23 +490,17 @@ global OPTIONS
 proc genkeyedidl { fout base } {
 global SAL_WORK_DIR OPTIONS
      if { $OPTIONS(verbose) } {stdlog "###TRACE>>> genkeyedidl $fout $base"}
-     puts $fout "	struct ackcmd \{
-      string<8>	private_revCode;
-      double		private_sndStamp;
-      double		private_rcvStamp;
-      string            private_identity;
-      long		private_origin;
-      long 		private_host;
-      long		private_seqNum;
-      long	[set base]ID;
-      long 		ack;
-      long 		error;
-      string<256>	result;
-      string            identity;
-      long		host;
-      long		origin;
-      long		cmdtype;
-      double		timeout;
+     puts $fout "	struct ackcmd \{"
+     add_private_idl $fout
+     puts $fout "	  long	[set base]ID;
+	  long	ack;
+	  long	error;
+	  string<256>	result;
+	  string	identity;
+	  long	host;
+	  long	origin;
+	  long	cmdtype;
+	  double	timeout;
 	\};
 	#pragma keylist ackcmd [set base]ID"
      if { $OPTIONS(verbose) } {stdlog "###TRACE<<< genkeyedidl $fout $base"}
@@ -914,5 +902,8 @@ if { [info exists env(PYTHON_BUILD_VERSION)] } {
     source $env(SAL_DIR)/gensimplepybind11.tcl
   }
 }
+
 source $SAL_DIR/managetypes.tcl
 source $SAL_DIR/activaterevcodes.tcl
+source $SAL_DIR/add_private_idl.tcl
+
