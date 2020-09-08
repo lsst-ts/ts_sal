@@ -36,7 +36,7 @@ class BaseSalTestCase(unittest.TestCase):
         return next(index_gen)
 
     def setUp(self):
-        test_utils.set_random_lsst_dds_domain()
+        test_utils.set_random_lsst_dds_partition_prefix()
         self.index = self.next_index
         # remote sends commands and listens to telemetry and events
         self.remote = SALPY_Test.SAL_Test(self.index)
