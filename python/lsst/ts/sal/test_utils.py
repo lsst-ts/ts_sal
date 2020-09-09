@@ -19,7 +19,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-__all__ = ["STD_SLEEP", "index_generator", "set_random_lsst_dds_domain"]
+__all__ = ["STD_SLEEP", "index_generator", "set_random_lsst_dds_partition_prefix"]
 
 import os
 import random
@@ -69,8 +69,8 @@ def index_generator(imin=1, imax=MAX_SAL_INDEX):
     return index_impl()
 
 
-def set_random_lsst_dds_domain():
-    """Set a random value for environment variable LSST_DDS_DOMAIN
+def set_random_lsst_dds_partition_prefix():
+    """Set a random value for environment variable LSST_DDS_PARTITION_PREFIX
 
     Call this for each unit test method that uses SAL message passing,
     in order to avoid collisions with other tests. Note that pytest
@@ -82,7 +82,7 @@ def set_random_lsst_dds_domain():
     hostname = socket.gethostname()
     curr_time = time.time()
     random_int = random.randint(0, 999999)
-    os.environ["LSST_DDS_DOMAIN"] = f"Test-{hostname}-{curr_time}-{random_int}"
+    os.environ["LSST_DDS_PARTITION_PREFIX"] = f"Test-{hostname}-{curr_time}-{random_int}"
 
 
 class TestData:

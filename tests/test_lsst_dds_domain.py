@@ -125,8 +125,8 @@ class Harness:
 
 
 class LsstDdsDomainTestCase(unittest.TestCase):
-    def test_lsst_dds_domain(self):
-        """Test that LSST_DDS_DOMAIN shields multiple SAL components
+    def test_lsst_dds_partition_prefix(self):
+        """Test that LSST_DDS_PARTITION_PREFIX shields multiple SAL components
         with the same SAL index from each other.
         """
         async def doit():
@@ -135,7 +135,7 @@ class LsstDdsDomainTestCase(unittest.TestCase):
             try:
                 for int0 in sorted(int0_set):
                     print(f"Make harness with int0={int0}")
-                    test_utils.set_random_lsst_dds_domain()
+                    test_utils.set_random_lsst_dds_partition_prefix()
                     harnesses.append(Harness(int0))
 
                 for harness in harnesses:
