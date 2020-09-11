@@ -304,6 +304,7 @@ void SAL_SALData::initSalActors (int qos)
       puts $fout "    strcpy(sal\[$idx\].topicName,\"[set base]_[set name]\");"
       if { $type == "logevent" } {
         puts $fout "    status = eventQos->get_topic_qos(sal\[$idx\].reliable_topic_qos, NULL);"
+        puts $fout "    if ( status != 0 ) {throw std::runtime_error(\"ERROR : Cannot find EventProfile in QoS\"); }"
         puts $fout "    status = eventQos->get_datareader_qos(sal\[$idx\].dr_qos, NULL);"
         puts $fout "    status = eventQos->get_datawriter_qos(sal\[$idx\].dw_qos, NULL);"
         puts $fout "    status = eventQos->get_publisher_qos(sal\[$idx\].pub_qos, NULL);"
@@ -311,6 +312,7 @@ void SAL_SALData::initSalActors (int qos)
       } else {
         if { $type == "command" } {
           puts $fout "    status = commandQos->get_topic_qos(sal\[$idx\].reliable_topic_qos, NULL);"
+          puts $fout "    if ( status != 0 ) {throw std::runtime_error(\"ERROR : Cannot find CommandProfile in QoS\"); }"
           puts $fout "    status = commandQos->get_datareader_qos(sal\[$idx\].dr_qos, NULL);"
           puts $fout "    status = commandQos->get_datawriter_qos(sal\[$idx\].dw_qos, NULL);"
           puts $fout "    status = commandQos->get_publisher_qos(sal\[$idx\].pub_qos, NULL);"
@@ -319,6 +321,7 @@ void SAL_SALData::initSalActors (int qos)
         } else {
           if { $type == "ackcmd" } {
             puts $fout "    status = ackcmdQos->get_topic_qos(sal\[$idx\].reliable_topic_qos, NULL);"
+            puts $fout "    if ( status != 0 ) {throw std::runtime_error(\"ERROR : Cannot find AckcmdProfile in QoS\"); }"
             puts $fout "    status = ackcmdQos->get_datareader_qos(sal\[$idx\].dr_qos, NULL);"
             puts $fout "    status = ackcmdQos->get_datawriter_qos(sal\[$idx\].dw_qos, NULL);"
             puts $fout "    status = ackcmdQos->get_publisher_qos(sal\[$idx\].pub_qos, NULL);"
@@ -326,6 +329,7 @@ void SAL_SALData::initSalActors (int qos)
             puts $fout "    status = ackcmdQos->get_topic_qos(sal\[$idx\].reliable_topic_qos2, NULL);"
           } else {
             puts $fout "    status = telemetryQos->get_topic_qos(sal\[$idx\].reliable_topic_qos, NULL);"
+            puts $fout "    if ( status != 0 ) {throw std::runtime_error(\"ERROR : Cannot find TelemetryProfile in QoS\"); }"
             puts $fout "    status = telemetryQos->get_datareader_qos(sal\[$idx\].dr_qos, NULL);"
             puts $fout "    status = telemetryQos->get_datawriter_qos(sal\[$idx\].dw_qos, NULL);"
             puts $fout "    status = telemetryQos->get_publisher_qos(sal\[$idx\].pub_qos, NULL);"
