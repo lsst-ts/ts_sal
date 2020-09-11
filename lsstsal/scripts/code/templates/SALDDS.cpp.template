@@ -58,10 +58,24 @@ void SAL_SALData::initSalEnvironment(int aKey)
    }
    if ( qname != NULL ) {
       commandQos = new QosProvider (qname,"CommandProfile");
+      if ( commandQos == NULL ) {
+        throw std::runtime_error("ERROR : Cannot find CommandProfile in LSST_DDS_QOS profiles");
+      }   
       eventQos = new QosProvider(qname,"EventProfile");
+      if ( eventQos == NULL ) {
+        throw std::runtime_error("ERROR : Cannot find EventProfile in LSST_DDS_QOS profiles");
+      }   
       telemetryQos = new QosProvider(qname,"TelemetryProfile");
+      if ( telemetryQos == NULL ) {
+        throw std::runtime_error("ERROR : Cannot find TelemetryProfile in LSST_DDS_QOS profiles");
+      }   
       ackcmdQos = new QosProvider(qname,"AckcmdProfile");
+      if ( ackcmdQos == NULL ) {
+        throw std::runtime_error("ERROR : Cannot find AckcmdProfile in LSST_DDS_QOS profiles");
+      }   
       tuneableQos = 0;
+   } else {
+      throw std::runtime_error("ERROR : Cannot open LSST_DDS_QOS profiles");
    }
    if ( sname != NULL ) {
       sscanf(sname,"%d",&historySync);
