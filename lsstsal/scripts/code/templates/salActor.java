@@ -33,6 +33,7 @@ public class salActor {
 	public PublisherQosHolder pubQos  = new PublisherQosHolder();
 	public SubscriberQosHolder subQos = new SubscriberQosHolder();
 	public DataWriterQosHolder WQosH  = new DataWriterQosHolder();
+	public DataReaderQosHolder RQosH  = new DataReaderQosHolder();
 	public Publisher publisher;
 	public DataWriter writer;
 	public DataWriter writer2;
@@ -51,6 +52,7 @@ public class salActor {
         public int tuneableQos;
         public int historyDepth;
         public DurabilityQosPolicyKind durability;
+        public ReliabilityQosPolicyKind reliability;
         public int debugLevel;
         public int maxSamples;
         public int sndSeqNum;

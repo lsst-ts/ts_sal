@@ -57,7 +57,10 @@ void SAL_SALData::initSalEnvironment(int aKey)
       cout << "=== WARNING : LSST_DDS_PARTITION_PREFIX not defined, using deprecated alias LSST_DDS_DOMAIN" << endl << "This will stop working in SAL 6" << endl;
    }
    if ( qname != NULL ) {
-      QosProvider qosProvider(qname,"DDS DefaultQosProfile");
+      commandQos = new QosProvider (qname,"CommandProfile");
+      eventQos = new QosProvider(qname,"EventProfile");
+      telemetryQos = new QosProvider(qname,"TelemetryProfile");
+      ackcmdQos = new QosProvider(qname,"AckcmdProfile");
       tuneableQos = 0;
    }
    if ( sname != NULL ) {
@@ -539,10 +542,10 @@ void SAL_SALData::registerType2(int actorIdx,TypeSupport *ts)
 
 void SAL_SALData::createTopic(int actorIdx)
 {
-  status = participant->get_default_topic_qos(sal[actorIdx].reliable_topic_qos);
-  checkStatus(status, "DDS::DomainParticipant::get_default_topic_qos");
   if ( sal[actorIdx].tuneableQos) {
-    sal[actorIdx].reliable_topic_qos.reliability.kind = RELIABLE_RELIABILITY_QOS;
+    status = participant->get_default_topic_qos(sal[actorIdx].reliable_topic_qos);
+    checkStatus(status, "DDS::DomainParticipant::get_default_topic_qos");
+    sal[actorIdx].reliable_topic_qos.reliability.kind = sal[actorIdx].reliability;
     sal[actorIdx].reliable_topic_qos.durability.kind = sal[actorIdx].durability;
     sal[actorIdx].reliable_topic_qos.history.kind = KEEP_LAST_HISTORY_QOS;
     sal[actorIdx].reliable_topic_qos.history.depth = sal[actorIdx].historyDepth;
@@ -554,8 +557,7 @@ void SAL_SALData::createTopic(int actorIdx)
   /* Make the tailored QoS the new default. */
     status = participant->set_default_topic_qos(sal[actorIdx].reliable_topic_qos);
     checkStatus(status, "DDS::DomainParticipant::set_default_topic_qos");
-  }
-
+  } 
   sal[actorIdx].topic = participant->create_topic(sal[actorIdx].topicHandle, sal[actorIdx].typeName, sal[actorIdx].reliable_topic_qos,
     NULL, STATUS_MASK_NONE);
   checkHandle(sal[actorIdx].topic.in(), "DDS::DomainParticipant::create_topic ()");
@@ -563,10 +565,10 @@ void SAL_SALData::createTopic(int actorIdx)
 
 void SAL_SALData::createTopic2(int actorIdx)
 {
-  status = participant->get_default_topic_qos(sal[actorIdx].reliable_topic_qos2);
-  checkStatus(status, "DDS::DomainParticipant::get_default_topic_qos");
   if ( sal[actorIdx].tuneableQos) {
-    sal[actorIdx].reliable_topic_qos2.reliability.kind = RELIABLE_RELIABILITY_QOS;
+    status = participant->get_default_topic_qos(sal[actorIdx].reliable_topic_qos2);
+    checkStatus(status, "DDS::DomainParticipant::get_default_topic_qos");
+    sal[actorIdx].reliable_topic_qos2.reliability.kind = sal[actorIdx].reliability;
     sal[actorIdx].reliable_topic_qos2.durability.kind = sal[actorIdx].durability;
     sal[actorIdx].reliable_topic_qos2.history.kind = KEEP_LAST_HISTORY_QOS;
     sal[actorIdx].reliable_topic_qos2.history.depth = sal[actorIdx].historyDepth;
@@ -587,10 +589,10 @@ void SAL_SALData::createTopic2(int actorIdx)
 
 void SAL_SALData::createTopic(int actorIdx, char *topicName)
 {
-  status = participant->get_default_topic_qos(sal[actorIdx].reliable_topic_qos);
-  checkStatus(status, "DDS::DomainParticipant::get_default_topic_qos");
   if ( sal[actorIdx].tuneableQos) {
-    sal[actorIdx].reliable_topic_qos.reliability.kind = RELIABLE_RELIABILITY_QOS;
+    status = participant->get_default_topic_qos(sal[actorIdx].reliable_topic_qos);
+    checkStatus(status, "DDS::DomainParticipant::get_default_topic_qos");
+    sal[actorIdx].reliable_topic_qos.reliability.kind = sal[actorIdx].reliability;
     sal[actorIdx].reliable_topic_qos.durability.kind = sal[actorIdx].durability;
     sal[actorIdx].reliable_topic_qos.history.kind = KEEP_LAST_HISTORY_QOS;
     sal[actorIdx].reliable_topic_qos.history.depth = sal[actorIdx].historyDepth;
@@ -610,10 +612,10 @@ void SAL_SALData::createTopic(int actorIdx, char *topicName)
 
 void SAL_SALData::createTopic2(int actorIdx, char *topicName)
 {
-  status = participant->get_default_topic_qos(sal[actorIdx].reliable_topic_qos2);
-  checkStatus(status, "DDS::DomainParticipant::get_default_topic_qos");
   if ( sal[actorIdx].tuneableQos) {
-    sal[actorIdx].reliable_topic_qos2.reliability.kind = RELIABLE_RELIABILITY_QOS;
+    status = participant->get_default_topic_qos(sal[actorIdx].reliable_topic_qos2);
+    checkStatus(status, "DDS::DomainParticipant::get_default_topic_qos");
+    sal[actorIdx].reliable_topic_qos2.reliability.kind = sal[actorIdx].reliability;
     sal[actorIdx].reliable_topic_qos2.durability.kind = sal[actorIdx].durability;
     sal[actorIdx].reliable_topic_qos2.history.kind = KEEP_LAST_HISTORY_QOS;
     sal[actorIdx].reliable_topic_qos2.history.depth = sal[actorIdx].historyDepth;
@@ -709,8 +711,10 @@ void SAL_SALData::deleteTopics()
 
 void SAL_SALData::createPublisher(int actorIdx)
 {
-  status = participant->get_default_publisher_qos(sal[actorIdx].pub_qos);
-  checkStatus(status, "DDS::DomainParticipant::get_default_publisher_qos");
+  if ( sal[actorIdx].tuneableQos ) {
+    status = participant->get_default_publisher_qos(sal[actorIdx].pub_qos);
+    checkStatus(status, "DDS::DomainParticipant::get_default_publisher_qos");
+  }
   sal[actorIdx].pub_qos.partition.name.length(1);
   sal[actorIdx].pub_qos.partition.name[0] = sal[actorIdx].partition;
 
@@ -740,10 +744,12 @@ void SAL_SALData::deletePublisher()
 
 void SAL_SALData::createWriter(int actorIdx,bool autodispose_unregistered_instances)
 {
-  status = sal[actorIdx].publisher->get_default_datawriter_qos(sal[actorIdx].dw_qos);
-  checkStatus(status, "DDS::DomainParticipant::get_default_publisher_qos");
-  status = sal[actorIdx].publisher->copy_from_topic_qos(sal[actorIdx].dw_qos, sal[actorIdx].reliable_topic_qos);
-  checkStatus(status, "DDS::Publisher::copy_from_topic_qos");
+  if ( sal[actorIdx].tuneableQos ) {
+    status = sal[actorIdx].publisher->get_default_datawriter_qos(sal[actorIdx].dw_qos);
+    checkStatus(status, "DDS::DomainParticipant::get_default_publisher_qos");
+    status = sal[actorIdx].publisher->copy_from_topic_qos(sal[actorIdx].dw_qos, sal[actorIdx].reliable_topic_qos);
+    checkStatus(status, "DDS::Publisher::copy_from_topic_qos");
+  }
   sal[actorIdx].dw_qos.writer_data_lifecycle.autodispose_unregistered_instances = autodispose_unregistered_instances;
   sal[actorIdx].writer = sal[actorIdx].publisher->create_datawriter(sal[actorIdx].topic.in(), sal[actorIdx].dw_qos, NULL, STATUS_MASK_NONE);
   checkHandle(sal[actorIdx].writer, "DDS::Publisher::create_datawriter");
@@ -755,10 +761,12 @@ void SAL_SALData::createWriter(int actorIdx,bool autodispose_unregistered_instan
 
 void SAL_SALData::createWriter2(int actorIdx,bool autodispose_unregistered_instances)
 {
-  status = sal[actorIdx].publisher->get_default_datawriter_qos(sal[actorIdx].dw_qos);
-  checkStatus(status, "DDS::DomainParticipant::get_default_publisher_qos");
-  status = sal[actorIdx].publisher->copy_from_topic_qos(sal[actorIdx].dw_qos, sal[actorIdx].reliable_topic_qos2);
-  checkStatus(status, "DDS::Publisher::copy_from_topic_qos");
+  if ( sal[actorIdx].tuneableQos ) {
+    status = sal[actorIdx].publisher->get_default_datawriter_qos(sal[actorIdx].dw_qos);
+    checkStatus(status, "DDS::DomainParticipant::get_default_publisher_qos");
+    status = sal[actorIdx].publisher->copy_from_topic_qos(sal[actorIdx].dw_qos, sal[actorIdx].reliable_topic_qos2);
+    checkStatus(status, "DDS::Publisher::copy_from_topic_qos");
+  }
   sal[actorIdx].dw_qos.writer_data_lifecycle.autodispose_unregistered_instances = autodispose_unregistered_instances;
   sal[actorIdx].writer2 = sal[actorIdx].publisher->create_datawriter(sal[actorIdx].topic2.in(), sal[actorIdx].dw_qos, NULL, STATUS_MASK_NONE);
   checkHandle(sal[actorIdx].writer2, "DDS::Publisher::create_datawriter");
@@ -793,8 +801,10 @@ void SAL_SALData::deleteWriter()
 
 void SAL_SALData::createSubscriber(int actorIdx)
 {
-  int status = participant->get_default_subscriber_qos(sal[actorIdx].sub_qos);
-  checkStatus(status, "DDS::DomainParticipant::get_default_subscriber_qos");
+  if ( sal[actorIdx].tuneableQos ) {
+    int status = participant->get_default_subscriber_qos(sal[actorIdx].sub_qos);
+    checkStatus(status, "DDS::DomainParticipant::get_default_subscriber_qos");
+  }
   sal[actorIdx].sub_qos.partition.name.length(1);
   sal[actorIdx].sub_qos.partition.name[0] = sal[actorIdx].partition;
   sal[actorIdx].subscriber = participant->create_subscriber(sal[actorIdx].sub_qos, NULL, STATUS_MASK_NONE);
@@ -819,16 +829,18 @@ void SAL_SALData::deleteSubscriber()
 
 void SAL_SALData::createReader(int actorIdx,bool filtered)
 {
-  status = sal[actorIdx].subscriber->get_default_datareader_qos(sal[actorIdx].dr_qos);
-  checkStatus(status, "DDS::DomainParticipant::get_default_datareader_qos");
-  status = sal[actorIdx].subscriber->copy_from_topic_qos(sal[actorIdx].dr_qos, sal[actorIdx].reliable_topic_qos);
-  checkStatus(status, "DDS::Subscriber::copy_from_topic_qos");
+  if ( sal[actorIdx].tuneableQos ) {
+    status = sal[actorIdx].subscriber->get_default_datareader_qos(sal[actorIdx].dr_qos);
+    checkStatus(status, "DDS::DomainParticipant::get_default_datareader_qos");
+    status = sal[actorIdx].subscriber->copy_from_topic_qos(sal[actorIdx].dr_qos, sal[actorIdx].reliable_topic_qos);
+    checkStatus(status, "DDS::Subscriber::copy_from_topic_qos");
+  }
   if (filtered) {
     sal[actorIdx].reader = sal[actorIdx].subscriber->create_datareader(sal[actorIdx].filteredtopic.in(),
-    DATAREADER_QOS_USE_TOPIC_QOS, NULL, STATUS_MASK_NONE);
+    	sal[actorIdx].dr_qos, NULL, STATUS_MASK_NONE);
   } else {
     sal[actorIdx].reader = sal[actorIdx].subscriber->create_datareader(sal[actorIdx].topic.in(),
-    DATAREADER_QOS_USE_TOPIC_QOS, NULL, STATUS_MASK_NONE);
+    	sal[actorIdx].dr_qos, NULL, STATUS_MASK_NONE);
   }
   checkHandle(sal[actorIdx].reader, "DDS::Subscriber::create_datareader ()");
   sal[actorIdx].isReader = true;
@@ -846,10 +858,12 @@ void SAL_SALData::createReader(int actorIdx,bool filtered)
 
 void SAL_SALData::createReader2(int actorIdx,bool filtered)
 {
-  status = sal[actorIdx].subscriber->get_default_datareader_qos(sal[actorIdx].dr_qos);
-  checkStatus(status, "DDS::DomainParticipant::get_default_datareader_qos");
-  status = sal[actorIdx].subscriber->copy_from_topic_qos(sal[actorIdx].dr_qos, sal[actorIdx].reliable_topic_qos2);
-  checkStatus(status, "DDS::Subscriber::copy_from_topic_qos");
+  if ( sal[actorIdx].tuneableQos ) {
+    status = sal[actorIdx].subscriber->get_default_datareader_qos(sal[actorIdx].dr_qos);
+    checkStatus(status, "DDS::DomainParticipant::get_default_datareader_qos");
+    status = sal[actorIdx].subscriber->copy_from_topic_qos(sal[actorIdx].dr_qos, sal[actorIdx].reliable_topic_qos2);
+    checkStatus(status, "DDS::Subscriber::copy_from_topic_qos");
+  }
   if (filtered) {
     sal[actorIdx].reader2 = sal[actorIdx].subscriber->create_datareader(sal[actorIdx].filteredtopic2.in(),
     sal[actorIdx].dr_qos, NULL, STATUS_MASK_NONE);

@@ -85,8 +85,7 @@
 /// publisher holds a pointer to the internal DDS Publisher object
       Publisher_var 		publisher;
 /// subscriber holds a pointer to the internal DDS Subscriber object
-      Subscriber_var 		subscriber;
- 
+      Subscriber_var 		subscriber; 
 /// reliable_topic_qos holds a pointer to the internal DDS TopicQos object
       TopicQos 			reliable_topic_qos;
 /// reliable_topic_qos2 holds a pointer to the internal DDS TopicQos object
@@ -99,6 +98,14 @@
       DataReaderQos 		dr_qos;
 /// dw_qos holds a pointer to the internal DDS DataWriterQos object
       DataWriterQos 		dw_qos;
+/// pub_qos2 holds a pointer to the internal DDS PublisherQos object
+      PublisherQos 		pub_qos2;
+/// sub_qos2 holds a pointer to the internal DDS SubscriberQos object
+      SubscriberQos 		sub_qos2;
+/// dr_qos2 holds a pointer to the internal DDS DataReaderQos object
+      DataReaderQos 		dr_qos2;
+/// dw_qos2 holds a pointer to the internal DDS DataWriterQos object
+      DataWriterQos 		dw_qos2;
 /// isActive is true when the Actor has been connected to DDS
       bool			isActive;
 /// isReader is true when the Actor is a DDS reader
@@ -154,6 +161,8 @@
       int                       tuneableQos;
 /// durability holds the DDS durability setting is use with the topic
       DDS::DurabilityQosPolicyKind durability;
+/// durability holds the DDS reliability setting is use with the topic
+      DDS::ReliabilityQosPolicyKind reliability;
   };
 #endif
 
@@ -179,6 +188,10 @@
       PublisherQos pub_qos;
       DataWriterQos dw_qos;
       SubscriberQos sub_qos;
+      QosProvider_var commandQos;
+      QosProvider_var eventQos;
+      QosProvider_var telemetryQos;
+      QosProvider_var ackcmdQos;
 
       DomainId_t domain;
       ReturnCode_t status;
