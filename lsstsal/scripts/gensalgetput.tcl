@@ -351,13 +351,13 @@ void SAL_SALData::initSalActors (int qos)
          puts $fout "
       sprintf(pname,\"%s.[set base].cmd\",partitionPrefix);
       sal\[$idx\].partition = DDS::string_dup(pname);
-      if (debugLevel > 0) \{ cout << \"[set base]_[set name] partition is \" << pname << endl;\}
+      if (debugLevel > 2) \{ cout << \"[set base]_[set name] partition is \" << pname << endl;\}
 "
       } else {
          puts $fout "
       sprintf(pname,\"%s.[set base].data\",partitionPrefix);
       sal\[$idx\].partition = DDS::string_dup(pname);
-      if (debugLevel > 0) \{ cout << \"[set base]_[set name] partition is \" << pname << endl;\}
+      if (debugLevel > 2) \{ cout << \"[set base]_[set name] partition is \" << pname << endl;\}
 "
       }
       incr idx 1
