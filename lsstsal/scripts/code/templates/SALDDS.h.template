@@ -86,10 +86,10 @@
       Publisher_var 		publisher;
 /// subscriber holds a pointer to the internal DDS Subscriber object
       Subscriber_var 		subscriber; 
-/// reliable_topic_qos holds a pointer to the internal DDS TopicQos object
-      TopicQos 			reliable_topic_qos;
-/// reliable_topic_qos2 holds a pointer to the internal DDS TopicQos object
-      TopicQos 			reliable_topic_qos2;
+/// topic_qos holds a pointer to the internal DDS TopicQos object
+      TopicQos 			topic_qos;
+/// topic_qos2 holds a pointer to the internal DDS TopicQos object
+      TopicQos 			topic_qos2;
 /// pub_qos holds a pointer to the internal DDS PublisherQos object
       PublisherQos 		pub_qos;
 /// sub_qos holds a pointer to the internal DDS SubscriberQos object
@@ -157,12 +157,6 @@
       double			sampleAge;
 /// historyDepth is the maximum size (in samples) of the DDS message cache for the topic
       int                       historyDepth;
-/// tuneableQos is true when the SAL hardcoded QoS tuning is being used
-      int                       tuneableQos;
-/// durability holds the DDS durability setting is use with the topic
-      DDS::DurabilityQosPolicyKind durability;
-/// durability holds the DDS reliability setting is use with the topic
-      DDS::ReliabilityQosPolicyKind reliability;
   };
 #endif
 
@@ -183,8 +177,8 @@
       DataReader_var reader2;
 
       /* QosPolicy holders */
-      TopicQos reliable_topic_qos;
-      TopicQos reliable_topic_qos2;
+      TopicQos topic_qos;
+      TopicQos topic_qos2;
       PublisherQos pub_qos;
       DataWriterQos dw_qos;
       SubscriberQos sub_qos;
@@ -322,19 +316,7 @@
  */    
       salReturn salTypeSupport(char *topicName);
 
-/** Sets up the topic to use SAL QoS tuning, it must be called BEFORE the topic is instantiated
-  @param topicName is the name of the DDS topic
-  @throws "Unknown Topic" if the topic is not defined
- */    
-      void setTuneableQos(char *topicName);
 
-/** Sets up the topic to use default QoS tuning, it must be called BEFORE the topic is instantiated
-  * The default behavior can be found in the OpenSplice deployment guide and can be modified by configuring a
-  * DDS_DefaultQoS_all.xml file and pointing to it with the LSST_DDS_QOS environment vairable.
-  @param topicName is the name of the DDS topic
-  @throws "Unknown Topic" if the topic is not defined
- */    
-      void setDefaultQos(char *topicName);
 
 /// Set the debug message output verbosity level for this SAL_SALData object
       salReturn setDebugLevel( int level );
@@ -402,7 +384,7 @@
       Topic_ptr getTopic();
       DomainParticipant_ptr getParticipant();
 
-      void initSalActors(int qos);
+      void initSalActors();
       salReturn salTelemetryPub(int actorIdx);
       salReturn salTelemetrySub(int actorIdx);
       salReturn salEventSub(char *topicName);

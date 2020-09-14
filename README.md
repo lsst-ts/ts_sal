@@ -1,4 +1,4 @@
-# Service Access Layer package
+# Service Abstraction Layer package
 
 Provides tools to turn ts_xml interface description into C++, Python, Java and
 LabView interfaces. Turns XMLs with the interface description into Data

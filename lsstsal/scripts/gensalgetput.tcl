@@ -45,7 +45,8 @@ salReturn SAL_[set base]::putSample_[set name]([set base]_[set name]C *data)
   Instance.private_identity = DDS::string_dup(CSC_identity);
   Instance.private_origin = getpid();
   Instance.private_host = ddsIPaddress;
-  Instance.private_seqNum = sndSeqNum;
+  Instance.private_seqNum = sal\[actorIdx\].sndSeqNum;
+  sal\[actorIdx\].sndSeqNum++;
   Instance.private_host = 1;
    "
   set frag [open $SAL_WORK_DIR/include/SAL_[set base]_[set name]Cput.tmp r]
@@ -53,7 +54,6 @@ salReturn SAL_[set base]::putSample_[set name]([set base]_[set name]C *data)
   close $frag
   puts $fout "
 
-  sndSeqNum++;
   if (debugLevel > 0) \{
     cout << \"=== \[putSample\] [set base]::[set name][set revcode] writing a message containing :\" << endl;
     cout << \"    revCode  : \" << Instance.private_revCode << endl;
@@ -271,13 +271,8 @@ global SAL_WORK_DIR
       incr idx 1
    }
    close $fact
-############################ IMPORTANT ####################################
-##### If you change this, change it in code/templates/SALActor.java
-   set tuneableQos true
-###   if { $base == "m1m3" } {set tuneableQos false}
-############################ IMPORTANT ####################################
    puts $fout "
-void SAL_SALData::initSalActors (int qos)
+void SAL_SALData::initSalActors ()
 \{
     char *pname = (char *)malloc(128);
     for (int i=0; i<SAL__ACTORS_MAXCOUNT;i++) \{
@@ -292,7 +287,6 @@ void SAL_SALData::initSalActors (int qos)
       sal\[i\].maxSamples = LENGTH_UNLIMITED;
       sal\[i\].sampleAge = 1.0e20;
       sal\[i\].historyDepth = 100;
-      sal\[i\].tuneableQos = qos;
     \}
 "
    set idx 0
@@ -303,7 +297,7 @@ void SAL_SALData::initSalActors (int qos)
       puts $fout "    strcpy(sal\[$idx\].topicHandle,\"[set base]_[set name][set revcode]\");"
       puts $fout "    strcpy(sal\[$idx\].topicName,\"[set base]_[set name]\");"
       if { $type == "logevent" } {
-        puts $fout "    status = eventQos->get_topic_qos(sal\[$idx\].reliable_topic_qos, NULL);"
+        puts $fout "    status = eventQos->get_topic_qos(sal\[$idx\].topic_qos, NULL);"
         puts $fout "    if ( status != 0 ) {throw std::runtime_error(\"ERROR : Cannot find EventProfile in QoS\"); }"
         puts $fout "    status = eventQos->get_datareader_qos(sal\[$idx\].dr_qos, NULL);"
         puts $fout "    status = eventQos->get_datawriter_qos(sal\[$idx\].dw_qos, NULL);"
@@ -311,24 +305,24 @@ void SAL_SALData::initSalActors (int qos)
         puts $fout "    status = eventQos->get_subscriber_qos(sal\[$idx\].sub_qos, NULL);"
       } else {
         if { $type == "command" } {
-          puts $fout "    status = commandQos->get_topic_qos(sal\[$idx\].reliable_topic_qos, NULL);"
+          puts $fout "    status = commandQos->get_topic_qos(sal\[$idx\].topic_qos, NULL);"
           puts $fout "    if ( status != 0 ) {throw std::runtime_error(\"ERROR : Cannot find CommandProfile in QoS\"); }"
           puts $fout "    status = commandQos->get_datareader_qos(sal\[$idx\].dr_qos, NULL);"
           puts $fout "    status = commandQos->get_datawriter_qos(sal\[$idx\].dw_qos, NULL);"
           puts $fout "    status = commandQos->get_publisher_qos(sal\[$idx\].pub_qos, NULL);"
           puts $fout "    status = commandQos->get_subscriber_qos(sal\[$idx\].sub_qos, NULL);"
-          puts $fout "    status = commandQos->get_topic_qos(sal\[$idx\].reliable_topic_qos2, NULL);"
+          puts $fout "    status = commandQos->get_topic_qos(sal\[$idx\].topic_qos2, NULL);"
         } else {
           if { $type == "ackcmd" } {
-            puts $fout "    status = ackcmdQos->get_topic_qos(sal\[$idx\].reliable_topic_qos, NULL);"
+            puts $fout "    status = ackcmdQos->get_topic_qos(sal\[$idx\].topic_qos, NULL);"
             puts $fout "    if ( status != 0 ) {throw std::runtime_error(\"ERROR : Cannot find AckcmdProfile in QoS\"); }"
             puts $fout "    status = ackcmdQos->get_datareader_qos(sal\[$idx\].dr_qos, NULL);"
             puts $fout "    status = ackcmdQos->get_datawriter_qos(sal\[$idx\].dw_qos, NULL);"
             puts $fout "    status = ackcmdQos->get_publisher_qos(sal\[$idx\].pub_qos, NULL);"
             puts $fout "    status = ackcmdQos->get_subscriber_qos(sal\[$idx\].sub_qos, NULL);"
-            puts $fout "    status = ackcmdQos->get_topic_qos(sal\[$idx\].reliable_topic_qos2, NULL);"
+            puts $fout "    status = ackcmdQos->get_topic_qos(sal\[$idx\].topic_qos2, NULL);"
           } else {
-            puts $fout "    status = telemetryQos->get_topic_qos(sal\[$idx\].reliable_topic_qos, NULL);"
+            puts $fout "    status = telemetryQos->get_topic_qos(sal\[$idx\].topic_qos, NULL);"
             puts $fout "    if ( status != 0 ) {throw std::runtime_error(\"ERROR : Cannot find TelemetryProfile in QoS\"); }"
             puts $fout "    status = telemetryQos->get_datareader_qos(sal\[$idx\].dr_qos, NULL);"
             puts $fout "    status = telemetryQos->get_datawriter_qos(sal\[$idx\].dw_qos, NULL);"
@@ -336,16 +330,6 @@ void SAL_SALData::initSalActors (int qos)
             puts $fout "    status = telemetryQos->get_subscriber_qos(sal\[$idx\].sub_qos, NULL);"
           }
         }
-      }
-      if { $type != "logevent" } {
-         puts $fout "    sal\[$idx\].durability = VOLATILE_DURABILITY_QOS;"
-      } else {
-         puts $fout "    sal\[$idx\].durability = TRANSIENT_LOCAL_DURABILITY_QOS;"
-      }
-      if { $type != "command" && $type != "ackcmd" && $type != "logevent" } {
-        puts $fout "    sal\[$idx\].reliability = BEST_EFFORT_RELIABILITY_QOS;"
-      } else {
-        puts $fout "    sal\[$idx\].reliability = RELIABLE_RELIABILITY_QOS;"
       }
       if { $type == "command" } {
          puts $fout "
@@ -376,7 +360,7 @@ proc addActorIndexesJava { idlfile base fout } {
    }
    puts $fout " public static final int SAL__ACTORS_MAXCOUNT = $idx;"
    puts $fout "
-  public void initSalActors (int qos)
+  public void initSalActors ()
   \{
      String pname;
      int status=-1;
@@ -386,37 +370,37 @@ proc addActorIndexesJava { idlfile base fout } {
       set name [lindex $j 2]
       set type [lindex [split $name _] 0]
       set revcode [getRevCode [set base]_[set name] short]
-      puts $fout "    sal\[$idx\]=new salActor(qos);" 
+      puts $fout "    sal\[$idx\]=new salActor();" 
       puts $fout "    sal\[$idx\].topicHandle=\"[set base]_[set name][set revcode]\";"
       puts $fout "    sal\[$idx\].topicName=\"[set base]_[set name]\";"
       if { $type == "logevent" } {
-        puts $fout "    status = eventQos.get_topic_qos(sal\[$idx\].reliable_topic_qos, NULL);"
-        puts $fout "    status = eventQos.get_datareader_qos(sal\[$idx\].dr_qos, NULL);"
-        puts $fout "    status = eventQos.get_datawriter_qos(sal\[$idx\].dw_qos, NULL);"
-        puts $fout "    status = eventQos.get_publisher_qos(sal\[$idx\].pub_qos, NULL);"
-        puts $fout "    status = eventQos.get_subscriber_qos(sal\[$idx\].sub_qos, NULL);"
+        puts $fout "    status = eventQos.get_topic_qos(sal\[$idx\].topicQos, null);"
+        puts $fout "    status = eventQos.get_datareader_qos(sal\[$idx\].RQosH, null);"
+        puts $fout "    status = eventQos.get_datawriter_qos(sal\[$idx\].WQosH, null);"
+        puts $fout "    status = eventQos.get_publisher_qos(sal\[$idx\].pubQos, null);"
+        puts $fout "    status = eventQos.get_subscriber_qos(sal\[$idx\].subQos, null);"
       } else {
         if { $type == "command" } {
-          puts $fout "    status = commandQos.get_topic_qos(sal\[$idx\].reliable_topic_qos, NULL);"
-          puts $fout "    status = commandQos.get_datareader_qos(sal\[$idx\].dr_qos, NULL);"
-          puts $fout "    status = commandQos.get_datawriter_qos(sal\[$idx\].dw_qos, NULL);"
-          puts $fout "    status = commandQos.get_publisher_qos(sal\[$idx\].pub_qos, NULL);"
-          puts $fout "    status = commandQos.get_subscriber_qos(sal\[$idx\].sub_qos, NULL);"
-          puts $fout "    status = commandQos.get_topic_qos(sal\[$idx\].reliable_topic_qos2, NULL);"
+          puts $fout "    status = commandQos.get_topic_qos(sal\[$idx\].topicQos, null);"
+          puts $fout "    status = commandQos.get_datareader_qos(sal\[$idx\].RQosH, null);"
+          puts $fout "    status = commandQos.get_datawriter_qos(sal\[$idx\].WQosH, null);"
+          puts $fout "    status = commandQos.get_publisher_qos(sal\[$idx\].pubQos, null);"
+          puts $fout "    status = commandQos.get_subscriber_qos(sal\[$idx\].subQos, null);"
+          puts $fout "    status = commandQos.get_topic_qos(sal\[$idx\].topicQos2, null);"
         } else {
           if { $type == "ackcmd" } {
-            puts $fout "    status = ackcmdQos.get_topic_qos(sal\[$idx\].reliable_topic_qos, NULL);"
-            puts $fout "    status = ackcmdQos.get_datareader_qos(sal\[$idx\].dr_qos, NULL);"
-            puts $fout "    status = ackcmdQos.get_datawriter_qos(sal\[$idx\].dw_qos, NULL);"
-            puts $fout "    status = ackcmdQos.get_publisher_qos(sal\[$idx\].pub_qos, NULL);"
-            puts $fout "    status = ackcmdQos.get_subscriber_qos(sal\[$idx\].sub_qos, NULL);"
-            puts $fout "    status = ackcmdQos.get_topic_qos(sal\[$idx\].reliable_topic_qos2, NULL);"
+            puts $fout "    status = ackcmdQos.get_topic_qos(sal\[$idx\].topicQos, null);"
+            puts $fout "    status = ackcmdQos.get_datareader_qos(sal\[$idx\].RQosH, null);"
+            puts $fout "    status = ackcmdQos.get_datawriter_qos(sal\[$idx\].WQosH, null);"
+            puts $fout "    status = ackcmdQos.get_publisher_qos(sal\[$idx\].pubQos, null);"
+            puts $fout "    status = ackcmdQos.get_subscriber_qos(sal\[$idx\].subQos, null);"
+            puts $fout "    status = ackcmdQos.get_topic_qos(sal\[$idx\].topicQos2, null);"
           } else {
-            puts $fout "    status = telemetryQos.get_topic_qos(sal\[$idx\].reliable_topic_qos, NULL);"
-            puts $fout "    status = telemetryQos.get_datareader_qos(sal\[$idx\].dr_qos, NULL);"
-            puts $fout "    status = telemetryQos.get_datawriter_qos(sal\[$idx\].dw_qos, NULL);"
-            puts $fout "    status = telemetryQos.get_publisher_qos(sal\[$idx\].pub_qos, NULL);"
-            puts $fout "    status = telemetryQos.get_subscriber_qos(sal\[$idx\].sub_qos, NULL);"
+            puts $fout "    status = telemetryQos.get_topic_qos(sal\[$idx\].topicQos, null);"
+            puts $fout "    status = telemetryQos.get_datareader_qos(sal\[$idx\].RQosH, null);"
+            puts $fout "    status = telemetryQos.get_datawriter_qos(sal\[$idx\].WQosH, null);"
+            puts $fout "    status = telemetryQos.get_publisher_qos(sal\[$idx\].pubQos, null);"
+            puts $fout "    status = telemetryQos.get_subscriber_qos(sal\[$idx\].subQos, null);"
           }
         }
       }

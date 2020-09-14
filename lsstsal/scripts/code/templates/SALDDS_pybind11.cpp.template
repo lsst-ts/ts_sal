@@ -106,14 +106,6 @@ PYBIND11_MODULE(SALPY_SALData,m){
             , (int ( ::SAL_SALData::* )(  ) )( &::SAL_SALData::getLeapSeconds ) )
 // INSERT EVENTALIAS SUPPORT 
         .def( 
-            "setTuneableQos"
-            , (::salReturn ( ::SAL_SALData::* )( char * ) )( &::SAL_SALData::setTuneableQos )
-            , ( py::arg("alias") ) )    
-        .def( 
-            "setDefaultQos"
-            , (::salReturn ( ::SAL_SALData::* )( char * ) )( &::SAL_SALData::setDefaultQos )
-            , ( py::arg("alias") ) )    
-        .def( 
             "salShutdown"
             , (void ( ::SAL_SALData::* )(  ) )( &::SAL_SALData::salShutdown ) )    
         .def( 

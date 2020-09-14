@@ -49,7 +49,6 @@ public class salActor {
         public Boolean isEventWriter;
         public Boolean isProcessor;
         public Boolean isCommand;
-        public int tuneableQos;
         public int historyDepth;
         public DurabilityQosPolicyKind durability;
         public ReliabilityQosPolicyKind reliability;
@@ -73,7 +72,7 @@ public class salActor {
         public double rcvStamp;
 	public double sampleAge;
 
-    public salActor(int qos) {
+    public salActor() {
 	this.isActive = false;
 	this.isReader = false;
 	this.isWriter = false;
@@ -81,7 +80,6 @@ public class salActor {
 	this.isEventReader = false;
 	this.isEventWriter = false;
 	this.isProcessor = false;
-        this.tuneableQos = qos;
         this.historyDepth = 100;
         this.maxSamples = 999999999;
     }
