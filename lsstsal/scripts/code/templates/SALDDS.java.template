@@ -73,6 +73,7 @@ public class SAL_SALData {
         private int sndSeqNum;
         private int rcvSeqNum;
         private int rcvOrigin;
+        private int historySync;
         private String rcvIdentity;
         private int subsystemID;
         private int origin;
@@ -227,6 +228,7 @@ public class SAL_SALData {
                 String dname = System.getenv("LSST_DDS_DOMAIN");
                 String pname = System.getenv("LSST_DDS_PARTITION_PREFIX");
                 String ipaddress = System.getenv("LSST_DDS_IP");
+                String hname = System.getenv("LSST_DDS_HISTORYSYNC");
                 String qname = System.getenv("LSST_DDS_QOS");
                 if (dname != null) {
                    partitionPrefix = dname;
@@ -249,6 +251,11 @@ public class SAL_SALData {
                      ipasint += ip * Math.pow(256,power);
                   }
 		  ddsIPaddress = ipasint;
+                }
+                if (hname == null) {
+                   historySync = 30;
+                } else {
+                   historySync = Integer.parseInt(hname);
                 }
                 if (qname != null) {
                   commandQos = new QosProvider(qname,"CommandProfile");
@@ -722,11 +729,13 @@ public class SAL_SALData {
                 }
 	  }
 	  checkHandle(sal[actorIdx].reader, "Subscriber.create_datareader");
-	  DDS.Duration_t a_timeout = new Duration_t();
-	  a_timeout.sec = 30;
-	  a_timeout.nanosec = 10000000;
+          if ( (sal[actorIdx].topicQos.value.durability.kind != DurabilityQosPolicyKind.VOLATILE_DURABILITY_QOS) && (historySync > 0) ) {
+	    DDS.Duration_t a_timeout = new Duration_t();
+	    a_timeout.sec = historySync;
+	    a_timeout.nanosec = 10000000;
+	    sal[actorIdx].reader.wait_for_historical_data(a_timeout);
+          }
           sal[actorIdx].sampleAge = 100.0;
-	  sal[actorIdx].reader.wait_for_historical_data(a_timeout);
           sal[actorIdx].isReader = true;
 	}
 
@@ -745,11 +754,13 @@ public class SAL_SALData {
                 }
 	  }
 	  checkHandle(sal[actorIdx].reader2, "Subscriber.create_datareader");
-	  DDS.Duration_t a_timeout = new Duration_t();
-	  a_timeout.sec = 30;
-	  a_timeout.nanosec = 10000000;
+          if ( (sal[actorIdx].topicQos2.value.durability.kind != DurabilityQosPolicyKind.VOLATILE_DURABILITY_QOS) && (historySync > 0) ) {
+  	    DDS.Duration_t a_timeout = new Duration_t();
+	    a_timeout.sec = historySync;
+	    a_timeout.nanosec = 10000000;
+	    sal[actorIdx].reader2.wait_for_historical_data(a_timeout);
+          }
           sal[actorIdx].sampleAge = 100.0;
-	  sal[actorIdx].reader2.wait_for_historical_data(a_timeout);
           sal[actorIdx].isReader = true;
 	}
 
