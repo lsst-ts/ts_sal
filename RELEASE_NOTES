@@ -3,7 +3,7 @@ This is release 5.0.0 of the SAL SDK (September 21st 2020)
 
 Changes for 5.0.0
 
-Add historySync to Java
+Add historySync to Java and call wait_for_history
 
 Add DDS QOS definition using the ts_idl/qos/QoS.xml file
 
