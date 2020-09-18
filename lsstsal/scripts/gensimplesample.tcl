@@ -175,24 +175,18 @@ using namespace std;
       set fcod7 [open $SAL_WORK_DIR/include/SAL_[set subsys]_[set name]shmout.tmp w]
       set fcod8 [open $SAL_WORK_DIR/include/SAL_[set subsys]_[set name]shmin.tmp w]
       puts $fcod8 "
-           data->private_sndStamp = [set subsys]_memIO->client\[LVClient\].shmemIncoming_[set subsys]_[set name].private_sndStamp;
-           data->private_rcvStamp = [set subsys]_memIO->client\[LVClient\].shmemIncoming_[set subsys]_[set name].private_rcvStamp;
-           data->private_seqNum = [set subsys]_memIO->client\[LVClient\].shmemIncoming_[set subsys]_[set name].private_seqNum;"
+           data->private_rcvStamp = [set subsys]_memIO->client\[LVClient\].shmemIncoming_[set subsys]_[set name].private_rcvStamp;"
       set fcod10 [open $SAL_WORK_DIR/include/SAL_[set subsys]_[set name]Pargs.tmp w]
       set fcod11 [open $SAL_WORK_DIR/include/SAL_[set subsys]_[set name]Ppub.tmp w]
       set fcod12 [open $SAL_WORK_DIR/include/SAL_[set subsys]_[set name]monout.tmp w]
       set fcod13 [open $SAL_WORK_DIR/include/SAL_[set subsys]_[set name]monin.tmp w]
       puts $fcod13 "
-             [set subsys]_memIO->client\[LVClient\].shmemIncoming_[set subsys]_[set name].private_sndStamp = Incoming_[set subsys]_[set name]->private_sndStamp;
-             [set subsys]_memIO->client\[LVClient\].shmemIncoming_[set subsys]_[set name].private_rcvStamp = Incoming_[set subsys]_[set name]->private_rcvStamp;
-             [set subsys]_memIO->client\[LVClient\].shmemIncoming_[set subsys]_[set name].private_seqNum = Incoming_[set subsys]_[set name]->private_seqNum;"
+             [set subsys]_memIO->client\[LVClient\].shmemIncoming_[set subsys]_[set name].private_rcvStamp = Incoming_[set subsys]_[set name]->private_rcvStamp;"
 ###      set fcod14 [open $SAL_WORK_DIR/include/SAL_[set subsys]_[set name]Jsub.tmp w]
       puts $fout "	struct $name \{"
       puts $fhdr "struct [set subsys]_[set name]C
 \{
-	double	private_sndStamp;
 	double  private_rcvStamp;
-	long 	private_seqNum;
 "
       puts $fhlv "typedef struct [set subsys]_[set name]LV \{"
       puts $fbst "   bp::class_<[set subsys]_[set name]C>(\"[set subsys]_[set name]C\")"
@@ -513,9 +507,7 @@ global OPTIONS
    puts $fhdr "
 struct [set subsys]_ackcmdC
 \{
-      double		private_sndStamp;
       double  		private_rcvStamp;
-      long 		private_seqNum;
       int 		ack;
       int 		error;
       std::string	result;

@@ -95,7 +95,7 @@ puts stdout $rec
 proc ignoreforlabview { rec subsys } {
   set crec [join [split [string trim  $rec "{}; 	"] "_"] " "]
   if { [lindex $crec 1] == "private" } {
-     if { [lsearch "revCode; identity; origin; host;" [lindex $crec 2]] > -1 } {
+     if { [lsearch "revCode; sndStamp; seqNum; identity; origin; host;" [lindex $crec 2]] > -1 } {
         return 1
      }
   }
@@ -155,9 +155,7 @@ global SAL_DIR SAL_WORK_DIR SYSDIC TELEMETRY_ALIASES LVSTRINGS CMD_ALIASES
         puts $fout $rec
       }
       if { [string range $rec 0 [expr 14+[string length $base]]] == "typedef struct [set base]" } {
-	puts $fout "  double	private_sndStamp;"
 	puts $fout "  double	private_rcvStamp;"
-	puts $fout "  long	private_seqNum;"
       }
     }
   }
