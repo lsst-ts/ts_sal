@@ -78,10 +78,11 @@ pipeline {
                 script {
                     sh "docker exec -u saluser \${container_name} sh -c \"" +
                         "source ~/.setup.sh && " +
+                        "export LSST_DDS_QOS=/home/saluser/repos/ts_idl/qos && " +
                         "cd /home/saluser/repo/ && " +
                         "eups declare -r . -t saluser && " +
-                        "setup salobj -t saluser && " +
-                        "py.test --junitxml=tests/.tests/junit.xml\""
+                        "setup ts_sal -t saluser && " +
+                        "pytest --junitxml=tests/.tests/junit.xml\""
                 }
             }
         }
