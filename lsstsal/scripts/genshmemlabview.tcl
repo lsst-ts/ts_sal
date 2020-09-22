@@ -448,11 +448,14 @@ extern \"C\" \{
     \}
 
     int [set base]_salShmRelease() \{
-      [set base]_memIO->client\[LVClient\].shutdown = true;
-      [set base]_shm_initFlags();
-      shmdt([set base]_memIO);
-      if (iverbose) \{
-         cout << \"Client \" << LVClient << \" shmdt\" << endl;
+      if ( [set base]_memIO != NULL ) \{
+        [set base]_memIO->client\[LVClient\].shutdown = true;
+        [set base]_shm_initFlags();
+        shmdt([set base]_memIO);
+        [set base]_memIO = NULL;
+        if (iverbose) \{
+          cout << \"Client \" << LVClient << \" shmdt\" << endl;
+        \}
       \}
       return SAL__OK;
     \}
