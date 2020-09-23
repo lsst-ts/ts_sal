@@ -1,14 +1,16 @@
 import time
 import unittest
+import pathlib
 import os
 
 import numpy as np
+
 try:
     from astropy.time import Time
 except ImportError:
     Time = None
 
-from lsst.ts.sal import test_utils
+from lsst.ts.sal import testutils
 import SALPY_Test
 import SALPY_Script
 
@@ -18,14 +20,9 @@ import SALPY_Script
 # these tests to do that, to eliminate the dependence on the default depth.
 READ_QUEUE_DEPTH = 100
 
-# This environment variable is used for the experimental dds code,
-# but can interfere with the standard code
-if "LSST_DDS_QOS" in os.environ:
-    del os.environ["LSST_DDS_QOS"]
+STD_SLEEP = testutils.STD_SLEEP
 
-STD_SLEEP = test_utils.STD_SLEEP
-
-index_gen = test_utils.index_generator()
+index_gen = testutils.index_generator()
 
 np.random.seed(47)
 
@@ -36,13 +33,13 @@ class BaseSalTestCase(unittest.TestCase):
         return next(index_gen)
 
     def setUp(self):
-        test_utils.set_random_lsst_dds_partition_prefix()
+        testutils.set_random_lsst_dds_partition_prefix()
         self.index = self.next_index
         # remote sends commands and listens to telemetry and events
         self.remote = SALPY_Test.SAL_Test(self.index)
         # controller listens to commands and publishes telemetry and events
         self.controller = SALPY_Test.SAL_Test(self.index)
-        self.test_data = test_utils.TestData()
+        self.test_data = testutils.TestData()
 
     def get_topic(self, func, data, timeout=2):
         """Get data for a topic using the specified command.
@@ -103,6 +100,7 @@ class BasicTestCase(BaseSalTestCase):
         The value will either be TAI-UTC, if SAL can see a time server,
         or 0 if not.
         """
+
         def get_astropy_tai_minus_utc():
             """Get TAI-UTC at the current time, in seconds, using astropy.
             """
@@ -110,7 +108,7 @@ class BasicTestCase(BaseSalTestCase):
             # curr_time.tai.unix - curr_time.utc.unix
             # because they are identical.
             curr_time = Time.now()
-            return (curr_time.tai.mjd - curr_time.utc.mjd)*24*60*60
+            return (curr_time.tai.mjd - curr_time.utc.mjd) * 24 * 60 * 60
 
         # Run the test twice in the unlikely event that the first run
         # occurs at a leap second transition.
@@ -272,7 +270,9 @@ class BasicTestCase(BaseSalTestCase):
 
         for get_event in (False, True):
             with self.subTest(get_event=get_event):
-                self.check_get_newest_after_get_oldest(test_events=True, get_event=get_event)
+                self.check_get_newest_after_get_oldest(
+                    test_events=True, get_event=get_event
+                )
 
     def test_tel_get_newest_after_get_oldest(self):
         """Test that get newest after get oldest gets the newest value.
@@ -456,6 +456,7 @@ class BasicTestCase(BaseSalTestCase):
 class ScriptTestCase(unittest.TestCase):
     """A few tests require CSC that doesn't use generics, so we use Script.
     """
+
     def test_generics_no(self):
         """Test that setting generics to `no` avoids generics."""
         self.assertFalse(hasattr(SALPY_Script, "Test_command_enterControlC"))
@@ -465,6 +466,7 @@ class ScriptTestCase(unittest.TestCase):
 class ErrorHandlingTestCase(BaseSalTestCase):
     """Test misuse of the API
     """
+
     def test_multiple_shutdown(self):
         # Having no asserts is poor practice, but I'm not sure what else
         # I can call after shutdown to see if the manager was properly
@@ -664,7 +666,7 @@ class ErrorHandlingTestCase(BaseSalTestCase):
         time.sleep(STD_SLEEP)
 
         # from the XML file; unfortunately there is no way to ask SALPY
-        too_long_data = "0123456789"*10
+        too_long_data = "0123456789" * 10
         self.assertEqual(len(too_long_data), 100)
         data = SALPY_Test.Test_scalarsC()
         # string0 has a limit of 20 characters
@@ -752,9 +754,49 @@ class ErrorHandlingTestCase(BaseSalTestCase):
             self.controller.putSample_scalars(data)
 
 
+class LsstDdsQosTestCase(unittest.TestCase):
+    """Test that ts_sal gracefully handles incorrect $LSST_DDS_QOS.
+    """
+
+    def setUp(self):
+        self.data_dir = pathlib.Path(__file__).parent / "data"
+        self.original_lsst_dds_qos = os.environ["LSST_DDS_QOS"]
+
+    def tearDown(self):
+        os.environ["LSST_DDS_QOS"] = self.original_lsst_dds_qos
+
+    def test_qos_no_env_var(self):
+        """Test that LSST_DDS_QOS must be defined.
+        """
+        del os.environ["LSST_DDS_QOS"]
+        with self.assertRaises(RuntimeError):
+            SALPY_Test.SAL_Test(1)
+
+    def test_qos_no_file(self):
+        filepath = self.data_dir / "not a file"
+        self.assertFalse(filepath.is_file())
+        os.environ["LSST_DDS_QOS"] = filepath.as_uri()
+        with self.assertRaises(RuntimeError):
+            SALPY_Test.SAL_Test(1)
+
+    def test_qos_missing_profile(self):
+        for profile_name in (
+            "AckcmdProfile",
+            "CommandProfile",
+            "EventProfile",
+            "TelemetryProfile",
+        ):
+            with self.subTest(profile_name=profile_name):
+                filepath = self.data_dir / f"QoS_no_{profile_name}.xml"
+                self.assertTrue(filepath.is_file())
+                os.environ["LSST_DDS_QOS"] = filepath.as_uri()
+                with self.assertRaises(RuntimeError):
+                    SALPY_Test.SAL_Test(1)
+
+
 class TestTestData(unittest.TestCase):
     def setUp(self):
-        self.test_data = test_utils.TestData()
+        self.test_data = testutils.TestData()
 
     def test_scalars(self):
         data_list = []

@@ -78,19 +78,6 @@ if { [string range [lindex $argv end] 0 7] == "version=" } {
 
 puts stdout "SAL generator - [set SALVERSION]"
 
-if { [file exists $env(SAL_WORK_DIR)/VERSION] == 0 } {
-  puts stdout "
-*******************************************************************************
-******************** ERROR - Subsystem not defined ****************************
-*******************************************************************************
-
-	$env(SAL_WORK_DIR)/VERSION does not exist to specify XML version
-
-*******************************************************************************
-*******************************************************************************"
-  exit -1
-}
-
 set TSUBSYSTEMS ""
 foreach i $argv {
   puts stdout "checking $i"

@@ -57,25 +57,27 @@ global SAL_WORK_DIR EVENT_ENUMS
    set topic none
    set addSharedEnums 1
    while { [gets $fin rec] > -1 } {
-      set it [string trim $rec "\{\}"]
-      if { [lindex $it 0] == "struct" } {
+puts stdout $rec
+     if { [ignoreforlabview $rec $subsys] == 0 } {
+       set it [string trim $rec "\{\}"]
+       if { [lindex $it 0] == "struct" } {
          set ttype [lindex [split [lindex $it 1] "_"] 0]
          if { $ttype == "command" || $ttype == "logevent" } {
             set topic [join [lrange [split [lindex $it 1] "_"] 1 end] "_"]
          } else {
             set topic [lindex $it 1]
          }
-      }
-      if { [lsearch "ack\;" [lindex $it 1]] > -1 } {
+       }
+       if { [lsearch "ack\;" [lindex $it 1]] > -1 } {
          puts $fout "	  long	cmdSeqNum;"
-      }
-      set name [string trim [lindex $it 1] ";"]
-      if { [info exists EVENT_ENUMS($topic,$name)] } {
+       }
+       set name [string trim [lindex $it 1] ";"]
+       if { [info exists EVENT_ENUMS($topic,$name)] } {
         puts $fout "$rec	// enum : $EVENT_ENUMS($topic,$name)"
-      } else {
+       } else {
         puts $fout $rec
-      }
-      if { $addSharedEnums == 1 } {
+       }
+       if { $addSharedEnums == 1 } {
 	#add the generic summary state constants:
 	set i 1
 	foreach id "DisabledState EnabledState FaultState OfflineState StandbyState" {
@@ -83,10 +85,22 @@ global SAL_WORK_DIR EVENT_ENUMS
           incr i 1
 	}
         set addSharedEnums 0
-      }
+       }
+     }
    }
    close $fin
    close $fout
+}
+
+proc ignoreforlabview { rec subsys } {
+  set crec [join [split [string trim  $rec "{}; 	"] "_"] " "]
+  if { [lindex $crec 1] == "private" } {
+     if { [lsearch "revCode; sndStamp; seqNum; identity; origin; host;" [lindex $crec 2]] > -1 } {
+        return 1
+     }
+  }
+  if { [lindex $crec 1] == "[set subsys]ID;" } { return 1 }
+  return 0
 }
 
 
@@ -127,32 +141,25 @@ global SAL_DIR SAL_WORK_DIR SYSDIC TELEMETRY_ALIASES LVSTRINGS CMD_ALIASES
   set fhlv [open $SAL_WORK_DIR/[set base]/cpp/src/SAL_[set base]LV.h r]
   puts $fout "#ifdef BUILD_FOR_LV"
   while  { [gets $fhlv rec] > -1 } {
-     if { [string range $rec 0 13] == "typedef struct" } {
+    if { [lindex [string trim $rec "{};"] end] != "//private" } {
+      if { [string range $rec 0 13] == "typedef struct" } {
         set sname [lindex [string trim $rec "\{"] 2]
-     }
-     set crec [string trim $rec "\{\}"]
-     if { [lindex $crec 0] == "StrHdl" && $sname != "" } {
-       set param [string trim [lindex $crec 1] "*;"]
-       set slen [lindex $crec 3]
-       set LVSTRINGS([set sname]_[set param]) $slen
-       puts $fout $rec
-     } else {
-       puts $fout $rec
-     }
-     if { [string range $rec 0 [expr 14+[string length $base]]] == "typedef struct [set base]" } {
-        if { [info exists SYSDIC($base,keyedID)] } {
-  	  puts $fout "  long	[set base]ID;"
-        }
-        puts $fout "  StrHdl	private_revCode; /* 8 */"
-	puts $fout "  double	private_sndStamp;"
+      }
+      set crec [string trim $rec "\{\}"]
+      if { [lindex $crec 0] == "StrHdl" && $sname != "" } {
+        set param [string trim [lindex $crec 1] "*;"]
+        set slen [lindex $crec 3]
+        set LVSTRINGS([set sname]_[set param]) $slen
+        puts $fout $rec
+      } else {
+        puts $fout $rec
+      }
+      if { [string range $rec 0 [expr 14+[string length $base]]] == "typedef struct [set base]" } {
 	puts $fout "  double	private_rcvStamp;"
-	puts $fout "  long	private_seqNum;"
-        puts $fout "  StrHdl	private_identity; /* 128 */"
-	puts $fout "  long	private_origin;"
-	puts $fout "  long	private_host;"
-     }
- }
- puts $fout "#endif
+      }
+    }
+  }
+  puts $fout "#endif
 "
   close $fhlv
   puts $fout "
@@ -361,6 +368,9 @@ using namespace [set base];
                       if ([set base]_memIO->client\[LVClient\].inUse && [set base]_memIO->client\[LVClient\].initialized == false) \{
                           mgr\[LVClient\] = SAL_[set base]($idarg2);
                           [set base]_memIO->client\[LVClient\].initialized = true;
+                          if (iverbose) \{
+                             cout << \"Client \" << LVClient << \" Connected\" << endl;
+                          \}
                       \}
                       if ([set base]_memIO->client\[LVClient\].inUse) \{
 "
@@ -387,7 +397,7 @@ using namespace [set base];
             [set base]_memIO->client\[LVClient\].initialized = false;
             [set base]_memIO->client\[LVClient\].shutdown = false;
             if (iverbose) \{
-               cout << \"Client \" << LVClient << \" shutdown\" << endl;
+               cout << \"Client \" << LVClient << \" disconnected\" << endl;
             \}
         \}
        \}
@@ -441,11 +451,14 @@ extern \"C\" \{
     \}
 
     int [set base]_salShmRelease() \{
-      [set base]_memIO->client\[LVClient\].shutdown = true;
-      [set base]_shm_initFlags();
-      shmdt([set base]_memIO);
-      if (iverbose) \{
-         cout << \"Client \" << LVClient << \" shmdt\" << endl;
+      if ( [set base]_memIO != NULL ) \{
+        [set base]_memIO->client\[LVClient\].shutdown = true;
+        [set base]_shm_initFlags();
+        shmdt([set base]_memIO);
+        [set base]_memIO = NULL;
+        if (iverbose) \{
+          cout << \"Client \" << LVClient << \" shmdt\" << endl;
+        \}
       \}
       return SAL__OK;
     \}

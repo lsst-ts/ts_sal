@@ -82,31 +82,54 @@ def set_random_lsst_dds_partition_prefix():
     hostname = socket.gethostname()
     curr_time = time.time()
     random_int = random.randint(0, 999999)
-    os.environ["LSST_DDS_PARTITION_PREFIX"] = f"Test-{hostname}-{curr_time}-{random_int}"
+    os.environ[
+        "LSST_DDS_PARTITION_PREFIX"
+    ] = f"Test-{hostname}-{curr_time}-{random_int}"
 
 
 class TestData:
     """Generate random test data and compare topics.
     """
+
     __test__ = False  # stop pytest from warning that this is not a test
 
     @property
     def arrays_fields(self):
         """Get a tuple of the fields in an arrays struct."""
         return (
-            "boolean0", "byte0", "short0",
-            "int0", "long0", "longLong0", "octet0",
-            "unsignedShort0", "unsignedInt0", "unsignedLong0",
-            "float0", "double0")
+            "boolean0",
+            "byte0",
+            "short0",
+            "int0",
+            "long0",
+            "longLong0",
+            "octet0",
+            "unsignedShort0",
+            "unsignedInt0",
+            "unsignedLong0",
+            "float0",
+            "double0",
+        )
 
     @property
     def scalars_fields(self):
         """Get a tuple of the fields in a scalars struct."""
         return (
-            "boolean0", "byte0", "char0", "short0",
-            "int0", "long0", "longLong0", "octet0",
-            "unsignedShort0", "unsignedInt0", "unsignedLong0",
-            "float0", "double0", "string0")
+            "boolean0",
+            "byte0",
+            "char0",
+            "short0",
+            "int0",
+            "long0",
+            "longLong0",
+            "octet0",
+            "unsignedShort0",
+            "unsignedInt0",
+            "unsignedLong0",
+            "float0",
+            "double0",
+            "string0",
+        )
 
     def assert_arrays_equal(self, arrays1, arrays2):
         """Assert that two arrays data structs are equal.
@@ -118,8 +141,11 @@ class TestData:
         # as a discrepancy there is harder to interpret
         for field in reversed(self.arrays_fields):
             if np.any(getattr(arrays1, field) != getattr(arrays2, field)):
-                raise AssertionError("arrays1.{} = {} != {} = arrays2.{}".format(
-                    field, getattr(arrays1, field), getattr(arrays2, field), field))
+                raise AssertionError(
+                    "arrays1.{} = {} != {} = arrays2.{}".format(
+                        field, getattr(arrays1, field), getattr(arrays2, field), field
+                    )
+                )
 
     def assert_scalars_equal(self, scalars1, scalars2):
         """Assert that two scalars data structs are equal.
@@ -131,8 +157,11 @@ class TestData:
         # as a discrepancy there is harder to interpret
         for field in reversed(self.scalars_fields):
             if getattr(scalars1, field) != getattr(scalars2, field):
-                raise AssertionError("scalars1.{} = {} != {} = scalars2.{}".format(
-                    field, getattr(scalars1, field), getattr(scalars2, field), field))
+                raise AssertionError(
+                    "scalars1.{} = {} != {} = scalars2.{}".format(
+                        field, getattr(scalars1, field), getattr(scalars2, field), field
+                    )
+                )
 
     def copy_arrays(self, src_arrays, dest_arrays):
         """Copy arrays data from one struct to another.
@@ -174,18 +203,21 @@ class TestData:
             field = getattr(data, field_name)
             iinfo = np.iinfo(field.dtype)
             print(f"{field_name} has type {field.dtype}")
-            field[:] = np.random.randint(iinfo.min, iinfo.max, size=(nelts,), dtype=field.dtype)
+            field[:] = np.random.randint(
+                iinfo.min, iinfo.max, size=(nelts,), dtype=field.dtype
+            )
         data.float0[:] = np.random.uniform(-1e5, 1e5, size=(nelts,))
         data.double0[:] = np.random.uniform(-1e5, 1e5, size=(nelts,))
         return data
 
     def set_random_scalars(self, data):
         """Make random data for scalars or setScalars topic."""
-        # also make an empty arrays struct to get dtype of int fields,
+        # Also make an empty arrays struct to get dtype of int fields,
         # since that information is lost in the scalars pybind11 wrapper
-        # Defer this import so other contents of test_utils
+        # Defer this import so other contents of testutils
         # can be used without SALPY_Test.
         import SALPY_Test
+
         empty_arrays = SALPY_Test.Test_arraysC()
         data.boolean0 = np.random.choice([False, True])
         printable_chars = [c for c in string.ascii_letters + string.digits]
@@ -210,7 +242,9 @@ class TestData:
             if dtype == np.int64:
                 dtype = np.int64
             iinfo = np.iinfo(dtype)
-            setattr(data, field_name, np.random.randint(iinfo.min, iinfo.max, dtype=dtype))
+            setattr(
+                data, field_name, np.random.randint(iinfo.min, iinfo.max, dtype=dtype)
+            )
         data.float0 = np.random.uniform(-1e5, 1e5)
         data.double0 = np.random.uniform(-1e5, 1e5)
         return data

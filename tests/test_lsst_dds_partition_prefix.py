@@ -22,7 +22,7 @@
 import asyncio
 import unittest
 
-from lsst.ts.sal import test_utils
+from lsst.ts.sal import testutils
 import SALPY_Test
 
 SAL_INDEX = 1
@@ -38,6 +38,7 @@ class SimpleController:
     int0 : `int`
         Required value of setScalars.int0
     """
+
     def __init__(self, int0):
         self.required_int0 = int0
         self.manager = SALPY_Test.SAL_Test(SAL_INDEX)
@@ -76,20 +77,23 @@ class SimpleRemote:
     """A trivial Test SAL controller that sends a single command:
     setScalars.
     """
+
     def __init__(self):
         self.manager = SALPY_Test.SAL_Test(SAL_INDEX)
         self.manager.setDebugLevel(0)
         self.setScalars_data = SALPY_Test.Test_command_setScalarsC()
         self.manager.salCommand("Test_command_setScalars")
-        self.done_ack_codes = frozenset((
-            SALPY_Test.SAL__CMD_ABORTED,
-            SALPY_Test.SAL__CMD_COMPLETE,
-            SALPY_Test.SAL__CMD_FAILED,
-            SALPY_Test.SAL__CMD_NOACK,
-            SALPY_Test.SAL__CMD_NOPERM,
-            SALPY_Test.SAL__CMD_STALLED,
-            SALPY_Test.SAL__CMD_TIMEOUT,
-        ))
+        self.done_ack_codes = frozenset(
+            (
+                SALPY_Test.SAL__CMD_ABORTED,
+                SALPY_Test.SAL__CMD_COMPLETE,
+                SALPY_Test.SAL__CMD_FAILED,
+                SALPY_Test.SAL__CMD_NOACK,
+                SALPY_Test.SAL__CMD_NOPERM,
+                SALPY_Test.SAL__CMD_STALLED,
+                SALPY_Test.SAL__CMD_TIMEOUT,
+            )
+        )
 
     async def setScalars(self, int0):
         """Send the setScalars with int0 field set as specified.
@@ -124,18 +128,19 @@ class Harness:
         self.controller = SimpleController(int0)
 
 
-class LsstDdsDomainTestCase(unittest.TestCase):
+class LsstDdsPartitionPrefixTestCase(unittest.TestCase):
     def test_lsst_dds_partition_prefix(self):
         """Test that LSST_DDS_PARTITION_PREFIX shields multiple SAL components
         with the same SAL index from each other.
         """
+
         async def doit():
             harnesses = []
             int0_set = (1, 2, 5)
             try:
                 for int0 in sorted(int0_set):
                     print(f"Make harness with int0={int0}")
-                    test_utils.set_random_lsst_dds_partition_prefix()
+                    testutils.set_random_lsst_dds_partition_prefix()
                     harnesses.append(Harness(int0))
 
                 for harness in harnesses:
@@ -147,9 +152,13 @@ class LsstDdsDomainTestCase(unittest.TestCase):
                                 # SimpleController ack with SAL__CMD_FAILED,
                                 # which makes SimpleRemote raise ValueError
                                 with self.assertRaises(ValueError):
-                                    await asyncio.wait_for(harness.remote.setScalars(int0), 2)
+                                    await asyncio.wait_for(
+                                        harness.remote.setScalars(int0), 2
+                                    )
                             else:
-                                retval = await asyncio.wait_for(harness.remote.setScalars(int0), 2)
+                                retval = await asyncio.wait_for(
+                                    harness.remote.setScalars(int0), 2
+                                )
                                 self.assertEqual(retval, int0)
 
             finally:

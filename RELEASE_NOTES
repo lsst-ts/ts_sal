@@ -1,9 +1,17 @@
-This is release 5.0.0 of the SAL SDK (August 25th 2020)
+This is release 5.0.0RC3 of the SAL SDK (September 21st 2020)
 
 
 Changes for 5.0.0
 
-Modify DDS durability to be VOLATILE for everything except logevent topics
+Add historySync to Java and call wait_for_history
+
+Add DDS QOS definition using the ts_idl/qos/QoS.xml file
+
+Remove deprecated QOS related code (option to use DDS defaults)
+
+Add support for per CSC partition names
+
+Add tuning configuration to the DDS ospl.xml system configuration
 
 Add private fields to LabVIEW ctl's
 
@@ -22,6 +30,10 @@ Add getOSPLVersion for runtimes
 Test runtime builds in CentOS 8 environment
 
 Generate rpm/deb for Raspberry pi 4 (Raspian and CentOS 7)
+
+Add support for authList in the topic private data
+
+Add support for authList by adding SAL contructors that specify identity
 
 
 Changes for 4.1.4

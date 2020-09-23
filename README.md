@@ -1,4 +1,4 @@
-# Service Access Layer package
+# Service Abstraction Layer package
 
 Provides tools to turn ts_xml interface description into C++, Python, Java and
 LabView interfaces. Turns XMLs with the interface description into Data
@@ -79,14 +79,17 @@ To generate C++ interface for MTMount, do the following:
 
 ```bash
 cd ts_sal/test
-salgenerator MTMount generate cpp
+salgenerator MTMount validate
+salgenerator MTMount sal cpp
 ```
 
 ### Java
 
 ```bash
 cd  ts_sal/test
-salgenerator MTMount generate python
+salgenerator MTMount validate
+salgenerator MTMount sal java
+salgenerator MTMount maven
 ```
 
 ### Python
@@ -94,13 +97,30 @@ salgenerator MTMount generate python
 For Python (please note you are encouraged to use
 [ts_salobj](https://github.com/lsstts/ts_salobj)):
 
+OR for the older SALPY API
+
 ```bash
 cd  ts_sal/test
-salgenerator MTMount generate python
-cd MTMount/cpp
-make -f Makefile.sacpp_MTMount_types
+salgenerator MTMount validate
+salgenerator MTMount sal cpp
+salgenerator MTMount sal python
+salgenerator MTMount lib
 ```
 
 ### LabView
 
-Unknown at the moment.
+```bash
+cd  ts_sal/test
+salgenerator MTMount validate
+salgenerator MTMount sal cpp
+salgenerator MTMount labview
+```
+
+Then run the LabVIEW GUI and import the 
+$SAL_WORK_DIR/MTMount/labview/SALLV_MTMount.so shared library
+
+Then run the ts_SALLabVIEW VI to generate the .lvlib and VI's
+
+
+
+
