@@ -34,7 +34,7 @@ pipeline {
                     sh """
                     docker network create \${network_name}
                     chmod -R a+rw \${WORKSPACE}
-                    container=\$(docker run -v \${WORKSPACE}:/home/saluser/repo/ -td --rm --net \${network_name} -e LTD_USERNAME=\${LSST_IO_CREDS_USR} -e LTD_PASSWORD=\${LSST_IO_CREDS_PSW} --name \${container_name} lsstts/salobj:develop)
+                    container=\$(docker run -v \${WORKSPACE}:/home/saluser/repos/ts_sal -td --rm --net \${network_name} -e LTD_USERNAME=\${LSST_IO_CREDS_USR} -e LTD_PASSWORD=\${LSST_IO_CREDS_PSW} --name \${container_name} lsstts/salobj:develop)
                     """
                 }
             }
@@ -62,26 +62,14 @@ pipeline {
                 }
             }
         }
-        stage("Build IDL files") {
-            steps {
-                script {
-                    sh "docker exec -u saluser \${container_name} sh -c \"" +
-                        "source ~/.setup.sh && " +
-                        "source /home/saluser/.bashrc && " +
-                        "make_idl_files.py Test Script LOVE && " +
-                        "make_salpy_libs.py Test\""
-                }
-            }
-        }
         stage("Running tests") {
             steps {
                 script {
                     sh "docker exec -u saluser \${container_name} sh -c \"" +
                         "source ~/.setup.sh && " +
-                        "export LSST_DDS_QOS=/home/saluser/repos/ts_idl/qos && " +
-                        "cd /home/saluser/repo/ && " +
-                        "eups declare -r . -t saluser && " +
-                        "setup ts_sal -t saluser && " +
+                        "export LSST_DDS_QOS=file:///home/saluser/repos/ts_idl/qos/QoS.xml && " +
+                        "cd /home/saluser/repos/ts_sal && " +
+                        "make_salpy_libs.py Test Script && " +
                         "pytest --junitxml=tests/.tests/junit.xml\""
                 }
             }
@@ -105,7 +93,7 @@ pipeline {
         }
         cleanup {
             sh """
-                docker exec -u root --privileged \${container_name} sh -c \"chmod -R a+rw /home/saluser/repo/\"
+                docker exec -u root --privileged \${container_name} sh -c \"chmod -R a+rw /home/saluser/repos/ts_sal/\"
                 docker stop \${container_name} || echo Could not stop container
                 docker network rm \${network_name} || echo Could not remove network
             """
