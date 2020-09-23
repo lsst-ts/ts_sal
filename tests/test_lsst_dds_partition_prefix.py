@@ -22,7 +22,7 @@
 import asyncio
 import unittest
 
-from lsst.ts.sal import test_utils
+from lsst.ts.sal import testutils
 import SALPY_Test
 
 SAL_INDEX = 1
@@ -124,7 +124,7 @@ class Harness:
         self.controller = SimpleController(int0)
 
 
-class LsstDdsDomainTestCase(unittest.TestCase):
+class LsstDdsPartitionPrefixTestCase(unittest.TestCase):
     def test_lsst_dds_partition_prefix(self):
         """Test that LSST_DDS_PARTITION_PREFIX shields multiple SAL components
         with the same SAL index from each other.
@@ -135,7 +135,7 @@ class LsstDdsDomainTestCase(unittest.TestCase):
             try:
                 for int0 in sorted(int0_set):
                     print(f"Make harness with int0={int0}")
-                    test_utils.set_random_lsst_dds_partition_prefix()
+                    testutils.set_random_lsst_dds_partition_prefix()
                     harnesses.append(Harness(int0))
 
                 for harness in harnesses:

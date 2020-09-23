@@ -10,7 +10,7 @@ try:
 except ImportError:
     Time = None
 
-from lsst.ts.sal import test_utils
+from lsst.ts.sal import testutils
 import SALPY_Test
 import SALPY_Script
 
@@ -20,9 +20,9 @@ import SALPY_Script
 # these tests to do that, to eliminate the dependence on the default depth.
 READ_QUEUE_DEPTH = 100
 
-STD_SLEEP = test_utils.STD_SLEEP
+STD_SLEEP = testutils.STD_SLEEP
 
-index_gen = test_utils.index_generator()
+index_gen = testutils.index_generator()
 
 np.random.seed(47)
 
@@ -33,13 +33,13 @@ class BaseSalTestCase(unittest.TestCase):
         return next(index_gen)
 
     def setUp(self):
-        test_utils.set_random_lsst_dds_partition_prefix()
+        testutils.set_random_lsst_dds_partition_prefix()
         self.index = self.next_index
         # remote sends commands and listens to telemetry and events
         self.remote = SALPY_Test.SAL_Test(self.index)
         # controller listens to commands and publishes telemetry and events
         self.controller = SALPY_Test.SAL_Test(self.index)
-        self.test_data = test_utils.TestData()
+        self.test_data = testutils.TestData()
 
     def get_topic(self, func, data, timeout=2):
         """Get data for a topic using the specified command.
@@ -796,7 +796,7 @@ class LsstDdsQosTestCase(unittest.TestCase):
 
 class TestTestData(unittest.TestCase):
     def setUp(self):
-        self.test_data = test_utils.TestData()
+        self.test_data = testutils.TestData()
 
     def test_scalars(self):
         data_list = []
