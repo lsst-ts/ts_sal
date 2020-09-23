@@ -39,20 +39,30 @@ class MakeIdlFile:
     name : `str`
         Name of SAL component, e.g. ``"ScriptQueue"``.
     """
+
     def __init__(self, name):
         self.name = name
         self.xml_dir = lsst.ts.xml.get_pkg_root()
-        self.sal_work_dir = utils.get_env_dir("SAL_WORK_DIR", "$SAL_WORK_DIR must be defined")
+        self.sal_work_dir = utils.get_env_dir(
+            "SAL_WORK_DIR", "$SAL_WORK_DIR must be defined"
+        )
         idl_file_name = f"sal_revCoded_{self.name}.idl"
-        self.idl_file_from_path = self.sal_work_dir / "idl-templates" / "validated" / "sal" / idl_file_name
+        self.idl_file_from_path = (
+            self.sal_work_dir / "idl-templates" / "validated" / "sal" / idl_file_name
+        )
         self.idl_file_to_path = idl.get_idl_dir() / idl_file_name
 
     def copy_xml_files(self):
         interfaces_dir = os.path.join(self.xml_dir, "sal_interfaces")
-        std_xml_paths = [os.path.join(interfaces_dir, f"{n}.xml") for n in ("SALGenerics", "SALSubsystems")]
+        std_xml_paths = [
+            os.path.join(interfaces_dir, f"{n}.xml")
+            for n in ("SALGenerics", "SALSubsystems")
+        ]
         sal_xml_paths = glob.glob(os.path.join(interfaces_dir, self.name, "*.xml"))
         if not sal_xml_paths:
-            raise RuntimeError(f"Could not find any XML files for SAL component {self.name}")
+            raise RuntimeError(
+                f"Could not find any XML files for SAL component {self.name}"
+            )
         for xmlpath in std_xml_paths + sal_xml_paths:
             shutil.copy(xmlpath, self.sal_work_dir)
 

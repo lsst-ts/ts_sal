@@ -17,5 +17,5 @@ setup(
     project_url={
         "Bug Tracker": "https://jira.lsstcorp.org/secure/Dashboard.jspa",
         "Source Code": "https://github.com/lsst-ts/ts_idl",
-    }
+    },
 )
