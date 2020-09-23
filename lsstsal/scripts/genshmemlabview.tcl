@@ -368,6 +368,9 @@ using namespace [set base];
                       if ([set base]_memIO->client\[LVClient\].inUse && [set base]_memIO->client\[LVClient\].initialized == false) \{
                           mgr\[LVClient\] = SAL_[set base]($idarg2);
                           [set base]_memIO->client\[LVClient\].initialized = true;
+                          if (iverbose) \{
+                             cout << \"Client \" << LVClient << \" Connected\" << endl;
+                          \}
                       \}
                       if ([set base]_memIO->client\[LVClient\].inUse) \{
 "
@@ -394,7 +397,7 @@ using namespace [set base];
             [set base]_memIO->client\[LVClient\].initialized = false;
             [set base]_memIO->client\[LVClient\].shutdown = false;
             if (iverbose) \{
-               cout << \"Client \" << LVClient << \" shutdown\" << endl;
+               cout << \"Client \" << LVClient << \" disconnected\" << endl;
             \}
         \}
        \}
