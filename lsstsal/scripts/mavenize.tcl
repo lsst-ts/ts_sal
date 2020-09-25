@@ -113,7 +113,7 @@ global env SAL_WORK_DIR SAL_DIR OSPL_VERSION XMLVERSION RELVERSION TS_SAL_DIR
         <repository>
             <id>ocs-maven2-public</id>
             <name>OCS Maven 2 central repository</name>
-            <url>http://repo-nexus.lsst.org/nexus/content/groups/ocs-maven2-public/</url>
+            <url>http://repo-nexus.lsst.org/nexus/content/groups/ocs-maven2/</url>
         </repository>
     </repositories>
     <distributionManagement>
