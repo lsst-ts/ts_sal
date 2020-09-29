@@ -21,7 +21,7 @@
 from .make_idl_file import *
 from .make_salpy_lib import *
 from .utils import *
-from . import test_utils
+from . import testutils
 
 try:
     from .version import *

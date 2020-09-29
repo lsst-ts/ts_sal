@@ -48,6 +48,7 @@ class MakeSalpyLib:
     sal_name : `str`
         Name of SAL component, e.g. ``"ScriptQueue"``.
     """
+
     def __init__(self, sal_name):
         self.sal_name = sal_name
         self.sal_dir = utils.get_pkg_root()
@@ -56,21 +57,32 @@ class MakeSalpyLib:
         self.ld_lib_path_name = "LD_LIBRARY_PATH"
         self.initial_ld_lib_path = os.environ[self.ld_lib_path_name]
         self.lib_names = dict(
-            cpp=f"libsacpp_{sal_name}_types.so",
-            python=f"SALPY_{sal_name}.so")
+            cpp=f"libsacpp_{sal_name}_types.so", python=f"SALPY_{sal_name}.so"
+        )
         self.src_lib_paths = dict(
-            cpp=os.path.join(self.sal_work_dir, self.sal_name, "cpp", self.lib_names["cpp"]),
-            python=os.path.join(self.sal_work_dir, self.sal_name, "cpp", "src", self.lib_names["python"]))
+            cpp=os.path.join(
+                self.sal_work_dir, self.sal_name, "cpp", self.lib_names["cpp"]
+            ),
+            python=os.path.join(
+                self.sal_work_dir, self.sal_name, "cpp", "src", self.lib_names["python"]
+            ),
+        )
         self.dest_lib_paths = dict(
             cpp=os.path.join(self.sal_dir, "lib", self.lib_names["cpp"]),
-            python=os.path.join(self.sal_dir, "python", self.lib_names["python"]))
+            python=os.path.join(self.sal_dir, "python", self.lib_names["python"]),
+        )
 
     def copy_xml_files(self):
         interfaces_dir = os.path.join(self.xml_dir, "sal_interfaces")
-        std_xml_paths = [os.path.join(interfaces_dir, f"{n}.xml") for n in ("SALGenerics", "SALSubsystems")]
+        std_xml_paths = [
+            os.path.join(interfaces_dir, f"{n}.xml")
+            for n in ("SALGenerics", "SALSubsystems")
+        ]
         sal_xml_paths = glob.glob(os.path.join(interfaces_dir, self.sal_name, "*.xml"))
         if not sal_xml_paths:
-            raise RuntimeError(f"Could not find any XML files for SAL component {self.sal_name}")
+            raise RuntimeError(
+                f"Could not find any XML files for SAL component {self.sal_name}"
+            )
         for xmlpath in std_xml_paths + sal_xml_paths:
             shutil.copy(xmlpath, self.sal_work_dir)
 
@@ -94,7 +106,9 @@ class MakeSalpyLib:
 
         if not keep_most:
             print(f"Removing demos")
-            sal_name_dirs = glob.glob(os.path.join(self.sal_work_dir, f"{self.sal_name}*"))
+            sal_name_dirs = glob.glob(
+                os.path.join(self.sal_work_dir, f"{self.sal_name}*")
+            )
             for name_dir in sal_name_dirs:
                 print(f"Remove {name_dir}")
                 shutil.rmtree(name_dir, ignore_errors=True)
@@ -108,9 +122,15 @@ class MakeSalpyLib:
             If True build a demo reader and writer for each topic.
         """
         try:
-            os.environ[self.ld_lib_path_name] = f"{self.sal_work_dir}/lib:{self.initial_ld_lib_path}"
+            os.environ[
+                self.ld_lib_path_name
+            ] = f"{self.sal_work_dir}/lib:{self.initial_ld_lib_path}"
             demo_suffix = "" if demo else " fastest"
-            for command in ("validate", f"sal cpp{demo_suffix}", f"sal python{demo_suffix}"):
+            for command in (
+                "validate",
+                f"sal cpp{demo_suffix}",
+                f"sal python{demo_suffix}",
+            ):
                 cmd_args = ["salgenerator", self.sal_name] + command.split()
                 print(f"***** {' '.join(cmd_args)}")
                 subprocess.run(cmd_args, check=True, cwd=self.sal_work_dir)

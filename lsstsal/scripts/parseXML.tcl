@@ -2,7 +2,7 @@
 
 proc parseXMLtoidl { fname } { 
 global IDLRESERVED SAL_WORK_DIR SAL_DIR CMDS CMD_ALIASES EVTS EVENT_ALIASES
-global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIONS
+global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIONS METADATA
    if { $OPTIONS(verbose) } {stdlog "###TRACE>>> parseXMLtoidl $fname"}
    set fin [open $fname r]
    set fout ""
@@ -114,7 +114,6 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
       }
       if { $tag == "/SALCommand" } {
          set intopic 0
-         set CMDS($subsys,$alias) "$device $property $action $vvalue"
          set CMD_ALIASES($subsys) [lappend CMD_ALIASES($subsys) $alias]
          if { $itemid == 6 } {
             puts stdout "WARNING : Command $alias has no data fields , adding default value item"
@@ -169,12 +168,13 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
         puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",2,\"private_sndStamp\",\"double\",1,\"second\",1,\"\",\"\",\"TAI at sender\");"
         puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",3,\"private_rcvStamp\",\"double\",1,\"second\",1,\"\",\"\",\"TAI at receiver\");"
         puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",4,\"private_seqNum\",\"int\",1,\"unitless\",1,\"\",\"\",\"Sequence number\");"
-        puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",5,\"private_origin\",\"int\",1,\"unitless\",1,\"\",\"\",\"PID code of sender\");"
-        puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",6,\"private_host\",\"int\",1,\"unitless\",1,\"\",\"\",\"IP of sender\");"
-        set itemid 6
+        puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",5,\"private_identity\",\"int\",1,\"unitless\",1,\"\",\"\",\"Identity of originator\");"
+        puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",6,\"private_origin\",\"int\",1,\"unitless\",1,\"\",\"\",\"PID code of sender\");"
+        puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",7,\"private_host\",\"int\",1,\"unitless\",1,\"\",\"\",\"IP of sender\");"
+        set itemid 7
         if { [info exists SYSDIC($subsys,keyedID)] } {
-           puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",7,\"[set subsys]ID\",\"int\",1,\"unitless\",1,\"\",\"\",\"Index of $subsys instance\");"
-           set itemid 7
+           puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",8,\"[set subsys]ID\",\"int\",1,\"unitless\",1,\"\",\"\",\"Index of $subsys instance\");"
+           set itemid 8
         }
         set alias [getAlias $tname]
         if { $ctype == "command" } {
@@ -204,6 +204,7 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
       if { $tag == "/SALEvent" || $tag == "/SALCommand" || $tag == "/SALTelemetry" } {
          enumsToIDL $subsys $alias $fout
          puts $fsql "###Description $tname : $DESC($subsys,$alias,help)"
+         set METADATA($tname,description) $DESC($subsys,$alias,help)
       }
       if { $tag == "IDL_Type"} {
          set type $value
@@ -255,7 +256,11 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
          } else {
             set DESC($subsys,$alias,$item) ""
          }
-         if { $unit != "" } {set UNITS($subsys,$alias,$item) $unit}
+         if { $unit != "" } {
+            set UNITS($subsys,$alias,$item) $unit
+            set METADATA($tname,$item,units) $unit
+         }
+         set METADATA($tname,$item,description) $desc
          puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",$itemid,\"$item\",\"$type\",$idim,\"$unit\",$freq,\"$range\",\"$location\",\"$desc\");"
       }
    }
@@ -338,8 +343,8 @@ global EVENT_ENUM EDONE
           set cnst [lindex [split $enum :] 1]
           foreach id [split $cnst ,] {
               if { [llength [split $id "="]] > 1 } {
-                 set i [lindex [split $id "="] 1]
-                 set id [lindex [split $id "="] 0]
+                 set i [string trim [lindex [split $id "="] 1]]
+                 set id [string trim [lindex [split $id "="] 0]]
               }
               puts $fout " const long [set alias]_[string trim $id " "]=$i;"
               incr i 1
@@ -354,8 +359,8 @@ global EVENT_ENUM EDONE
           set cnst [lindex [split $enum :] 1]
           foreach id [split $cnst ,] {
               if { [llength [split $id "="]] > 1 } {
-                 set i [lindex [split $id "="] 1]
-                 set id [lindex [split $id "="] 0]
+                 set i [string trim [lindex [split $id "="] 1]]
+                 set id [string trim [lindex [split $id "="] 0]]
               }
               puts $fout " const long [set subsys]_shared_[string trim $id " "]=$i;"
               incr i 1

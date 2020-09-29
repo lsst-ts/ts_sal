@@ -63,8 +63,8 @@ global env SYSDIC SAL_WORK_DIR OPTIONS
            set idx 1
            foreach i $ids { 
               if { [llength [split $i "="]] > 1 } {
-                set idx  [string trim [lindex [split $i "="] 0]]
-                set eval [string trim [lindex [split $i "="] 1]]
+                set idx  [string trim [lindex [split $i "="] 1]]
+                set eval [string trim [lindex [split $i "="] 0]]
                 set SYSDIC($name,$idx) $eval
                 lappend SYSDIC($name,IndexEnumeration) "$idx:$eval"
               } else {

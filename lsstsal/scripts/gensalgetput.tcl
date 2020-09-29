@@ -42,9 +42,11 @@ salReturn SAL_[set base]::putSample_[set name]([set base]_[set name]C *data)
   Instance.private_revCode = DDS::string_dup(\"[string trim $revcode _]\");
   Instance.private_sndStamp = getCurrentTime();
   sal\[actorIdx\].sndStamp = Instance.private_sndStamp;
+  Instance.private_identity = DDS::string_dup(CSC_identity);
   Instance.private_origin = getpid();
   Instance.private_host = ddsIPaddress;
-  Instance.private_seqNum = sndSeqNum;
+  Instance.private_seqNum = sal\[actorIdx\].sndSeqNum;
+  sal\[actorIdx\].sndSeqNum++;
   Instance.private_host = 1;
    "
   set frag [open $SAL_WORK_DIR/include/SAL_[set base]_[set name]Cput.tmp r]
@@ -52,7 +54,6 @@ salReturn SAL_[set base]::putSample_[set name]([set base]_[set name]C *data)
   close $frag
   puts $fout "
 
-  sndSeqNum++;
   if (debugLevel > 0) \{
     cout << \"=== \[putSample\] [set base]::[set name][set revcode] writing a message containing :\" << endl;
     cout << \"    revCode  : \" << Instance.private_revCode << endl;
@@ -106,9 +107,10 @@ salReturn SAL_[set base]::getSample_[set name]([set base]_[set name]C *data)
       cout << \"    revCode  : \" << Instances\[j\].private_revCode << endl;
       cout << \"    sndStamp  : \" << Instances\[j\].private_sndStamp << endl;
       cout << \"    origin  : \" << Instances\[j\].private_origin << endl;
+      cout << \"    identity  : \" << Instances\[j\].private_identity << endl;
       cout << \"    host  : \" << Instances\[j\].private_host << endl;
     \}
-    if ( (rcvdTime - Instances\[j\].private_sndStamp) < sal\[actorIdx\].sampleAge && (Instances\[j\].private_origin != 0)) \{
+    if ( (rcvdTime - Instances\[j\].private_sndStamp) < sal\[actorIdx\].sampleAge && Instances\[j\].private_origin != 0 ) \{
 "
   set frag [open $SAL_WORK_DIR/include/SAL_[set base]_[set name]Cget.tmp r]
   while { [gets $frag rec] > -1} {puts $fout $rec}
@@ -224,6 +226,12 @@ string SAL_SALData::getXMLVersion()
 \{
     return \"$xmldist\";
 \}
+
+string SAL_SALData::getOSPLVersion()
+\{
+     string osplver = getenv(\"OSPL_RELEASE\");
+     return osplver;
+\}
 "
 }
 
@@ -239,6 +247,12 @@ public String getSALVersion()
 public String getXMLVersion()
 \{
     return \"$xmldist\";
+\}
+
+public String getOSPLVersion()
+\{
+    String osplver = System.getenv(\"OSPL_RELEASE\");
+    return osplver;
 \}
 "
 }
@@ -257,14 +271,10 @@ global SAL_WORK_DIR
       incr idx 1
    }
    close $fact
-############################ IMPORTANT ####################################
-##### If you change this, change it in code/templates/SALActor.java
-   set tuneableQos true
-###   if { $base == "m1m3" } {set tuneableQos false}
-############################ IMPORTANT ####################################
    puts $fout "
-void SAL_SALData::initSalActors (int qos)
+void SAL_SALData::initSalActors ()
 \{
+    char *pname = (char *)malloc(128);
     for (int i=0; i<SAL__ACTORS_MAXCOUNT;i++) \{
       sal\[i\].isReader = false;
       sal\[i\].isWriter = false;
@@ -277,7 +287,6 @@ void SAL_SALData::initSalActors (int qos)
       sal\[i\].maxSamples = LENGTH_UNLIMITED;
       sal\[i\].sampleAge = 1.0e20;
       sal\[i\].historyDepth = 100;
-      sal\[i\].tuneableQos = qos;
     \}
 "
    set idx 0
@@ -287,10 +296,53 @@ void SAL_SALData::initSalActors (int qos)
       set revcode [getRevCode [set base]_[set name] short]
       puts $fout "    strcpy(sal\[$idx\].topicHandle,\"[set base]_[set name][set revcode]\");"
       puts $fout "    strcpy(sal\[$idx\].topicName,\"[set base]_[set name]\");"
-      if { $type == "command" || $type == "ackcmd" } {
-         puts $fout "    sal\[$idx\].durability = VOLATILE_DURABILITY_QOS;"
+      if { $type == "logevent" } {
+        puts $fout "    status = eventQos->get_topic_qos(sal\[$idx\].topic_qos, NULL);"
+        puts $fout "    if ( status != 0 ) {throw std::runtime_error(\"ERROR : Cannot find EventProfile in QoS\"); }"
+        puts $fout "    status = eventQos->get_datareader_qos(sal\[$idx\].dr_qos, NULL);"
+        puts $fout "    status = eventQos->get_datawriter_qos(sal\[$idx\].dw_qos, NULL);"
+        puts $fout "    status = eventQos->get_publisher_qos(sal\[$idx\].pub_qos, NULL);"
+        puts $fout "    status = eventQos->get_subscriber_qos(sal\[$idx\].sub_qos, NULL);"
       } else {
-         puts $fout "    sal\[$idx\].durability = TRANSIENT_DURABILITY_QOS;"
+        if { $type == "command" } {
+          puts $fout "    status = commandQos->get_topic_qos(sal\[$idx\].topic_qos, NULL);"
+          puts $fout "    if ( status != 0 ) {throw std::runtime_error(\"ERROR : Cannot find CommandProfile in QoS\"); }"
+          puts $fout "    status = commandQos->get_datareader_qos(sal\[$idx\].dr_qos, NULL);"
+          puts $fout "    status = commandQos->get_datawriter_qos(sal\[$idx\].dw_qos, NULL);"
+          puts $fout "    status = commandQos->get_publisher_qos(sal\[$idx\].pub_qos, NULL);"
+          puts $fout "    status = commandQos->get_subscriber_qos(sal\[$idx\].sub_qos, NULL);"
+          puts $fout "    status = commandQos->get_topic_qos(sal\[$idx\].topic_qos2, NULL);"
+        } else {
+          if { $type == "ackcmd" } {
+            puts $fout "    status = ackcmdQos->get_topic_qos(sal\[$idx\].topic_qos, NULL);"
+            puts $fout "    if ( status != 0 ) {throw std::runtime_error(\"ERROR : Cannot find AckcmdProfile in QoS\"); }"
+            puts $fout "    status = ackcmdQos->get_datareader_qos(sal\[$idx\].dr_qos, NULL);"
+            puts $fout "    status = ackcmdQos->get_datawriter_qos(sal\[$idx\].dw_qos, NULL);"
+            puts $fout "    status = ackcmdQos->get_publisher_qos(sal\[$idx\].pub_qos, NULL);"
+            puts $fout "    status = ackcmdQos->get_subscriber_qos(sal\[$idx\].sub_qos, NULL);"
+            puts $fout "    status = ackcmdQos->get_topic_qos(sal\[$idx\].topic_qos2, NULL);"
+          } else {
+            puts $fout "    status = telemetryQos->get_topic_qos(sal\[$idx\].topic_qos, NULL);"
+            puts $fout "    if ( status != 0 ) {throw std::runtime_error(\"ERROR : Cannot find TelemetryProfile in QoS\"); }"
+            puts $fout "    status = telemetryQos->get_datareader_qos(sal\[$idx\].dr_qos, NULL);"
+            puts $fout "    status = telemetryQos->get_datawriter_qos(sal\[$idx\].dw_qos, NULL);"
+            puts $fout "    status = telemetryQos->get_publisher_qos(sal\[$idx\].pub_qos, NULL);"
+            puts $fout "    status = telemetryQos->get_subscriber_qos(sal\[$idx\].sub_qos, NULL);"
+          }
+        }
+      }
+      if { $type == "command" } {
+         puts $fout "
+      sprintf(pname,\"%s.[set base].cmd\",partitionPrefix);
+      sal\[$idx\].partition = DDS::string_dup(pname);
+      if (debugLevel > 2) \{ cout << \"[set base]_[set name] partition is \" << pname << endl;\}
+"
+      } else {
+         puts $fout "
+      sprintf(pname,\"%s.[set base].data\",partitionPrefix);
+      sal\[$idx\].partition = DDS::string_dup(pname);
+      if (debugLevel > 2) \{ cout << \"[set base]_[set name] partition is \" << pname << endl;\}
+"
       }
       incr idx 1
    }
@@ -308,21 +360,60 @@ proc addActorIndexesJava { idlfile base fout } {
    }
    puts $fout " public static final int SAL__ACTORS_MAXCOUNT = $idx;"
    puts $fout "
-  public void initSalActors (int qos)
+  public void initSalActors ()
   \{
+     String pname;
+     int status=-1;
 "
    set idx 0
    foreach j $ptypes {
       set name [lindex $j 2]
       set type [lindex [split $name _] 0]
       set revcode [getRevCode [set base]_[set name] short]
-      puts $fout "    sal\[$idx\]=new salActor(qos);" 
+      puts $fout "    sal\[$idx\]=new salActor();" 
       puts $fout "    sal\[$idx\].topicHandle=\"[set base]_[set name][set revcode]\";"
       puts $fout "    sal\[$idx\].topicName=\"[set base]_[set name]\";"
-      if { $type == "command" || $type == "ackcmd" } {
-         puts $fout "   sal\[$idx\].durability = DurabilityQosPolicyKind.VOLATILE_DURABILITY_QOS;"
+      if { $type == "logevent" } {
+        puts $fout "    status = eventQos.get_topic_qos(sal\[$idx\].topicQos, null);"
+        puts $fout "    status = eventQos.get_datareader_qos(sal\[$idx\].RQosH, null);"
+        puts $fout "    status = eventQos.get_datawriter_qos(sal\[$idx\].WQosH, null);"
+        puts $fout "    status = eventQos.get_publisher_qos(sal\[$idx\].pubQos, null);"
+        puts $fout "    status = eventQos.get_subscriber_qos(sal\[$idx\].subQos, null);"
       } else {
-         puts $fout "   sal\[$idx\].durability = DurabilityQosPolicyKind.TRANSIENT_DURABILITY_QOS;"
+        if { $type == "command" } {
+          puts $fout "    status = commandQos.get_topic_qos(sal\[$idx\].topicQos, null);"
+          puts $fout "    status = commandQos.get_datareader_qos(sal\[$idx\].RQosH, null);"
+          puts $fout "    status = commandQos.get_datawriter_qos(sal\[$idx\].WQosH, null);"
+          puts $fout "    status = commandQos.get_publisher_qos(sal\[$idx\].pubQos, null);"
+          puts $fout "    status = commandQos.get_subscriber_qos(sal\[$idx\].subQos, null);"
+          puts $fout "    status = commandQos.get_topic_qos(sal\[$idx\].topicQos2, null);"
+        } else {
+          if { $type == "ackcmd" } {
+            puts $fout "    status = ackcmdQos.get_topic_qos(sal\[$idx\].topicQos, null);"
+            puts $fout "    status = ackcmdQos.get_datareader_qos(sal\[$idx\].RQosH, null);"
+            puts $fout "    status = ackcmdQos.get_datawriter_qos(sal\[$idx\].WQosH, null);"
+            puts $fout "    status = ackcmdQos.get_publisher_qos(sal\[$idx\].pubQos, null);"
+            puts $fout "    status = ackcmdQos.get_subscriber_qos(sal\[$idx\].subQos, null);"
+            puts $fout "    status = ackcmdQos.get_topic_qos(sal\[$idx\].topicQos2, null);"
+          } else {
+            puts $fout "    status = telemetryQos.get_topic_qos(sal\[$idx\].topicQos, null);"
+            puts $fout "    status = telemetryQos.get_datareader_qos(sal\[$idx\].RQosH, null);"
+            puts $fout "    status = telemetryQos.get_datawriter_qos(sal\[$idx\].WQosH, null);"
+            puts $fout "    status = telemetryQos.get_publisher_qos(sal\[$idx\].pubQos, null);"
+            puts $fout "    status = telemetryQos.get_subscriber_qos(sal\[$idx\].subQos, null);"
+          }
+        }
+      }
+      if { $type == "command" } {
+         puts $fout "
+      pname = partitionPrefix + \".[set base].cmd\";
+      sal\[$idx\].partition = pname;
+"
+      } else {
+         puts $fout "
+      pname = partitionPrefix + \".[set base].data\";
+      sal\[$idx\].partition = pname;
+"
       }
       incr idx 1
    }
@@ -532,8 +623,11 @@ puts $fout "
     DataWriter dwriter = getWriter(actorIdx);
     [set name][set revcode]DataWriter SALWriter = [set name][set revcode]DataWriterHelper.narrow(dwriter);
     SALInstance.private_revCode = \"[string trim $revcode _]\";
-          SALInstance.private_sndStamp = getCurrentTime();
-          SALInstance.private_origin = 1;
+    SALInstance.private_sndStamp = getCurrentTime();
+    SALInstance.private_identity = CSC_identity;
+    SALInstance.private_origin = origin;
+    SALInstance.private_seqNum = sal\[actorIdx\].sndSeqNum;
+    sal\[actorIdx\].sndSeqNum++;
     if (debugLevel > 0) \{
       System.out.println(\"=== \[putSample $name\] writing a message containing :\");
       System.out.println(\"    revCode  : \" + SALInstance.private_revCode);
@@ -767,10 +861,8 @@ salReturn SAL_[set base]::getSample([set base]::[set name][set revcode]Seq data)
   for (DDS::ULong j = 0; j < numsamp; j++)
   \{
     rcvdTime = getCurrentTime();
-    if (data\[j\].private_origin != 0) \{
       cout << \"=== \[GetSample\] message received :\" << endl;
       cout << \"    revCode  : \" << data\[j\].private_revCode << endl;
-    \}
   \}
   status = SALReader->return_loan(data, infoSeq);
   checkStatus(status, \"[set base]::[set name][set revcode]DataReader::return_loan\");

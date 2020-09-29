@@ -1,7 +1,0 @@
-#!/bin/bash
-
-source /opt/setup.env
-export SAL_WORK_DIR=$1
-/opt/lsstsal/scripts/salgenerator $2 $3
-exit 0
-

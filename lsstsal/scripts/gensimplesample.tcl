@@ -174,14 +174,20 @@ using namespace std;
       set fcod6 [open $SAL_WORK_DIR/include/SAL_[set subsys]_[set name]Cout.tmp w]
       set fcod7 [open $SAL_WORK_DIR/include/SAL_[set subsys]_[set name]shmout.tmp w]
       set fcod8 [open $SAL_WORK_DIR/include/SAL_[set subsys]_[set name]shmin.tmp w]
+      puts $fcod8 "
+           data->private_rcvStamp = [set subsys]_memIO->client\[LVClient\].shmemIncoming_[set subsys]_[set name].private_rcvStamp;"
       set fcod10 [open $SAL_WORK_DIR/include/SAL_[set subsys]_[set name]Pargs.tmp w]
       set fcod11 [open $SAL_WORK_DIR/include/SAL_[set subsys]_[set name]Ppub.tmp w]
       set fcod12 [open $SAL_WORK_DIR/include/SAL_[set subsys]_[set name]monout.tmp w]
       set fcod13 [open $SAL_WORK_DIR/include/SAL_[set subsys]_[set name]monin.tmp w]
+      puts $fcod13 "
+             [set subsys]_memIO->client\[LVClient\].shmemIncoming_[set subsys]_[set name].private_rcvStamp = Incoming_[set subsys]_[set name]->private_rcvStamp;"
 ###      set fcod14 [open $SAL_WORK_DIR/include/SAL_[set subsys]_[set name]Jsub.tmp w]
       puts $fout "	struct $name \{"
       puts $fhdr "struct [set subsys]_[set name]C
-\{"
+\{
+	double  private_rcvStamp;
+"
       puts $fhlv "typedef struct [set subsys]_[set name]LV \{"
       puts $fbst "   bp::class_<[set subsys]_[set name]C>(\"[set subsys]_[set name]C\")"
       puts $fpyb "   py::class_<[set subsys]_[set name]C>(m,\"[set subsys]_[set name]C\")
@@ -209,7 +215,7 @@ using namespace std;
   .def(\"getNextSample_[set name]\" ,  &SAL_[set subsys]::getNextSample_[set name] )"
       }
       if { [info exists SYSDIC($subsys,keyedID)] } {
-          puts $fout "	  long	[set subsys]ID;"
+          puts $fout "	  long	[set subsys]ID;	//private"
       }
       set argidx 1
       while { [gets $fin rec] > -1 } {
@@ -345,7 +351,7 @@ global VPROPS TYPEFORMAT
       puts $fcod11 "for i in range(0,$VPROPS(dim)):
   myData.$VPROPS(name)\[i\]=i"
       puts $fcod12 "    for (int i=0;i<$VPROPS(dim);i++) \{Outgoing_[set VPROPS(topic)]->$VPROPS(name)\[i\]=[set VPROPS(base)]_memIO->client\[LVClient\].shmemOutgoing_[set VPROPS(topic)].$VPROPS(name)\[i\];\}"
-      puts $fcod13 "    for (int i=0;i<$VPROPS(dim);i++) \{[set VPROPS(base)]_memIO->client\[LVClient\].shmemIncoming_[set VPROPS(topic)].$VPROPS(name)\[i\]=Incoming_[set VPROPS(topic)]->$VPROPS(name)\[i\];\}"
+      puts $fcod13 "              for (int i=0;i<$VPROPS(dim);i++) \{[set VPROPS(base)]_memIO->client\[LVClient\].shmemIncoming_[set VPROPS(topic)].$VPROPS(name)\[i\]=Incoming_[set VPROPS(topic)]->$VPROPS(name)\[i\];\}"
       set idlim [expr $idx + $VPROPS(dim)]
       set myidx 0
       while { $idx < $idlim } {
@@ -460,20 +466,16 @@ global VPROPS TYPEFORMAT
 proc gennonkeyedidl { fout } {
 global OPTIONS
    if { $OPTIONS(verbose) } {stdlog "###TRACE>>> gennonkeyedidl $fout"}
-     puts $fout "	struct ackcmd \{
-      string<8>	private_revCode;
-      double		private_sndStamp;
-      double		private_rcvStamp;
-      long		private_origin;
-      long 		private_host;
-      long		private_seqNum;
-      long 		ack;
-      long 		error;
-      string<256>	result;
-      long		host;
-      long		origin;
-      long		cmdtype;
-      double		timeout;
+     puts $fout "	struct ackcmd \{"
+     add_private_idl $fout
+     puts $fout "	  long	ack;
+	  long	error;
+	  string<256>	result;
+	  long	host;
+	  string	identity;
+	  long	origin;
+	  long	cmdtype;
+	  double	timeout;
 	\};
 	#pragma keylist ackcmd"
    if { $OPTIONS(verbose) } {stdlog "###TRACE<<< gennonkeyedidl $fout"}
@@ -482,21 +484,17 @@ global OPTIONS
 proc genkeyedidl { fout base } {
 global SAL_WORK_DIR OPTIONS
      if { $OPTIONS(verbose) } {stdlog "###TRACE>>> genkeyedidl $fout $base"}
-     puts $fout "	struct ackcmd \{
-      string<8>	private_revCode;
-      double		private_sndStamp;
-      double		private_rcvStamp;
-      long		private_origin;
-      long 		private_host;
-      long		private_seqNum;
-      long	[set base]ID;
-      long 		ack;
-      long 		error;
-      string<256>	result;
-      long		host;
-      long		origin;
-      long		cmdtype;
-      double		timeout;
+     puts $fout "	struct ackcmd \{"
+     add_private_idl $fout
+     puts $fout "	  long	[set base]ID;
+	  long	ack;
+	  long	error;
+	  string<256>	result;
+	  string	identity;
+	  long	host;
+	  long	origin;
+	  long	cmdtype;
+	  double	timeout;
 	\};
 	#pragma keylist ackcmd [set base]ID"
      if { $OPTIONS(verbose) } {stdlog "###TRACE<<< genkeyedidl $fout $base"}
@@ -509,9 +507,11 @@ global OPTIONS
    puts $fhdr "
 struct [set subsys]_ackcmdC
 \{
+      double  		private_rcvStamp;
       int 		ack;
       int 		error;
       std::string	result;
+      std::string       identity;
       long		host;
       long		origin;
       long		cmdtype;
@@ -519,15 +519,13 @@ struct [set subsys]_ackcmdC
 \};
 "
    puts $fhlv "
-typedef struct [set subsys]_ackcmdLV
-\{
+typedef struct [set subsys]_ackcmdLV \{
       int       cmdSeqNum;
       int 	ack;
       int 	error;
       StrHdl	result; /* 256 */
 \} [set subsys]_ackcmd_Ctl;
-typedef struct [set subsys]_waitCompleteLV
-\{
+typedef struct [set subsys]_waitCompleteLV \{
       int       cmdSeqNum;
       unsigned int timeout;
 \} [set subsys]_waitComplete_Ctl;
@@ -896,5 +894,8 @@ if { [info exists env(PYTHON_BUILD_VERSION)] } {
     source $env(SAL_DIR)/gensimplepybind11.tcl
   }
 }
+
 source $SAL_DIR/managetypes.tcl
 source $SAL_DIR/activaterevcodes.tcl
+source $SAL_DIR/add_private_idl.tcl
+

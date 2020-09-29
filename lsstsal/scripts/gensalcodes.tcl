@@ -45,7 +45,7 @@ global DONE_CMDEVT OPTIONS ONEPYTHON SAL_DIR
        if { $OPTIONS(java) } {
          stdlog "Generating SAL Java code for $subsys"
          set result none
-         catch { set result [exec $SAL_DIR/make_salUtils] } bad
+         catch { set result [exec make_salUtils] } bad
          if { $result == "none" } {puts stderr $bad}
          set result none
          catch { set result [makesalcode $idlfile $base $name java] } bad

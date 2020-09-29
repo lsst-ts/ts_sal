@@ -215,9 +215,10 @@ while { [gets $fin rec] > -1 } {
   private_sndStamp double precision,
   private_rcvStamp double precision,
   private_seqNum int,
+  private_identity varchar,
   private_origin int,
   private_host int,"
-      set ITEMLIST "char.private_revCode,double.private_sndStamp,double.private_rcvStamp,int.private_seqNum,int.private_origin,int.private_host"
+      set ITEMLIST "char.private_revCode,double.private_sndStamp,double.private_rcvStamp,int.private_seqNum,varchar.private_identity,int.private_origin,int.private_host"
       set nsub [lindex [split $topic _] 0]
       if { [info exists SYSDIC([set nsub],keyedID)] } {
          puts $fo2 "  [set nsub]ID int,"

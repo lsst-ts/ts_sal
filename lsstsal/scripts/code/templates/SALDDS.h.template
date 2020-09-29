@@ -55,6 +55,8 @@
       char 			baseName[SAL__ACTORS_NAMESIZE];
 /// topicName holds the root name of the DDS topic
       char 			topicName[SAL__ACTORS_NAMESIZE];
+/// partition holds the DDS partition to which the topic is associated with
+      DDS::String_var		partition;
 /// topicHandle holds the actual name of the DDS topic with an IDL versioned hash appended 
       char 			topicHandle[SAL__ACTORS_NAMESIZE];
 /// sFilter is used to build the filtering pattern for indexed DDS topics, for example HexapodID=2
@@ -83,12 +85,11 @@
 /// publisher holds a pointer to the internal DDS Publisher object
       Publisher_var 		publisher;
 /// subscriber holds a pointer to the internal DDS Subscriber object
-      Subscriber_var 		subscriber;
- 
-/// reliable_topic_qos holds a pointer to the internal DDS TopicQos object
-      TopicQos 			reliable_topic_qos;
-/// reliable_topic_qos2 holds a pointer to the internal DDS TopicQos object
-      TopicQos 			reliable_topic_qos2;
+      Subscriber_var 		subscriber; 
+/// topic_qos holds a pointer to the internal DDS TopicQos object
+      TopicQos 			topic_qos;
+/// topic_qos2 holds a pointer to the internal DDS TopicQos object
+      TopicQos 			topic_qos2;
 /// pub_qos holds a pointer to the internal DDS PublisherQos object
       PublisherQos 		pub_qos;
 /// sub_qos holds a pointer to the internal DDS SubscriberQos object
@@ -97,6 +98,14 @@
       DataReaderQos 		dr_qos;
 /// dw_qos holds a pointer to the internal DDS DataWriterQos object
       DataWriterQos 		dw_qos;
+/// pub_qos2 holds a pointer to the internal DDS PublisherQos object
+      PublisherQos 		pub_qos2;
+/// sub_qos2 holds a pointer to the internal DDS SubscriberQos object
+      SubscriberQos 		sub_qos2;
+/// dr_qos2 holds a pointer to the internal DDS DataReaderQos object
+      DataReaderQos 		dr_qos2;
+/// dw_qos2 holds a pointer to the internal DDS DataWriterQos object
+      DataWriterQos 		dw_qos2;
 /// isActive is true when the Actor has been connected to DDS
       bool			isActive;
 /// isReader is true when the Actor is a DDS reader
@@ -119,8 +128,9 @@
       int                       cmdSeqNum;
 /// sndSeqNum holds the sequence number of the most recent DDS message received for this topic
       int 			rcvSeqNum;
-/// rcvOrigin holds the private_origin filed from the last DDS message received for this topic
-      int 			rcvOrigin;
+      int                       rcvOrigin;
+/// rcvIdentity holds the private_identity filled from the last DDS message received for this topic
+      string 			rcvIdentity;
 /// maxSamples is used to control the maximum number of DDS messages received by getSample/getNextSample methods
       int			maxSamples;
 /// error is the error field for the most recent ackCmd message (commands)
@@ -129,8 +139,10 @@
       int			ack;
 /// activehost is the private_identity field of the most recent command
       int			activehost;
-/// activeorigin is the priate_origin field of the most recent command
-      int			activeorigin;
+/// activeidentity is the private_identity field of the most recent command
+      string			activeidentity;
+/// activeorigin is the private_origin field of the most recent command
+      int activeorigin;
 /// activecmdid is the command sequence number of the most recent command
       int			activecmdid;
 /// timeout is the number of seconds the command is expected to take to execute
@@ -145,10 +157,6 @@
       double			sampleAge;
 /// historyDepth is the maximum size (in samples) of the DDS message cache for the topic
       int                       historyDepth;
-/// tuneableQos is true when the SAL hardcoded QoS tuning is being used
-      int                       tuneableQos;
-/// durability holds the DDS durability setting is use with the topic
-      DDS::DurabilityQosPolicyKind durability;
   };
 #endif
 
@@ -169,11 +177,15 @@
       DataReader_var reader2;
 
       /* QosPolicy holders */
-      TopicQos reliable_topic_qos;
-      TopicQos reliable_topic_qos2;
+      TopicQos topic_qos;
+      TopicQos topic_qos2;
       PublisherQos pub_qos;
       DataWriterQos dw_qos;
       SubscriberQos sub_qos;
+      QosProvider_var commandQos;
+      QosProvider_var eventQos;
+      QosProvider_var telemetryQos;
+      QosProvider_var ackcmdQos;
 
       DomainId_t domain;
       ReturnCode_t status;
@@ -194,19 +206,33 @@
       int sndSeqNum;
       int rcvSeqNum;
       int rcvOrigin;
+      string rcvIdentity;
       int historySync;
       double rcvdTime;
       salU64  origin;
       long ddsIPaddress;
-      char   domainName[128];
+      char domainName[128];
+      char partitionPrefix[128];
       salActor sal[SAL__ACTORS_MAXCOUNT];
       int lastActor_telemetry;
       int lastActor_command;
       int lastActor_event;
+      char *CSC_identity;
 
     public:
 
-/** Constructor for the SAL_SALData object. It obtains information about the execution environment
+/** Constructor for the SAL_SALData object.
+  *
+  @param aKey is used to specify the index of an indexed component, or 0 for non-indexed ones
+  @param identity is used to specify the private_identity of a commander
+
+ */
+     SAL_SALData(int aKey, char *identity);
+     SAL_SALData(int aKey);
+     SAL_SALData(char *identity);
+     SAL_SALData();
+
+/** Environment setup for a SAL_SALData object.
   *
   * + LSST_DDS_DOMAIN is the name of the partition being used
   * + LSST_DDS_IP is the IP address of the DDS ethernet interface
@@ -215,8 +241,7 @@
   *
   @param aKey is used to specify the index of an indexed component, or 0 for non-indexed ones
  */
-     SAL_SALData(int aKey);
-     SAL_SALData();
+     void initSalEnvironment(int aKey);
 
 /** Sets up the DDS Publisher support for the named DDS type
   @param topicName is the name of the DDS topic
@@ -282,6 +307,8 @@
 /// Returns the current XML version e.g. "5.0.0"
       std::string getXMLVersion();
 
+/// Returns the current OpenSpliceDDS version e.g. "6.9.181127OSS"
+      std::string getOSPLVersion();
 
 /** Sets up the DDS data type low level support for the named DDS type
   @param topicName is the name of the DDS topic
@@ -289,19 +316,7 @@
  */    
       salReturn salTypeSupport(char *topicName);
 
-/** Sets up the topic to use SAL QoS tuning, it must be called BEFORE the topic is instantiated
-  @param topicName is the name of the DDS topic
-  @throws "Unknown Topic" if the topic is not defined
- */    
-      void setTuneableQos(char *topicName);
 
-/** Sets up the topic to use default QoS tuning, it must be called BEFORE the topic is instantiated
-  * The default behavior can be found in the OpenSplice deployment guide and can be modified by configuring a
-  * DDS_DefaultQoS_all.xml file and pointing to it with the LSST_DDS_QOS environment vairable.
-  @param topicName is the name of the DDS topic
-  @throws "Unknown Topic" if the topic is not defined
- */    
-      void setDefaultQos(char *topicName);
 
 /// Set the debug message output verbosity level for this SAL_SALData object
       salReturn setDebugLevel( int level );
@@ -349,7 +364,6 @@
                                       const StringSeq &expr);
       void createContentFilteredTopic2(const char *topicName, const char *filter,
                                        const StringSeq &expr);
-      void createPublisher();
       void deletePublisher();
       void deleteTopics();
       void createWriter();
@@ -357,7 +371,6 @@
       void createWriter(bool autodispose_unregistered_instances);
       void createWriter2(bool autodispose_unregistered_instances);
       void deleteWriter();
-      void createSubscriber();
       void deleteSubscriber();
       void createReader(bool filtered);
       void createReader2(bool filtered);
@@ -371,7 +384,7 @@
       Topic_ptr getTopic();
       DomainParticipant_ptr getParticipant();
 
-      void initSalActors(int qos);
+      void initSalActors();
       salReturn salTelemetryPub(int actorIdx);
       salReturn salTelemetrySub(int actorIdx);
       salReturn salEventSub(char *topicName);
