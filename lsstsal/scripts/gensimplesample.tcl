@@ -343,15 +343,29 @@ global VPROPS TYPEFORMAT
       puts $fcod6 "       cout << \"    $VPROPS(name) : \" << data->$VPROPS(name)\[0\] << endl;"
       puts $fcod7 "
            int $VPROPS(name)Size = (*(data->$VPROPS(name)))->size ;
-           for (int i=0;i<$VPROPS(dim) && i<$VPROPS(name)Size;i++)\{[set VPROPS(base)]_memIO->client\[LVClient\].shmemOutgoing_[set VPROPS(topic)].$VPROPS(name)\[i\] = (*(data->$VPROPS(name)))->data\[i\];\}"
+           for (int i=0;i<$VPROPS(dim) && i<$VPROPS(name)Size;i++)\{[set VPROPS(base)]_memIO->client\[LVClient\].shmemOutgoing_[set VPROPS(topic)].$VPROPS(name)\[i\] = (*(data->$VPROPS(name)))->data\[i\];\}
+           if (iverbose > 1) \{
+             cout << \"Client \" << LVClient << \" Outgoing array $VPROPS(name), size = \" << $VPROPS(name)Size << endl;
+           \}
+"
       puts $fcod8 "
            int $VPROPS(name)Size = $VPROPS(dim);
            (*(data->$VPROPS(name)))->size = $VPROPS(name)Size;
-           for (int i=0;i<$VPROPS(dim);i++)\{(*(data->$VPROPS(name)))->data\[i\] = [set VPROPS(base)]_memIO->client\[LVClient\].shmemIncoming_[set VPROPS(topic)].$VPROPS(name)\[i\];\}"
+           for (int i=0;i<$VPROPS(dim);i++)\{(*(data->$VPROPS(name)))->data\[i\] = [set VPROPS(base)]_memIO->client\[LVClient\].shmemIncoming_[set VPROPS(topic)].$VPROPS(name)\[i\];\}
+           if (iverbose > 1) \{
+             cout << \"Client \" << LVClient << \" Incoming array $VPROPS(topic) $VPROPS(name), size = \" << $VPROPS(name)Size << endl;
+           \}
+"
       puts $fcod11 "for i in range(0,$VPROPS(dim)):
   myData.$VPROPS(name)\[i\]=i"
-      puts $fcod12 "    for (int i=0;i<$VPROPS(dim);i++) \{Outgoing_[set VPROPS(topic)]->$VPROPS(name)\[i\]=[set VPROPS(base)]_memIO->client\[LVClient\].shmemOutgoing_[set VPROPS(topic)].$VPROPS(name)\[i\];\}"
-      puts $fcod13 "              for (int i=0;i<$VPROPS(dim);i++) \{[set VPROPS(base)]_memIO->client\[LVClient\].shmemIncoming_[set VPROPS(topic)].$VPROPS(name)\[i\]=Incoming_[set VPROPS(topic)]->$VPROPS(name)\[i\];\}"
+      puts $fcod12 "    for (int i=0;i<$VPROPS(dim);i++) \{Outgoing_[set VPROPS(topic)]->$VPROPS(name)\[i\]=[set VPROPS(base)]_memIO->client\[LVClient\].shmemOutgoing_[set VPROPS(topic)].$VPROPS(name)\[i\];\}
+           if (iverbose > 1) \{
+             cout << \"Outgoing array $VPROPS(topic) $VPROPS(name), size = \" << $VPROPS(dim) << endl;
+           \}"
+      puts $fcod13 "              for (int i=0;i<$VPROPS(dim);i++) \{[set VPROPS(base)]_memIO->client\[LVClient\].shmemIncoming_[set VPROPS(topic)].$VPROPS(name)\[i\]=Incoming_[set VPROPS(topic)]->$VPROPS(name)\[i\];\}
+           if (iverbose > 1) \{
+             cout << \"Incoming array $VPROPS(topic) $VPROPS(name), size = \" << $VPROPS(dim) << endl;
+           \}"
       set idlim [expr $idx + $VPROPS(dim)]
       set myidx 0
       while { $idx < $idlim } {
@@ -403,19 +417,31 @@ global VPROPS TYPEFORMAT
            int $VPROPS(name)Size = (*(data->$VPROPS(name)))->size ;
            int i[set VPROPS(name)];
            for (i[set VPROPS(name)]=0;i[set VPROPS(name)]<$VPROPS(dim)-1 && i[set VPROPS(name)]<$VPROPS(name)Size;i[set VPROPS(name)]++)\{[set VPROPS(base)]_memIO->client\[LVClient\].[set VPROPS(topic)]LV_$VPROPS(name)_bufferOut\[i[set VPROPS(name)]\] = (*(data->$VPROPS(name)))->data\[i[set VPROPS(name)]\];\}
-           [set VPROPS(base)]_memIO->client\[LVClient\].[set VPROPS(topic)]LV_$VPROPS(name)_bufferOut\[i[set VPROPS(name)]\] = 0;"
+           [set VPROPS(base)]_memIO->client\[LVClient\].[set VPROPS(topic)]LV_$VPROPS(name)_bufferOut\[i[set VPROPS(name)]\] = 0;
+           if (iverbose > 1) \{
+             cout << \"Client \" << LVClient << \" Outgoing string $VPROPS(topic) $VPROPS(name), \" << [set VPROPS(base)]_memIO->client\[LVClient\].[set VPROPS(topic)]LV_$VPROPS(name)_bufferOut << endl;
+           \}
+"
                puts $fcod8 "
            int $VPROPS(name)Size = strlen([set VPROPS(base)]_memIO->client\[LVClient\].[set VPROPS(topic)]LV_$VPROPS(name)_bufferIn);
            NumericArrayResize(5, 1, (UHandle*)(&(data->$VPROPS(name))), $VPROPS(name)Size);
            (*(data->$VPROPS(name)))->size = $VPROPS(name)Size;
-           for (int i=0;i<$VPROPS(name)Size;i++)\{(*(data->$VPROPS(name)))->data\[i\] = [set VPROPS(base)]_memIO->client\[LVClient\].[set VPROPS(topic)]LV_$VPROPS(name)_bufferIn\[i\];\}"
+           for (int i=0;i<$VPROPS(name)Size;i++)\{(*(data->$VPROPS(name)))->data\[i\] = [set VPROPS(base)]_memIO->client\[LVClient\].[set VPROPS(topic)]LV_$VPROPS(name)_bufferIn\[i\];\}
+           if (iverbose > 1) \{
+             cout << \"Client \" << LVClient << \" Incoming string $VPROPS(topic) $VPROPS(name), \" << [set VPROPS(base)]_memIO->client\[LVClient\].[set VPROPS(topic)]LV_$VPROPS(name)_bufferIn << endl;
+           \}
+"
          }
          puts $fcod10 "myData.$VPROPS(name)=sys.argv\[$idx\]"
          puts $fcod11 "myData.$VPROPS(name)=\"RO\""
-         if { [lsearch "device property action itemValue" $VPROPS(name)] < 0 } {
-               puts $fcod12 "             Outgoing_[set VPROPS(topic)]->[set VPROPS(name)]=[set VPROPS(base)]_memIO->client\[LVClient\].[set VPROPS(topic)]LV_[set VPROPS(name)]_bufferOut;"
-               puts $fcod13 "             strcpy([set VPROPS(base)]_memIO->client\[LVClient\].[set VPROPS(topic)]LV_[set VPROPS(name)]_bufferIn,Incoming_[set VPROPS(topic)]->[set VPROPS(name)].c_str());"
-         }
+         puts $fcod12 "             Outgoing_[set VPROPS(topic)]->[set VPROPS(name)]=[set VPROPS(base)]_memIO->client\[LVClient\].[set VPROPS(topic)]LV_[set VPROPS(name)]_bufferOut;
+           if (iverbose > 1) \{
+             cout << \"Outgoing $VPROPS(topic) $VPROPS(name) =  \" << Outgoing_[set VPROPS(topic)]->$VPROPS(name) << endl;
+           \}"
+         puts $fcod13 "             strcpy([set VPROPS(base)]_memIO->client\[LVClient\].[set VPROPS(topic)]LV_[set VPROPS(name)]_bufferIn,Incoming_[set VPROPS(topic)]->[set VPROPS(name)].c_str());
+           if (iverbose > 1) \{
+             cout << \"Incoming $VPROPS(topic) $VPROPS(name) =  \" << Incoming_[set VPROPS(topic)]->$VPROPS(name) << endl;
+           \}"
       } else {
          puts $fcod1 "    data->$VPROPS(name) = Instances\[j\].$VPROPS(name);"
          puts $fcod1 "    lastSample_[set VPROPS(topic)].$VPROPS(name) = Instances\[j\].$VPROPS(name);"
@@ -423,10 +449,22 @@ global VPROPS TYPEFORMAT
          puts $fcod2 "    Instance.$VPROPS(name) = data->$VPROPS(name);"
          puts $fcod3 "    cout << \"    $VPROPS(name) : \" << SALInstance.$VPROPS(name) << endl;"
          puts $fcod6 "    cout << \"    $VPROPS(name) : \" << data->$VPROPS(name) << endl;"
-         puts $fcod7 "           [set VPROPS(base)]_memIO->client\[LVClient\].shmemOutgoing_[set VPROPS(topic)].$VPROPS(name) = data->$VPROPS(name);"
-         puts $fcod8 "           data->$VPROPS(name) = [set VPROPS(base)]_memIO->client\[LVClient\].shmemIncoming_[set VPROPS(topic)].$VPROPS(name);"
-         puts $fcod12 "           Outgoing_[set VPROPS(topic)]->$VPROPS(name)=[set VPROPS(base)]_memIO->client\[LVClient\].shmemOutgoing_[set VPROPS(topic)].$VPROPS(name);"
-         puts $fcod13 "           [set VPROPS(base)]_memIO->client\[LVClient\].shmemIncoming_[set VPROPS(topic)].$VPROPS(name)=Incoming_[set VPROPS(topic)]->$VPROPS(name);"
+         puts $fcod7 "           [set VPROPS(base)]_memIO->client\[LVClient\].shmemOutgoing_[set VPROPS(topic)].$VPROPS(name) = data->$VPROPS(name);
+           if (iverbose > 1) \{
+             cout << \"Client \" << LVClient << \" Outgoing $VPROPS(topic) $VPROPS(name) =  \" << data->$VPROPS(name) << endl;
+           \}"
+         puts $fcod8 "           data->$VPROPS(name) = [set VPROPS(base)]_memIO->client\[LVClient\].shmemIncoming_[set VPROPS(topic)].$VPROPS(name);
+           if (iverbose > 1) \{
+             cout << \"Client \" << LVClient << \" Incoming $VPROPS(topic) $VPROPS(name) =  \" << data->$VPROPS(name) << endl;
+           \}"
+         puts $fcod12 "           Outgoing_[set VPROPS(topic)]->$VPROPS(name)=[set VPROPS(base)]_memIO->client\[LVClient\].shmemOutgoing_[set VPROPS(topic)].$VPROPS(name);
+           if (iverbose > 1) \{
+             cout << \"Outgoing $VPROPS(topic) $VPROPS(name) =  \" << Outgoing_[set VPROPS(topic)]->$VPROPS(name) << endl;
+           \}"
+         puts $fcod13 "           [set VPROPS(base)]_memIO->client\[LVClient\].shmemIncoming_[set VPROPS(topic)].$VPROPS(name)=Incoming_[set VPROPS(topic)]->$VPROPS(name);
+           if (iverbose > 1) \{
+             cout << \"Incoming $VPROPS(topic) $VPROPS(name) =  \" << Incoming_[set VPROPS(topic)]->$VPROPS(name) << endl;
+           \}"
          if { $VPROPS(int) } {
           puts $fcod11 "myData.$VPROPS(name) = 1";
           if { $VPROPS(long) || $VPROPS(longlong) } {
