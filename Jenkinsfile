@@ -90,6 +90,24 @@ pipeline {
                 reportFiles: 'index.html',
                 reportName: "Coverage Report"
               ])
+              sh "docker exec -u saluser \${container_name} sh -c \"" +
+                  "source ~/.setup.sh && " +
+                  "cd /home/saluser/repos/ts_sal && " +
+                  "setup ts_sal -t saluser && " +
+                  "package-docs build\""
+
+              script {
+
+                  def RESULT = sh returnStatus: true, script: "docker exec -u saluser \${container_name} sh -c \"" +
+                      "source ~/.setup.sh && " +
+                      "cd /home/saluser/repos/ts_sal && " +
+                      "setup ts_sal -t saluser && " +
+                      "ltd upload --product ts-sal --git-ref \${GIT_BRANCH} --dir doc/_build/html\""
+
+                  if ( RESULT != 0 ) {
+                      unstable("Failed to push documentation.")
+                  }
+               }
         }
         cleanup {
             sh """
