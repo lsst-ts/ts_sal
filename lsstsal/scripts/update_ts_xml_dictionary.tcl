@@ -83,7 +83,7 @@ global env SYSDIC SAL_WORK_DIR OPTIONS
            set SYSDIC($name,$support) 1
          }
          if { [info exists SYSDIC($name,labview)] } {set SYSDIC($name,cpp) 1}
-         if { [info exists SYSDIC($name,python)] }  {set SYSDIC($name,cpp) 1}
+         if { [info exists SYSDIC($name,salpy)] }  {set SYSDIC($name,cpp) 1}
       }
   } 
   close $fin
