@@ -79,7 +79,7 @@ global SAL_WORK_DIR XMLVERSION SAL_DIR SYSDIC
     if { [info exists SYSDIC([set subsys],cpp)] } {
       copyasset $SAL_WORK_DIR/lib/libSAL_[set subsys].so [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/lib/.
     }
-    if { [info exists SYSDIC([set subsys],python)] } {
+    if { [info exists SYSDIC([set subsys],salpy)] } {
       copyasset $SAL_WORK_DIR/lib/SALPY_[set subsys].so [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/lib/.
     }
     copyasset $SAL_WORK_DIR/idl-templates/validated/[set subsys]_revCodes.tcl [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/scripts/.
