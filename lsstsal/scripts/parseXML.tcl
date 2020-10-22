@@ -137,7 +137,7 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
               while { $skipping } {
                  set res [gets $fin rec]
                  if { $res < 0 } {set skipping 0}
-                 if { [string range $rec 0 4] == "</SAL" } {set skipping 0}
+                 if { [string range [string trim $rec " "] 0 4] == "</SAL" } {set skipping 0}
               }
               set tag ignore
            }
