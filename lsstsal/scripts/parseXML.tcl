@@ -1,7 +1,7 @@
 #!/usr/bin/env tclsh
 
 proc parseXMLtoidl { fname } { 
-global IDLRESERVED SAL_WORK_DIR SAL_DIR CMDS CMD_ALIASES EVTS EVENT_ALIASES
+global IDLRESERVED SAL_WORK_DIR SAL_DIR CMDS CMD_ALIASES EVTS EVENT_ALIASES IDLTYPES
 global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIONS METADATA
    if { $OPTIONS(verbose) } {stdlog "###TRACE>>> parseXMLtoidl $fname"}
    set fin [open $fname r]
@@ -188,7 +188,7 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
         set DESC($subsys,$alias,help) ""
       }
       if { $tag == "EFDB_Name"} {
-        set item $value ; set unit ""
+        set item $value ; set unit "" ; set type "unknown"
         incr itemid 1
         set desc "" ; set range "" ; set location ""
         set freq 0.054 ; set sdim 1
@@ -207,7 +207,7 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
          set METADATA($tname,description) $DESC($subsys,$alias,help)
       }
       if { $tag == "IDL_Type"} {
-         set type $value
+         set type $value 
          if { $type == "long long" } {set type "longlong"}
          if { $type == "unsigned long long" } {set type "unsigned longlong"}
       }
@@ -222,6 +222,17 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
       if { $tag == "Count"}           {set idim $value}
       if { $tag == "Units"}           {set unit [string trim $value]}
       if { $tag == "/item" } {
+         set chktype $type
+         if { [lindex $chktype 0] == "unsigned" } { set chktype [lindex $chktype 1] }
+         if { [lsearch $IDLTYPES $chktype] < 0 } {
+           puts stdout "****************************************************************"
+           puts stdout "****************************************************************"
+           puts stdout "ERROR - Missing or invalid IDL_Type in $tname:"
+           puts stdout "                                       $item"
+           puts stdout "****************************************************************"
+           puts stdout "****************************************************************"
+           exit -1
+         }
          if { $type == "string" || $type == "char" } {
             if { $sdim > 1 } {
                set declare "   string<[set sdim]> $item;"

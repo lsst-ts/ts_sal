@@ -24,6 +24,7 @@ proc copyasset { asset dest } {
 proc updatetests { subsys rpmname } {
 global SAL_WORK_DIR XMLVERSION
    catch {
+    copyasset $SAL_WORK_DIR/lib/libSAL_[set subsys].so [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/lib/.
     set all [glob [set subsys]_*/cpp]
     foreach i $all {
        set tlm [lindex [split $i "/"] 0]
@@ -44,7 +45,7 @@ global SAL_WORK_DIR XMLVERSION
 
 
 proc updateruntime { subsys {withtest 0} } {
-global SAL_WORK_DIR XMLVERSION SAL_DIR
+global SAL_WORK_DIR XMLVERSION SAL_DIR SYSDIC
   set rpmname $subsys
   if { $withtest } {set rpmname [set subsys]_test}
   exec rm -fr [set rpmname]-$XMLVERSION
@@ -62,34 +63,37 @@ global SAL_WORK_DIR XMLVERSION SAL_DIR
     exec mkdir [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/idl
     exec mkdir [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/lib
     exec mkdir [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/doc
-    exec mkdir [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/labview
-    exec mkdir [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/labview/lib
-    exec mkdir [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/jar
+    if { [info exists SYSDIC([set subsys],labview)] } {
+      exec mkdir [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/labview
+      exec mkdir [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/labview/lib
+      copyasset $SAL_WORK_DIR/lib/SALLV_[set subsys].so [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/labview/lib/.
+      copyasset $SAL_WORK_DIR/[set subsys]/labview/SALLV_[set subsys]_Monitor [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/bin/.
+      copyasset $SAL_WORK_DIR/[set subsys]/labview/SAL_[set subsys]_shmem.h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
+      copyasset $SAL_WORK_DIR/[set subsys]/labview/sal_[set subsys].idl [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/labview/.
+      copyasset $SAL_WORK_DIR/[set subsys]/cpp/src/SAL_[set subsys]LV.h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
+    }
+    if { [info exists SYSDIC([set subsys],java)] } {
+      exec mkdir [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/jar
+    }
     exec mkdir -p [set rpmname]-$XMLVERSION/opt/lsst/ts_xml/sal_interfaces/[set subsys]
-    foreach lib "libsacpp_[set subsys]_types.so SALPY_[set subsys].so libSAL_[set subsys].so" {
-      copyasset $SAL_WORK_DIR/lib/$lib [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/lib/.
+    if { [info exists SYSDIC([set subsys],cpp)] } {
+      copyasset $SAL_WORK_DIR/lib/libSAL_[set subsys].so [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/lib/.
     }
-    foreach lib "SALLV_[set subsys].so" {
-      copyasset $SAL_WORK_DIR/lib/$lib [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/labview/lib/.
-    }
-    foreach jar "saj_[set subsys]_types.jar" {
-      copyasset $SAL_WORK_DIR/lib/$jar [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/jar/.
+    if { [info exists SYSDIC([set subsys],salpy)] } {
+      copyasset $SAL_WORK_DIR/lib/SALPY_[set subsys].so [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/lib/.
     }
     copyasset $SAL_WORK_DIR/idl-templates/validated/[set subsys]_revCodes.tcl [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/scripts/.
-    copyasset $SAL_WORK_DIR/[set subsys]/labview/SALLV_[set subsys]_Monitor [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/bin/.
-    copyasset $SAL_WORK_DIR/[set subsys]/labview/SAL_[set subsys]_shmem.h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
-    copyasset $SAL_WORK_DIR/[set subsys]/labview/sal_[set subsys].idl [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/labview/.
     copyasset $SAL_WORK_DIR/idl-templates/validated/sal/sal_revCoded_[set subsys].idl [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/idl/.
-    copyasset $SAL_WORK_DIR/[set subsys]/cpp/src/SAL_[set subsys].h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
-    copyasset $SAL_WORK_DIR/[set subsys]/cpp/src/SAL_[set subsys]C.h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
-    copyasset $SAL_WORK_DIR/[set subsys]/cpp/src/SAL_[set subsys]LV.h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
-    copyasset $SAL_WORK_DIR/[set subsys]/cpp/sal_[set subsys]Dcps.h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
-    copyasset $SAL_WORK_DIR/[set subsys]/cpp/sal_[set subsys]Dcps_impl.h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
-    copyasset $SAL_WORK_DIR/[set subsys]/cpp/sal_[set subsys].h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
-    copyasset $SAL_WORK_DIR/[set subsys]/cpp/ccpp_sal_[set subsys].h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
-    copyasset $SAL_WORK_DIR/[set subsys]/cpp/sal_[set subsys]SplDcps.h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
-    copyasset $SAL_DIR/code/templates/SAL_defines.h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
-    copyasset $SAL_DIR/DDS_DefaultQoS_All.xml [set rpmname]-$XMLVERSION/opt/lsst/ts_xml/sal_interfaces/.
+    if { [info exists SYSDIC([set subsys],cpp)] } {
+      copyasset $SAL_WORK_DIR/[set subsys]/cpp/src/SAL_[set subsys].h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
+      copyasset $SAL_WORK_DIR/[set subsys]/cpp/src/SAL_[set subsys]C.h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
+      copyasset $SAL_WORK_DIR/[set subsys]/cpp/sal_[set subsys]Dcps.h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
+      copyasset $SAL_WORK_DIR/[set subsys]/cpp/sal_[set subsys]Dcps_impl.h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
+      copyasset $SAL_WORK_DIR/[set subsys]/cpp/sal_[set subsys].h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
+      copyasset $SAL_WORK_DIR/[set subsys]/cpp/ccpp_sal_[set subsys].h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
+      copyasset $SAL_WORK_DIR/[set subsys]/cpp/sal_[set subsys]SplDcps.h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
+      copyasset $SAL_DIR/code/templates/SAL_defines.h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
+    }
     foreach dtype "Commands Events Generics Telemetry" {
       if { [file exists $SAL_WORK_DIR/[set subsys]_[set dtype].xml] } {
         exec cp $SAL_WORK_DIR/[set subsys]_[set dtype].xml [set rpmname]-$XMLVERSION/opt/lsst/ts_xml/sal_interfaces/[set subsys]/.
