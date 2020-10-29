@@ -352,12 +352,13 @@ global EVENT_ENUM EDONE
           set i 1
           set enum [string trim $e "\{\}"]
           set cnst [lindex [split $enum :] 1]
+          set prefix [lindex [split $enum :] 0]
           foreach id [split $cnst ,] {
               if { [llength [split $id "="]] > 1 } {
                  set i [string trim [lindex [split $id "="] 1]]
                  set id [string trim [lindex [split $id "="] 0]]
               }
-              puts $fout " const long [set alias]_[string trim $id " "]=$i;"
+              puts $fout " const long [set alias]_[set prefix]_[string trim $id " "]=$i;"
               incr i 1
           }
       }
