@@ -75,12 +75,12 @@ global CMD_ALIASES CMDS DONE_CMDEVT ACKREVCODE REVCODE SAL_WORK_DIR OPTIONS
      addgenericcmdcode $fout $lang
      set result none
      catch { set result [gencmdaliascpp $subsys $fout] } bad
-     if { $result == "none" } {errorexit "failure in gencmdaliascpp" }
+     if { $result == "none" } {stdlog $bad ; errorexit "failure in gencmdaliascpp" }
      stdlog "$result"
      if { $DONE_CMDEVT == 0} {
        set result none
        catch { set result [gencommandtestscpp $subsys] } bad
-       if { $result == "none" } {errorexit "failure in gencommandtestscpp" }
+       if { $result == "none" } {stdlog $bad ; errorexit "failure in gencommandtestscpp" }
        stdlog "$result"
      }
   }
@@ -88,7 +88,7 @@ global CMD_ALIASES CMDS DONE_CMDEVT ACKREVCODE REVCODE SAL_WORK_DIR OPTIONS
      set result none
      gencmdgenericjava $subsys $fout
      catch { set result [gencmdaliasjava $subsys $fout] } bad
-     if { $result == "none" } {errorexit "failure in gencmdaliasjava" }
+     if { $result == "none" } {stdlog $bad ; errorexit "failure in gencmdaliasjava" }
      stdlog "$result"
      if { $DONE_CMDEVT == 0} {
        catch { set result [gencommandtestsjava $subsys] } bad
@@ -98,18 +98,20 @@ global CMD_ALIASES CMDS DONE_CMDEVT ACKREVCODE REVCODE SAL_WORK_DIR OPTIONS
   if { $lang == "python" } {
      set result none
      catch { set result [gencmdaliaspython $subsys $fout] } bad
-     if { $result == "none" } {errorexit "failure in gencmdaliaspython" }
+     if { $result == "none" } {stdlog $bad ; errorexit "failure in gencmdaliaspython" }
      stdlog "$result"
      if { $DONE_CMDEVT == 0} {
        catch { set result [gencommandtestspython $subsys] } bad
+       if { $result == "none" } {stdlog $bad ; errorexit "failure in gencommandtestspython" }
        stdlog "$result"
      }
   }
   if { $lang == "isocpp" } {
      set result none
-     if { $result == "none" } {errorexit "failure in addgenericcmdcode" }
+     if { $result == "none" } {stdlog $bad ; errorexit "failure in addgenericcmdcode" }
      addgenericcmdcode $fout $lang
      catch { set result [gencmdaliasisocpp $subsys $fout] } bad
+     if { $result == "none" } {stdlog $bad ; errorexit "failure in gencmdaliasisocpp" }
      stdlog "$result"
   }
  }
