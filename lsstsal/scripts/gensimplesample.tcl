@@ -868,7 +868,7 @@ global SAL_WORK_DIR OPTIONS
    exec touch .depend.Makefile.sacpp_[set base]_python
    set result none
    catch { set result [exec make -f Makefile.sacpp_[set base]_python] } bad
-   if { $result == "none" } {stdlog $bad ; errorexit "Failed to generate SALPY_set base].so" }
+   if { $result == "none" } {stdlog $bad ; errorexit "Failed to generate SALPY_[set base].so" }
    stdlog "python : Done SALPY_[set base].so"
    if { $OPTIONS(verbose) } {stdlog "###TRACE<<< salpythonshlibgen $base"}
 }
