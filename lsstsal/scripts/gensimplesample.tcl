@@ -839,11 +839,16 @@ global SAL_WORK_DIR OPTIONS ONEDDSGEN
      if { $ONEDDSGEN == 0 } {
        cd $SAL_WORK_DIR/$base/$lang
        stdlog "Generating $lang type support for $base"
-       if { $lang == "cpp" }     {catch { set result [exec make -f Makefile.sacpp_[set base]_types] } bad; stdlog $bad}
-       if { $lang == "java"}     {
-          modidlforjava $base
-          catch { set result [exec make -f Makefile.saj_[set base]_types] } bad
-          stdlog $bad
+       if { $lang == "cpp" } {
+         set result none
+         catch { set result [exec make -f Makefile.sacpp_[set base]_types] } bad;
+         if { $result == "none" } {stdlog $bad ; errorexit "Failed to generate CPP DDS types" }
+       }
+       if { $lang == "java"} {
+         set result none
+         modidlforjava $base
+         catch { set result [exec make -f Makefile.saj_[set base]_types] } bad
+         if { $result == "none" } {stdlog $bad ; errorexit "Failed to generate Java DDS types" }
        }
        stdlog "idl : $result"
        cd $SAL_WORK_DIR
@@ -861,8 +866,9 @@ global SAL_WORK_DIR OPTIONS
    cd $SAL_WORK_DIR/$base/cpp/src
    stdlog "Generating Python SAL support for $base"
    exec touch .depend.Makefile.sacpp_[set base]_python
+   set result none
    catch { set result [exec make -f Makefile.sacpp_[set base]_python] } bad
-   if { $bad != "" } {stdlog $bad}
+   if { $result == "none" } {stdlog $bad ; errorexit "Failed to generate SALPY_[set base].so" }
    stdlog "python : Done SALPY_[set base].so"
    if { $OPTIONS(verbose) } {stdlog "###TRACE<<< salpythonshlibgen $base"}
 }
@@ -874,6 +880,7 @@ global SAL_WORK_DIR OPTIONS
  if { $OPTIONS(fastest) == 0 } {
   if { $id != "[set base]_notused" } {
    cd $SAL_WORK_DIR/$id/java/standalone
+   set result none
    catch { set result [exec make -f Makefile.saj_[set id]_pub] } bad
    catch {stdlog "result = $result"}
    catch {stdlog "$bad"}

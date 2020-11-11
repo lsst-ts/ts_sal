@@ -1,6 +1,14 @@
-This is release 5.0.0 of the SAL SDK (September 29th 2020)
+This is release 5.0.2 of the SAL SDK (September 29th 2020)
+
+Changes for 5.0.2
+
+Improve SAL error reporting in the event of missing system components
+Change QoS.xml location to ts_ddsconfig/qos/QoS.xml
+
+Changes for 5.0.1
 
 Added level 2 debug to LabVIEW interfaces
+Fix SALGenerics.xml parsing
 
 Changes for 5.0.0
 
