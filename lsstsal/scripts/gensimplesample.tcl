@@ -404,9 +404,13 @@ global VPROPS TYPEFORMAT
          puts $fcod1 "    data->$VPROPS(name)=Instances\[j\].$VPROPS(name).m_ptr;"
          puts $fcod1 "    lastSample_[set VPROPS(topic)].$VPROPS(name)=Instances\[j\].$VPROPS(name).m_ptr;"
          puts $fcod1b "   data->$VPROPS(name) = lastSample_[set VPROPS(topic)].$VPROPS(name);"
-         puts $fcod2b "    if ( data->$VPROPS(name).length() > $VPROPS(dim) ) \{
-       throw std::length_error(\"Item $VPROPS(name) exceeds string length\");
+         if { $VPROPS(dim) > 0 } {
+           puts $fcod2b "
+    if ( data->$VPROPS(name).length() > $VPROPS(dim) ) \{
+         cout << \"=== \[ $VPROPS(topic) \] Item $VPROPS(name) exceeds DDS string length\" << endl;
+         throw std::length_error(\"DDS String too large\");    
     \}"
+         }
          puts $fcod2 "    Instance.$VPROPS(name) = DDS::string_dup(data->$VPROPS(name).c_str());"
          puts $fcod3 "    cout << \"    $VPROPS(name) : \" << SALInstance.$VPROPS(name) << endl;"
          puts $fcod4 "    myData.$VPROPS(name)=\"RO\";"
@@ -438,7 +442,7 @@ global VPROPS TYPEFORMAT
            if (iverbose > 1) \{
              cout << \"Outgoing $VPROPS(topic) $VPROPS(name) =  \" << Outgoing_[set VPROPS(topic)]->$VPROPS(name) << endl;
            \}"
-         puts $fcod13 "             strcpy([set VPROPS(base)]_memIO->client\[LVClient\].[set VPROPS(topic)]LV_[set VPROPS(name)]_bufferIn,Incoming_[set VPROPS(topic)]->[set VPROPS(name)].c_str());
+         puts $fcod13 "             strncpy([set VPROPS(base)]_memIO->client\[LVClient\].[set VPROPS(topic)]LV_[set VPROPS(name)]_bufferIn,Incoming_[set VPROPS(topic)]->[set VPROPS(name)].c_str(),$VPROPS(dim));
            if (iverbose > 1) \{
              cout << \"Incoming $VPROPS(topic) $VPROPS(name) =  \" << Incoming_[set VPROPS(topic)]->$VPROPS(name) << endl;
            \}"

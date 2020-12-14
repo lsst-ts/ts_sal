@@ -160,6 +160,7 @@ double SAL_SALData::getSentTime(char *topicName)
 
 int SAL_SALData::getActorIndex (char *topicName)
 {
+  string topicError = "Unknown topic : ";
   for (int i=0; i<SAL__ACTORS_MAXCOUNT;i++) {
      if ( strlen(topicName) == strlen(sal[i].topicName) )  {
        if ( strcmp(topicName,sal[i].topicName) == 0 )  {
@@ -167,7 +168,7 @@ int SAL_SALData::getActorIndex (char *topicName)
        }
      }
   }
-  throw std::runtime_error("Unknown topic");
+  throw std::runtime_error(string(topicError + topicName));
   return SAL__ERROR;
 }
 
@@ -236,6 +237,7 @@ int SAL_SALData::getIntProperty(int actorIdx,salCHAR *property)
 
 salReturn SAL_SALData::salTelemetryPub(char *topicName)
 {
+  string topicError = "Unknown topic : ";
   int actorIdx = -1;
   int status = 0;
 
@@ -244,13 +246,14 @@ salReturn SAL_SALData::salTelemetryPub(char *topicName)
      status = salTelemetryPub(actorIdx);
   } else {
      status = SAL__ERROR;
-     throw std::runtime_error("Unknown topic");
+     throw std::runtime_error(string(topicError + topicName));
   }
   return status;
 }
 
 salReturn SAL_SALData::salTelemetrySub(char *topicName)
 {
+  string topicError = "Unknown topic : ";
   int actorIdx = -1;
   int status = 0;
 
@@ -259,7 +262,7 @@ salReturn SAL_SALData::salTelemetrySub(char *topicName)
      status = salTelemetrySub(actorIdx);
   } else {
      status = SAL__ERROR;
-     throw std::runtime_error("Unknown topic");
+     throw std::runtime_error(string(topicError + topicName));
   }
   return status;
 }
@@ -485,6 +488,7 @@ void SAL_SALData::createParticipant(const char *partitiontName)
     participant = dpf->create_participant(domain, PARTICIPANT_QOS_DEFAULT, NULL,STATUS_MASK_NONE);
     checkHandle(participant.in(),"DDS::DomainParticipantFactory::create_participant");
     partition = partitiontName;
+    sleep(5);
   }
 }
 

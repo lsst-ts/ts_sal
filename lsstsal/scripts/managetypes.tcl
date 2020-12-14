@@ -123,7 +123,7 @@ global TYPESUBS VPROPS OPTIONS
    if { [lindex $rec 0] == "string" } {
       set VPROPS(string) 1
       set VPROPS(lvres) 5
-      set VPROPS(dim) 128
+      set VPROPS(dim) -1
       set name [string trim [lindex $rec 1] ";"]
       set VPROPS(name) $name
       set res "  std::string	$name;[join [lrange $rec 2 end]]"
@@ -201,7 +201,7 @@ global TYPESUBS ATYPESUBS VPROPS OPTIONS
    set u ""
    if { [lindex $rec 0] == "string" } {
       set name [string trim [lindex $rec 1] ";"]
-      set res "  StrHdl	[set name]; /* 128 */"
+      set res "  StrHdl	[set name]; /* 1000 */"
       return $res
    }
    if { [lindex $rec 0] == "unsigned" } {set u "unsigned"; set rec [join [lrange $rec 1 end] " "]}

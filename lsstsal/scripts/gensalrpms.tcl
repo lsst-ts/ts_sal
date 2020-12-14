@@ -25,6 +25,7 @@ proc updatetests { subsys rpmname } {
 global SAL_WORK_DIR XMLVERSION
    catch {
     copyasset $SAL_WORK_DIR/lib/libSAL_[set subsys].so [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/lib/.
+    copyasset $SAL_WORK_DIR/lib/libSAL_[set subsys].a [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/lib/.
     set all [glob [set subsys]_*/cpp]
     foreach i $all {
        set tlm [lindex [split $i "/"] 0]
@@ -67,6 +68,7 @@ global SAL_WORK_DIR XMLVERSION SAL_DIR SYSDIC
       exec mkdir [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/labview
       exec mkdir [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/labview/lib
       copyasset $SAL_WORK_DIR/lib/SALLV_[set subsys].so [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/labview/lib/.
+      copyasset $SAL_WORK_DIR/lib/SALLV_[set subsys].a [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/labview/lib/.
       copyasset $SAL_WORK_DIR/[set subsys]/labview/SALLV_[set subsys]_Monitor [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/bin/.
       copyasset $SAL_WORK_DIR/[set subsys]/labview/SAL_[set subsys]_shmem.h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
       copyasset $SAL_WORK_DIR/[set subsys]/labview/sal_[set subsys].idl [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/labview/.
@@ -78,9 +80,11 @@ global SAL_WORK_DIR XMLVERSION SAL_DIR SYSDIC
     exec mkdir -p [set rpmname]-$XMLVERSION/opt/lsst/ts_xml/sal_interfaces/[set subsys]
     if { [info exists SYSDIC([set subsys],cpp)] } {
       copyasset $SAL_WORK_DIR/lib/libSAL_[set subsys].so [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/lib/.
+      copyasset $SAL_WORK_DIR/lib/libSAL_[set subsys].a [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/lib/.
     }
     if { [info exists SYSDIC([set subsys],salpy)] } {
       copyasset $SAL_WORK_DIR/lib/SALPY_[set subsys].so [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/lib/.
+      copyasset $SAL_WORK_DIR/lib/libSAL_[set subsys].a [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/lib/.
     }
     copyasset $SAL_WORK_DIR/idl-templates/validated/[set subsys]_revCodes.tcl [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/scripts/.
     copyasset $SAL_WORK_DIR/idl-templates/validated/sal/sal_revCoded_[set subsys].idl [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/idl/.
