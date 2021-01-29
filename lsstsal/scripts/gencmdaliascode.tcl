@@ -132,7 +132,11 @@ int SAL_SALData::issueCommand_[set i]( SALData_command_[set i]C *data )
 \{
   if ( data == NULL ) \{
      throw std::runtime_error(\"NULL pointer for issueCommand_[set i]\");
-  \}
+  \}"
+  set frag [open $SAL_WORK_DIR/include/SAL_[set subsys]_command_[set i]Cchk.tmp r]
+  while { [gets $frag rec] > -1} {puts $fout $rec}
+  close $frag
+  puts $fout "
   InstanceHandle_t cmdHandle = DDS::HANDLE_NIL;
   SALData::command_[set i][set revcode] Instance;
   int actorIdx = SAL__SALData_command_[set i]_ACTOR;

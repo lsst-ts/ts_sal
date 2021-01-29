@@ -1,9 +1,20 @@
-This is release 5.0.2 of the SAL SDK (September 29th 2020)
+This is release 5.1 of the SAL SDK (September 29th 2020)
 
-Changes for 5.0.2
+Fix python environment for V3.8.3
+
+Remove LSST_DDS_PARTITION_PREFIX default
+
+Add pause after DDS participant creation
+
+Add support to get software versions in LabVIEW
+
+Add support for static SAL libraries
 
 Improve SAL error reporting in the event of missing system components
+
 Change QoS.xml location to ts_ddsconfig/qos/QoS.xml
+
+Better reporting for "Unknown topic"
 
 Changes for 5.0.1
 

@@ -301,7 +301,8 @@ global SAL_DIR SAL_WORK_DIR
 }
 
 proc genlabviewcpp { base ptypes } {
-global SAL_DIR SAL_WORK_DIR SYSDIC LVSTRINGS REVCODE CMD_ALIASES
+global SAL_DIR SAL_WORK_DIR SYSDIC LVSTRINGS REVCODE CMD_ALIASES SALVERSION
+  set xmldist [string trim [exec cat $SAL_WORK_DIR/VERSION]]
   set idarg ""
   set idarg2 ""
   set idarg3 "     unsigned int [set base]ID = 0;"
@@ -475,6 +476,18 @@ extern \"C\" \{
       return taiTime;
     \}
 
+    string [set base]_shm_getSALVersion() \{
+        return \"$SALVERSION\";
+    \}
+
+    string [set base]_shm_getXMLVersion() \{
+        return \"$xmldist\";
+    \}
+
+    string [set base]_shm_getOSPLVersion() \{
+        string osplver = getenv(\"OSPL_RELEASE\");
+        return osplver;
+    \}
 "
   foreach j $ptypes {
      set name [lindex $j 2]
