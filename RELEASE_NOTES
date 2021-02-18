@@ -1,4 +1,9 @@
-This is release 5.1 of the SAL SDK (September 29th 2020)
+This is release 5.1.0 of the SAL SDK (February 18th 2021)
+
+Changes for 5.1.0
+ 
+Increase max string size for LabVIEW and allow unlimited string size 
+for strings with unspecified length for other languages
 
 Fix python environment for V3.8.3
 
