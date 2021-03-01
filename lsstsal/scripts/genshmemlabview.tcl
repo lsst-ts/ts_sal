@@ -243,6 +243,9 @@ global SAL_DIR SAL_WORK_DIR SYSDIC TELEMETRY_ALIASES LVSTRINGS CMD_ALIASES
         void [set base]_shm_checkCallbacksLV();
         void [set base]_shm_initFlags();
         double [set base]_shm_getCurrentTimeLV();
+        string [set base]_shm_getSALVersion();
+        string [set base]_shm_getXMLVersion();
+        string [set base]_shm_getOSPLVersion();
 "
   foreach j $ptypes {
      set name [lindex $j 2]
