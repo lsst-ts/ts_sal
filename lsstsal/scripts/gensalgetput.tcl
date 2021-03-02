@@ -239,16 +239,19 @@ proc addSWVersionsJava { fout } {
 global SALVERSION env
    set xmldist [string trim [exec cat $env(SAL_WORK_DIR)/VERSION]]
   puts $fout "
+/// Returns the current SAL version e.g. \"4.1.0\"
 public String getSALVersion()
 \{
     return \"$SALVERSION\";
 \}
 
+/// Returns the current XML version e.g. \"5.0.0\"
 public String getXMLVersion()
 \{
     return \"$xmldist\";
 \}
 
+/// Returns the current OpenSpliceDDS version e.g. \"6.9.181127OSS\"
 public String getOSPLVersion()
 \{
     String osplver = System.getenv(\"OSPL_RELEASE\");
@@ -566,7 +569,11 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS
      if { [string range $rec 0 21] == "// INSERT TYPE SUPPORT" } {
         addActorIndexesJava $idlfile $base $fout
         addSWVersionsJava $fout
-        puts $fout "        public int salTypeSupport(String topicName) \{
+        puts $fout "
+/** Configure DDS type support for [set base] DDS topics. 
+  * @param topicName The DDS topic name
+  */
+        public int salTypeSupport(String topicName) \{
     String\[\] parts = topicName.split(\"_\");"
         foreach i $atypes {
            puts $fout "                if (\"[set base]\".equals(parts\[0\]) ) \{"
@@ -610,7 +617,11 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS
                set name [lindex $j 2]
                set revcode [getRevCode [set base]_[set name] short]
                set alias [string range $name 9 end]
-puts $fout "
+               set turl [getTopicURL $base $name]
+               puts $fout "
+/** Publish a sample of the $turl DDS topic. A publisher must already have been set up
+  * @param data The payload of the sample as defined in the XML for SALData
+  */
   public int putSample([set base].[set name] data)
   \{
           int status = SAL__OK;
@@ -652,6 +663,11 @@ puts $fout "
   \}
 
 
+/** Receive the latest sample of the $turl DDS topic. A subscriber must already have been set up.
+  * If there are no samples available then SAL__NO_UPDATES is returned, otherwise SAL__OK is returned.
+  * If there are multiple samples in the history cache, they are skipped over and only the most recent is supplied.
+  * @param data The payload of the sample as defined in the XML for SALData
+  */
   public int getSample([set base].[set name] data)
   \{
     int status =  -1;
@@ -670,7 +686,7 @@ puts $fout "
         } else {
           puts $fout "      createReader(actorIdx,false);"
         }
-         puts $fout "
+        puts $fout "
 	    sal\[actorIdx\].isReader = true;
 	  \}
 	  DataReader dreader = getReader(actorIdx);
@@ -712,6 +728,13 @@ puts $fout "
     return last;
   \}
 
+/** Receive the next sample of the $turl DDS topic from the history cache. 
+  * A subscriber must already have been set up
+  * If there are no samples available then SAL__NO_UPDATES is returned, otherwise SAL__OK is returned.
+  * If there are multiple samples in the history cache, they are iterated over by consecutive 
+  * calls to getNextSample_[set name]
+  * @param data The payload of the sample as defined in the XML for SALData
+  */
   public int getNextSample([set base].[set name] data)
   \{
     int status = -1;
@@ -723,6 +746,9 @@ puts $fout "
           return status;
   \}
 
+/** Empty the history cache of samples. After this only newly published samples
+  * will be available to getSample_[set name] or getNextSample_[set name]
+  */
   public int flushSamples([set base].[set name] data)
   \{
           int status = -1;
@@ -733,9 +759,7 @@ puts $fout "
           sal\[actorIdx\].sampleAge = 1.0e20;
           return SAL__OK;
   \}
-
 "
-
            }
         }
         gencmdaliascode $base java $fout
@@ -819,6 +843,7 @@ puts $fout "
               if { $OPTIONS(verbose) } {stdlog "###TRACE------ Processing topic $j"}
               set name [lindex $j 2]
               set revcode [getRevCode [set base]_[set name] short]
+              set turl [getTopicURL $base $name]
 puts $fout "
 salReturn SAL_[set base]::putSample([set base]::[set name][set revcode] data)
 \{
@@ -875,13 +900,13 @@ salReturn SAL_[set base]::getSample([set base]::[set name][set revcode]Seq data)
       salReturn putSample([set base]::[set name][set revcode] data);
       salReturn getSample([set base]::[set name][set revcode]Seq data);
 
-/** Publish a sample of the [set base]_[set name] DDS topic. A publisher must already have been set up
+/** Publish a sample of the $turl DDS topic. A publisher must already have been set up
   * @param data The payload of the sample as defined in the XML for SALData
   */
       salReturn putSample_[set name]([set base]_[set name]C *data);
 
 
-/** Receive the latest sample of the [set base]_[set name] DDS topic. A subscriber must already have been set up.
+/** Receive the latest sample of the $turl DDS topic. A subscriber must already have been set up.
   * If there are no samples available then SAL__NO_UPDATES is returned, otherwise SAL__OK is returned.
   * If there are multiple samples in the history cache, they are skipped over and only the most recent is supplied.
   * @param data The payload of the sample as defined in the XML for SALData
@@ -889,7 +914,7 @@ salReturn SAL_[set base]::getSample([set base]::[set name][set revcode]Seq data)
       salReturn getSample_[set name]([set base]_[set name]C *data);
 
 
-/** Receive the next sample of the [set base]_[set name] DDS topic from the history cache. A subscriber must already have been set up
+/** Receive the next sample of the $turl DDS topic from the history cache. A subscriber must already have been set up
   * If there are no samples available then SAL__NO_UPDATES is returned, otherwise SAL__OK is returned.
   * If there are multiple samples in the history cache, they are iterated over by consecutive calls to getNextSample_[set name]
   * @param data The payload of the sample as defined in the XML for SALData
@@ -901,7 +926,7 @@ salReturn SAL_[set base]::getSample([set base]::[set name][set revcode]Seq data)
   */
       salReturn flushSamples_[set name]([set base]_[set name]C *data);
 
-/** Provides the data from the most recently received sample. This may be a new sample that has not been read before
+/** Provides the data from the most recently received $turl sample. This may be a new sample that has not been read before
   * by the caller, or it may be a copy of the last received sample if no new data has since arrived.
   * If there are no samples available then SAL__NO_UPDATES is returned, otherwise SAL__OK is returned.
   * @param data The payload of the sample as defined in the XML for SALData
