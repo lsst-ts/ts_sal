@@ -29,15 +29,16 @@ global CMD_ALIASES CMDS DONE_CMDEVT ACKREVCODE REVCODE SAL_WORK_DIR OPTIONS
   if { $lang == "include" } {
      foreach i $CMD_ALIASES($subsys) { 
        if { [info exists CMDS($subsys,$i,param)] } {
+         set turl [getTopicURL $subsys $i]
          puts $fout "
 /** Issue the [set i] command to the SALData subsystem
-  * @param data is the command payload
+  * @param data is the command payload $turl
   * @returns the sequence number aka command id
   */
       int issueCommand_[set i]( SALData_command_[set i]C *data );
 
 /** Accept the [set i] command. The SAL will automatically generate an ackCmd message with an ack = SAL__CMD_ACK
-  * @param data is the command payload
+  * @param data is the command payload $turl
   */
       int acceptCommand_[set i]( SALData_command_[set i]C *data );
 
@@ -545,7 +546,12 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
     set revcode [getRevCode [set subsys]_command_[set i] short]
     stdlog "	: alias = $i , revCode = $revcode"
     if { [info exists CMDS($subsys,$i,param)] } {
+      set turl [getTopicURL $subsys $i]
       puts $fout "
+/** Issue the [set i] command to the SALData subsystem
+  * @param data is the command payload $turl
+  * @returns the sequence number aka command id
+  */
 	public int issueCommand_[set i]( command_[set i] data )
 	\{
           Random randGen = new java.util.Random();
@@ -578,6 +584,9 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
 	\}
 "
       puts $fout "
+/** Accept the [set i] command. The SAL will automatically generate an ackCmd message with an ack = SAL__CMD_ACK
+  * @param data is the command payload $turl
+  */
 	public int acceptCommand_[set i]( SALData.command_[set i] data )
 	\{
                 command_[set i][set revcode]SeqHolder SALInstance = new command_[set i][set revcode]SeqHolder();
@@ -647,6 +656,10 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
 	\}
 "
    puts $fout "
+/** Wait for the arrival of command ack. If no instance arrives before the timeout then return SAL__CMD_NOACK
+  * else returns SAL__OK if a command message has been received.
+  * @param cmdSeqNum is the sequence number of the command involved, as returned by issueCommand
+  */
 	public int waitForCompletion_[set i]( int cmdSeqNum , int timeout )
 	\{
 	   int status = 0;
@@ -719,6 +732,11 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
 	\}
 "
   puts $fout "
+/** Get the response (ack) from a command transaction. It is up to the application to validate against the 
+  * command sequence number and command type if multiple commands may be in-progress simultaneously
+  * @param data is the ackCmd payload
+  * @returns SAL__CMD_NOACK if no ackCmd is available, or SAL__OK if there is
+  */
 	public int getResponse_[set i](ackcmd[set ACKREVCODE]SeqHolder data)
 	\{
 	  int status =  -1;
@@ -761,6 +779,9 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
 	\}
 "
    puts $fout "
+/** Acknowledge a command by sending an ackCmd message, this time with access to all the ackCmd message payload
+  * @param data is the ackCmd topic data
+  */
 	public int ackCommand_[set i]( int cmdId, int ack, int error, String result )
 	\{
    		int istatus = -1;
