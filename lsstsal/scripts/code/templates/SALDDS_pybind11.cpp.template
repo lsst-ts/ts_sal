@@ -97,13 +97,13 @@ PYBIND11_MODULE(SALPY_SALData,m){
         .def( 
             "getTelemetryNames"
             , &::SAL_SALData::getTelemetryNames )
-        .def( 
+        .def_static( 
             "getSALVersion"
             , &::SAL_SALData::getSALVersion )
-        .def( 
+        .def_static( 
             "getXMLVersion"
             , &::SAL_SALData::getXMLVersion )
-        .def( 
+        .def_static( 
             "getOSPLVersion"
             , &::SAL_SALData::getOSPLVersion )
         .def( 
