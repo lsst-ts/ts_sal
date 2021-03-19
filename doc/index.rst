@@ -1,6 +1,6 @@
 .. py:currentmodule:: lsst.ts.sal
 
-.. _lsst.ts.salobj:
+.. _lsst.ts.sal:
 
 ###########
 lsst.ts.sal

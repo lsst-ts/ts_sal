@@ -16,6 +16,7 @@ Changes for 6.0.0
 
 * Add Per CSC API documentation for C++/SALPY/Java/LabVIEW
 
+* Fix missing programs in test RPM's
 
 
 Changes for 5.1.1
@@ -28,7 +29,7 @@ Changes for 5.1.0
 ================= 
 
 * Increase max string size for LabVIEW and allow unlimited string size 
-for strings with unspecified length for other languages
+  for strings with unspecified length for other languages
 
 * Fix python environment for V3.8.3
 
@@ -101,7 +102,7 @@ Changes for 4.1.3
 =================
 
 * Hotfix to allow building in the LSST stack environment
-using old compilers and libraries (provide CLOCK_TAI define)
+  using old compilers and libraries (provide CLOCK_TAI define)
 
 Changes for 4.1
 =================
@@ -147,7 +148,7 @@ Changes for 4.0.0
 * Add exception generation when null data structures passed to SAL methods
 
 * Support for using the Opensplice QoS specified in an XML file
-specified using environment e.g. export LSST_DDS_QOS=file://${SAL_WORK_DIR}/DDS_DefaultQoS_All.xml
+  specified using environment e.g. export LSST_DDS_QOS=file://${SAL_WORK_DIR}/DDS_DefaultQoS_All.xml
 
 * Added fields to ackcmd structure for host, origin, cmdtype and timeout
 
@@ -162,7 +163,7 @@ specified using environment e.g. export LSST_DDS_QOS=file://${SAL_WORK_DIR}/DDS_
 * Added support for customizing generic commands and events in SALSubsystems.xml
 
 * Added support for inserting PTP timestamps, and a daemon to maintain the leap seconds offset
-(added call to retrieve current offset)
+  (added call to retrieve current offset)
 
 * Add  JNI library for Java timestamps
 
@@ -177,7 +178,7 @@ specified using environment e.g. export LSST_DDS_QOS=file://${SAL_WORK_DIR}/DDS_
 * Revised SAL item database to be single table per subystem
 
 * Add environment to control history sync e.g. export LSST_DDS_HISTORYSYNC=30
-(set default to 30 seconds)
+  (set default to 30 seconds)
 
 * Revised salgenerator pydds option to generate enum support
 
@@ -252,12 +253,12 @@ Changes for 3.7.0
 =================
 
 * Added support for Enumerations, either per item , or globally
-(code support in C++,Java,Python,LabVIEW)
+  (code support in C++,Java,Python,LabVIEW)
 
 * Bug fixes for Java code generation.
 
 * Add support for pybind11 based python wrappers. Boost::Python support
-is now deprecated and will be removed in version 4.0.0
+  is now deprecated and will be removed in version 4.0.0
 
 * Add support for LargeFileObject announcment events
 
@@ -280,7 +281,7 @@ is now deprecated and will be removed in version 4.0.0
 * Add minimal Telemetry generation to  XML parser
 
 * Default to adding generic Commands and Events in XML parser if not preset in 
-incoming XML files (temporary exception for m1m3 to use non-compliant generic command set)
+  incoming XML files (temporary exception for m1m3 to use non-compliant generic command set)
 
 
 
@@ -299,27 +300,27 @@ Changes for 3.5.1
 =================
 
 * Provide compatability with the LSST OpenSpliceDDS 6.7 release
-(salgenerator now avoids hardcoding the OpenSplice release number into the maven project generator)
+  (salgenerator now avoids hardcoding the OpenSplice release number into the maven project generator)
 
 Changes for 3.5.0
 =================
 
 * The LabVIEW interface is now based on passing Cluster datatypes which should make
-it easier to use. The VI generation process is a little more involved, so please refer to 
-the updated user guide (chapter 9) for more information.
+  it easier to use. The VI generation process is a little more involved, so please refer to 
+  the updated user guide (chapter 9) for more information.
     
 * The LabVIEW shared memory Monitor has been upgraded to support multiple (50) simulataneous
-LabVIEW connections per machine and subsystem (due to this change, calling shmRelease prior
-to application exit is now mandatory).
+  LabVIEW connections per machine and subsystem (due to this change, calling shmRelease prior
+  to application exit is now mandatory).
   
 * Removed sample XML object definition files to avoid confusion of versions. The definitive XML
-should always be retreived from the LSST Stash ts_xml repository.
+  should always be retreived from the LSST Stash ts_xml repository.
      
 * The Python interface has been modified to incorporate control of the Global Interpreter Lock
-(GIL) to allow the DDS threads sufficient cpu time under high load conditions.
+  (GIL) to allow the DDS threads sufficient cpu time under high load conditions.
 
 * Added new commandable subsystems for DM (archiver, catchuparchiver, and processingcluster)
-and OCS (sequencer).
+  and OCS (sequencer).
 
 * Added salgenerator error detection for "no language" selected when using sal code generation.
 
@@ -332,7 +333,7 @@ and OCS (sequencer).
 * Added LABVIEW_HOME environment variable to permit user control
 
 * Added LSST_DDS_DOMAIN environment variable to allow DDS partitioning to 
-isolate users when testing on the same network.
+  isolate users when testing on the same network.
 
 
 
@@ -359,10 +360,10 @@ Changes for 3.2.1
 * Passed comprehensive Continuous Integration Python tests
 
 * Added LSST_[subsystem]_ID environment variable to select required instance
-of subsytem at runtime (used for hexapod and rotator currently)
+  of subsytem at runtime (used for hexapod and rotator currently)
 
 * The Python interface has been modified to incorporate control of the Global Interpreter Lock
-(GIL) to allow the DDS threads sufficient cpu time under high load conditions.
+  (GIL) to allow the DDS threads sufficient cpu time under high load conditions.
 
 Changes for 3.2.0 
 =================
