@@ -16,6 +16,8 @@ source $SAL_DIR/sal_version.tcl
 
 
 proc copyasset { asset dest } {
+global OPTIONS
+    if { $OPTIONS(verbose) } {puts stdout "###TRACE copyasset for $asset $dest"}
     if { [file exists $asset] } {
        exec cp $asset $dest
     }
@@ -46,7 +48,7 @@ global SAL_WORK_DIR XMLVERSION
 
 
 proc updateruntime { subsys {withtest 0} } {
-global SAL_WORK_DIR XMLVERSION SAL_DIR SYSDIC
+global SAL_WORK_DIR XMLVERSION SAL_DIR SYSDIC SALVERSION
   set rpmname $subsys
   if { $withtest } {set rpmname [set subsys]_test}
   exec rm -fr [set rpmname]-$XMLVERSION
@@ -60,14 +62,14 @@ global SAL_WORK_DIR XMLVERSION SAL_DIR SYSDIC
   exec mkdir -p $SAL_WORK_DIR/rpmbuild/SPECS
   exec mkdir -p $SAL_WORK_DIR/rpmbuild/SRPMS
   if { $withtest == 0 } {
-    exec mkdir [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include
-    exec mkdir [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/scripts
-    exec mkdir [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/idl
-    exec mkdir [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/lib
-    exec mkdir [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/doc
+    exec mkdir -p [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include
+    exec mkdir -p [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/scripts
+    exec mkdir -p [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/idl
+    exec mkdir -p [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/lib
+    exec mkdir -p [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/doc
     if { [info exists SYSDIC([set subsys],labview)] } {
-      exec mkdir [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/labview
-      exec mkdir [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/labview/lib
+      exec mkdir -p [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/labview
+      exec mkdir -p [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/labview/lib
       copyasset $SAL_WORK_DIR/lib/SALLV_[set subsys].so [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/labview/lib/.
       copyasset $SAL_WORK_DIR/[set subsys]/labview/SALLV_[set subsys]_Monitor [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/bin/.
       copyasset $SAL_WORK_DIR/[set subsys]/labview/SAL_[set subsys]_shmem.h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
@@ -76,7 +78,9 @@ global SAL_WORK_DIR XMLVERSION SAL_DIR SYSDIC
       copyasset $SAL_WORK_DIR/lib/libsacpp_[set subsys]_types.so [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/lib/.
     }
     if { [info exists SYSDIC([set subsys],java)] } {
-      exec mkdir [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/jar
+      exec mkdir -p [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/jar
+      copyasset $SAL_WORK_DIR/lib/saj_[set subsys]_types.jar [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/jar/.
+      copyasset $SAL_WORK_DIR/maven/[set rpmname]-[set XMLVERSION]_$SALVERSION/target/sal_[set subsys]-[set XMLVERSION]_$SALVERSION.jar [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/jar/.
     }
     exec mkdir -p [set rpmname]-$XMLVERSION/opt/lsst/ts_xml/sal_interfaces/[set subsys]
     if { [info exists SYSDIC([set subsys],cpp)] } {
