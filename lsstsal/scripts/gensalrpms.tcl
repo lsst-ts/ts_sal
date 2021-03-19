@@ -52,6 +52,7 @@ global SAL_WORK_DIR XMLVERSION SAL_DIR SYSDIC
   exec rm -fr [set rpmname]-$XMLVERSION
   exec mkdir -p [set rpmname]-$XMLVERSION/opt/lsst/ts_sal
   exec mkdir -p [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/bin
+  exec mkdir -p [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/lib
   exec mkdir -p $SAL_WORK_DIR/rpmbuild/BUILD
   exec mkdir -p $SAL_WORK_DIR/rpmbuild/BUILDROOT
   exec mkdir -p $SAL_WORK_DIR/rpmbuild/RPMS
