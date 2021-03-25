@@ -248,7 +248,7 @@ public class SAL_SALData {
 
 /** Environment setup for a SAL_SALData object.
   *
-  * + LSST_DDS_DOMAIN is the name of the partition being used
+  * + LSST_DDS_PARTITION_PREFIX is the name of the partition being used
   * + LSST_DDS_IP is the IP address of the DDS ethernet interface
   * + LSST_DDS_QOS is the optional path to the DDS QoS XML description
   * + LSST_DDS_HISTORYSYNC is the maximum number of seconds to wait to obtain historical messages on a topic
@@ -258,20 +258,14 @@ public class SAL_SALData {
         public void initSalEnvironment(int aKey)
 	{
 		Random randGen = new java.util.Random();
-                String dname = System.getenv("LSST_DDS_DOMAIN");
                 String pname = System.getenv("LSST_DDS_PARTITION_PREFIX");
                 String ipaddress = System.getenv("LSST_DDS_IP");
                 String hname = System.getenv("LSST_DDS_HISTORYSYNC");
                 String qname = System.getenv("LSST_DDS_QOS");
-                if (dname != null) {
-                   partitionPrefix = dname;
-                } else {
-                   partitionPrefix = "LSST";
-                }
                 if (pname != null) {
                    partitionPrefix = pname;
                 } else {
-                   System.out.println("=== WARNING : LSST_DDS_PARTITION_PREFIX not defined, using deprecated alias LSST_DDS_DOMAIN\n This will stop working in SAL 6");
+                   System.out.println("=== WARNING : LSST_DDS_PARTITION_PREFIX not defined\n");
                 }
 		if (ipaddress == null) {
 		  ddsIPaddress = (int)randGen.nextInt(99999999);
