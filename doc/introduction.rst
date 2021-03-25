@@ -32,23 +32,18 @@ listed in per-subsystem appendices.
 Applicable Documents
 --------------------
 
-Datastream Definitions Document - Datastream Prototypes 1.7
-(Document-11528)
-
-Definition of subsystems - LSST Project WBS Dictionary (Document-985)
-
-Documentation standards - LSST DM UML Modeling Conventions
-(Document-469)
-
-Messaging standards - OMG DDS 1.1 (Document-2233)
-
-Service Abstraction Layer API - Middleware Service Abstraction Layer
-(Document-3692)
-
-Software coding standards LSST C++ Programming Style Guidelines
-(Document-3046)
-
-Vendor documentation - Opensplice manuals (Collection-2791)
+-  Datastream Definitions Document - Datastream Prototypes 1.7
+   (Document-11528)
+-  Definition of subsystems - LSST Project WBS Dictionary (Document-985)
+-  Documentation standards - LSST DM UML Modeling Conventions
+   (Document-469)
+-  Messaging standards - OMG DDS 1.1 (Document-2233)
+-  Software coding standards LSST C++ Programming Style Guidelines
+   (Document-3046)
+-  Vendor documentation - Opensplice manuals (Collection-2791)
+-  Observatory System Specifications - LSE-30
+-  TCS Communication Protocol Interface - LTS-306
+-  TCS Software Component Interface - LTS-307
 
 Concept of operations
 ---------------------
@@ -589,6 +584,32 @@ Generic subsystem control state commands
 All subsystems support the following lifecycle commands. These are used
 to initiate transitions in the subsystem state machine. All subsystem
 specific commanding occurs only in the "Enabled" state.
+
+-  [CSC-name]>\_command\_abort
+-  [CSC-name]>\_command\_enable
+-  [CSC-name]>\_command\_disable
+-  [CSC-name]>\_command\_standby
+-  [CSC-name]>\_command\_exitControl
+-  [CSC-name]>\_command\_start
+-  [CSC-name]>\_command\_enterControl
+-  [CSC-name]>\_command\_setLogLevel
+-  [CSC-name]>\_command\_setValue
+-  [CSC-name]>\_command\_setAuthList
+
+Generic subsystem logging events
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+-  [CSC-name]>\_logevent\_settingVersions
+-  [CSC-name]>\_logevent\_errorCode
+-  [CSC-name]>\_logevent\_summaryState
+-  [CSC-name]>\_logevent\_appliedSettingsMatchStart
+-  [CSC-name]>\_logevent\_logLevel
+-  [CSC-name]>\_logevent\_logMessage
+-  [CSC-name]>\_logevent\_settingsApplied
+-  [CSC-name]>\_logevent\_simulationMode
+-  [CSC-name]>\_logevent\_softwareVersions
+-  [CSC-name]>\_logevent\_heartbeat
+-  [CSC-name]>\_logevent\_authList
 
 |image2|
 
