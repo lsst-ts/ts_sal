@@ -14,9 +14,24 @@ Changes for 6.0.0
 
 * Add authList support for C++/SALPY/Java/LabVIEW CSC's
 
-* Add Per CSC API documentation for C++/SALPY/Java/LabVIEW
+* Add Per CSC API documentation for C++/SALPY/Java/LabVIEW/IDL
 
 * Fix missing programs in test RPM's
+
+* Fix missing jar in RPM's
+
+* Fix getSAL/XML/OSPLVersion for LabVIEW
+
+* Remove LSST_DDS_DOMAIN references
+
+* Add lsst.io compatible version history
+
+* Fix Jenkinfile
+
+* Cross link cpp/java api docs to ts_xml.lsst.io
+
+* Change getXXXVersion's to static for C++
+
 
 
 Changes for 5.1.1
