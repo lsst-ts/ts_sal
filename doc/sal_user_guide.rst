@@ -635,17 +635,9 @@ The salgenerator executes a variety of processes, depending upon the options sel
     labview - generate labVIEW interface
     sal [lang] - generate SAL C++, Java or Python wrappers
     lib - generate the SAL shared library for a subsystem
-    sim - generate simulation configuration
-    tcl - generate tcl interface
     icd - generate ICD document
     maven - generate a maven project (per subsystem)
     verbose - be more verbose ;-)
-    db - generate telemetry database table
-
-    for db the argument required are
-    db start-time end-time interval
-    where the times are formatted like "2008-11-12 16:20:01"
-    and the interval is in seconds
 
 SAL API examples
 ----------------
