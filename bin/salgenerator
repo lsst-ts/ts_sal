@@ -18,16 +18,6 @@ proc print_help {} {
                 lib      - generate shared library
 		labview  - generate LabVIEW low-level interface
 		maven    - generate a maven project
-		db       - generate telemetry database table
-
-                    Arguments required are
- 
-		    db start-time end-time interval
-
-                    where the times are formatted like \"2019-11-12 16:20:01\"
-                    and the interval is in seconds
-
-		sim      - generate simulation configuration
 		link     - link a SAL program
                 rpm	 - generate runtime RPM
 		verbose  - be more verbose ;-)
@@ -40,7 +30,7 @@ if { $argc < 2 } { print_help }
 
 set SAL_DIR $env(SAL_DIR)
 set OSPL_HOME $env(OSPL_HOME)
-set COMMANDS "validate efd writers compile cpp idl isocpp java jni lib link maven tcl db icd labview python pydds html rpm sal shmem sim simd verbose fastest generate" 
+set COMMANDS "validate efd writers compile cpp idl isocpp java jni lib link maven tcl db icd labview python pydds html apidoc rpm sal shmem sim simd verbose fastest generate" 
 foreach o $COMMANDS {
   set OPTIONS($o) 0
   if { [lsearch [string tolower $argv] $o] > -1 } {
@@ -242,23 +232,6 @@ if { $OPTIONS(validate) || $OPTIONS(idl) } {
 
 # For html option , process everything
 if { $OPTIONS(html) } {
-#  global SAL_WORK_DIR
-#  global SAL_DIR
-#  cd $SAL_WORK_DIR
-#  source $SAL_DIR/updatedetails.tcl
-#  source $SAL_DIR/genidlshmem_array.tcl
-#  exec mkdir -p $SAL_WORK_DIR/sql
-#  set sqlf [glob *.sqldef *.sqlwrt]
-#  foreach f $sqlf { exec mv $f $SAL_WORK_DIR/sql/. }
-#  stdlog "Generating telemetry stream definition editor html"
-#  exec mkdir -p $SAL_WORK_DIR/html
-#  stdlog "Generating Facility database table creation html"
-#  source $SAL_DIR/gendbhtml.tcl
-#  cd $SAL_WORK_DIR
-#  stdlog "Generating Subsystem simulation control html"
-#  source $SAL_DIR/gensimhtml.tcl
-#  cd $SAL_WORK_DIR/html
-#  source $SAL_DIR/genhtml.tcl
   stdlog "WARNING : html option is deprecated, please use the apidoc option in future"
   exit 0
 }
@@ -399,6 +372,17 @@ if { $OPTIONS(rpm) } {
   }
 }
 
+if { $OPTIONS(apidoc) } {
+  foreach s $TSUBSYSTEMS {
+    if { $s != "apidoc" } {
+      stdlog "Building API documentation for $s subsystem"
+      set result none
+      catch { set result [exec $SAL_DIR/apiDocumentation.tcl $s] } bad
+      if { $result == "none" } {stdlog $bad}
+      if { $OPTIONS(verbose) } {stdlog $result}
+    }
+  }
+}
 
 if { $OPTIONS(labview) } {
   set subsys [lindex [split [lindex $TARGETS 0] _] 0]
@@ -441,82 +425,6 @@ if { $OPTIONS(link) } {
   if { $bad != "" } {puts stdout $bad}
   exit
 }
-
-
-if { $OPTIONS(tcl) || $OPTIONS(shmem) } {
-  cd $SAL_WORK_DIR
-  foreach subsys $TARGETS {
-    set topic [file rootname $subsys]
-    stdlog "Generating shmem tools for $topic"
-    exec mkdir -p ./ospl-$topic
-    set result none
-    catch { set result [exec $SAL_DIR/genshmem-tcl.tcl $topic $SAL_WORK_DIR] } bad
-    if { $result == "none" } {stdlog $bad}
-#     if { $bad } {
-#        errorexit "Tcl interface generation failed : \n $bad"
-#     }
-    if { $OPTIONS(verbose) } {stdlog $bad}
-  }
-}
-
-  
-if { $OPTIONS(jni) } {
-  source $SAL_DIR/genjnicode.tcl
-  foreach subsys $TARGETS {
-    set topic [file rootname $subsys]
-    stdlog "Generating DDS java code for $topic"
-    stdlog "Generating SAL JNI code for $topic"
-    set result none
-    catch { set result [genjnicode $topic] } bad
-    if { $result == "none" } {stdlog $bad}
-    if { $bad } {
-      errorexit "SAL JNI generation failed : \n $bad"
-    }
-    if { $OPTIONS(verbose) } {stdlog $result}
-  }
-}
-
-
-if { $OPTIONS(db) } {
-  source $SAL_DIR/simulatedb.tcl
-  set k [lsearch $argv db]
-  set dbstart [lrange $argv [expr $k+1] [expr $k+2]]
-  set dbend   [lrange $argv [expr $k+3] [expr $k+4]]
-  set dbfreq  [lindex $argv [expr $k+5]]
-  stdlog "Facility database table parameters : "
-  stdlog "   Start time = $dbstart"
-  stdlog "   End time   = $dbend"
-  stdlog "   Interval   = $dbfreq"
-  set sid [lindex [split [lindex $TARGETS 0] _] 0]
-  if { [file exists $SAL_WORK_DIR/[set sid]_telemetry_simulation.tcl] } {
-    stdlog "Loading simulation routines from $SAL_WORK_DIR/[set sid]_telemetry_simulation.tcl"
-    source $SAL_WORK_DIR/[set sid]_telemetry_simulation.tcl
-  }
-  foreach subsys $TARGETS {
-    set topic [file rootname $subsys]
-    if { [file exists $SAL_WORK_DIR/sql/[set topic].sqldef] } {
-      stdlog "Generating simulated facility database table for $topic"
-      set fout [open $SAL_WORK_DIR/sql/$topic-[join $dbstart -]_to_[join $dbend -].sql w]
-      simulateperiod $fout $topic "$dbstart" "$dbend" $dbfreq
-      close $fout
-      stdlog "   data in $SAL_WORK_DIR/sql/$topic-[join $dbstart -]_to_[join $dbend -].sql"
-    }
-  }
-}
-
-
-if { $OPTIONS(sim) } {
-  stdlog "Not yet implemented  - use VM web interface"
-}
-
-
-if { $OPTIONS(icd) } {
-  set subsys [lindex [split $argv _] 0]
-  stdlog "Generating ICD for OCS to $subsys"
-  set SINGLESUBSYSTEM $subsys
-  source $SAL_DIR/icd/icd.tcl
-}
-
 
 
 puts stdout "SALVERSION = $SALVERSION"
