@@ -105,7 +105,7 @@ class MakeSalpyLib:
             shutil.rmtree(os.path.join(self.sal_work_dir, subdir), ignore_errors=True)
 
         if not keep_most:
-            print(f"Removing demos")
+            print(f'{"Removing demos"}')
             sal_name_dirs = glob.glob(
                 os.path.join(self.sal_work_dir, f"{self.sal_name}*")
             )
@@ -172,7 +172,7 @@ class MakeSalpyLib:
         print(f"*** Move {self.sal_name} libraries into place ***")
         self.move_libraries()
 
-        print(f"*** Final cleanup ***")
+        print(f'{"*** Final cleanup ***"}')
         self.delete_files(keep_most=demo)
 
         print(f"*** Done generating SALPY_{self.sal_name} ***")

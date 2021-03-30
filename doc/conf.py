@@ -2,7 +2,7 @@
 This configuration only affects single-package Sphinx documentation builds.
 """
 from documenteer.conf.pipelinespkg import *
-import lsst.ts.sal
+
 project = "ts_sal"
 html_theme_options["logotext"] = project
 html_title = project

@@ -88,8 +88,7 @@ def set_random_lsst_dds_partition_prefix():
 
 
 class TestData:
-    """Generate random test data and compare topics.
-    """
+    """Generate random test data and compare topics."""
 
     __test__ = False  # stop pytest from warning that this is not a test
 
