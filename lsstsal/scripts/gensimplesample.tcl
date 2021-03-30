@@ -190,7 +190,7 @@ using namespace std;
 "
       puts $fhlv "typedef struct [set subsys]_[set name]LV \{"
       puts $fbst "   bp::class_<[set subsys]_[set name]C>(\"[set subsys]_[set name]C\")"
-      puts $fpyb "   py::class_<[set subsys]_[set name]C>(m,\"[set subsys]_[set name]C\")
+      puts $fpyb "   py::class_<[set subsys]_[set name]C>(m,\"[set subsys]_[set name]C\" ,R\"pbdoc(Data strucuture for [set name] as defined in the XML)pbdoc\" )
       .def(py::init<>())"
       if {[string range $name 0 7] != "command_" && [string range $name 0 8] != "logevent_"}  {
         puts $fbst2 "

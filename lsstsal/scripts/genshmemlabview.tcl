@@ -243,6 +243,9 @@ global SAL_DIR SAL_WORK_DIR SYSDIC TELEMETRY_ALIASES LVSTRINGS CMD_ALIASES
         void [set base]_shm_checkCallbacksLV();
         void [set base]_shm_initFlags();
         double [set base]_shm_getCurrentTimeLV();
+        char *[set base]_shm_getSALVersionLV();
+        char *[set base]_shm_getXMLVersionLV();
+        char *[set base]_shm_getOSPLVersionLV();
 "
   foreach j $ptypes {
      set name [lindex $j 2]
@@ -476,16 +479,16 @@ extern \"C\" \{
       return taiTime;
     \}
 
-    string [set base]_shm_getSALVersion() \{
+    char *[set base]_shm_getSALVersionLV() \{
         return \"$SALVERSION\";
     \}
 
-    string [set base]_shm_getXMLVersion() \{
+    char *[set base]_shm_getXMLVersionLV() \{
         return \"$xmldist\";
     \}
 
-    string [set base]_shm_getOSPLVersion() \{
-        string osplver = getenv(\"OSPL_RELEASE\");
+    char *[set base]_shm_getOSPLVersionLV() \{
+        char *osplver = getenv(\"OSPL_RELEASE\");
         return osplver;
     \}
 "

@@ -13,15 +13,16 @@ global EVENT_ALIASES EVTS DONE_CMDEVT
   if { $lang == "include" } {
      foreach i $EVENT_ALIASES($subsys) { 
       if { [info exists EVTS($subsys,$i,param)] } {
+         set turl [getTopicURL $subsys $i]
          puts $fout "
 /** Publish a [set i] logevent message
-  * @param data is the logevent payload
+  * @param data is the logevent payload $turl
   * @priority is a user configurable priority, larger is higher priority
   */
       salReturn logEvent_[set i]( SALData_logevent_[set i]C *data, int priority );      
 
 /** Receive a logevent message.
-  * @param data is the logevent payload
+  * @param data is the logevent payload $turl
   * @returns SAL__NO_UPDATES if no data is available, or SAL__OK otherwise
   */
       int getEvent_[set i]( SALData_logevent_[set i]C *data );"
@@ -117,7 +118,12 @@ global EVENT_ALIASES EVTS
    foreach i $EVENT_ALIASES($subsys) {
     if { [info exists EVTS($subsys,$i,param)] } {
       stdlog "	: alias = $i"
+      set turl [getTopicURL $subsys $i]
       puts $fout "
+/** Receive a logevent message.
+  * @param data is the logevent payload $turl
+  * @returns SAL__NO_UPDATES if no data is available, or SAL__OK otherwise
+  */
 	public int getEvent_[set i](SALData.logevent_[set i] anEvent)
 	\{
 	  int status =  -1;
@@ -134,6 +140,10 @@ global EVENT_ALIASES EVTS
 	  return status;
 	\}
 
+/** Publish a [set i] logevent message
+  * @param data is the logevent payload $turl
+  * @priority is a user configurable priority, larger is higher priority
+  */
 	public int logEvent_[set i]( SALData.logevent_[set i] event, int priority )
 	\{
 	   int status = 0;

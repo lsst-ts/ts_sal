@@ -43,6 +43,9 @@ global env SYSDIC SAL_WORK_DIR OPTIONS
          set name $value
          lappend SYSDIC(systems) $name
       }
+      if { $tag == "Description" } {
+         set SYSDIC($name,Description) $value
+      }
       if { $tag == "Generics" } {
          if { $value == "yes" } {
             set SYSDIC($name,hasAllGenerics) 1
