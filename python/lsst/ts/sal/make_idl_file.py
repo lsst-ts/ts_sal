@@ -67,8 +67,7 @@ class MakeIdlFile:
             shutil.copy(xmlpath, self.sal_work_dir)
 
     def delete_files(self):
-        """Delete unwanted files for this SAL component.
-        """
+        """Delete unwanted files for this SAL component."""
         xmlfiles = glob.glob(os.path.join(self.sal_work_dir, "*.xml"))
         for f in xmlfiles:
             os.remove(f)
