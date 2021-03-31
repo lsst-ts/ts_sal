@@ -159,6 +159,22 @@ global METADATA SAL_WORK_DIR
   close $fmeta
 }
 
+proc doxygenateIDL { cscidl dcscidl } {
+  set fin [open $cscidl r]
+  set fout [open $dcscidl w]
+  while { [gets $fin rec] > -1 } {
+     if { [llength [split $rec "@"]] > 1 && [string range $rec 0 5] != "struct"} {
+       set spl [split $rec "="]
+       set desc [string trim [lindex [split $rec "="] end] "\");"]
+       puts $fout "/// [getItemName $rec] - $desc"  
+     }
+     puts $fout $rec
+  }
+  close $fin
+  close $fout
+}
+
+
 
 
 

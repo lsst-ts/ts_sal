@@ -11,6 +11,7 @@ exec mkdir -p $SAL_WORK_DIR/docbuild_[set csc]/cmake
 exec mkdir -p $SAL_WORK_DIR/docbuild_[set csc]/apiDocumentation
 cd $SAL_WORK_DIR/docbuild_[set csc]
 
+source $SAL_DIR/activaterevcodes.tcl
 source $SAL_DIR/update_ts_xml_dictionary.tcl
 parseSystemDictionary
 
@@ -61,8 +62,9 @@ close $fout
 exec tar xvzf $SAL_DIR/SALDocument_docs_req
 
 exec mkdir -p SAL_[set csc]/idl
+exec cp SAL_idl SAL_[set csc]/idl/.
 cd SAL_[set csc]/idl
-exec cp $SAL_WORK_DIR/idl-templates/validated/sal/sal_revCoded_[set csc].idl .
+doxygenateIDL $SAL_WORK_DIR/idl-templates/validated/sal/sal_revCoded_[set csc].idl sal_revCoded_[set csc].idl
 exec doxygen SAL_idl
 cd $SAL_WORK_DIR/docbuild_[set csc]
 
