@@ -164,9 +164,9 @@ proc doxygenateIDL { cscidl dcscidl } {
   set fout [open $dcscidl w]
   while { [gets $fin rec] > -1 } {
      if { [llength [split $rec "@"]] > 1 && [string range $rec 0 5] != "struct"} {
-       set spl [split $rec "="]
+       set spl [lindex [split $rec ";"] 0]
        set desc [string trim [lindex [split $rec "="] end] "\");"]
-       puts $fout "/// [getItemName $rec] - $desc"  
+       puts $fout "/// [getItemName $spl] - $desc"  
      }
      puts $fout $rec
   }

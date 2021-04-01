@@ -29,9 +29,6 @@ if { $argv == "" || [lsearch $argv idl] > -1 } {
 
 
 if { $argv == "" || [lsearch $argv validate] > -1} {
-  puts stdout "Removing old idl-templates"
-  exec rm -fr idl-templates
-
   puts stdout  "Validating interfaces"
   foreach subsys $EVERYTHING {
    if { [info exists DO($subsys)] } {
@@ -130,6 +127,17 @@ if { $argv == "" || [lsearch $argv rpm] > -1 } {
 }
 
 
+if { $argv == "" || [lsearch $argv apidoc] > -1 } {
+ puts stdout  "Updating Documentation"
+ foreach subsys $EVERYTHING {
+  if { [info exists DO($subsys)] } {
+   set bad ""
+   set result ""
+   catch { set results [exec salgenerator $subsys apidoc] } bad
+   puts stdout "$result $bad"
+  }
+ }
+}
 
 
 
