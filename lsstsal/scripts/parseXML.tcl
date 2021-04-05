@@ -213,7 +213,7 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
       }
       if { $tag == "IDL_Size"}        {set sdim $value}
       if { $tag == "Description"}     {
-         set desc [join [split $value ","] ";"]
+         set desc [join [split $value ",\"\'\`"] " "]
          if { $itemid == 6 } { set DESC($subsys,$alias,help) "$desc"}
       }
       if { $tag == "Frequency"}       {set freq $value}
