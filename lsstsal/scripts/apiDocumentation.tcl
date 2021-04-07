@@ -43,7 +43,7 @@ Application Programming Interfaces
 
 puts stdout "SAL apidoc - Processing $csc"
 cd $SAL_WORK_DIR/docbuild_[set csc]
-exec rm -fr CMakefiles cmake_install.cmake CMakeDoxyfile.in CMakeDoxygenDefaults.cmake
+exec rm -fr CMakeFiles cmake_install.cmake CMakeDoxyfile.in CMakeDoxygenDefaults.cmake
 exec rm -fr doxygen sphinx docs SAL_[set csc] $TS_SAL_DIR/doc/_build/html/apiDocumentation/SAL_[set csc]
 exec mkdir -p SAL_[set csc]
 
@@ -177,19 +177,19 @@ Docs
 
 if { [info exists SYSDIC($csc,cpp)] } {
   set s [lsort [split [exec grep struct SAL_[set csc]/SAL_[set csc]C.h] \n]]
-  foreach t $s { 
+  foreach t $s {
     puts $fout ".. doxygenstruct:: [lindex $t 1]
-   :members:
-.. doxygenstruct:: salActor
    :members:"
   }
+  puts $fout ".. doxygenstruct:: salActor
+   :members:"
 }
 close $fout
 
 puts stdout "SAL apidoc - Building $csc API documentation"
 
 set result none ; set bad ""
-catch {set result [exec cmake3 .] } bad
+catch {set result [exec strace cmake3 . >& strace_cmake3] } bad
 if { $result == "none" } {puts stdout $bad}
 set result none
 catch {set result [exec make] } bad
@@ -205,5 +205,4 @@ exec mv docs/sphinx $TS_SAL_DIR/doc/_build/html/apiDocumentation/SAL_[set csc]
 ##cd $TS_SAL_DIR
 ##exec ltd upload --product ts-sal --git-ref $env(GIT_BRANCH) --dir doc/_build/html/SAL[set csc]
 ### package-docs build will be done by Jenkins after all CSC's are built
-
 
