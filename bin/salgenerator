@@ -380,6 +380,7 @@ if { $OPTIONS(apidoc) } {
       catch { set result [exec $SAL_DIR/apiDocumentation.tcl $s] } bad
       if { $result == "none" } {stdlog $bad}
       if { $OPTIONS(verbose) } {stdlog $result}
+      exec cat /tmp/docbuild_[set s].log
     }
   }
 }
