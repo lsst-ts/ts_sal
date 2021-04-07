@@ -2,7 +2,8 @@
 
 set csc [lindex $argv 0]
 
-puts stdout "SAL apidoc - Initializing"
+set fprogress [open /tmp/docbuild_[set csc].log w]
+puts $fprogress "SAL apidoc - Initializing"
 set SAL_DIR $env(SAL_DIR)
 set TS_SAL_DIR $env(TS_SAL_DIR)
 set SAL_WORK_DIR $env(SAL_WORK_DIR)
@@ -19,7 +20,7 @@ source $SAL_DIR/utilities.tcl
 parseSystemDictionary
 
 if { $argv == [lindex $SYSDIC(systems) end] } {
-  puts stdout "SAL apidoc - Rebuilding CSC index"
+  puts $fprogress "SAL apidoc - Rebuilding CSC index"
   set fout [open $TS_SAL_DIR/doc/sal-apis.rst w]
   puts $fout ".. _lsst.ts.sal-apis:
 
@@ -37,11 +38,12 @@ Application Programming Interfaces
   }
   close $fout
   cd $TS_SAL_DIR
-##  exec ltd upload --product ts-sal --git-ref $env(GIT_BRANCH) --dir doc
+  puts $fprogress "SAL apidoc - Uploading CSC index"
+  exec ltd upload --product ts-sal --git-ref $env(GIT_BRANCH) --dir doc
 }
 
 
-puts stdout "SAL apidoc - Processing $csc"
+puts $fprogress "SAL apidoc - Processing $csc"
 cd $SAL_WORK_DIR/docbuild_[set csc]
 exec rm -fr CMakeFiles cmake_install.cmake CMakeDoxyfile.in CMakeDoxygenDefaults.cmake
 exec rm -fr doxygen sphinx docs SAL_[set csc] $TS_SAL_DIR/doc/_build/html/apiDocumentation/SAL_[set csc]
@@ -66,18 +68,18 @@ close $fout
 
 exec tar xvzf $SAL_DIR/SALDocument_docs_req
 
-puts stdout "SAL apidoc - Preparing IDL"
+puts $fprogress "SAL apidoc - Preparing IDL"
 exec mkdir -p SAL_[set csc]/idl
 exec cp SAL_idl SAL_[set csc]/idl/.
 cd SAL_[set csc]/idl
 doxygenateIDL $SAL_WORK_DIR/idl-templates/validated/sal/sal_revCoded_[set csc].idl sal_revCoded_[set csc].idl
 set result none ; set bad ""
 catch { set result [exec doxygen SAL_idl] } bad
-if { $result == "none" } {puts stdout $bad}
+if { $result == "none" } {puts $fprogress $bad}
 cd $SAL_WORK_DIR/docbuild_[set csc]
 
 if { [info exists SYSDIC($csc,cpp)] } {
-  puts stdout "SAL apidoc - Preparing C++"
+  puts $fprogress "SAL apidoc - Preparing C++"
   exec tar xzf $SAL_DIR/SALDocument_cpp_req -C SAL_[set csc]
   exec cp $SAL_DIR/code/templates/SAL_defines.h SAL_[set csc]/.
   exec cp $SAL_WORK_DIR/[set csc]/cpp/src/SAL_[set csc].cpp SAL_[set csc]/.
@@ -90,7 +92,7 @@ if { [info exists SYSDIC($csc,cpp)] } {
 }
 
 if { [info exists SYSDIC($csc,java)] } {
-puts stdout "SAL apidoc - Preparing Java"
+puts $fprogress "SAL apidoc - Preparing Java"
   exec mkdir SAL_[set csc]/java
   set src [glob $SAL_WORK_DIR/[set csc]/java/src/org/lsst/sal/*.java]
   foreach f $src {exec cp $f SAL_[set csc]/java/.}
@@ -101,15 +103,15 @@ puts stdout "SAL apidoc - Preparing Java"
   set doit "javadoc $allj"
   set result none ; set bad ""
   catch {set result [eval $doit] bad}
-  if { $result == "none" } {puts stdout $bad}
+  if { $result == "none" } {puts $fprogress $bad}
 }
 
 cd $SAL_WORK_DIR/docbuild_[set csc]
 if { [info exists SYSDIC($csc,salpy)] } {
-  puts stdout "SAL apidoc - Preparing SALPY"
+  puts $fprogress "SAL apidoc - Preparing SALPY"
   exec cp $SAL_WORK_DIR/[set csc]/cpp/src/SALPY_[set csc].cpp SAL_[set csc]/.
   set result none
-  catch {set result [exec sphinx-autogen SAL_Test/SALPY_Test.cpp] } bad
+  catch {set result [exec sphinx-autogen SAL_Test/SALPY_Test.cpp >& /dev/null] } bad
   if { $result == "none" } {puts stdout $bad}
   set fpy [open docs/SALPY_[set csc].rst w]
   puts $fpy "
@@ -122,7 +124,7 @@ SALPY_[set csc] API
   close $fpy
 }
 
-puts stdout "SAL apidoc - Generating sphinx input"
+puts $fprogress "SAL apidoc - Generating sphinx input"
 
 if { [info exists SYSDIC($csc,cpp)] } {
   set fout [open SAL_[set csc]/CMakeLists.txt w]
@@ -186,7 +188,7 @@ if { [info exists SYSDIC($csc,cpp)] } {
 }
 close $fout
 
-puts stdout "SAL apidoc - Building $csc API documentation"
+puts $fprogress "SAL apidoc - Building $csc API documentation"
 
 set result none ; set bad ""
 catch {set result [exec strace cmake3 . >& strace_cmake3] } bad
@@ -199,10 +201,19 @@ exec mv SAL_[set csc]/idl/html docs/sphinx/idl
 if  { [info exists SYSDIC($csc,java)] } {
   exec mv SAL_[set csc]/java docs/sphinx/.
 }
+puts $fprogress "SAL apidoc - Build complete"
 
 exec mkdir -p $TS_SAL_DIR/doc/_build/html/apiDocumentation
 exec mv docs/sphinx $TS_SAL_DIR/doc/_build/html/apiDocumentation/SAL_[set csc]
-##cd $TS_SAL_DIR
-##exec ltd upload --product ts-sal --git-ref $env(GIT_BRANCH) --dir doc/_build/html/SAL[set csc]
-### package-docs build will be done by Jenkins after all CSC's are built
+
+puts $fprogress "SAL apidoc - Uploading to lsst.io"
+
+cd $TS_SAL_DIR
+exec ltd upload --product ts-sal --git-ref $env(GIT_BRANCH) --dir doc/_build/html/SAL[set csc]
+
+puts $fprogress "SAL apidoc - All done"
+close $fprogress
+
+
+
 
