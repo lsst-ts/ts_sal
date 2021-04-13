@@ -39,7 +39,7 @@ Application Programming Interfaces
   close $fout
   cd $TS_SAL_DIR
   puts $fprogress "SAL apidoc - Uploading CSC index"
-  exec ltd upload --product ts-sal --git-ref $env(GIT_BRANCH) --dir doc
+###  exec ltd upload --product ts-sal --git-ref $env(GIT_BRANCH) --dir doc
 }
 
 
@@ -209,7 +209,7 @@ exec mv docs/sphinx $TS_SAL_DIR/doc/_build/html/apiDocumentation/SAL_[set csc]
 puts $fprogress "SAL apidoc - Uploading to lsst.io"
 
 cd $TS_SAL_DIR
-exec ltd upload --product ts-sal --git-ref $env(GIT_BRANCH) --dir doc/_build/html/SAL_[set csc]
+###exec ltd upload --product ts-sal --git-ref $env(GIT_BRANCH) --dir doc/_build/html/SAL_[set csc]
 
 puts $fprogress "SAL apidoc - All done"
 close $fprogress

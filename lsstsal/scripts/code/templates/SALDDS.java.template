@@ -280,7 +280,7 @@ public class SAL_SALData {
 		  ddsIPaddress = ipasint;
                 }
                 if (hname == null) {
-                   historySync = 30;
+                   historySync = 0;
                 } else {
                    historySync = Integer.parseInt(hname);
                 }

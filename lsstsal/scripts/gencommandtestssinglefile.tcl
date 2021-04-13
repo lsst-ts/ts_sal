@@ -162,7 +162,7 @@ proc insertControllers { subsys file_writer } {
 proc insertMakeFile { subsys file_writer } {
 global SYSDIC
     set keyed ""
-    if { [info exists SYSDIC($subsys,KEYID)] } {
+    if { [info exists SYSDIC($subsys,keyedID)] } {
        set keyed "-DSAL_SUBSYSTEM_ID_IS_KEYED
     }
     puts $file_writer "#----------------------------------------------------------------------------"
