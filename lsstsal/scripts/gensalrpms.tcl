@@ -28,7 +28,8 @@ global SAL_WORK_DIR XMLVERSION
    catch {
     copyasset $SAL_WORK_DIR/lib/libSAL_[set subsys].so [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/lib/.
     copyasset $SAL_WORK_DIR/lib/libSAL_[set subsys].a [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/lib/.
-    set all [glob [set subsys]_*/cpp]
+    set all ""
+    catch {set all [glob [set subsys]_*/cpp]}
     foreach i $all {
        set tlm [lindex [split $i "/"] 0]
        set top [join [lrange [split $tlm "_"] 1 end] "_"]
@@ -147,7 +148,7 @@ rpmbuild -bb -bl -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_[set subsys].spec
     exec cat /tmp/makerpm_[set subsys].log
   }
   cd $SAL_WORK_DIR
-  updatesingletons ts_sal_utils generateUtilsrpm
+###  updatesingletons ts_sal_utils generateUtilsrpm
   updatesingletons ts_sal_runtime generatemetarpm
   updatesingletons ts_sal_ATruntime generateATmetarpm
 }
