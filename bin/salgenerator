@@ -237,6 +237,7 @@ if { $OPTIONS(html) } {
 }
 
 if { $OPTIONS(apidoc) } {
+  if { $OPTIONS(upload) } {set TSUBSYSTEMS upload }
   foreach s $TSUBSYSTEMS {
     if { $s != "apidoc" } {
       stdlog "Building API documentation for $s subsystem"
