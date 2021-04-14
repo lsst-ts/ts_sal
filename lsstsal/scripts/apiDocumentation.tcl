@@ -19,29 +19,7 @@ source $SAL_DIR/update_ts_xml_dictionary.tcl
 source $SAL_DIR/utilities.tcl
 parseSystemDictionary
 
-if { $argv == [lindex $SYSDIC(systems) end] } {
-  puts $fprogress "SAL apidoc - Rebuilding CSC index"
-  set fout [open $TS_SAL_DIR/doc/sal-apis.rst w]
-  puts $fout ".. _lsst.ts.sal-apis:
-
-##################################
-Application Programming Interfaces
-##################################
-"
-  foreach csys [lsort $SYSDIC(systems)] {
-    set desc "N/A"
-    if { [info exists SYSDIC([set csys],Description)] } {
-      set desc $SYSDIC([set csys],Description)
-    }
-    puts $fout "
-  * `[set csys] APIs <apiDocumentation/SAL_[set csys]/index.html>`_ : $desc"
-  }
-  close $fout
-  cd $TS_SAL_DIR
-  puts $fprogress "SAL apidoc - Uploading CSC index"
-###  exec ltd upload --product ts-sal --git-ref $env(GIT_BRANCH) --dir doc
-}
-
+if { $argv != "upload" } {
 
 puts $fprogress "SAL apidoc - Processing $csc"
 cd $SAL_WORK_DIR/docbuild_[set csc]
@@ -206,10 +184,33 @@ puts $fprogress "SAL apidoc - Build complete"
 exec mkdir -p $TS_SAL_DIR/doc/_build/html/apiDocumentation
 exec mv docs/sphinx $TS_SAL_DIR/doc/_build/html/apiDocumentation/SAL_[set csc]
 
-puts $fprogress "SAL apidoc - Uploading to lsst.io"
+} else {
+  puts $fprogress "SAL apidoc - Rebuilding CSC index"
+  set fout [open $TS_SAL_DIR/doc/sal-apis.rst w]
+  puts $fout ".. _lsst.ts.sal-apis:
 
-cd $TS_SAL_DIR
-###exec ltd upload --product ts-sal --git-ref $env(GIT_BRANCH) --dir doc/_build/html/SAL_[set csc]
+##################################
+Application Programming Interfaces
+##################################
+"
+  foreach csys [lsort $SYSDIC(systems)] {
+    set desc "N/A"
+    if { [info exists SYSDIC([set csys],Description)] } {
+      set desc $SYSDIC([set csys],Description)
+    }
+    puts $fout "
+  * `[set csys] APIs <apiDocumentation/SAL_[set csys]/index.html>`_ : $desc"
+  }
+  close $fout
+  exec git clone https://github.com/lsst-ts/ts_sal_apidoc
+  cd ts_sal_apidoc
+  exec rm -fr doc/_build
+  exec mv $TS_SAL_DIR/doc/_build doc/.
+  puts $fprogress "SAL apidoc - Uploading to ts_sal_apidoc"
+  exec git add --all .
+  exec git commit -m "CI update"
+  exec git push https://$env(GITUSER):$env(GITPASSWORD)@github.com/lsst-ts/ts_sal_apidoc.git --all
+}
 
 puts $fprogress "SAL apidoc - All done"
 close $fprogress
