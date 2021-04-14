@@ -370,11 +370,13 @@ if { $OPTIONS(rpm) } {
       catch { set result [updateruntime $s] } bad
       if { $result == "none" } {stdlog $bad}
       if { $OPTIONS(verbose) } {stdlog $result}
-      stdlog "Building test runtime RPM for $s subsystem"
-      set result none
-      catch { set result [updateruntime $s 1] } bad
-      if { $result == "none" } {stdlog $bad}
-      if { $OPTIONS(verbose) } {stdlog $result}
+      if { [info exists SYSDIC([set s],cpp)] } {
+        stdlog "Building test runtime RPM for $s subsystem"
+        set result none
+        catch { set result [updateruntime $s 1] } bad
+        if { $result == "none" } {stdlog $bad}
+        if { $OPTIONS(verbose) } {stdlog $result}
+      }
     }
   }
 }
