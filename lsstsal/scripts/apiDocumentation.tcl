@@ -187,7 +187,7 @@ exec mv docs/sphinx $TS_SAL_DIR/doc/_build/html/apiDocumentation/SAL_[set csc]
 } else {
   exec rm -fr ts_sal_apidoc
   set result none
-  catch {set result [exec git clone ssh://git@github.com/lsst-ts/ts_sal_apidoc] } bad
+  catch {set result [exec git clone --no-progress ssh://git@github.com/lsst-ts/ts_sal_apidoc] } bad
   if { $result == "none" } {puts $fprogress $bad}
   cd ts_sal_apidoc
   exec rm -fr doc/_build
@@ -211,13 +211,13 @@ Application Programming Interfaces
   close $fout
   puts $fprogress "SAL apidoc - Uploading to ts_sal_apidoc"
   set result none
-  catch {set result [exec git add --all .] } bad
+  catch {set result [exec git add --all --no-progress .] } bad
   if { $result == "none" } {puts $fprogress $bad}
   set result none
-  catch {set result [exec git commit -m "CI update"] } bad
+  catch {set result [exec git commit  --no-progress -m "CI update"] } bad
   if { $result == "none" } {puts $fprogress $bad}
   set result none
-  catch {set result [exec git push --all] } bad
+  catch {set result [exec git push --no-progress --all] } bad
   if { $result == "none" } {puts $fprogress $bad}
 }
 
