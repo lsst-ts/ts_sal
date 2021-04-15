@@ -185,8 +185,13 @@ exec mkdir -p $TS_SAL_DIR/doc/_build/html/apiDocumentation
 exec mv docs/sphinx $TS_SAL_DIR/doc/_build/html/apiDocumentation/SAL_[set csc]
 
 } else {
+  exec rm -fr ts_sal_apidoc
+  exec git clone https://github.com/lsst-ts/ts_sal_apidoc
+  cd ts_sal_apidoc
+  exec rm -fr doc/_build
+  exec cp -r $TS_SAL_DIR/doc/_build doc/.
   puts $fprogress "SAL apidoc - Rebuilding CSC index"
-  set fout [open $TS_SAL_DIR/doc/sal-apis.rst w]
+  set fout [open doc/sal-apis.rst w]
   puts $fout ".. _lsst.ts.sal-apis:
 
 ##################################
@@ -202,11 +207,6 @@ Application Programming Interfaces
   * `[set csys] APIs <apiDocumentation/SAL_[set csys]/index.html>`_ : $desc"
   }
   close $fout
-  exec rm -fr ts_sal_apidoc
-  exec git clone https://github.com/lsst-ts/ts_sal_apidoc
-  cd ts_sal_apidoc
-  exec rm -fr doc/_build
-  exec mv $TS_SAL_DIR/doc/_build doc/.
   puts $fprogress "SAL apidoc - Uploading to ts_sal_apidoc"
   exec git add --all .
   exec git commit -m "CI update"
