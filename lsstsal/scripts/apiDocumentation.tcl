@@ -85,23 +85,6 @@ puts $fprogress "SAL apidoc - Preparing Java"
 }
 
 cd $SAL_WORK_DIR/docbuild_[set csc]
-if { [info exists SYSDIC($csc,salpy)] } {
-  puts $fprogress "SAL apidoc - Preparing SALPY"
-  exec cp $SAL_WORK_DIR/[set csc]/cpp/src/SALPY_[set csc].cpp SAL_[set csc]/.
-  set result none
-  catch {set result [exec sphinx-autogen SAL_Test/SALPY_Test.cpp >& /dev/null] } bad
-  if { $result == "none" } {puts stdout $bad}
-  set fpy [open docs/SALPY_[set csc].rst w]
-  puts $fpy "
-===================
-SALPY_[set csc] API
-===================
-
-.. automodule:: SALPY_[set csc]
-"
-  close $fpy
-}
-
 puts $fprogress "SAL apidoc - Generating sphinx input"
 
 if { [info exists SYSDIC($csc,cpp)] } {
@@ -121,6 +104,24 @@ perl -pi -w -e 's/SALDocument/SAL_[set csc]/g;' docs/conf.py
 perl -pi -w -e 's/SALDocument/SAL_[set csc]/g;' CMakeLists.txt
 "
 close $fout
+
+if { [info exists SYSDIC($csc,salpy)] } {
+  puts $fprogress "SAL apidoc - Preparing SALPY"
+  exec cp $SAL_WORK_DIR/[set csc]/cpp/src/SALPY_[set csc].cpp SAL_[set csc]/.
+  set result none
+  catch {set result [exec sphinx-autogen SAL_Test/SALPY_Test.cpp >& /dev/null] } bad
+  if { $result == "none" } {puts stdout $bad}
+  set fpy [open SAL_[set csc]/SALPY_[set csc].rst w]
+  puts $fpy "
+===================
+SALPY_[set csc] API
+===================
+
+.. automodule:: SALPY_[set csc]
+"
+  close $fpy
+}
+
 
 exec chmod 755 /tmp/sreplace_[set csc]
 exec /tmp/sreplace_[set csc]
@@ -143,6 +144,7 @@ if  { [info exists SYSDIC($csc,java)] } {
 
 puts $fout "
 .. toctree::
+.. include :: SALPY_Test.rst
    :maxdepth: 2
    :caption: Contents:
 
@@ -164,13 +166,30 @@ if { [info exists SYSDIC($csc,cpp)] } {
   puts $fout ".. doxygenstruct:: salActor
    :members:"
 }
+
+if { [info exists SYSDIC($csc,salpy)] } {
+  puts $fout ".. doxygenclass:: SALPY_Test
+   :members:"
+}
+
+
 close $fout
 
 puts $fprogress "SAL apidoc - Building $csc API documentation"
 
 set result none ; set bad ""
-catch {set result [exec strace cmake3 . >& strace_cmake3] } bad
+catch {set result [exec cmake3 .] } bad
 if { $result == "none" } {puts stdout $bad}
+
+set fout [open /tmp/sreplace_[set csc] w]
+puts $fout "#!/bin/sh
+perl -pi -w -e 's/WARN_IF_UNDOCUMENTED   = YES/WARN_IF_UNDOCUMENTED   = NO/g;' docs/Doxyfile.in
+perl -pi -w -e 's/GENERATE_LATEX         = YES/GENERATE_LATEX         = NO/g;' docs/Doxyfile.in
+"
+close $fout
+exec chmod 755 /tmp/sreplace_[set csc]
+exec /tmp/sreplace_[set csc]
+
 set result none
 catch {set result [exec make] } bad
 if { $result == "none" } {puts stdout $bad}
@@ -185,8 +204,15 @@ exec mkdir -p $TS_SAL_DIR/doc/_build/html/apiDocumentation
 exec mv docs/sphinx $TS_SAL_DIR/doc/_build/html/apiDocumentation/SAL_[set csc]
 
 } else {
+  exec rm -fr ts_sal_apidoc
+  set result none
+  catch {set result [exec git clone -q ssh://git@github.com/lsst-ts/ts_sal_apidoc] } bad
+  if { $result == "none" } {puts $fprogress $bad}
+  cd ts_sal_apidoc
+  exec rm -fr doc/_build
+  exec cp -r $TS_SAL_DIR/doc/_build doc/.
   puts $fprogress "SAL apidoc - Rebuilding CSC index"
-  set fout [open $TS_SAL_DIR/doc/sal-apis.rst w]
+  set fout [open doc/sal-apis.rst w]
   puts $fout ".. _lsst.ts.sal-apis:
 
 ##################################
@@ -202,14 +228,22 @@ Application Programming Interfaces
   * `[set csys] APIs <apiDocumentation/SAL_[set csys]/index.html>`_ : $desc"
   }
   close $fout
-  exec git clone https://github.com/lsst-ts/ts_sal_apidoc
-  cd ts_sal_apidoc
-  exec rm -fr doc/_build
-  exec mv $TS_SAL_DIR/doc/_build doc/.
   puts $fprogress "SAL apidoc - Uploading to ts_sal_apidoc"
-  exec git add --all .
-  exec git commit -m "CI update"
-  exec git push https://$env(GITUSER):$env(GITPASSWORD)@github.com/lsst-ts/ts_sal_apidoc.git --all
+  set result none
+  catch {set result [exec git add --all .] } bad
+  if { $result == "none" } {puts $fprogress $bad}
+  set result none
+  catch {set result [exec git commit -m "CI update"] } bad
+  if { $result == "none" } {
+    if { [lindex $bad end] == "abnormally" } {
+      puts $fprogress [join [lrange [split $bad \n] 0 1] \n]
+    } else {
+      puts $fprogress $bad
+    }
+  }
+  set result none
+  catch {set result [exec git push --no-progress --all] } bad
+  if { $result == "none" } {puts $fprogress $bad}
 }
 
 puts $fprogress "SAL apidoc - All done"
