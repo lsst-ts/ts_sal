@@ -210,7 +210,9 @@ Application Programming Interfaces
   puts $fprogress "SAL apidoc - Uploading to ts_sal_apidoc"
   exec git add --all .
   exec git commit -m "CI update"
-  exec git push https://$env(GITUSER):$env(GITPASSWORD)@github.com/lsst-ts/ts_sal_apidoc.git --all
+  set result none
+  catch {set result [exec git push https://$env(GITUSER):$env(GITPASSWORD)@github.com/lsst-ts/ts_sal_apidoc.git --all] } bad
+  if { $result == "none" } {puts $fprogress $bad}
 }
 
 puts $fprogress "SAL apidoc - All done"
