@@ -186,7 +186,7 @@ exec mv docs/sphinx $TS_SAL_DIR/doc/_build/html/apiDocumentation/SAL_[set csc]
 
 } else {
   exec rm -fr ts_sal_apidoc
-  exec git clone https://github.com/lsst-ts/ts_sal_apidoc
+  exec git clone ssh://git@github.com/lsst-ts/ts_sal_apidoc
   cd ts_sal_apidoc
   exec rm -fr doc/_build
   exec cp -r $TS_SAL_DIR/doc/_build doc/.
@@ -211,7 +211,7 @@ Application Programming Interfaces
   exec git add --all .
   exec git commit -m "CI update"
   set result none
-  catch {set result [exec git push https://$env(GITUSER):$env(GITPASSWORD)@github.com/lsst-ts/ts_sal_apidoc.git --all] } bad
+  catch {set result [exec git push --all] } bad
   if { $result == "none" } {puts $fprogress $bad}
 }
 
