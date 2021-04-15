@@ -202,6 +202,7 @@ Application Programming Interfaces
   * `[set csys] APIs <apiDocumentation/SAL_[set csys]/index.html>`_ : $desc"
   }
   close $fout
+  exec rm -fr ts_sal_apidoc
   exec git clone https://github.com/lsst-ts/ts_sal_apidoc
   cd ts_sal_apidoc
   exec rm -fr doc/_build
