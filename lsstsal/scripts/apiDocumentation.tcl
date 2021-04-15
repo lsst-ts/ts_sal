@@ -211,10 +211,10 @@ Application Programming Interfaces
   close $fout
   puts $fprogress "SAL apidoc - Uploading to ts_sal_apidoc"
   set result none
-  catch {set result [exec git add --all --no-progress .] } bad
+  catch {set result [exec git add --all .] } bad
   if { $result == "none" } {puts $fprogress $bad}
   set result none
-  catch {set result [exec git commit  --no-progress -m "CI update"] } bad
+  catch {set result [exec git commit -m "CI update"] } bad
   if { $result == "none" } {puts $fprogress $bad}
   set result none
   catch {set result [exec git push --no-progress --all] } bad
