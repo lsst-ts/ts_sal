@@ -162,8 +162,8 @@ proc insertControllers { subsys file_writer } {
 proc insertMakeFile { subsys file_writer } {
 global SYSDIC
     set keyed ""
-    if { [info exists SYSDIC($subsys,KEYID)] } {
-       set keyed "-DSAL_SUBSYSTEM_ID_IS_KEYED
+    if { [info exists SYSDIC($subsys,keyedID)] } {
+      set keyed "-DSAL_SUBSYSTEM_ID_IS_KEYED"
     }
     puts $file_writer "#----------------------------------------------------------------------------"
     puts $file_writer "#       Macros"

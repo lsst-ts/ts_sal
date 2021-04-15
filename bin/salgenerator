@@ -30,7 +30,7 @@ if { $argc < 2 } { print_help }
 
 set SAL_DIR $env(SAL_DIR)
 set OSPL_HOME $env(OSPL_HOME)
-set COMMANDS "validate efd writers compile cpp idl isocpp java jni lib link maven tcl db icd labview python pydds html apidoc rpm sal shmem sim simd verbose fastest generate" 
+set COMMANDS "validate efd writers compile cpp idl isocpp java jni lib link maven tcl db icd labview python pydds html apidoc rpm sal shmem sim simd verbose fastest generate upload" 
 foreach o $COMMANDS {
   set OPTIONS($o) 0
   if { [lsearch [string tolower $argv] $o] > -1 } {
@@ -236,12 +236,18 @@ if { $OPTIONS(html) } {
   exit 0
 }
 
-
-if { $OPTIONS(efd) && $OPTIONS(writers) } {
-  source $SAL_DIR/gengenericefd_array.tcl
-  cd $SAL_WORK_DIR
-  updateefdschema
-  updateefdtables
+if { $OPTIONS(apidoc) } {
+  if { $OPTIONS(upload) } {set TSUBSYSTEMS upload }
+  foreach s $TSUBSYSTEMS {
+    if { $s != "apidoc" } {
+      stdlog "Building API documentation for $s subsystem"
+      set result none
+      catch { set result [exec $SAL_DIR/apiDocumentation.tcl $s] } bad
+      if { $result == "none" } {stdlog $bad}
+      if { $OPTIONS(verbose) } {stdlog $result}
+      exec cat /tmp/docbuild_[set s].log
+    }
+  }
   exit
 }
 
@@ -275,6 +281,7 @@ if { $OPTIONS(maven) } {
   }
   puts stdout "Using version $mvnrelease for the maven project"
 }
+
 
 catch {exec rmdir saltemptest}
 exec mkdir -p .salwork
@@ -363,27 +370,17 @@ if { $OPTIONS(rpm) } {
       catch { set result [updateruntime $s] } bad
       if { $result == "none" } {stdlog $bad}
       if { $OPTIONS(verbose) } {stdlog $result}
-      stdlog "Building test runtime RPM for $s subsystem"
-      set result none
-      catch { set result [updateruntime $s 1] } bad
-      if { $result == "none" } {stdlog $bad}
-      if { $OPTIONS(verbose) } {stdlog $result}
+      if { [info exists SYSDIC([set s],cpp)] } {
+        stdlog "Building test runtime RPM for $s subsystem"
+        set result none
+        catch { set result [updateruntime $s 1] } bad
+        if { $result == "none" } {stdlog $bad}
+        if { $OPTIONS(verbose) } {stdlog $result}
+      }
     }
   }
 }
 
-if { $OPTIONS(apidoc) } {
-  foreach s $TSUBSYSTEMS {
-    if { $s != "apidoc" } {
-      stdlog "Building API documentation for $s subsystem"
-      set result none
-      catch { set result [exec $SAL_DIR/apiDocumentation.tcl $s] } bad
-      if { $result == "none" } {stdlog $bad}
-      if { $OPTIONS(verbose) } {stdlog $result}
-      exec cat /tmp/docbuild_[set s].log
-    }
-  }
-}
 
 if { $OPTIONS(labview) } {
   set subsys [lindex [split [lindex $TARGETS 0] _] 0]

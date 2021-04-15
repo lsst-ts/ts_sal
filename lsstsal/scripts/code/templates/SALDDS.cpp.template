@@ -60,7 +60,7 @@ void SAL_SALData::initSalEnvironment(int aKey)
    if ( sname != NULL ) {
       sscanf(sname,"%d",&historySync);
    } else {
-      historySync = 30;
+      historySync = 0;
    }
    ddsIPaddress = 1;
    if (ipaddr != NULL) {

@@ -53,6 +53,8 @@ Application Programming Interfaces
 
   * `DIMM APIs <apiDocumentation/SAL_DIMM/index.html>`_ : CSC for the DIMM (Differential Image Motion Monitor) telescope
 
+  * `DREAM APIs <apiDocumentation/SAL_DREAM/index.html>`_ : CSC for the DREAM (Dutch Rubin Enhanced Atmospheric Monitor) all-sky camera.
+
   * `DSM APIs <apiDocumentation/SAL_DSM/index.html>`_ : CSC for transmitting information from the Dome Seeing Monitor
 
   * `EAS APIs <apiDocumentation/SAL_EAS/index.html>`_ : The CSC for the Environmental Awareness System
