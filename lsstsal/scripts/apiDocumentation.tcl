@@ -169,7 +169,7 @@ close $fout
 puts $fprogress "SAL apidoc - Building $csc API documentation"
 
 set result none ; set bad ""
-catch {set result [exec strace cmake3 . >& strace_cmake3] } bad
+catch {set result [exec cmake3 .] } bad
 if { $result == "none" } {puts stdout $bad}
 set result none
 catch {set result [exec make] } bad
