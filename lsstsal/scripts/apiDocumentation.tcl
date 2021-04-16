@@ -234,7 +234,13 @@ Application Programming Interfaces
   if { $result == "none" } {puts $fprogress $bad}
   set result none
   catch {set result [exec git commit -m "CI update"] } bad
-  if { $result == "none" } {puts $fprogress $bad}
+  if { $result == "none" } {
+    if { [lindex $bad end] == "abnormally" } {
+      puts $fprogress [join [lrange [split $bad \n] 0 1] \n]
+    } else {
+      puts $fprogress $bad
+    }
+  }
   set result none
   catch {set result [exec git push --no-progress --all] } bad
   if { $result == "none" } {puts $fprogress $bad}
