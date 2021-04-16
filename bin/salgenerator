@@ -246,9 +246,10 @@ if { $OPTIONS(apidoc) } {
       if { $result == "none" } {stdlog $bad}
       if { $OPTIONS(verbose) } {stdlog $result}
     }
-    exec cat /tmp/docbuild_[set s].log
+    set fin [open /tmp/docbuild_[set s].log r]
+    while { [gets $fin rec] > -1 } {stdlog $rec}
+    close $fin
   }
-  exit
 }
 
 
@@ -286,7 +287,7 @@ if { $OPTIONS(maven) } {
 catch {exec rmdir saltemptest}
 exec mkdir -p .salwork
 set TARGETS ""
-if { $OPTIONS(lib) == 0 || $OPTIONS(generate) == 1 } {
+if { $OPTIONS(lib) == 0 || $OPTIONS(generate) == 1 && $OPTIONS(apidoc) == 0 } {
   set matches $TSUBSYSTEMS
   foreach f [glob $SAL_WORK_DIR/idl-templates/validated/[set matches]_*.idl] {
     set TARGETS "$TARGETS [file tail $f]"
