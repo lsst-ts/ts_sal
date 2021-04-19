@@ -240,13 +240,15 @@ if { $OPTIONS(apidoc) } {
   if { $OPTIONS(upload) } {set TSUBSYSTEMS upload }
   foreach s $TSUBSYSTEMS {
     if { $s != "apidoc" } {
-      stdlog "Building API documentation for $s subsystem"
+      if { $s != "upload" } {stdlog "Building API documentation for $s subsystem"}
       set result none
       catch { set result [exec $SAL_DIR/apiDocumentation.tcl $s] } bad
       if { $result == "none" } {stdlog $bad}
       if { $OPTIONS(verbose) } {stdlog $result}
-      exec cat /tmp/docbuild_[set s].log
     }
+    set fin [open /tmp/docbuild_[set s].log r]
+    while { [gets $fin rec] > -1 } {stdlog $rec}
+    close $fin
   }
   exit
 }
