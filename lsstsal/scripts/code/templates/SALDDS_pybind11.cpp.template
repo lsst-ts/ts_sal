@@ -144,6 +144,10 @@ PYBIND11_MODULE(SALPY_SALData,m){
             "getSentTime"
             , (::salReturn ( ::SAL_SALData::* )( char * ) )( &::SAL_SALData::getSentTime )
             , ( py::arg("topicName") ) )    
+        .def( 
+            "checkAuthList"
+            , (::salReturn ( ::SAL_SALData::* )( std::string ) )( &::SAL_SALData::checkAuthList )
+            , ( py::arg("private_identity") ) )    
 // INSERT_SAL_PYTHON_GETPUT
         ;
 
