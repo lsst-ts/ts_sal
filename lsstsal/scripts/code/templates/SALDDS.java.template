@@ -31,6 +31,7 @@ import DDS.QosProvider;
 import org.lsst.sal.salActor;
 import org.lsst.sal.salUtils;
 import java.util.Random;
+import java.util.StringTokenizer;
 
 // INSERT SAL IMPORTS
 
@@ -84,6 +85,8 @@ public class SAL_SALData {
         private int lastActor_command;
         private int lastActor_event;
         private String CSC_identity;
+        private String authorizedUsers;
+        private String nonAuthorizedCSCs;
  
         salUtils salUtil = new salUtils();
         salActor[] sal = new salActor[SAL__ACTORS_MAXCOUNT];

@@ -38,6 +38,8 @@ global CMD_ALIASES CMDS DONE_CMDEVT ACKREVCODE REVCODE SAL_WORK_DIR OPTIONS
       int issueCommand_[set i]( SALData_command_[set i]C *data );
 
 /** Accept the [set i] command. The SAL will automatically generate an ackCmd message with an ack = SAL__CMD_ACK
+  * unless commanding is currently blocked by the authList setting (in which case the command will be ack = SAL__CMD_NOPERM
+  * and no cmdId will be returned to the caller (=0)
   * @param data is the command payload $turl
   */
       int acceptCommand_[set i]( SALData_command_[set i]C *data );
@@ -262,7 +264,14 @@ int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
     ackHandle = SALWriter->register_instance(ackdata);
     ackdata.SALDataID = subsystemID;
 #endif
-    ackdata.private_sndStamp = getCurrentTime();"
+    ackdata.private_sndStamp = getCurrentTime();
+    if (checkAuthList(sal\[actorIdx\].activeidentity) != SAL__OK) \{
+       ackdata.ack = SAL__CMD_NOPERM;
+       ackdata.error = 1;
+       ackdata.result = DDS::string_dup(\"Commanding not permitted by authList setting\");
+       status = 0;
+    \}
+"
      puts $fout "    istatus = SALWriter->write(ackdata, ackHandle);"
      puts $fout "    checkStatus(istatus, \"SALData::ackcmd[set ACKREVCODE]DataWriter::write\");"
    puts $fout "
@@ -585,6 +594,8 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
 "
       puts $fout "
 /** Accept the [set i] command. The SAL will automatically generate an ackCmd message with an ack = SAL__CMD_ACK
+    unless commanding is currently blocked by the authList setting, in which case the command will be ack = SAL__CMD_NOPERM
+    and no cmdId will be returned to the caller (=0)
   * @param data is the command payload $turl
   */
 	public int acceptCommand_[set i]( SALData.command_[set i] data )
@@ -634,7 +645,14 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
 		      rcvSeqNum = status;
 		      rcvOrigin = SALInstance.value\[0\].private_origin;
 		      rcvIdentity = SALInstance.value\[0\].private_identity;
-		      ackdata.ack = SAL__CMD_ACK;"
+		      ackdata.ack = SAL__CMD_ACK;
+		      if (checkAuthList(sal\[actorIdx\].activeidentity) != SAL__OK) \{
+       			ackdata.ack = SAL__CMD_NOPERM;
+       			ackdata.error = 1;
+       			ackdata.result = \"Commanding not permitted by authList setting\";
+       			status = 0;
+    		      \}
+"
       if { [info exists SYSDIC($subsys,keyedID)] } {
          puts $fout "		      ackdata.SALDataID = subsystemID;
 		      ackHandle = SALWriter.register_instance(ackdata);"
@@ -972,6 +990,8 @@ global SYSDIC
 	  createReader(actorIdx,false);
 "
    }
+   set cmdrevcode [getRevCode [set subsys]_command_setAuthList short]
+   set evtrevcode [getRevCode [set subsys]_logevent_authList short]
    puts $fout "
           if (sal\[actorIdx\].isProcessor == false) \{
   	    //create Publisher
@@ -986,6 +1006,76 @@ global SYSDIC
 	  sal\[actorIdx\].isProcessor = true;
           sal\[actorIdx\].sampleAge = 1.0;
 	\}
+
+	public int checkAuthList(String private_identity)
+	\{
+          int cmdId;
+          int iat = 0;
+  	  String my_identity = CSC_identity;
+          command_setAuthList SALInstance = new command_setAuthList();
+          logevent_authList myData = new logevent_authList();
+
+	  if ( sal\[SAL__SALData_command_setAuthList_ACTOR\].isProcessor == false ) \{
+     	    salProcessor(\"SALData_command_setAuthList\");
+     	    salEventPub(\"SALData_logevent_authList\");
+  	  \}
+  	  cmdId = acceptCommand_setAuthList(SALInstance);
+  	  if (cmdId > 0) \{
+      	    if (debugLevel > 0) \{
+              System.out.println( \"=== command setAuthList received = \");
+              System.out.println( \"    authorizedUsers : \" + SALInstance.authorizedUsers);
+              System.out.println( \"    nonAuthorizedCSCs : \" + SALInstance.nonAuthorizedCSCs);
+            \}
+     	    authorizedUsers = SALInstance.authorizedUsers.replaceAll(\"\\\\s+\",\"\");
+     	    nonAuthorizedCSCs = SALInstance.nonAuthorizedCSCs.replaceAll(\"\\\\s+\",\"\");
+     	    myData.authorizedUsers = SALInstance.authorizedUsers;
+     	    myData.nonAuthorizedCSCs = SALInstance.nonAuthorizedCSCs;
+     	    logEvent_authList(myData, 1);
+          \}
+          StringTokenizer tokenizer2 = new StringTokenizer(nonAuthorizedCSCs, \",\");        
+          while (tokenizer2.hasMoreTokens()) \{
+            String next2 = tokenizer2.nextToken();
+            boolean ok1 = next2.equals(my_identity);
+            if (ok1) \{ 
+              if ( debugLevel > 0) \{ System.out.println(\"authList check : \" + next2 + \" allowed\"); \}
+              return SAL__OK;
+            \} else \{
+              boolean ok2 = next2.equals(private_identity);
+              if (ok2) \{ 
+                if ( debugLevel > 0) \{ System.out.println(\"authList check : \" + next2 + \" forbidden\"); \}
+                return SAL__CMD_NOPERM;
+              \}
+              StringTokenizer tokenizer3 = new StringTokenizer(private_identity, \":\");        
+              while (tokenizer3.hasMoreTokens()) \{
+                String next3 = tokenizer3.nextToken();
+                boolean ok3 = next3.equals(next2);
+                if ( debugLevel > 0) \{ System.out.println(\"authList check : \" + next3 + \" \" + ok3); \}
+                if (ok3) \{ 
+                  if ( debugLevel > 0) \{ System.out.println(\"authList check : \" + next3 + \" forbidden\"); \}
+                  return SAL__CMD_NOPERM;
+                \}
+              \}
+            \}
+          \}
+          StringTokenizer tokenizer4 = new StringTokenizer(authorizedUsers, \",\");        
+          while (tokenizer4.hasMoreTokens()) \{
+            String next = tokenizer4.nextToken();
+            boolean ok = next.equals(private_identity);
+            if (ok) \{ 
+              if ( debugLevel > 0) \{ System.out.println(\"authList check : \" + next + \" allowed\"); \}
+              return SAL__OK;
+            \}
+            return SAL__CMD_NOPERM;
+          \}        
+          StringTokenizer tokenizer5 = new StringTokenizer(private_identity, \"@\");        
+          while (tokenizer5.hasMoreTokens()) \{
+            iat++;
+            if (iat > 1) \{
+              return SAL__CMD_NOPERM;
+            \}
+          \}
+          return SAL__OK;      
+        \}
 "
 }
 
