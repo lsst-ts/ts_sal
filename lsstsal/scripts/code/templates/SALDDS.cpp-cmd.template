@@ -127,8 +127,10 @@ salReturn SAL_SALData::checkAuthList(std::string private_identity)
 {
   int status = 0;
   int cmdId = -1;
+  int iat = 0;
   char delimiter = ',';
   char delimiter2 = ':';
+  char delimiter3 = '@';
   std::string token;
   std::string token2;
   std::string my_identity = CSC_identity;
@@ -154,6 +156,7 @@ salReturn SAL_SALData::checkAuthList(std::string private_identity)
   }
   std::stringstream ssUsers(authorizedUsers);
   std::stringstream ssCSCs(nonAuthorizedCSCs);
+  std::stringstream ssid(private_identity);
   while(getline(ssCSCs, token, delimiter)) {
      std::cout << token << std::endl;
      if ( token.compare(my_identity) == 0 ) {
@@ -179,6 +182,10 @@ salReturn SAL_SALData::checkAuthList(std::string private_identity)
         return SAL__OK;
      }
      return SAL__CMD_NOPERM;
+  }
+  while(getline(ssid, token, delimiter3)) {
+     iat++;
+     if (iat > 1) { return SAL__CMD_NOPERM; }
   }
   status = SAL__OK;
   return status;  

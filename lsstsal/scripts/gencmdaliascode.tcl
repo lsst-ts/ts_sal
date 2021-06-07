@@ -1010,6 +1010,7 @@ global SYSDIC
 	public int checkAuthList(String private_identity)
 	\{
           int cmdId;
+          int iat = 0;
   	  String my_identity = CSC_identity;
           command_setAuthList SALInstance = new command_setAuthList();
           logevent_authList myData = new logevent_authList();
@@ -1056,9 +1057,9 @@ global SYSDIC
               \}
             \}
           \}
-          StringTokenizer tokenizer = new StringTokenizer(authorizedUsers, \",\");        
-          while (tokenizer.hasMoreTokens()) \{
-            String next = tokenizer.nextToken();
+          StringTokenizer tokenizer4 = new StringTokenizer(authorizedUsers, \",\");        
+          while (tokenizer4.hasMoreTokens()) \{
+            String next = tokenizer4.nextToken();
             boolean ok = next.equals(private_identity);
             if (ok) \{ 
               if ( debugLevel > 0) \{ System.out.println(\"authList check : \" + next + \" allowed\"); \}
@@ -1066,6 +1067,13 @@ global SYSDIC
             \}
             return SAL__CMD_NOPERM;
           \}        
+          StringTokenizer tokenizer5 = new StringTokenizer(private_identity, \"@\");        
+          while (tokenizer5.hasMoreTokens()) \{
+            iat++;
+            if (iat > 1) \{
+              return SAL__CMD_NOPERM;
+            \}
+          \}
           return SAL__OK;      
         \}
 "
