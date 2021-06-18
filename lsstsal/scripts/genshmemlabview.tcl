@@ -95,7 +95,7 @@ puts stdout $rec
 proc ignoreforlabview { rec subsys } {
   set crec [join [split [string trim  $rec "{}; 	"] "_"] " "]
   if { [lindex $crec 1] == "private" } {
-     if { [lsearch "revCode; sndStamp; seqNum; identity; origin; host;" [lindex $crec 2]] > -1 } {
+     if { [lsearch "revCode; sndStamp; seqNum; identity; origin;" [lindex $crec 2]] > -1 } {
         return 1
      }
   }

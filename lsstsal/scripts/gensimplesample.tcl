@@ -513,7 +513,6 @@ global OPTIONS
      puts $fout "	  long	ack;
 	  long	error;
 	  string<256>	result;
-	  long	host;
 	  string	identity;
 	  long	origin;
 	  long	cmdtype;
@@ -533,7 +532,6 @@ global SAL_WORK_DIR OPTIONS
 	  long	error;
 	  string<256>	result;
 	  string	identity;
-	  long	host;
 	  long	origin;
 	  long	cmdtype;
 	  double	timeout;
@@ -554,7 +552,6 @@ struct [set subsys]_ackcmdC
       int 		error;
       std::string	result;
       std::string       identity;
-      long		host;
       long		origin;
       long		cmdtype;
       double		timeout;

@@ -44,10 +44,8 @@ salReturn SAL_[set base]::putSample_[set name]([set base]_[set name]C *data)
   sal\[actorIdx\].sndStamp = Instance.private_sndStamp;
   Instance.private_identity = DDS::string_dup(CSC_identity);
   Instance.private_origin = getpid();
-  Instance.private_host = ddsIPaddress;
   Instance.private_seqNum = sal\[actorIdx\].sndSeqNum;
   sal\[actorIdx\].sndSeqNum++;
-  Instance.private_host = 1;
    "
   set frag [open $SAL_WORK_DIR/include/SAL_[set base]_[set name]Cput.tmp r]
   while { [gets $frag rec] > -1} {puts $fout $rec}
@@ -108,7 +106,6 @@ salReturn SAL_[set base]::getSample_[set name]([set base]_[set name]C *data)
       cout << \"    sndStamp  : \" << Instances\[j\].private_sndStamp << endl;
       cout << \"    origin  : \" << Instances\[j\].private_origin << endl;
       cout << \"    identity  : \" << Instances\[j\].private_identity << endl;
-      cout << \"    host  : \" << Instances\[j\].private_host << endl;
     \}
     if ( (rcvdTime - Instances\[j\].private_sndStamp) < sal\[actorIdx\].sampleAge && Instances\[j\].private_origin != 0 ) \{
 "

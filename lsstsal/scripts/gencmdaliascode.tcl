@@ -159,8 +159,7 @@ int SAL_SALData::issueCommand_[set i]( SALData_command_[set i]C *data )
   Instance.private_sndStamp = getCurrentTime();
   Instance.private_origin = getpid();
   Instance.private_identity = DDS::string_dup(CSC_identity);
-  Instance.private_seqNum =   sal\[actorIdx\].sndSeqNum;
-  Instance.private_host =     ddsIPaddress;"
+  Instance.private_seqNum =   sal\[actorIdx\].sndSeqNum;"
         set fin [open $SAL_WORK_DIR/include/SAL_[set subsys]_command_[set i]Cput.tmp r]
         while { [gets $fin rec] > -1 } {
            puts $fout $rec
@@ -224,7 +223,6 @@ int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
     if (debugLevel > 8) \{
       cout << \"=== \[acceptCommandC $i\] reading a command containing :\" << endl;
       cout << \"    seqNum   : \" << Instances\[j\].private_seqNum << endl;
-      cout << \"    host     : \" << Instances\[j\].private_host << endl;
       cout << \"    origin   : \" << Instances\[j\].private_origin << endl;
       cout << \"    identity   : \" << Instances\[j\].private_identity << endl;
       cout << \"    sample-state   : \" << info\[j\].sample_state << endl;
@@ -236,7 +234,6 @@ int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
 #endif
     ackdata.identity = Instances\[j\].private_identity;
     ackdata.origin = Instances\[j\].private_origin;
-    ackdata.host = Instances\[j\].private_host;
     ackdata.private_seqNum = Instances\[j\].private_seqNum;
     ackdata.cmdtype = actorIdx;
     ackdata.error = 0;
@@ -249,7 +246,6 @@ int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
       rcvSeqNum = status;
       rcvOrigin = Instances\[j\].private_origin;
       rcvIdentity = Instances\[j\].private_identity;
-      sal\[actorIdx\].activehost = Instances\[j\].private_host;
       sal\[actorIdx\].activeorigin = Instances\[j\].private_origin;
       sal\[actorIdx\].activeidentity = Instances\[j\].private_identity;
       sal\[actorIdx\].activecmdid = Instances\[j\].private_seqNum;
@@ -354,7 +350,7 @@ salReturn SAL_SALData::getResponse_[set i](SALData::ackcmd[set ACKREVCODE]Seq da
       cout << \"    view-state : \" << info\[j\].view_state << endl;
       cout << \"    instance-state : \" << info\[j\].instance_state << endl;
     \}
-// check identity, host , cmdtype here
+// check identity, cmdtype here
     status = data\[j\].ack;
     rcvdTime = getCurrentTime();
     sal\[actorIdxCmd\].rcvStamp = rcvdTime;
@@ -411,7 +407,7 @@ salReturn SAL_SALData::getResponse_[set i]C(SALData_ackcmdC *response)
       cout << \"    view-state : \" << info\[j\].view_state << endl;
       cout << \"    instance-state : \" << info\[j\].instance_state << endl;
     \}
-// check identity, host , cmdtype here
+// check identity, cmdtype here
     status = data\[j\].private_seqNum;;
     rcvdTime = getCurrentTime();
     sal\[actorIdxCmd\].rcvStamp = rcvdTime;
@@ -424,7 +420,6 @@ salReturn SAL_SALData::getResponse_[set i]C(SALData_ackcmdC *response)
     strcpy(sal\[actorIdxCmd\].result,DDS::string_dup(data\[j\].result));
     response->ack = data\[j\].ack;
     response->error = data\[j\].error;
-    response->host = data\[j\].host;
     response->origin = data\[j\].origin;
     response->identity = data\[j\].identity;
     response->cmdtype = data\[j\].cmdtype;
@@ -455,13 +450,11 @@ salReturn SAL_SALData::ackCommand_[set i]( int cmdId, salLONG ack, salLONG error
    SALData::ackcmd[set ACKREVCODE]DataWriter_var SALWriter = SALData::ackcmd[set ACKREVCODE]DataWriter::_narrow(dwriter.in());
 
    ackdata.private_seqNum = cmdId;
-   ackdata.private_host = ddsIPaddress;
    ackdata.private_identity = DDS::string_dup(CSC_identity);
    ackdata.error = error;
    ackdata.ack = ack;
    ackdata.result = DDS::string_dup(result);
    ackdata.origin = sal\[actorIdxCmd\].activeorigin;
-   ackdata.host = sal\[actorIdxCmd\].activehost;
    ackdata.identity = DDS::string_dup(sal\[actorIdxCmd\].activeidentity.c_str());
    ackdata.cmdtype = actorIdxCmd;
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
@@ -472,7 +465,6 @@ salReturn SAL_SALData::ackCommand_[set i]( int cmdId, salLONG ack, salLONG error
       cout << \"    seqNum   : \" << ackdata.private_seqNum << endl;
       cout << \"    ack      : \" << ackdata.ack << endl;
       cout << \"    error    : \" << ackdata.error << endl;
-      cout << \"    host     : \" << ackdata.host << endl;
       cout << \"    origin    : \" << ackdata.origin << endl;
       cout << \"    identity    : \" << ackdata.identity << endl;
       cout << \"    result   : \" << ackdata.result << endl;
@@ -505,13 +497,11 @@ salReturn SAL_SALData::ackCommand_[set i]C(SALData_ackcmdC *response )
 
    ackdata.private_seqNum = sal\[actorIdxCmd\].activecmdid;
    ackdata.private_origin = getpid();
-   ackdata.private_host = ddsIPaddress;
    ackdata.private_identity = DDS::string_dup(CSC_identity);
    ackdata.error = response->error;
    ackdata.ack = response->ack;
    ackdata.result = DDS::string_dup(response->result.c_str());
    ackdata.origin = sal\[actorIdxCmd\].activeorigin;
-   ackdata.host = sal\[actorIdxCmd\].activehost;
    ackdata.identity = DDS::string_dup(sal\[actorIdxCmd\].activeidentity.c_str());
    ackdata.cmdtype = actorIdxCmd;
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
@@ -522,7 +512,6 @@ salReturn SAL_SALData::ackCommand_[set i]C(SALData_ackcmdC *response )
       cout << \"    seqNum   : \" << ackdata.private_seqNum << endl;
       cout << \"    ack      : \" << ackdata.ack << endl;
       cout << \"    error    : \" << ackdata.error << endl;
-      cout << \"    host     : \" << ackdata.host << endl;
       cout << \"    origin    : \" << ackdata.origin << endl;
       cout << \"    identity    : \" << ackdata.identity << endl;
       cout << \"    result   : \" << ackdata.result << endl;
@@ -574,7 +563,6 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
 	  SALInstance.private_seqNum = sal\[actorIdx\].sndSeqNum;
           SALInstance.private_identity = CSC_identity;
           SALInstance.private_origin = origin;
-          SALInstance.private_host = ddsIPaddress;
           SALInstance.private_sndStamp = getCurrentTime();"
       if { [info exists SYSDIC($subsys,keyedID)] } {
         puts $fout "	  SALInstance.SALDataID = subsystemID;
@@ -627,7 +615,6 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
 		    double dTime = rcvdTime - SALInstance.value\[0\].private_sndStamp;
     		    if ( dTime < sal\[actorIdx\].sampleAge ) \{
                       sal\[actorIdx\].activeorigin = SALInstance.value\[0\].private_origin;
-                      sal\[actorIdx\].activehost = SALInstance.value\[0\].private_host;
                       sal\[actorIdx\].activeidentity = SALInstance.value\[0\].private_identity;
                       sal\[actorIdx\].activecmdid = SALInstance.value\[0\].private_seqNum;
                       ackdata = new SALData.ackcmd[set ACKREVCODE]();"
@@ -730,7 +717,6 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
    		ack.ack = sal\[actorIdx\].ack;
    		ack.result = sal\[actorIdx\].result;
                 ack.origin = sal\[actorIdx\].activeorigin;
-                ack.host = sal\[actorIdx\].activehost;
                 ack.identity = sal\[actorIdx\].activeidentity;
                 ack.cmdtype = sal\[actorIdx\].activecmdid;
 	      \}
@@ -785,7 +771,6 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
 	  	sal\[actorIdxCmd\].activeorigin = data.value\[lastsample\].origin;
 	  	sal\[actorIdxCmd\].activeidentity = data.value\[lastsample\].identity;
 	  	sal\[actorIdxCmd\].activecmdid = data.value\[lastsample\].cmdtype;
-	  	sal\[actorIdxCmd\].activehost = data.value\[lastsample\].host;
 	  \} else \{
                 if ( debugLevel > 8) \{
 	            System.out.println(\"=== \[getResponse_[set i]\] No ack yet!\"); 
@@ -816,8 +801,6 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
    		ackdata.ack = ack;
                 ackdata.origin = sal\[actorIdx\].activeorigin;
                 ackdata.identity = sal\[actorIdx\].activeidentity;
-                ackdata.host = sal\[actorIdx\].activehost;
-                ackdata.private_host = ddsIPaddress;
                 ackdata.private_origin = origin;
                 ackdata.private_identity = CSC_identity;
    		ackdata.result = result;"
@@ -830,7 +813,6 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
       			System.out.println(  \"    seqNum   : \" + ackdata.private_seqNum );
       			System.out.println(  \"    ack      : \" + ackdata.ack );
       			System.out.println(  \"    error    : \" + ackdata.error );
-      			System.out.println(  \"    host     : \" + ackdata.host );
       			System.out.println(  \"    origin : \" + ackdata.origin );
       			System.out.println(  \"    identity : \" + ackdata.identity );
       			System.out.println(  \"    result   : \" + ackdata.result );

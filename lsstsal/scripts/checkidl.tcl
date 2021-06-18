@@ -379,7 +379,6 @@ global SAL_WORK_DIR OPTIONS
 	  long	error;
 	  string<256>	result;
 	  string	identity;
-	  long	host;
 	  long	origin;
 	  long	cmdtype;
 	  double	timeout;

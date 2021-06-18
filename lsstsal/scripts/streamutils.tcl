@@ -91,8 +91,7 @@ proc sqlpreamble { fid id } {
   private_rcvStamp double,
   private_seqNum int,
   private_identity varchar,
-  private_origin int,
-  private_host int,"
+  private_origin int,"
 }
 
 set WORKING /home/shared/lsst/tests/api/streams
