@@ -1,8 +1,17 @@
 #!/usr/bin/env tclsh
-#
-# Generate SALDDS methods for getSample and putSample for all types
+## \file gensalgetput.tcl
+# \brief Generate SALDDS methods for getSample and putSample for all types
 # and generate salTypeSupport routine
 #
+#
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, V3 
+#\n
+# Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
+#\n
+#
+#
+#\code
 
 source $env(SAL_DIR)/geneventaliascode.tcl
 source $env(SAL_DIR)/gencmdaliascode.tcl
@@ -12,6 +21,14 @@ source $env(SAL_DIR)/activaterevcodes.tcl
 source $env(SAL_DIR)/gentelemetrytestssinglefile.tcl
 source $env(SAL_DIR)/gentelemetrytestssinglefilejava.tcl
 
+#
+## Documented proc \c insertcfragments .
+# \param[in] fout File handle of output file
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] name Name of SAL Topic
+#
+#  Generate the include file code for the SAL C++ API
+#
 proc insertcfragments { fout base name } {
 global SAL_WORK_DIR OPTIONS
    if { $OPTIONS(verbose) } {stdlog "###TRACE>>> insertcfragments $fout $base $name"}
@@ -174,6 +191,11 @@ salReturn SAL_[set base]::flushSamples_[set name]([set base]_[set name]C *data)
   if { $OPTIONS(verbose) } {stdlog "###TRACE<<< insertcfragments $fout $base $name"}
 }
 
+#
+## Documented proc \c testifdef .
+#
+#  Process a Java file to replace #ifdef regions
+#
 proc testifdef { } {
 global SYSDIC
   set SYSDIC(hexapod,keyedID) 1
@@ -191,6 +213,16 @@ global SYSDIC
 }
 
 
+#
+## Documented proc \c testifdef .
+# \param[in] fin File handle of input file
+# \param[in] fout File handle of output file
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Process a Java file to replace #ifdef regions by
+#  adding code for the sections required to process
+#  Topics with key's (ie more than one instance is allowed)
+#
 proc processifdefregion { fin fout base } {
 global SYSDIC
    if { [info exists SYSDIC($base,keyedID)] } {
@@ -210,6 +242,13 @@ global SYSDIC
    }
 }
 
+#
+## Documented proc \c addSWVersionsCPP .
+# \param[in] fout File handle of output file
+#
+#  Add software versioning routines to CPP API for
+#  getSALVersion,getXMLVersion,getOSPLVersion
+#
 proc addSWVersionsCPP { fout } {
 global SALVERSION env
    set xmldist [string trim [exec cat $env(SAL_WORK_DIR)/VERSION]]
@@ -232,6 +271,13 @@ string SAL_SALData::getOSPLVersion()
 "
 }
 
+#
+## Documented proc \c addSWVersionsJava .
+# \param[in] fout File handle of output file
+#
+#  Add software versioning routines to Java API for
+#  getSALVersion,getXMLVersion,getOSPLVersion
+#
 proc addSWVersionsJava { fout } {
 global SALVERSION env
    set xmldist [string trim [exec cat $env(SAL_WORK_DIR)/VERSION]]
@@ -259,6 +305,14 @@ public String getOSPLVersion()
 
 
 
+#
+## Documented proc \c addActorIndexesCPP .
+# \param[in] idlfile Name of input IDL definition file
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] fout File handle of output file
+#
+#   Add code to support salActor data structure initialization in C++
+#
 proc addActorIndexesCPP { idlfile base fout } {
 global SAL_WORK_DIR
    set ptypes [lsort [split [exec grep pragma $idlfile] \n]]
@@ -350,6 +404,14 @@ void SAL_SALData::initSalActors ()
 \}"
 }
 
+#
+## Documented proc \c addActorIndexesJava .
+# \param[in] idlfile Name of input IDL definition file
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] fout File handle of output file
+#
+#   Add code to support salActor data structure initialization in Java
+#
 proc addActorIndexesJava { idlfile base fout } {
    set ptypes [lsort [split [exec grep pragma $idlfile] \n]]
    set idx 0
@@ -421,6 +483,14 @@ proc addActorIndexesJava { idlfile base fout } {
   \}"
 }
 
+#
+## Documented proc \c copyfromjavasample .
+# \param[in] fout File handle of output file
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] base Name of of SAL Topic
+#
+#   Add code to copy data from Java DDS sample
+#
 proc copyfromjavasample { fout base name } {
 global CMDS TLMS EVTS
         set ctype [string range $name 0 7]
@@ -482,6 +552,14 @@ global CMDS TLMS EVTS
         }
 }
 
+#
+## Documented proc \c copytojavasample .
+# \param[in] fout File handle of output file
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] base Name of of SAL Topic
+#
+#   Add code to copy data into Java DDS sample
+#
 proc copytojavasample { fout base name } {
 global CMDS TLMS EVTS
         set ctype [string range $name 0 7]
@@ -544,6 +622,17 @@ global CMDS TLMS EVTS
 }
 
 
+#
+## Documented proc \c addSALDDStypes .
+# \param[in] idlfile Name of input IDL definition file
+# \param[in] id Subsystem identity
+# \param[in] lang Language to generate code for (cpp,java,python)
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Generates code to publish and subscribe to samples of each type of 
+#  SAL Topic for a Subsystem/CSC, getSample,putSample,getNextSample,flushSamples
+#  and also code to manage the low level DDS Topic registration and management
+#
 proc addSALDDStypes { idlfile id lang base } {
 global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS
  if { $OPTIONS(verbose) } {stdlog "###TRACE>>>  addSALDDStypes $idlfile $id $lang $base "}
@@ -956,6 +1045,13 @@ salReturn SAL_[set base]::getSample([set base]::[set name][set revcode]Seq data)
  if { $OPTIONS(verbose) } {stdlog "###TRACE<<<  addSALDDStypes $idlfile $id $lang $base "}
 }
 
+#
+## Documented proc \c modpubsubexamples .
+# \param[in] id Subsystem identity
+#
+#  Generate test applcation to publish and subscribe to each type 
+#  of SAL Topic defined for a Subsystem/CSC
+#
 proc modpubsubexamples { id } {
 global SAL_DIR SAL_WORK_DIR OPTIONS
   if { $OPTIONS(verbose) } {stdlog "###TRACE>>> modpubsubexamples $id"}

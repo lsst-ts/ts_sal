@@ -1,7 +1,27 @@
 #!/usr/bin/env tclsh
+## \file activaterevcodes.tcl
+# \brief This contains procedures to create and manage the
+# MD5SUM revision codes used to uniqely identify versioned
+# DDS Topic names.
+#
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, V3 
+#\n
+# Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
+#\n
+#
+#
+#\code
 
 set SAL_WORK_DIR $env(SAL_WORK_DIR)
-
+#
+## Documented proc \c updateRevCodes .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Create the file idl-templates/validated/SUBSYSTEM_revCodes.tcl
+#  which can be used to create a REVCODE array containing all the codes
+#  for a particular Subsystem/CSC
+#
 proc updateRevCodes { subsys } {
 global SAL_WORK_DIR REVCODE
   set lidl [glob $SAL_WORK_DIR/idl-templates/validated/[set subsys]_*.idl]
@@ -16,6 +36,11 @@ global SAL_WORK_DIR REVCODE
 }
 
 
+## Documented proc \c getItemName .
+# \param[in] rec An input record, typically from an IDL file
+#
+#  Take an input IDL line and determine the name of an item
+#
 proc getItemName { rec } {
   if { [lindex $rec 0] == "unsigned" } { set rec [lrange $rec 1 end] }
   if { [lindex $rec 1] == "long" } { set rec [lrange $rec 1 end] }
@@ -24,6 +49,16 @@ proc getItemName { rec } {
 }
 
 
+## Documented proc \c activeRevCodes .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Parse an input IDL file and generate the revision code assets.
+#  Also creates the Metadata annotations for Unit and Description
+#
+#  These consist of :
+#    revCodes - idl-templates/validated/sal/sal_revCoded_SUBSYSTEM.idl
+#    units - include/SAL_[set subsys]_salpy_units.pyb3
+#
 proc activeRevCodes { subsys } {
 global SAL_WORK_DIR REVCODE OPTIONS SALVERSION
   if { $OPTIONS(verbose) } {stdlog "###TRACE>>> activeRevCodes $subsys"}
@@ -89,6 +124,12 @@ global SAL_WORK_DIR REVCODE OPTIONS SALVERSION
 }
 
 
+## Documented proc \c getRevCode .
+# \param[in] topic Basic name of a DDS Topic
+# \param[in] type Optional format of MD5 (long=32 char, short=8)
+#
+#  This routine returns the revision code (MD5) of a named DDS Topic
+#
 proc getRevCode { topic { type "long"} } {
 global REVCODE
    if { [llength [split $topic _]] == 2 } {
@@ -105,9 +146,15 @@ global REVCODE
    return $revcode
 }
 
-proc modidlforjava { subsys } {
+## Documented proc \c modIdlForJava .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Creates a copy of the Subsystem/CSC IDL file which is compatible 
+#  with the Java option of the DDSGEN tool.
+#
+proc modIdlForJava { subsys } {
 global SAL_WORK_DIR REVCODE SYSDIC CMD_ALIASES OPTIONS
-  if { $OPTIONS(verbose) } {stdlog "###TRACE>>> modidlforjava $subsys"}
+  if { $OPTIONS(verbose) } {stdlog "###TRACE>>> modIdlForJava $subsys"}
   stdlog "Updating $subsys idl with revCodes"
   set lc [exec wc -l $SAL_WORK_DIR/idl-templates/validated/sal/sal_[set subsys].idl]
   set lcnt [expr [lindex $lc 0] -2]
@@ -131,7 +178,7 @@ global SAL_WORK_DIR REVCODE SYSDIC CMD_ALIASES OPTIONS
   }
   close $fin
   close $fout
-  if { $OPTIONS(verbose) } {stdlog "###TRACE<<< modidlforjava $subsys"}
+  if { $OPTIONS(verbose) } {stdlog "###TRACE<<< modIdlForJava $subsys"}
 }
 
 

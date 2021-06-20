@@ -1,11 +1,26 @@
+#!/usr/bin/env tclsh
+## \file gengenericclient.tcl
+# \brief This contains procedures to create applications to 
+#  watch sets of DDS Topics and perform predefined actions.
 #
-#  Generate Generic SAL Client instances, based on list of Telemetry/Events
-#  to be monitored
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, V3 
+#\n
+# Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
+#\n
 #
+#
+#\code
 
-
-
-
+#
+## Documented proc \c genericclientfragment .
+# \param[in] fout File handle of output C++ file
+# \param[in] id A Subsystem identifier
+# \param[in] ctype Type of code to generate (subscriber, getsamples, onevent)
+#
+#  Generate a code fragment to perform a selected SAL function
+#  Optionally to subscribe to or publish a topic, read samples, perform arbitrary processing
+#
 proc genericclientfragment { fout id ctype } {
 global ACTORTYPE SAL_WORK_DIR SALCLIENTS
    set ptypes $SALCLIENTS($id,telemetry)
@@ -45,6 +60,12 @@ global ACTORTYPE SAL_WORK_DIR SALCLIENTS
    }
 }
 
+#
+## Documented proc \c copyincludefiles .
+# \param[in] id A Subsystem identifier
+#
+#  Copy required include files to the application build directory
+#
 proc copyincludefiles { id } {
 global SAL_WORK_DIR SALCLIENTS
    set ptypes $SALCLIENTS($id,telemetry)
@@ -61,6 +82,12 @@ global SAL_WORK_DIR SALCLIENTS
 
 
 
+#
+## Documented proc \c gensalclientmake .
+# \param[in] id A Subsystem identifier
+#
+#  Generate a Makefile for a generic client application
+#
 proc gensalclientmake { id } {
 global SAL_DIR SAL_WORK_DIR env
   set frep [open /tmp/sreplace6.sal w]
@@ -75,6 +102,12 @@ global SAL_DIR SAL_WORK_DIR env
 }
 
 
+#
+## Documented proc \c gentelemetryclient .
+# \param[in] id A Subsystem identifier
+#
+#  Generate a C++ template for a generic client application
+#
 proc gentelemetryclient { id } {
 global SAL_WORK_DIR SYSDIC SALCLIENTS
    exec mkdir -p $SAL_WORK_DIR/salClient/cpp/src
@@ -148,6 +181,13 @@ int main (int argc, char **argv[])
 }
 
 
+#
+## Documented proc \c genclientpublisher .
+# \param[in] fout File handle of output C++ file
+# \param[in] id A Subsystem identifier
+#
+#  Generate a C++ template for a generic client publisher
+#
 proc genclientpublisher { fout id } {
 global SAL_WORK_DIR SALCLIENTS
    set ptypes $SALCLIENTS($id,telemetry)
@@ -195,6 +235,12 @@ int publish_[set app]()
 }
 
 
+#
+## Documented proc \c startsalclients .
+# \param[in] clients List of SAL client applications
+#
+#  Runtime starter for generic client applications
+#
 proc startsalclients { clients } { 
 global SAL_WORK_DIR
    foreach id $clients {
@@ -214,6 +260,12 @@ global SAL_WORK_DIR
    }
 }
 
+#
+## Documented proc \c parsesalclients .
+# \param[in] clientlist List of SAL client applications
+#
+#  Runtime parser for generic client applications
+#
 proc parsesalclients { clientlist } {
 global SALCLIENTS
    set client ""
@@ -249,6 +301,11 @@ global SALCLIENTS
    close $fin 
 }
 
+#
+## Documented proc \c exampleclient .
+#
+#  Create an example SAL client application definition file
+#
 proc exampleclient { } {
 global SALCLIENTS
    set fout [open exampleClient.def w]

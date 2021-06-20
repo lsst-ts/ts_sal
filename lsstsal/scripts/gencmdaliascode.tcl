@@ -1,3 +1,17 @@
+#!/usr/bin/env tclsh
+## \file gencmdaliascode.tcl
+# \brief This contains procedures to create the SAL API code
+#  to manager the Command Topics. It generates code and tests
+#  for C++, Python (pybind11), and Java APIs
+#
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, V3 
+#\n
+# Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
+#\n
+#
+#
+#\code
 
 source $SAL_DIR/gencommandtests.tcl
 source $SAL_DIR/gencommandtestssinglefile.tcl 
@@ -6,6 +20,15 @@ source $SAL_DIR/gencommandtestssinglefilejava.tcl
 source $SAL_DIR/gentestspython.tcl 
 source $SAL_DIR/activaterevcodes.tcl 
 
+#
+## Documented proc \c addgenericcmdcode .
+# \param[in] fout File handle of output file
+# \param[in] lang Target language to generate code for
+#
+#  Copy the generic DDS code to manage command Topics
+#  using the template in code/templates/SALDDS.lang.template
+#  where lang = cpp,python,java
+#
 proc addgenericcmdcode { fout lang } {
 global OPTIONS SAL_DIR
   if { $OPTIONS(verbose) } {stdlog "###TRACE>>> addgenericcmdcode $lang $fout"}
@@ -19,6 +42,17 @@ global OPTIONS SAL_DIR
 }
 
 
+#
+## Documented proc \c gencmdaliascode .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] lang Target language to generate code for
+# \param[in] fout File handle of output file
+#
+#  Generates the Command handling code for a Subsystem/CSC.
+#  Code is generated for issueCommand,acceptCommand,waitForCompletion,ackCommand,getResponse
+#  per-command Topic type. This routine generates header code, and then calls 
+#  per language routines to generate the rest.
+#
 proc gencmdaliascode { subsys lang fout } {
 global CMD_ALIASES CMDS DONE_CMDEVT ACKREVCODE REVCODE SAL_WORK_DIR OPTIONS
  if { $OPTIONS(verbose) } {stdlog "###TRACE>>> gencmdaliascode $subsys $lang $fout"}
@@ -122,6 +156,15 @@ global CMD_ALIASES CMDS DONE_CMDEVT ACKREVCODE REVCODE SAL_WORK_DIR OPTIONS
 }
 
 
+#
+## Documented proc \c gencmdaliascpp .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] fout File handle of output file
+#
+#  Generates the Command handling code for a Subsystem/CSC.
+#  Code is generated for issueCommand,acceptCommand,waitForCompletion,ackCommand,getResponse
+#  per-command Topic type. This routine generates C++ code.
+#
 proc gencmdaliascpp { subsys fout } {
 global CMD_ALIASES CMDS SAL_WORK_DIR ACKREVCODE OPTIONS
    if { $OPTIONS(verbose) } {stdlog "###TRACE>>> gencmdaliascpp $subsys $fout"}
@@ -537,6 +580,15 @@ salReturn SAL_SALData::ackCommand_[set i]C(SALData_ackcmdC *response )
 
 
 
+#
+## Documented proc \c gencmdaliasjava .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] fout File handle of output file
+#
+#  Generates the Command handling code for a Subsystem/CSC.
+#  Code is generated for issueCommand,acceptCommand,waitForCompletion,ackCommand,getResponse
+#  per-command Topic type. This routine generates Java code.
+#
 proc gencmdaliasjava { subsys fout } {
 global CMD_ALIASES CMDS SYSDIC ACKREVCODE
   if { [info exists CMD_ALIASES($subsys)] } {
@@ -835,6 +887,15 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
 
 
 
+#
+## Documented proc \c gencmdaliaspython .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] fout File handle of output file
+#
+#  Generates the Command handling code for a Subsystem/CSC.
+#  Code is generated for issueCommand,acceptCommand,waitForCompletion,ackCommand,getResponse
+#  per-command Topic type. This routine generates C++/pybind11 wrapper code.
+#
 proc gencmdaliaspython { subsys fout } {
 global CMD_ALIASES CMDS
   if { [info exists CMD_ALIASES($subsys)] } {
@@ -868,6 +929,16 @@ global CMD_ALIASES CMDS
 
 
 
+#
+## Documented proc \c gencmdaliasisocpp .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] fout File handle of output file
+#
+#  Generates the Command handling code for a Subsystem/CSC.
+#  Code is generated for issueCommand,acceptCommand,waitForCompletion,ackCommand,getResponse
+#  per-command Topic type. This routine generates ISO C++ wrapper code.
+#  NOT YET IMPLEMENTED
+#
 proc gencmdaliasisocpp { subsys fout } {
 global CMD_ALIASES CMDS
   if { [info exists CMD_ALIASES($subsys)] } {
@@ -882,6 +953,13 @@ global CMD_ALIASES CMDS
 }
 
 
+#
+## Documented proc \c gencmdgenericjava .
+# \param[in] fout File handle of output file
+# \param[in] lang Target language to generate code for
+#
+#  Create the generic DDS code to manage command Topics for Java
+#
 proc gencmdgenericjava { subsys fout } {
 global SYSDIC
    puts $fout "

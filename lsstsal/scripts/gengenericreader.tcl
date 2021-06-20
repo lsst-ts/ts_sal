@@ -1,9 +1,27 @@
+#!/usr/bin/env tclsh
+## \file gengenericreader.tcl
+# \brief This contains procedures to create SAL Topic reader applications
 #
-#  set SAL_WORK_DIR $env(SAL_WORK_DIR)
-#  creategenericreaders camera
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, V3 
+#\n
+# Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
+#\n
 #
+#
+#\code
 
 
+
+#
+## Documented proc \c genericreaderfragment .
+# \param[in] fout File handle of output C++ file
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] name Topic name
+# \param[in] ctype Topic type (command,event,telemetry)
+#
+#  Generates a code fragment to use the SAL API to read Topic data
+#
 proc genericreaderfragment { fout base name ctype } {
 global ACTORTYPE
    if { $ctype == "command" || $ctype == "event" || $ctype == "telemetry" } {
@@ -67,6 +85,13 @@ salReturn SAL_[set base]::[set ctype]Available () \{
    }
 }
 
+#
+## Documented proc \c genericreader .
+# \param[in] fout File handle of output C++ file
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Generates an application to use the SAL API to read Topic data
+#
 proc gengenericreader { fout base } {
 global SAL_WORK_DIR
    set idlfile $SAL_WORK_DIR/idl-templates/validated/sal/sal_[set base].idl
@@ -106,6 +131,12 @@ global SAL_WORK_DIR
    genericreaderfragment $fout $base "" final
 }
 
+#
+## Documented proc \c gentelemetryreader .
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Generates a code fragment to use the SAL API to read telemetry Topic data
+#
 proc gentelemetryreader { base } {
 global SAL_WORK_DIR SYSDIC
    set fout [open $SAL_WORK_DIR/$base/cpp/src/sacpp_[set base]_telemetry_reader.cpp w]
@@ -187,6 +218,12 @@ int main (int argc, char *argv[])
 
 
 
+#
+## Documented proc \c geneventreader .
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Generates a code fragment to use the SAL API to read event Topic data
+#
 proc geneventreader { base } {
 global SAL_WORK_DIR SYSDIC
    set fout [open $SAL_WORK_DIR/$base/cpp/src/sacpp_[set base]_event_reader.cpp w]
@@ -269,6 +306,12 @@ int main (int argc, char *argv[])
 }
 
 
+#
+## Documented proc \c gencommandreader .
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Generates a code fragment to use the SAL API to read command Topic data
+#
 proc gencommandreader { base } {
 global SAL_WORK_DIR SYSDIC
    set fout [open $SAL_WORK_DIR/$base/cpp/src/sacpp_[set base]_command_reader.cpp w]
@@ -351,6 +394,12 @@ int main (int argc, char *argv[])
 }
 
 
+#
+## Documented proc \c creategenericreaders .
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Generates applications to read Subsystem/CSC Topic data
+#
 proc creategenericreaders { base } {
    gentelemetryreader $base
    gencommandreader   $base

@@ -1,13 +1,23 @@
-
-# set SAL_WORK_DIR $env(SAL_WORK_DIR)
-# set SAL_DIR $env(SAL_DIR)
-# source $SAL_DIR/utilities.tcl
-# source $SAL_DIR/geneventtestsjava.tcl
-# source $SAL_WORK_DIR/idl-templates/validated/camera_evtdef.tcl
-# geneventtestsjava camera
+#!/usr/bin/env tclsh
+## \file geneventtestsjava.tcl
+# \brief Generate Java code to test the SAL Command API
 #
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, V3 
+#\n
+# Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
+#\n
+#
+#
+#\code
 
 
+#
+## Documented proc \c geneventtestsjava .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Generate Java code to test the SAL Event API
+#
 
 proc geneventtestsjava { subsys } {
 global EVENT_ALIASES EVTS EVENT_ALIASES EVTS SAL_WORK_DIR SYSDIC SAL_DIR

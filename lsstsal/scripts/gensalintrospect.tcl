@@ -1,5 +1,25 @@
 #!/usr/bin/env tclsh
+## \file gensalintrospect.tcl
+# \brief This contains procedures to provide SAL API introspection
+#
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, V3 
+#\n
+# Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
+#\n
+#
+#
+#\code
 
+
+#
+## Documented proc \c generatetypelists .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] fout File handle of output file
+#
+#  Generate C++ code for SAL API introspection routines, 
+#  getCommandNames, getEventNames, getTelemetryNames
+# 
 proc generatetypelists { subsys {fout stdout} } {
 global env
   set idlfile $env(SAL_WORK_DIR)/idl-templates/validated/sal/sal_[set subsys].idl

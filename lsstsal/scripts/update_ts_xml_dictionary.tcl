@@ -1,5 +1,21 @@
 #!/bin/env tclsh
+## \file update_ts_xml_dictionary.tcl
+# \brief This contains procedures to work woth SALSubsystems.xml
+#
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, V3 
+#\n
+# Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
+#\n
+#
+#
+#\code
 
+#
+## Documented proc \c createSystemDictionary .
+# 
+#  Create a default basic SALSubsystems.xml
+#
 proc createSystemDictionary { } {
 global env SAL_WORK_DIR
   set fout [open $SAL_WORK_DIR/SALSubsystems.xml w]
@@ -30,6 +46,12 @@ global env SAL_WORK_DIR
   close $fout
 }
 
+#
+## Documented proc \c parseSystemDictionary .
+# 
+#  Parse the SALSubsystems.tcl and create a SYSDIC array object
+#  for use by salgenerator
+#
 proc parseSystemDictionary { } {
 global env SYSDIC SAL_WORK_DIR OPTIONS
   if { $OPTIONS(verbose) } {puts stdout "###TRACE>>> parseSystemDictionary"}
@@ -94,6 +116,11 @@ global env SYSDIC SAL_WORK_DIR OPTIONS
   if { $OPTIONS(verbose) } {puts stdout "###TRACE<<< parseSystemDictionary"}
 }
 
+#
+## Documented proc \c getValidGenerics .
+#
+#  Mark valid generic topics for a Subsystem in SYSDIC
+#
 proc getValidGenerics { } {
 global SAL_WORK_DIR SYSDIC
   set all [split [exec grep EFDB_Topic $SAL_WORK_DIR/SALGenerics.xml] \n]
@@ -104,6 +131,11 @@ global SAL_WORK_DIR SYSDIC
 }
 
 
+#
+## Documented proc \c validateGenerics .
+#
+#  Check valid generic topics for a Subsystem are referenced in SYSDIC
+#
 proc validateGenerics { subsys generics } {
 global SYSDIC
    foreach g [split $generics ,] {

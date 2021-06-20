@@ -1,3 +1,17 @@
+## \file sal_defines_dict.py
+# \brief This contains SAL return codes for python use
+#
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, V3 
+#\n
+# Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
+#\n
+#
+#
+#\code
+
+
+
 SAL__RETCODE = {
     "CMD_ACK": 300,
     "CMD_INPROGRESS": 301,

@@ -1,3 +1,32 @@
+#!/usr/bin/env tclsh
+## \file streamutils.tcl
+# \brief This contains procedures to create and manage the
+# MD5SUM revision codes used to uniqely identify versioned
+# DDS Topic names.
+#
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, V3 
+#\n
+# Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
+#\n
+#
+#
+#\code
+
+
+#
+## Documented proc \c doitem .
+# \param[in] i Index counter
+# \param[in] fid File handle of input file
+# \param[in] name Name of item
+# \param[in] n Dimension of item
+# \param[in] type Data type
+# \param[in] unit Units specifier
+# \param[in] range Range allowed
+# \param[in] help Description of item
+#
+#  Create HTML for DDS Topic item
+#
 proc doitem { i fid name n type {unit none} {range none} {help "No comment"} } {
    set iname [getitemname $name]
    puts $fid "<TR><TD><INPUT NAME=\"id$i\" VALUE=\"$iname\"></TD>
@@ -13,6 +42,13 @@ proc doitem { i fid name n type {unit none} {range none} {help "No comment"} } {
 <TD><INPUT TYPE=\"checkbox\" NAME=\"delete_$i\" VALUE=\"yes\"></TD></TR>"
 }
 
+#
+## Documented proc \c dotypeselect .
+# \param[in] fid File handle of input file
+# \param[in] choice Default selection
+# 
+# Generate HTML selection
+#
 proc dotypeselect { fid choice } {
 global SYSDIC
    foreach t $SYSDIC(datatypes) {
@@ -25,6 +61,12 @@ global SYSDIC
 }
 
 
+#
+## Documented proc \c getitemname .
+# \param[in] name Name of item
+#
+#  Return bare item name
+#
 proc getitemname { name } {
   set spl [split $name "._-"]
   set id [join [lrange $spl 2 end] _]
@@ -32,6 +74,12 @@ proc getitemname { name } {
 }
 
 
+#
+## Documented proc \c liststreams .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Generate a file listing all the SAL Topic items
+#
 proc liststreams { {subsys all} } {
 global SAL_WORK_DIR SAL_DIR
    set fs [open $SAL_WORK_DIR/.salwork/datastreams.names r]
@@ -48,6 +96,13 @@ global SAL_WORK_DIR SAL_DIR
 }
 
 
+#
+## Documented proc \c dounit .
+# \param[in] fid File handle of input file
+# \param[in] id Name of item
+#
+#  Generate a unit selection for HTML interface
+#
 proc dounit { fid id u} {
 global UDESC
   set u [string tolower $u]
@@ -62,6 +117,13 @@ global UDESC
   puts $fid "</select></TD>"
 }
 
+#
+## Documented proc \c dogen .
+# \param[in] fid File handle of input file
+# \param[in] id Name of item
+#
+#  Generate checkbox for HTML interface
+#
 proc dogen { fid id {cmd yes} } {
    if { $cmd } {
       puts $fid "<TR><TD><A HREF=\"sal-generator-$id.html\">$id</A></TD>"
@@ -78,11 +140,25 @@ proc dogen { fid id {cmd yes} } {
 }
 
 
+#
+## Documented proc \c idlpreamble .
+# \param[in] fid File handle of input file
+# \param[in] id Name of item
+#
+#  Generate the IDL preamble for a SAL Topic
+#
 proc idlpreamble { fid id } {
   puts $fid "struct [join [split $id .] _] \{"
   add_private_idl $fid
 }
 
+#
+## Documented proc \c sqlpreamble .
+# \param[in] fid File handle of input file
+# \param[in] id Name of item
+#
+#  Generate the SQL preamble for a SAL Topic
+#
 proc sqlpreamble { fid id } {
   puts $fid  "CREATE TABLE $id \{"
   puts $fid  "  date_time date time NOT NULL,

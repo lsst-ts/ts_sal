@@ -1,3 +1,25 @@
+#!/usr/bin/env tclsh
+## \file gentelemetrylabviewtests.tcl
+# \brief Generate C++ code to test the LabVIEW SAL shared library routines
+#  This tests the interaction with the SAL LabVIEW Monitor for the Subsystem.
+#
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, V3 
+#\n
+# Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
+#\n
+#
+#
+#\code
+
+
+#
+## Documented proc \c gentelemetrylabviewtests .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Generate C++ code to test the LabVIEW SAL shared library routines
+#  This tests the interaction with the SAL LabVIEW Monitor for the Subsystem.
+#
 
 proc gentelemetrylabviewtests { subsys } {
 global TELEMETRY_ALIASES SAL_WORK_DIR SAL_DIR

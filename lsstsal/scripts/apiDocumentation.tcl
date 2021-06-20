@@ -1,4 +1,23 @@
 #!/usr/bin/env tclsh
+## \file apiDocumentation.tcl
+# \brief This contains the script to update the API level 
+# documentation for salgenerator generated code.
+# It is normally invoked using the salgenerator 'apidoc' option.
+#
+# The process is driven by a cmake setup which generates doxygen
+# and Sphinx based files in html format. rst files are also 
+# generated to allow the inclusion of the documentation into
+# the lsst.io website.
+#
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, V3 
+#\n
+# Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
+#\n
+#
+#
+#\code
+
 
 set csc [lindex $argv 0]
 

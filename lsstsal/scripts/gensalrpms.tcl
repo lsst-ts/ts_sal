@@ -1,10 +1,20 @@
 #!/usr/bin/env tclsh
-
+## \file gensalrpms.tcl
+# \brief This contains procedures to create the runtime RPM assets
+# for SAL APIs
+#
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, V3 
+#\n
+# Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
+#\n
 #
 #   NOTE ~/.rpmmacros sets the rpmbuild root directory
 #
 #   On yum server do   createrepo --update /path-to-repo
 #   On clients do      yum makecache fast
+#
+#\code
 #
 set SAL_WORK_DIR $env(SAL_WORK_DIR)
 set OSPL_HOME $env(OSPL_HOME)
@@ -15,6 +25,11 @@ source $SAL_DIR/ospl_version.tcl
 source $SAL_DIR/sal_version.tcl
 
 
+#
+## Documented proc \c copyasset .
+# \param[in] asset Path a file to include in the RPM
+# \param[in] dest Destination directory for copy
+#
 proc copyasset { asset dest } {
 global OPTIONS
     if { $OPTIONS(verbose) } {puts stdout "###TRACE copyasset for $asset $dest"}
@@ -23,6 +38,13 @@ global OPTIONS
     }
 }
 
+#
+## Documented proc \c updatetests .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] rpmname Name of the rpm base directory
+#
+#  Copies the test programs into the rpm base directory
+#
 proc updatetests { subsys rpmname } {
 global SAL_WORK_DIR XMLVERSION
    catch {
@@ -48,6 +70,13 @@ global SAL_WORK_DIR XMLVERSION
 }
 
 
+#
+## Documented proc \c updateruntime .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] withtest Optional specifier to include test programs
+#
+#  Copies the necessary files into rpm base directory
+#
 proc updateruntime { subsys {withtest 0} } {
 global SAL_WORK_DIR XMLVERSION SAL_DIR SYSDIC SALVERSION
   set rpmname $subsys
@@ -148,14 +177,17 @@ rpmbuild -bb -bl -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_[set subsys].spec
     exec cat /tmp/makerpm_[set subsys].log
   }
   cd $SAL_WORK_DIR
-###  updatesingletons ts_sal_utils generateUtilsrpm
-  updatesingletons ts_sal_runtime generatemetarpm
-  updatesingletons ts_sal_ATruntime generateATmetarpm
+###  updatesingletons ts_sal_utils
+  updatesingletons ts_sal_runtime
+  updatesingletons ts_sal_ATruntime
 }
 
-
-proc updatesingletons { name process } {
-global XMLVERSION
+#
+## Documented proc \c updatesingletons .
+# \param[in] name Name of asset (ts_sal_utils, ts_sal_runtime,ts_sal_ATruntime)
+#
+proc updatesingletons { name } {
+global SAL_WORK_DIR XMLVERSION
   set found ""
   catch {
     set found [glob $SAL_WORK_DIR/rpmbuild/RPMS/x86_64/[set name]-$XMLVERSION*]
@@ -170,6 +202,10 @@ global XMLVERSION
 }
 
 
+#
+## Documented proc \c updateddsruntime .
+# \param[in] version DDS version specifier
+#
 proc updateddsruntime { version } {
   exec rm -fr /opt/lsst/ts_opensplice
   exec mkdir -p /opt/lsst/ts_opensplice/OpenSpliceDDS
@@ -177,6 +213,13 @@ proc updateddsruntime { version } {
 }
 
 
+#
+## Documented proc \c listfilesforrpm .
+# \param[in] rpmname Name of RPM file
+#
+#  Generate a list of files for inclusion in the RPM
+#  This is an RPM which Requires all the Main telescope RPMs
+#
 proc listfilesforrpm { rpmname } {
 global XMLVERSION env RPMFILES SAL_WORK_DIR
    set RPMFILES ""
@@ -190,6 +233,11 @@ global XMLVERSION env RPMFILES SAL_WORK_DIR
 }
 
 
+#
+## Documented proc \c generatemetarpm .
+#
+#  Generate the SPEC file for the ts_sal_runtime RPM
+#
 proc generatemetarpm { } {
 global SYSDIC SALRELEASE SALVERSION SAL_WORK_DIR OSPL_VERSION RELVERSION env
    if { $RELVERSION != "" } {
@@ -255,6 +303,12 @@ rpmbuild -ba -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_runtime.spec
   exec cat /tmp/makerpm-meta.log
 }
 
+#
+## Documented proc \c generateATmetarpm .
+#
+#  Generate the SPEC file for the ts_sal_ATruntime RPM
+#  This is an RPM which Requires all the Auxtel RPMs
+#
 proc generateATmetarpm { } {
 global SYSDIC SALRELEASE SALVERSION SAL_WORK_DIR OSPL_VERSION RELVERSION env
    if { $RELVERSION != "" } {
@@ -322,6 +376,12 @@ rpmbuild -ba -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_ATruntime.spec
   exec cat /tmp/makerpm-atmeta.log
 }
 
+#
+## Documented proc \c generaterpm .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Generate the SPEC file for the specified Subsystem/CSC
+#
 proc generaterpm { subsys } {
 global SAL_WORK_DIR SALVERSION SALRELEASE RPMFILES OSPL_VERSION RELVERSION XMLVERSION env
   exec rm -fr $SAL_WORK_DIR/rpm_[set subsys]
@@ -387,6 +447,12 @@ rm -fr \$RPM_BUILD_ROOT
 }
 
 
+#
+## Documented proc \c generatetestrpm .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Generate the SPEC file for the specified Subsystem/CSC tests
+#
 proc generatetestrpm { subsys } {
 global SAL_WORK_DIR SALVERSION SALRELEASE RPMFILES OSPL_VERSION RELVERSION XMLVERSION env
   exec rm -fr $SAL_WORK_DIR/rpm_[set subsys]
@@ -472,6 +538,14 @@ rm -fr \$RPM_BUILD_ROOT
 ### rm -fr /usr/local
 ### mv /usr/local.save /usr/local
 ###
+
+
+#
+## Documented proc \c generatePythonspec .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Generate the SPEC file for a standalone Python RPM
+#
 proc generatePythonspec { } {
 global SAL_WORK_DIR SALVERSION RPMFILES OSPL_VERSION env
   set fout [open $SAL_WORK_DIR/rpmbuild/SPECS/ts_python.spec w]
@@ -520,6 +594,12 @@ puts $fout "
   close $fout
 }
 
+#
+## Documented proc \c generateUtilsrpm .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Generate the SPEC file for ts_sal_utils
+#
 proc generateUtilsrpm { } {
 global SYSDIC SALVERSION SAL_WORK_DIR OSPL_VERSION SAL_DIR env
    set fout [open $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_utils.spec w]
@@ -607,6 +687,12 @@ rpmbuild -bb -bl -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_utils.spec
   exec cat /tmp/makerpm-utils.log
 }
 
+#
+## Documented proc \c generaterddsrpm .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Generate the SPEC file for ts_opensplice
+#
 proc generaterddsrpm { version } {
 global SAL_WORK_DIR OSPL_HOME OSPL_VERSION
   exec rm -fr $SAL_WORK_DIR/rpm_opensplice

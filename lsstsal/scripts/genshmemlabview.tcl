@@ -1,19 +1,16 @@
+#!/usr/bin/env tclsh
+## \file genshmemlabview.tcl
+# \brief This contains procedures to create the LabVIEW shared
+#  library and SAL DDS Monitor application for a Subsystem/CSC
 #
-#  add to .h and change m2ms_shmem to shmemIO
-#     struct m2ms_shmem {
-#        shmemIO client[50];
-#     };
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, V3 
+#\n
+# Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
+#\n
 #
-# add inUse flag to client struct
 #
-# in cpp change all m2ms_memIO->  to m2ms_memIO->client[cid].
-#
-# in connect look for unused inUse slot and clear all flags in it
-# store returned slot number in global var in LV library
-# in disconnect , clear all flags and reset inUse flag
-#
-# change monitor syncInit to a routine and call on connect/disconnect
-#
+#\code
 
 
 set SAL_DIR $env(SAL_DIR)
@@ -24,6 +21,12 @@ source $SAL_DIR/geneventlabviewtests.tcl
 source $SAL_DIR/gentelemetrylabviewtests.tcl 
 source $SAL_DIR/utilities.tcl 
 
+#
+## Documented proc \c genshmemlabview .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#   Wrapper routine to build the LabVIEW shared library
+#
 proc genshmemlabview { subsys } {
 global SAL_DIR SAL_WORK_DIR
   exec mkdir -p $SAL_WORK_DIR/[set subsys]/labview
@@ -47,6 +50,12 @@ global SAL_DIR SAL_WORK_DIR
   removeshmem [calcshmid $base]
 }
 
+#
+## Documented proc \c genlabviewidl .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#   Generate a LabVIEW specific version of the IDL file
+#
 proc genlabviewidl { subsys } {
 global SAL_WORK_DIR EVENT_ENUMS
    if { [file exists $SAL_WORK_DIR/idl-templates/validated/[set subsys]_evtdef.tcl] } { 
@@ -92,6 +101,13 @@ puts stdout $rec
    close $fout
 }
 
+#
+## Documented proc \c ignoreforlabview .
+# \param[in] rec Record from input IDL file
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#   Process a line of IDL and decide wether to ignore it for LabVIEW API
+#
 proc ignoreforlabview { rec subsys } {
   set crec [join [split [string trim  $rec "{}; 	"] "_"] " "]
   if { [lindex $crec 1] == "private" } {
@@ -105,6 +121,11 @@ proc ignoreforlabview { rec subsys } {
 
 
 
+#
+## Documented proc \c genlabviewmake .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Generate a Makeile to build the LabVIEW shared library and SAL Monitor application
 proc genlabviewmake { subsys } {
 global SAL_DIR SAL_WORK_DIR SYSDIC env
   if { [info exists env(LABVIEW_HOME)] } {
@@ -131,6 +152,13 @@ global SAL_DIR SAL_WORK_DIR SYSDIC env
 
 
 
+#
+## Documented proc \c genlabviewincl .
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] ptypes List of Topic names
+#
+#  Generate LabVIEW include file for Subsystem/CSC
+#
 proc genlabviewincl { base ptypes } {
 global SAL_DIR SAL_WORK_DIR SYSDIC TELEMETRY_ALIASES LVSTRINGS CMD_ALIASES
   set idarg ""
@@ -291,6 +319,12 @@ global SAL_DIR SAL_WORK_DIR SYSDIC TELEMETRY_ALIASES LVSTRINGS CMD_ALIASES
   close $fout
 }
 
+#
+## Documented proc \c genlabviewcpp .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Copy IDL file for SALTypeGenerator use
+#
 proc updateLabVIEWTypes { subsys } {
 global SAL_DIR SAL_WORK_DIR
    set fin [open $SAL_WORK_DIR/idl-templates/validated/sal/sal_[set subsys].idl r]
@@ -303,6 +337,13 @@ global SAL_DIR SAL_WORK_DIR
    close $fout
 }
 
+#
+## Documented proc \c genlabviewcpp .
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] ptypes List of Topic names
+#
+#  Generate the C++ code to support the SAL Topic data exchange with LabVIEW
+#
 proc genlabviewcpp { base ptypes } {
 global SAL_DIR SAL_WORK_DIR SYSDIC LVSTRINGS REVCODE CMD_ALIASES SALVERSION
   set xmldist [string trim [exec cat $SAL_WORK_DIR/VERSION]]
@@ -532,6 +573,15 @@ extern \"C\" \{
 #
 #
 
+#
+## Documented proc \c genlvcallback .
+# \param[in] fout File handle of output C++ file
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] name Name of SAL Topic
+#
+#  Generate the C++ code to associate a SAL Topic operation with 
+#  a LabVIEW callback routine
+#
 proc genlvcallback { fout base name } {
    puts $fout "
     int [set base]_shm_registerCallback_[set name]LV(int handle, bool skipOld) \{
@@ -585,6 +635,15 @@ proc genlvcallback { fout base name } {
 }
 
 
+#
+## Documented proc \c genlvlaunchcallbacks .
+# \param[in] fout File handle of output C++ file
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] ptypes List of SAL Topic names
+#
+#  Generate the C++ code to trigger  
+#  a LabVIEW callback routine associated with a SAL Topic
+#
 proc genlvlaunchcallbacks { fout base ptypes } {
    puts $fout "
     void [set base]_shm_checkCallbacksLV() \{
@@ -625,6 +684,14 @@ proc genlvlaunchcallbacks { fout base ptypes } {
 
 
 
+#
+## Documented proc \c genlvtelemetry .
+# \param[in] fout File handle of output C++ file
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] name Name of SAL Topic
+#
+#  Generate SAL LabVIEW shared library code to process Telemetry Topics
+#
 proc genlvtelemetry { fout base name } {
 global SAL_WORK_DIR LVSTRINGS
    puts $fout "
@@ -724,6 +791,14 @@ global SAL_WORK_DIR LVSTRINGS
 }
 
 
+#
+## Documented proc \c genlvcommand .
+# \param[in] fout File handle of output C++ file
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] name Name of SAL Topic
+#
+#  Generate SAL LabVIEW shared library code to process Command Topics
+#
 proc genlvcommand { fout base name } {
 global SAL_WORK_DIR LVSTRINGS
    set n2 [join [lrange [split $name _] 1 end] _]
@@ -951,6 +1026,14 @@ global SAL_WORK_DIR LVSTRINGS
 
 
 
+#
+## Documented proc \c genlvlogevent .
+# \param[in] fout File handle of output C++ file
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] name Name of SAL Topic
+#
+#  Generate SAL LabVIEW shared library code to process Event Topics
+#
 proc genlvlogevent { fout base name } {
 global SAL_WORK_DIR LVSTRINGS
    set n2 [join [lrange [split $name _] 1 end] _]
@@ -1042,6 +1125,14 @@ global SAL_WORK_DIR LVSTRINGS
 }
 
 
+#
+## Documented proc \c monitortelemetry .
+# \param[in] fout File handle of output C++ file
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] name Name of SAL Topic
+#
+#  Generate SAL Monitor code for Telemetry Topics
+#
 proc monitortelemetry { fout base name } {
 global SAL_DIR SAL_WORK_DIR
    puts $fout "
@@ -1100,6 +1191,14 @@ global SAL_DIR SAL_WORK_DIR
 
 
 
+#
+## Documented proc \c monitorcommand .
+# \param[in] fout File handle of output C++ file
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] name Name of SAL Topic
+#
+#  Generate SAL Monitor code for Command Topics
+#
 proc monitorcommand { fout base name } {
 global SAL_DIR SAL_WORK_DIR REVCODE
    set n2 [join [lrange [split $name _] 1 end] _]
@@ -1209,6 +1308,14 @@ global SAL_DIR SAL_WORK_DIR REVCODE
 
 
 
+#
+## Documented proc \c monitorlogevent .
+# \param[in] fout File handle of output C++ file
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] name Name of SAL Topic
+#
+#  Generate SAL Monitor code for Event Topics
+#
 proc monitorlogevent { fout base name } {
 global SAL_DIR SAL_WORK_DIR
    set n2 [join [lrange [split $name _] 1 end] _]
@@ -1262,6 +1369,14 @@ global SAL_DIR SAL_WORK_DIR
 }
 
 
+#
+## Documented proc \c shmemsyncinit .
+# \param[in] fout File handle of output C++ file
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] name Name of SAL Topic
+#
+#  Generate code to initalize the Monitors shared memory segment data
+#
 proc shmemsyncinit { fout base name } {
 global SAL_DIR SAL_WORK_DIR
    set n2 [join [lrange [split $name _] 1 end] _]
@@ -1293,6 +1408,14 @@ global SAL_DIR SAL_WORK_DIR
 }
 
 
+#
+## Documented proc \c monitorsyncinit .
+# \param[in] fout File handle of output C++ file
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] name Name of SAL Topic
+#
+#  Generate code to create the Monitors Topic data structures
+#
 proc monitorsyncinit { fout base name } {
 global SAL_DIR SAL_WORK_DIR
    set n2 [join [lrange [split $name _] 1 end] _]
@@ -1302,7 +1425,13 @@ global SAL_DIR SAL_WORK_DIR
        [set base]_[set name]C *Outgoing_[set base]_[set name] = new [set base]_[set name]C;"
 }
 
-
+#
+## Documented proc \c modlabviewpubsubexamples .
+# \param[in] id Subsystem identifier
+#
+#  Generate example publisher and subscribers using the SAL Monitor
+#  shared memory interface
+#
 proc modlabviewpubsubexamples { id } {
 global SAL_DIR SAL_WORK_DIR
   set fin [open $SAL_DIR/code/templates/SALLVDataPublisher.cpp.template r]
@@ -1332,6 +1461,12 @@ global SAL_DIR SAL_WORK_DIR
 }
 
 
+#
+## Documented proc \c removeshmem .
+# \param[in] id Subsystem identifier
+#
+#  Remove the shared memory segment associated with Subsystem  Monitor
+#
 proc removeshmem { id } {
   set lid "0x[format %8.8x 0x[set id]]"
   set ipcs [exec ipcs -a]

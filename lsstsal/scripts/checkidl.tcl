@@ -1,3 +1,26 @@
+#!/usr/bin/env tclsh
+## \file checkidl.tcl
+# \brief This contains procedures to parse the DDS idl files
+# and check for problems like the use of reserved words.
+#
+#
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, V3 
+#\n
+# Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
+#\n
+#
+#
+#\code
+
+
+#
+## Documented proc \c noncoding .
+# \param[in] r Record from an IDL file
+#
+#  Check if a record of IDL is coding a data item or not
+#  Returns 1 if not coding for a data item
+#
 proc noncoding { r } {
 global NEWCONSTS KEYINDEX
   set r [string trim $r "\{"]
@@ -17,6 +40,15 @@ global NEWCONSTS KEYINDEX
   return 0
 }
 
+#
+## Documented proc \c validitem .
+# \param[in] type Data type of item
+# \param[in] item Name of the data item
+# \param[in] op Optional type of information to return (dim,type,id)
+#
+# Check the data type of an item and return the correctly
+# formatted IDL definition, error if a reserved word is used
+#
 proc validitem { type item {op all} } {
 global NEWCONSTS IDLSIZES IDLRESERVED
   if { $type == "int" } {set type "long"}
@@ -60,6 +92,13 @@ global NEWCONSTS IDLSIZES IDLRESERVED
 }
 
 
+#
+## Documented proc \c htmheader .
+# \param[in] fhtm File handle of html output
+# \param[in] hid Subsystem/CSC identity
+#
+# Add html format headers to topic definition pages
+#
 proc htmheader { fhtm hid } {
 global NEWCONSTS DEC SDESC
            set id [join [split $hid .] _]
@@ -105,6 +144,14 @@ global NEWCONSTS DEC SDESC
 
 
       
+#
+## Documented proc \c salsyntaxcheck .
+# \param[in] type Type of record to check
+# \param[in] value Record to check
+#
+#  Check the syntax of SAL input records. Replace problematical 
+#  characters which are not allowed.
+#
 proc salsyntaxcheck { type value } {
     switch $type {
          topic { 
@@ -114,6 +161,12 @@ proc salsyntaxcheck { type value } {
     }
 }
 
+#
+## Documented proc \c streamsizes .
+#
+#  Calculate the size of Topic data created at runtime
+#  Used to estimate EFD sizing requirements
+#
 proc streamsizes { } {
 global NEWSIZES FREQUENCY PUBLISHERS
   set stotal 0 ; set dtotal 0 ; set btotal 0
@@ -131,6 +184,12 @@ global NEWSIZES FREQUENCY PUBLISHERS
   puts stdout "\n[format %-20s Total]	size=[format %6d $btotal]	rate=[format %6d [expr int($stotal)]] Bytes/sec [expr int($dtotal)] Mb/day" 
 }
 
+#
+## Documented proc \c getfrequency .
+#
+#  Returns the frequency at which Topic data is published
+#  at runtime. Defaults to once per exposure if unknown.
+#
 proc getfrequency { hid } {
 global FREQUENCY
    set subsys [lindex [split $hid "._"] 0]
@@ -140,6 +199,15 @@ global FREQUENCY
 
 
 
+#
+## Documented proc \c salsyntaxcheck .
+# \param[in] f File name of input IDL file
+#
+#  Check an IDL file for invalid syntax, data types, reserved words
+#  and other problems. Input files are in idl-templates directory of
+#  the SAL workspace, and Output files are put in idl-templates/validated.
+#
+#
 proc checkidl { f } {
 global NEWTOPICS NEWSIZES NEWCONSTS
 global DESC SDESC IDLTYPES IDLSIZES
@@ -321,6 +389,13 @@ global XMLTOPICS XMLTLM IDLRESERVED XMLITEMS
 }
 
 
+#
+## Documented proc \c gentopicdefsql .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Create an MySQL input file which can be used to create an EFD table to 
+#  store Topic data at runtime.
+#
 proc gentopicdefsql { subsys } {
 global SAL_WORK_DIR
    exec mkdir -p $SAL_WORK_DIR/sql
@@ -341,31 +416,26 @@ global SAL_WORK_DIR
 }
 
 
+#
+## Documented proc \c checkall .
+#
+#  Wrapper routine to loop though all IDL files and check them
+#  for problems
+#
 proc checkall { } {
   set all [lsort [glob *.idl]]
   foreach i $all { checkidl $i ; puts stdout "Validated $i" }
 }
 
-proc testdupiid { } {
-global SAL_DIR
-   set all [lsort [glob $SAL_DIR/code/include/sal/svcSAL_*_iid.h]]
-   foreach i $all { 
-      stdlog "Checking $i"
-      set fin [open $i r]
-      while { [gets $fin rec] > -1 } {
-         set n [lindex $rec 2]
-         if { [info exists used($)] } {
-            stdlog "Duplicate IID = $n in $i"
-            close $fin
-            return
-         } else {
-            set used([lindex $rec 2]) 1
-         }
-      }
-      close $fin
-   }
-}
 
+#
+## Documented proc \c createackcmdidl .
+# \param[in] base Name of Subsystem/CSC
+# \param[in] keyid Optional specifier indicating that the DDS Topic is keyed
+#
+#  Create the IDL fragment to define the 'ackcmd' Topic for a Subsystem
+#  If the Topic is keyed, then an extra field is added for the key value.
+#
 proc createackcmdidl { base {keyid 0} } {
 global SAL_WORK_DIR OPTIONS
    if { $OPTIONS(verbose) } {stdlog "###TRACE>>> createackcmdidl $base $keyid"}
