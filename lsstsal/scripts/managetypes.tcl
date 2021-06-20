@@ -285,6 +285,7 @@ proc testsimpletypecode { } {
 # \param[in] type Abstract data type
 # \param[in] size Dimension of data
 # \param[in] target Direction of copy
+# \param[in] prefix Optional prefix for DDS sample names
 #
 #  Copy data from DDS Samples to shared memory data structures and back
 #
@@ -473,7 +474,7 @@ global TYPESIZE TYPEFORMAT
 #
 ## Documented proc \c testtransferdata .
 #
-#  Test the tranferdata routine
+#  Test the transferdata routine
 #
 proc testtransferdata { } {
    foreach case "ddstocache ddsfromcache tcltocache tclfromcache tcltest ctest" {
@@ -486,8 +487,7 @@ proc testtransferdata { } {
 
 #
 ## Documented proc \c lvtypebuilder .
-# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
-# \param[in] op 
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
 # \param[in] name Name of a data item
 # \param[in] type Abstract data type
 # \param[in] size Dimension of data

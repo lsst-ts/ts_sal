@@ -542,7 +542,6 @@ rm -fr \$RPM_BUILD_ROOT
 
 #
 ## Documented proc \c generatePythonspec .
-# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
 #
 #  Generate the SPEC file for a standalone Python RPM
 #
@@ -596,7 +595,6 @@ puts $fout "
 
 #
 ## Documented proc \c generateUtilsrpm .
-# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
 #
 #  Generate the SPEC file for ts_sal_utils
 #
@@ -689,11 +687,10 @@ rpmbuild -bb -bl -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_utils.spec
 
 #
 ## Documented proc \c generaterddsrpm .
-# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
 #
 #  Generate the SPEC file for ts_opensplice
 #
-proc generaterddsrpm { version } {
+proc generaterddsrpm { } {
 global SAL_WORK_DIR OSPL_HOME OSPL_VERSION
   exec rm -fr $SAL_WORK_DIR/rpm_opensplice
   exec mkdir -p $SAL_WORK_DIR/rpm_opensplice

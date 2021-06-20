@@ -4,7 +4,7 @@ var gensalrpms_8tcl =
     [ "generateATmetarpm", "gensalrpms_8tcl.html#afa4bbf62fce6c8b43da21139d7e2194c", null ],
     [ "generatemetarpm", "gensalrpms_8tcl.html#a8417955727051f88f92ff6c51392732c", null ],
     [ "generatePythonspec", "gensalrpms_8tcl.html#a254c128e327a9554b667b6acec9f0e49", null ],
-    [ "generaterddsrpm", "gensalrpms_8tcl.html#a4aca240d3ea024c6aee7a3fe3b4bd006", null ],
+    [ "generaterddsrpm", "gensalrpms_8tcl.html#ab7ce5c019a93c83bfb3f33064158a32b", null ],
     [ "generaterpm", "gensalrpms_8tcl.html#adb7d3ed98342e76f7a8c3b04c4ab5920", null ],
     [ "generatetestrpm", "gensalrpms_8tcl.html#a517837ad953b66a635ad13fc8872c08b", null ],
     [ "generateUtilsrpm", "gensalrpms_8tcl.html#a8ee2e279a8c8bbf717d97ef5b254c044", null ],

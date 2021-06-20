@@ -955,8 +955,8 @@ global CMD_ALIASES CMDS
 
 #
 ## Documented proc \c gencmdgenericjava .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
 # \param[in] fout File handle of output file
-# \param[in] lang Target language to generate code for
 #
 #  Create the generic DDS code to manage command Topics for Java
 #

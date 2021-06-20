@@ -16,7 +16,7 @@
 #
 ## Documented proc \c pythonprinter .
 # \param[in] fout File handle of output python test script
-# \param[in] SAL Topic name
+# \param[in] topic SAL Topic name
 #
 #  Help routine to generate python code to print SAL Topic data
 #

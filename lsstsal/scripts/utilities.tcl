@@ -143,7 +143,7 @@ global SAL_WORK_DIR OPTIONS CMD_ALIASES EVENT_ALIASES TLM_ALIASES
 
 #
 ## Documented proc \c checkFileAsset .
-# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] fname Name of file to check for
 #
 #  Check for named file expected as salgenerator output
 #
@@ -182,6 +182,7 @@ proc skipPrivate { fidl } {
 #
 ## Documented proc \c getTopicNames .
 # \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] type Optional type of Topic to list
 #
 #  Return list of SAL Topic names for a Subsystem/CSC
 #

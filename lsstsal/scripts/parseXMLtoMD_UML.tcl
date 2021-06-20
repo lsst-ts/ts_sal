@@ -54,7 +54,6 @@ _b1b02ca_1519318452686_183403_[format %4.4d $ENUMXID]' name='[set i]'/>"
 ## Documented proc \c refEnumeration .
 # \param[in] fid File handle of output UML XML
 # \param[in] ename Element name
-# \param[in] enum An enumeration value
 #
 #  Reference an enumeration structure in UML
 #

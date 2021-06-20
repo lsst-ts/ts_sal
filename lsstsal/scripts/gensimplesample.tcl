@@ -16,7 +16,7 @@
 #
 #
 ## Documented proc \c makesaldirs .
-# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
 # \param[in] name Name of SAL Topic
 #
 #  Create a directory strucuture for building SAL API assets
@@ -364,14 +364,15 @@ using namespace std;
 #
 ## Documented proc \c updatecfragments .
 # \param[in] fcod1 File handle of code fragment file
+# \param[in] fcod1b File handle of code fragment file
 # \param[in] fcod2 File handle of code fragment file
+# \param[in] fcod2b File handle of code fragment file
 # \param[in] fcod3 File handle of code fragment file
 # \param[in] fcod4 File handle of code fragment file
 # \param[in] fcod5 File handle of code fragment file
 # \param[in] fcod6 File handle of code fragment file
 # \param[in] fcod7 File handle of code fragment file
 # \param[in] fcod8 File handle of code fragment file
-# \param[in] fcod9 File handle of code fragment file
 # \param[in] fcod10 File handle of code fragment file
 # \param[in] fcod11 File handle of code fragment file
 # \param[in] fcod12 File handle of code fragment file
@@ -963,7 +964,6 @@ global SAL_WORK_DIR OPTIONS ONEDDSGEN
 #
 ## Documented proc \c salpythonshlibgen .
 # \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
-# \param[in] lang Language to generate code for
 #
 #  Generate Python shared library file for a Subsystem/CSC
 #
@@ -984,7 +984,7 @@ global SAL_WORK_DIR OPTIONS
 #
 ## Documented proc \c saljavaclassgen .
 # \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
-# \param[in] if Topic identifier
+# \param[in] id Topic identifier
 #
 #  Generate Java class file for a SAL Topic
 #
@@ -1012,7 +1012,7 @@ global SAL_WORK_DIR OPTIONS
 #
 ## Documented proc \c saljavaclassgen .
 # \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
-# \param[in] if Topic identifier
+# \param[in] id Topic identifier
 #
 #  Generate C++ test program for a SAL Topic
 #

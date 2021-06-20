@@ -372,6 +372,7 @@ global SYSDIC IDXENUMDONE
 #
 ## Documented proc \c enumsToIDL .
 # \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] alias Aliased name of Topic
 # \param[in] fout File handle of output IDL file
 #
 #  Generate an IDL const definition for a SAL Event XML enumeration

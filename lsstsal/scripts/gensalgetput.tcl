@@ -214,7 +214,7 @@ global SYSDIC
 
 
 #
-## Documented proc \c testifdef .
+## Documented proc \c processifdefregion .
 # \param[in] fin File handle of input file
 # \param[in] fout File handle of output file
 # \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
@@ -487,7 +487,7 @@ proc addActorIndexesJava { idlfile base fout } {
 ## Documented proc \c copyfromjavasample .
 # \param[in] fout File handle of output file
 # \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
-# \param[in] base Name of of SAL Topic
+# \param[in] name Name of of SAL Topic
 #
 #   Add code to copy data from Java DDS sample
 #
@@ -556,7 +556,7 @@ global CMDS TLMS EVTS
 ## Documented proc \c copytojavasample .
 # \param[in] fout File handle of output file
 # \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
-# \param[in] base Name of of SAL Topic
+# \param[in] name Name of of SAL Topic
 #
 #   Add code to copy data into Java DDS sample
 #

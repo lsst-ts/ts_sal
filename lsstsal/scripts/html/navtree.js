@@ -1,6 +1,6 @@
 var NAVTREE =
 [
-  [ "RubinObservatory-SAL", "index.html", [
+  [ "Rubin Observatory - SAL", "index.html", [
     [ "Service Abstraction Layer package", "md__r_e_a_d_m_e.html", null ],
     [ "Namespaces", null, [
       [ "Namespace List", "namespaces.html", "namespaces" ],

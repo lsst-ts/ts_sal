@@ -100,6 +100,7 @@ global SAL_WORK_DIR SAL_DIR
 ## Documented proc \c dounit .
 # \param[in] fid File handle of input file
 # \param[in] id Name of item
+# \param[in] u Units specifier
 #
 #  Generate a unit selection for HTML interface
 #
@@ -121,7 +122,7 @@ global UDESC
 ## Documented proc \c dogen .
 # \param[in] fid File handle of input file
 # \param[in] id Name of item
-#
+# \param[in] cmd Optional specifier for Commands
 #  Generate checkbox for HTML interface
 #
 proc dogen { fid id {cmd yes} } {

@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>RubinObservatory-SAL: gensalrpms.tcl File Reference</title>
+<title>Rubin Observatory - SAL: gensalrpms.tcl File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -30,8 +30,8 @@
  <tr style="height: 56px;">
   <td id="projectlogo"><img alt="Logo" src="rubin.png"/></td>
   <td style="padding-left: 0.5em;">
-   <div id="projectname">RubinObservatory-SAL
-   &#160;<span id="projectnumber">June 2021</span>
+   <div id="projectname">Rubin Observatory - SAL
+   &#160;<span id="projectnumber">V6.0.0</span>
    </div>
    <div id="projectbrief">The Service Abstraction Layer generates API&#39;s to an abstracted set of services (Commands,Events,Telemetry).</div>
   </td>
@@ -143,8 +143,8 @@ Functions</h2></td></tr>
 <tr class="separator:a254c128e327a9554b667b6acec9f0e49"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8ee2e279a8c8bbf717d97ef5b254c044"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gensalrpms_8tcl.html#a8ee2e279a8c8bbf717d97ef5b254c044">generateUtilsrpm</a></td></tr>
 <tr class="separator:a8ee2e279a8c8bbf717d97ef5b254c044"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4aca240d3ea024c6aee7a3fe3b4bd006"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gensalrpms_8tcl.html#a4aca240d3ea024c6aee7a3fe3b4bd006">generaterddsrpm</a> version</td></tr>
-<tr class="separator:a4aca240d3ea024c6aee7a3fe3b4bd006"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab7ce5c019a93c83bfb3f33064158a32b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gensalrpms_8tcl.html#ab7ce5c019a93c83bfb3f33064158a32b">generaterddsrpm</a></td></tr>
+<tr class="separator:ab7ce5c019a93c83bfb3f33064158a32b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>This contains procedures to create the runtime RPM assets for SAL APIs. </p>
@@ -227,46 +227,26 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Documented proc <code>generatePythonspec</code> . </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">subsys</td><td>Name of CSC/SUbsystem as defined in SALSubsystems.xml</td></tr>
-  </table>
-  </dd>
-</dl>
+<p>Documented proc <code>generatePythonspec</code> .</p>
 <p>Generate the SPEC file for a standalone Python RPM </p>
 
-<p>Definition at line <a class="el" href="gensalrpms_8tcl_source.html#l00549">549</a> of file <a class="el" href="gensalrpms_8tcl_source.html">gensalrpms.tcl</a>.</p>
+<p>Definition at line <a class="el" href="gensalrpms_8tcl_source.html#l00548">548</a> of file <a class="el" href="gensalrpms_8tcl_source.html">gensalrpms.tcl</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a4aca240d3ea024c6aee7a3fe3b4bd006"></a>
+<a class="anchor" id="ab7ce5c019a93c83bfb3f33064158a32b"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">generaterddsrpm </td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">version &#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td></td>
-          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Documented proc <code>generaterddsrpm</code> . </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">subsys</td><td>Name of CSC/SUbsystem as defined in SALSubsystems.xml</td></tr>
-  </table>
-  </dd>
-</dl>
+<p>Documented proc <code>generaterddsrpm</code> .</p>
 <p>Generate the SPEC file for ts_opensplice </p>
 
-<p>Definition at line <a class="el" href="gensalrpms_8tcl_source.html#l00696">696</a> of file <a class="el" href="gensalrpms_8tcl_source.html">gensalrpms.tcl</a>.</p>
+<p>Definition at line <a class="el" href="gensalrpms_8tcl_source.html#l00693">693</a> of file <a class="el" href="gensalrpms_8tcl_source.html">gensalrpms.tcl</a>.</p>
 
 </div>
 </div>
@@ -339,16 +319,10 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Documented proc <code>generateUtilsrpm</code> . </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">subsys</td><td>Name of CSC/SUbsystem as defined in SALSubsystems.xml</td></tr>
-  </table>
-  </dd>
-</dl>
+<p>Documented proc <code>generateUtilsrpm</code> .</p>
 <p>Generate the SPEC file for ts_sal_utils </p>
 
-<p>Definition at line <a class="el" href="gensalrpms_8tcl_source.html#l00603">603</a> of file <a class="el" href="gensalrpms_8tcl_source.html">gensalrpms.tcl</a>.</p>
+<p>Definition at line <a class="el" href="gensalrpms_8tcl_source.html#l00601">601</a> of file <a class="el" href="gensalrpms_8tcl_source.html">gensalrpms.tcl</a>.</p>
 
 </div>
 </div>
@@ -508,7 +482,7 @@ Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="gensalrpms_8tcl.html">gensalrpms.tcl</a></li>
-    <li class="footer">Generated on Sun Jun 20 2021 15:20:06 for RubinObservatory-SAL by
+    <li class="footer">Generated on Sun Jun 20 2021 16:06:23 for Rubin Observatory - SAL by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>
   </ul>

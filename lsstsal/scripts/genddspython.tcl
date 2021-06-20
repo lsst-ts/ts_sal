@@ -52,6 +52,8 @@ proc dojoin { pieces } {
 ## Documented proc \c ucname .
 # \param[in] name Uppercase a SAL XML enumeration name
 #
+#  Format name as upper case
+#
 proc ucname { name } {
   set parts [split $name ,]
   set res [toucamcase [lindex $parts 0]][toucamcase [lindex $parts 1]]
@@ -59,7 +61,9 @@ proc ucname { name } {
 
 #
 ## Documented proc \c toucamcase .
-# \param[in] name camelCase a SAL XML enumeration name
+# \param[in] str camelCase a SAL XML enumeration name
+#
+#  Format name as camelCase
 #
 proc toucamcase { str } {
    set caps [enumToPython $str]
