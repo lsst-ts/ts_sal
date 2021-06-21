@@ -21,4 +21,4 @@ details, it can be said binding for the following primitives are generated:
 [LSE-70](https://ls.st/LSE-70) provides more details, particularly starting at
 chapter 3.2.4.
 
-
+<P><A HREF="files.html">salgenerator scripts documentation</A>

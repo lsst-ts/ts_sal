@@ -177,7 +177,7 @@ rpmbuild -bb -bl -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_[set subsys].spec
     exec cat /tmp/makerpm_[set subsys].log
   }
   cd $SAL_WORK_DIR
-###  updatesingletons ts_sal_utils
+  updatesingletons ts_sal_utils
   updatesingletons ts_sal_runtime
   updatesingletons ts_sal_ATruntime
 }
@@ -187,10 +187,10 @@ rpmbuild -bb -bl -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_[set subsys].spec
 # \param[in] name Name of asset (ts_sal_utils, ts_sal_runtime,ts_sal_ATruntime)
 #
 proc updatesingletons { name } {
-global SAL_WORK_DIR XMLVERSION
+global SAL_WORK_DIR XMLVERSION SALVERSION
   set found ""
   catch {
-    set found [glob $SAL_WORK_DIR/rpmbuild/RPMS/x86_64/[set name]-$XMLVERSION*]
+    set found [glob $SAL_WORK_DIR/rpmbuild/RPMS/x86_64/[set name]-$XMLVERSION-$SALVERSION*]
   }
   if { $found == "" } {
      switch $name  {
