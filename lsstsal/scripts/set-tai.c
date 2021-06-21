@@ -1,4 +1,7 @@
-/* Set tai offset
+/**
+ \file set-tai.c
+ \brief Set tai offset in Linux kernel
+ *
  *              by: John Stultz <john.stultz@linaro.org>
  *              (C) Copyright Linaro 2013
  *              Licensed under the GPLv2

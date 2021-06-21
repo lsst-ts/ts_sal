@@ -1,5 +1,23 @@
 #!/usr/bin/env tclsh
-
+## \file parseXML.tcl
+# \brief This contains procedures to parse the input SAL XML
+#  files and generate IDL
+#
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, V3 
+#\n
+# Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
+#\n
+#
+#
+#\code
+#
+## Documented proc \c parseXMLtoidl .
+# \param[in] fname Name of input XML file
+#
+#  Create the files in idl-templates corresponding to the 
+#  SAL Topics defined in an XML file
+#
 proc parseXMLtoidl { fname } { 
 global IDLRESERVED SAL_WORK_DIR SAL_DIR CMDS CMD_ALIASES EVTS EVENT_ALIASES IDLTYPES
 global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIONS METADATA
@@ -170,11 +188,10 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
         puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",4,\"private_seqNum\",\"int\",1,\"unitless\",1,\"\",\"\",\"Sequence number\");"
         puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",5,\"private_identity\",\"int\",1,\"unitless\",1,\"\",\"\",\"Identity of originator\");"
         puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",6,\"private_origin\",\"int\",1,\"unitless\",1,\"\",\"\",\"PID code of sender\");"
-        puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",7,\"private_host\",\"int\",1,\"unitless\",1,\"\",\"\",\"IP of sender\");"
-        set itemid 7
+        set itemid 6
         if { [info exists SYSDIC($subsys,keyedID)] } {
            puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",8,\"[set subsys]ID\",\"int\",1,\"unitless\",1,\"\",\"\",\"Index of $subsys instance\");"
-           set itemid 8
+           set itemid 7
         }
         set alias [getAlias $tname]
         if { $ctype == "command" } {
@@ -331,6 +348,13 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
    if { $OPTIONS(verbose) } {stdlog "###TRACE<<< parseXMLtoidl $fname"}
 }
 
+#
+## Documented proc \c indexedEnumsToIDL .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] fout File handle of output IDL file
+#
+#  Generate an IDL const definition for a SAL XML indexed enumeration
+#
 proc indexedEnumsToIDL { subsys fout } {
 global SYSDIC IDXENUMDONE
    if { [info exists SYSDIC($subsys,IndexEnumeration)] && $IDXENUMDONE($subsys) == 0 } {
@@ -345,6 +369,14 @@ global SYSDIC IDXENUMDONE
 }
 
 
+#
+## Documented proc \c enumsToIDL .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] alias Aliased name of Topic
+# \param[in] fout File handle of output IDL file
+#
+#  Generate an IDL const definition for a SAL Event XML enumeration
+#
 proc enumsToIDL { subsys alias fout } {
 global EVENT_ENUM EDONE
    if { [info exists EVENT_ENUM($alias)] && [info exists EDONE($alias)] == 0} {
@@ -381,6 +413,12 @@ global EVENT_ENUM EDONE
    }
 }
 
+#
+## Documented proc \c validateEnumeration .
+# \param[in] elist List of SAL XML enumeration definitions
+#
+#  Check the syntax of SAL XML enumerations
+#
 proc validateEnumeration { elist } {
    set hasvals [llength [split $elist "="]]
    if { $hasvals > 1 } {
@@ -399,6 +437,12 @@ proc validateEnumeration { elist } {
 }
 
 
+#
+## Documented proc \c genhtmlcommandtable .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Generate an html formatted table for the Command Topics
+#
 proc genhtmlcommandtable { subsys } {
 global IDLRESERVED SAL_WORK_DIR SAL_DIR CMDS CMD_ALIASES EVTS EVENT_ALIASES UNITS DESC
   exec mkdir -p $SAL_WORK_DIR/html/[set subsys]
@@ -429,6 +473,12 @@ global IDLRESERVED SAL_WORK_DIR SAL_DIR CMDS CMD_ALIASES EVTS EVENT_ALIASES UNIT
   close $fout
 }
 
+#
+## Documented proc \c genhtmleventtable .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Generate an html formatted table for the Event Topics
+#
 proc genhtmleventtable { subsys } {
 global IDLRESERVED SAL_WORK_DIR SAL_DIR CMDS CMD_ALIASES EVTS EVENT_ALIASES UNITS DESC
   exec mkdir -p $SAL_WORK_DIR/html/[set subsys]
@@ -462,6 +512,12 @@ global IDLRESERVED SAL_WORK_DIR SAL_DIR CMDS CMD_ALIASES EVTS EVENT_ALIASES UNIT
 
 
 
+#
+## Documented proc \c genhtmltelemetrytable .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Generate an html formatted table for the Telemetry Topics
+#
 proc genhtmltelemetrytable { subsys } {
 global IDLRESERVED SAL_WORK_DIR SAL_DIR TLMS TLM_ALIASES UNITS DESC
   exec mkdir -p $SAL_WORK_DIR/html/[set subsys]

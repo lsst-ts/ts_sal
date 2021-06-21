@@ -1,5 +1,23 @@
 #!/usr/bin/env tclsh
+## \file parseXMLtoUML.tcl
+# \brief This contains procedures to generate Enterprise Architect compatible 
+#  XML describing the SAL XML Topics
+#
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, V3 
+#\n
+# Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
+#\n
+#
+#
+#\code
 
+#
+## Documented proc \c parseXMLtoUML .
+# \param[in] fname Name of CSC/SUbsystem input XML file
+#
+#  Generate a Magic Draw compatible UML (XML) file using the SAL XML as input
+#
 proc parseXMLtoUML { fname } { 
 global IDLRESERVED SAL_WORK_DIR SAL_DIR CMDS CMD_ALIASES EVTS EVENT_ALIASES
 global TLMS TLM_ALIASES EVENT_ENUM

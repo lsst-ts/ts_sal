@@ -1,4 +1,27 @@
+#!/usr/bin/env tclsh
+## \file managetypes.tcl
+# \brief This contains procedures to help manage the diffent
+#  IDL/C++/Java/LabVIEW data types
+#
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, V3 
+#\n
+# Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
+#\n
+#
+#
+#\code
 
+
+#
+## Documented proc \c simpletypecode .
+# \param[in] name Name of a data item
+# \param[in] type Abstract data type
+# \param[in] size Dimension of data
+# \param[in] target Target language
+#
+#  Returns the code for the data type in the specified language
+#
 proc simpletypecode { name type size target } {
 global TYPESUBS
    set ltyp [string tolower $type]
@@ -105,6 +128,12 @@ global TYPESUBS
    }
 }
 
+#
+## Documented proc \c typeidltoc .
+# \param[in] rec Record from IDL input file
+#
+#  Return the C/C++ code for an IDL data type declaration
+#
 proc typeidltoc { rec } {
 global TYPESUBS VPROPS OPTIONS
    if { $OPTIONS(verbose) } {stdlog "### typeidltoc : $rec"}
@@ -186,15 +215,12 @@ global TYPESUBS VPROPS OPTIONS
 }
 
 
-proc testsimpletypecode { } {
-   foreach case "c idl sql" {
-      foreach typ "byte short int long float double string" {
-          puts stdout "$case $typ :: [simpletypecode test $typ 1 $case]"
-          puts stdout "$case $typ :: [simpletypecode test $typ 16 $case]"
-      }
-   }
-}
-
+#
+## Documented proc \c simpletypecode .
+# \param[in] rec Record from IDL input file
+#
+#  Return the LabVIEW C++ code for an IDL data type declaration
+#
 proc typeidltolv { rec } {
 global TYPESUBS ATYPESUBS VPROPS OPTIONS
    if { $OPTIONS(verbose) } {stdlog "### typeidltolv : $rec"}
@@ -239,6 +265,11 @@ global TYPESUBS ATYPESUBS VPROPS OPTIONS
 }
 
 
+#
+## Documented proc \c simpletypecode .
+#
+#  Test the simpletypecode routine
+#
 proc testsimpletypecode { } {
    foreach case "c idl sql" {
       foreach typ "byte short int long float double string" {
@@ -248,6 +279,16 @@ proc testsimpletypecode { } {
    }
 }
 
+## Documented proc \c transferdata .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] name Name of a data item
+# \param[in] type Abstract data type
+# \param[in] size Dimension of data
+# \param[in] target Direction of copy
+# \param[in] prefix Optional prefix for DDS sample names
+#
+#  Copy data from DDS Samples to shared memory data structures and back
+#
 proc transferdata { subsys name type size target {prefix ""} } {
 global TYPESIZE TYPEFORMAT
    set ltyp [string tolower $type]
@@ -430,6 +471,11 @@ global TYPESIZE TYPEFORMAT
    }
 }
 
+#
+## Documented proc \c testtransferdata .
+#
+#  Test the transferdata routine
+#
 proc testtransferdata { } {
    foreach case "ddstocache ddsfromcache tcltocache tclfromcache tcltest ctest" {
       foreach typ "byte short int long float double char" {
@@ -439,7 +485,16 @@ proc testtransferdata { } {
    }
 }
 
-proc lvtypebuilder { base op name type size } {
+#
+## Documented proc \c lvtypebuilder .
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] name Name of a data item
+# \param[in] type Abstract data type
+# \param[in] size Dimension of data
+# 
+#  Returns formatted LabVIEW C++ type
+#
+proc lvtypebuilder { base name type size } {
    set t [string tolower $type]
    if { $t == "char" || $size > 1 } {
       return "$base LStrHandle $name,"

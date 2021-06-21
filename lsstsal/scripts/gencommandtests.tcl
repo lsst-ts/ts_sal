@@ -1,4 +1,25 @@
+#!/usr/bin/env tclsh
+## \file gencommandtests.tcl
+# \brief This contains procedures to create the SAL API tests 
+#  It generates code and tests for C++ Command Topics
+#
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, V3 
+#\n
+# Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
+#\n
+#
+#
+#\code
 
+#
+## Documented proc \c gencommandtestscpp .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Generates the Command handling code for a Subsystem/CSC.
+#  Code is generated for a commander and a controller task
+#  per-command Topic type. 
+#
 proc gencommandtestscpp { subsys } {
 global CMD_ALIASES CMDS SAL_WORK_DIR SYSDIC DONE_CMDEVT
  if { [info exists CMD_ALIASES($subsys)] && $DONE_CMDEVT == 0 } {

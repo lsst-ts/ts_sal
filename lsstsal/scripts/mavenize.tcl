@@ -1,34 +1,24 @@
 #!/usr/bin/env tclsh
-
-# set SAL_DIR $env(SAL_DIR)
-# set SAL_WORK_DIR $env(SAL_WORK_DIR)
-# source $SAL_DIR/versioning.tcl
+## \file mavenize.tcl
+# \brief This contains procedures to create and build a Maven
+# project for a SAL Java API 
 #
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, V3 
+#\n
+# Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
+#\n
+#
+#
+#\code
 
-#  Add this to pom when we have integration level tests
-#    <build>
-#        <plugins>
-#            <plugin>
-#                <artifactId>maven-invoker-plugin</artifactId>
-#                <version>1.9</version>
-#                <configuration>
-#                    <debug>true</debug>
-#                    <projectsDirectory>src/test</projectsDirectory>
-#                    <preBuildHookScript>setup.tcl</preBuildHookScript>
-#                    <postBuildHookScript>runtests.tcl</postBuildHookScript>
-#                </configuration>
-#                <executions>
-#                    <execution>
-#                        <id>integration-test</id>
-#                        <goals>
-#                            <goal>run</goal>
-#                        </goals>
-#                    </execution>
-#                </executions>
-#            </plugin>
-#        </plugins>
-#    </build>
 
+#
+## Documented proc \c mavenize .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Create the POM file and directory structure for a Maven project
+#
 proc mavenize { subsys } {
 global env SAL_WORK_DIR SAL_DIR OSPL_VERSION XMLVERSION RELVERSION TS_SAL_DIR
   set mvnrelease [set XMLVERSION]_[exec cat $env(TS_SAL_DIR)/VERSION][set RELVERSION]
@@ -160,6 +150,12 @@ global env SAL_WORK_DIR SAL_DIR OSPL_VERSION XMLVERSION RELVERSION TS_SAL_DIR
 }
 
 
+#
+## Documented proc \c mavenunittests .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Create the Java unit tests for a Subsystem/CSC
+#
 proc mavenunittests { subsys } {
 global env SAL_WORK_DIR SAL_DIR CMD_ALIASES CMDS SYSDIC XMLVERSION RELVERSION TS_SAL_DIR 
    set mvnrelease [set XMLVERSION]_[exec cat $env(TS_SAL_DIR)/VERSION][set RELVERSION]

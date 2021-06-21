@@ -103,8 +103,6 @@ public class salActor {
         public int error;
 /// ack is the ack field for the most recent ackCmd message (commands)
         public int ack;
-/// activehost is the private_identity field of the most recent command
-        public int activehost;
 /// activeorigin is the private_origin field of the most recent command
         public int activeorigin;
 /// activeidentity is the private_identity field of the most recent command

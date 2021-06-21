@@ -1,14 +1,33 @@
+#!/usr/bin/env tclsh
+## \file gentelemetrytestssinglefilejava.tcl
+# \brief Generate Java code to test the SAL Command API
+#
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, V3 
+#\n
+# Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
+#\n
+#
+#
+#\code
+
+
+#
+## Documented proc \c gentelemetrytestssinglefilejava .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Generate Java code to test the SAL Telemetry API
+#
+# Creates a two Java programs which contains an implementation of all the
+# commands defined within this subsys. To generate these programs you must
+# follow the SAL guidlines for generating Java libraries. 
+# 
+# 1) Navigate to /ts_sal/test/maven/[subsystem][vesion]/ with two terminals.
+# 2) In one terminal run `mvn -Dtest=[subsystem]EventLogger_all test`
+# 3) In another terminal run `mvn -Dtest=[subsystem]Event_all test` AFTER
+#    the controller prints `===== [set subsys] all controllers ready =====`
+#
 proc gentelemetrytestssinglefilejava { subsys } {
-    ###
-    # Creates a two Java programs which contains an implementation of all the
-    # commands defined within this subsys. To generate these programs you must
-    # follow the SAL guidlines for generating Java libraries. 
-    # 
-    # 1) Navigate to /ts_sal/test/maven/[subsystem][vesion]/ with two terminals.
-    # 2) In one terminal run `mvn -Dtest=[subsystem]EventLogger_all test`
-    # 3) In another terminal run `mvn -Dtest=[subsystem]Event_all test` AFTER
-    #    the controller prints `===== [set subsys] all controllers ready =====`
-    ###
 
     global SAL_WORK_DIR
 

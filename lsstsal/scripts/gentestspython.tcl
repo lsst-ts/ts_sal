@@ -1,16 +1,27 @@
-# set SAL_WORK_DIR $env(SAL_WORK_DIR)
-# set SAL_DIR $env(SAL_DIR)
-# source $SAL_DIR/utilities.tcl
-# source $SAL_DIR/gentestspython.tcl
-# source $SAL_WORK_DIR/idl-templates/validated/camera_tlmdef.tcl
-# source $SAL_WORK_DIR/idl-templates/validated/camera_evtdef.tcl
-# source $SAL_WORK_DIR/idl-templates/validated/camera_cmddef.tcl
-# geneventtestspython camera
-# gencmdtestspython camera
+#!/usr/bin/env tclsh
+## \file gentestspython.tcl
+# \brief This contains procedures to create and manage the
+# MD5SUM revision codes used to uniqely identify versioned
+# DDS Topic names.
 #
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, V3 
+#\n
+# Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
+#\n
+#
+#
+#\code
+
 
 source $SAL_DIR/pythonprint.tcl
 
+#
+## Documented proc \c gentelemetrytestspython .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Generate a set of Python tests for each SAL Telemetry Topic
+#
 proc gentelemetrytestspython { subsys } {
 global SAL_WORK_DIR SYSDIC SAL_DIR
    if { [info exists SYSDIC($subsys,keyedID)] } {
@@ -76,6 +87,12 @@ exit()
 }
 
 
+#
+## Documented proc \c geneventtestspython .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Generate a set of Python tests for each SAL Event Topic
+#
 proc geneventtestspython { subsys } {
 global EVENT_ALIASES EVTS SAL_WORK_DIR SYSDIC SAL_DIR EVENT_ENUM
  exec mkdir -p $SAL_WORK_DIR/$subsys/python
@@ -153,6 +170,12 @@ exit()
 
 
 
+#
+## Documented proc \c gencommandtestspython .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Generate a set of Python tests for each SAL Command Topic
+#
 proc gencommandtestspython { subsys } {
 global CMD_ALIASES CMDS SAL_WORK_DIR SYSDIC SAL_DIR
  exec mkdir -p $SAL_WORK_DIR/$subsys/python

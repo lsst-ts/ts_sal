@@ -39,11 +39,9 @@ SAL_SALData::SAL_SALData()
 
 void SAL_SALData::initSalEnvironment(int aKey)
 {
-   int v1,v2,v3,v4;
    char *pname = getenv("LSST_DDS_PARTITION_PREFIX");
    char *qname = getenv("LSST_DDS_QOS");
    char *sname = getenv("LSST_DDS_HISTORYSYNC");
-   char *ipaddr = getenv("LSST_DDS_IP");
    if ( pname != NULL ) {
       strncpy(partitionPrefix, pname, 128);
    } else {
@@ -62,11 +60,6 @@ void SAL_SALData::initSalEnvironment(int aKey)
    } else {
       historySync = 0;
    }
-   ddsIPaddress = 1;
-   if (ipaddr != NULL) {
-      sscanf(ipaddr,"%d.%d.%d.%d", &v1 , &v2, &v3, &v4);
-      ddsIPaddress = 256*256*256*v1 + 256*256*v2 + 256*v3 + v4;
-   } 
    hasReader = false;
    hasWriter = false;
    hasCommand = false;

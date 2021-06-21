@@ -1,6 +1,25 @@
 #!/usr/bin/env tclsh
+## \file gensimplesample.tcl
+# \brief Generate simple pub/sub programs for each data type in cpp and java
+#
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, V3 
+#\n
+# Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
+#\n
+#
+#
+#\code
+
 #
 #  Generate simple pub/sub programs for each data type in cpp and java
+#
+#
+## Documented proc \c makesaldirs .
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] name Name of SAL Topic
+#
+#  Create a directory strucuture for building SAL API assets
 #
 proc makesaldirs { base name } {
 global SAL_WORK_DIR OPTIONS
@@ -35,6 +54,12 @@ global SAL_WORK_DIR OPTIONS
 }
 
 
+#
+## Documented proc \c addlvtypes .
+# \param[in] fhlv File handle of LabVIEW include file
+#
+# Write LabVIEW specific data structures to header file 
+#
 proc addlvtypes { fhlv } {
   puts $fhlv "
 typedef signed char int8_t;
@@ -128,7 +153,13 @@ typedef StrArray** StrArrayHdl;
 }
 
 
-
+#
+## Documented proc \c makesalidl .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Generate a LabVIEW compatible version of the SAL Topic data structure
+#  definitions
+#
 proc makesalidl { subsys } {
 global SAL_DIR SAL_WORK_DIR SYSDIC VPROPS EVENT_ENUM OPTIONS CMD_ALIASES
    if { $OPTIONS(verbose) } {stdlog "###TRACE>>> makesalidl $subsys"}
@@ -330,6 +361,27 @@ using namespace std;
    return $SAL_WORK_DIR/idl-templates/validated/sal/sal_$subsys.idl
 }
 
+#
+## Documented proc \c updatecfragments .
+# \param[in] fcod1 File handle of code fragment file
+# \param[in] fcod1b File handle of code fragment file
+# \param[in] fcod2 File handle of code fragment file
+# \param[in] fcod2b File handle of code fragment file
+# \param[in] fcod3 File handle of code fragment file
+# \param[in] fcod4 File handle of code fragment file
+# \param[in] fcod5 File handle of code fragment file
+# \param[in] fcod6 File handle of code fragment file
+# \param[in] fcod7 File handle of code fragment file
+# \param[in] fcod8 File handle of code fragment file
+# \param[in] fcod10 File handle of code fragment file
+# \param[in] fcod11 File handle of code fragment file
+# \param[in] fcod12 File handle of code fragment file
+# \param[in] fcod13 File handle of code fragment file
+#
+#  Generate code fragments to be included in API code
+#  Depending upon the target language code is gnerated to read
+#  and write the individual data fields of the SAL Topics
+#
 proc updatecfragments { fcod1 fcod1b fcod2 fcod2b fcod3 fcod4 fcod5 fcod6 fcod7 fcod8 fcod10 fcod11 fcod12 fcod13 } {
 global VPROPS TYPEFORMAT
    set idx $VPROPS(idx)
@@ -505,6 +557,13 @@ global VPROPS TYPEFORMAT
    }
 }
 
+#
+## Documented proc \c gennonkeyedidl .
+# \param[in] fout File handle of output IDL file
+#
+#  Generate IDL fragment defining the 'ackcmd' Topic
+#  for Subsystems which are not keyed.
+#
 proc gennonkeyedidl { fout } {
 global OPTIONS
    if { $OPTIONS(verbose) } {stdlog "###TRACE>>> gennonkeyedidl $fout"}
@@ -513,7 +572,6 @@ global OPTIONS
      puts $fout "	  long	ack;
 	  long	error;
 	  string<256>	result;
-	  long	host;
 	  string	identity;
 	  long	origin;
 	  long	cmdtype;
@@ -523,6 +581,14 @@ global OPTIONS
    if { $OPTIONS(verbose) } {stdlog "###TRACE<<< gennonkeyedidl $fout"}
 }
 
+#
+## Documented proc \c genkeyedidl .
+# \param[in] fout File handle of output IDL file
+# \param[in] base s Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Generate IDL fragment defining the 'ackcmd' Topic
+#  for Subsystems which are keyed (ie more than one instance may exist)
+#
 proc genkeyedidl { fout base } {
 global SAL_WORK_DIR OPTIONS
      if { $OPTIONS(verbose) } {stdlog "###TRACE>>> genkeyedidl $fout $base"}
@@ -533,7 +599,6 @@ global SAL_WORK_DIR OPTIONS
 	  long	error;
 	  string<256>	result;
 	  string	identity;
-	  long	host;
 	  long	origin;
 	  long	cmdtype;
 	  double	timeout;
@@ -543,6 +608,14 @@ global SAL_WORK_DIR OPTIONS
 }
 
 
+#
+## Documented proc \c genackcmdincl .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] fhdr File handle of output header file
+# \param[in] fhlv File handle of output LabVIEW header file
+#
+#  Generate header fragments defining the 'ackcmd' Topic
+#
 proc genackcmdincl { subsys fhdr fhlv } {
 global OPTIONS
    if { $OPTIONS(verbose) } {stdlog "###TRACE>>> genackcmdincl $subsys $fhdr $fhlv "}
@@ -554,7 +627,6 @@ struct [set subsys]_ackcmdC
       int 		error;
       std::string	result;
       std::string       identity;
-      long		host;
       long		origin;
       long		cmdtype;
       double		timeout;
@@ -577,6 +649,13 @@ typedef struct [set subsys]_waitCompleteLV \{
 
 
 
+#
+## Documented proc \c makesalcmdevt .
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] lang Language to generate code for
+#
+#  Generate code to support the Command and Event Topics
+#
 proc makesalcmdevt { base lang } {
 global SAL_DIR SAL_WORK_DIR SYSDIC ONEPYTHON DONE_CMDEVT OPTIONS
       if { $OPTIONS(verbose) } {stdlog "###TRACE>>> makesalcmdevt $base $lang "}
@@ -622,6 +701,12 @@ global SAL_DIR SAL_WORK_DIR SYSDIC ONEPYTHON DONE_CMDEVT OPTIONS
       if { $OPTIONS(verbose) } {stdlog "###TRACE<<< makesalcmdevt $base $lang "}
 }
 
+#
+## Documented proc \c makepythoncmdevt .
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#   Generate the pybind11 code to support Command and Event Topics
+#
 proc makepythoncmdevt { base } {
 global SAL_DIR SAL_WORK_DIR SYSDIC ONEPYTHON DONE_CMDEVT OPTIONS
    if { $OPTIONS(verbose) } {stdlog "###TRACE>>> makepythoncmdevt $base"}
@@ -652,6 +737,15 @@ global SAL_DIR SAL_WORK_DIR SYSDIC ONEPYTHON DONE_CMDEVT OPTIONS
 
 
 
+#
+## Documented proc \c makesalcode .
+# \param[in] idlfile Name of input IDL definition file
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] name Name of SAL Topic
+# \param[in] lang Target language for code generation
+#
+#   Generate the base SAL API code
+#
 proc makesalcode { idlfile base name lang } {
 global SAL_DIR SAL_WORK_DIR SYSDIC ONEPYTHON DONE_CMDEVT OPTIONS CMD_ALIASES
       if { $OPTIONS(verbose) } {stdlog "###TRACE>>> makesalcode $idlfile $base $name $lang"}
@@ -807,16 +901,12 @@ global SAL_DIR SAL_WORK_DIR SYSDIC ONEPYTHON DONE_CMDEVT OPTIONS CMD_ALIASES
 }
 
 
-proc unittest { } {
-global SAL_WORK_DIR
-      makesalidl tcs
-      makesalcode $SAL_WORK_DIR/idl-templates/validated/sal/sal_tcs.idl tcs kernel_TrackingTarget cpp
-      makesalcode $SAL_WORK_DIR/idl-templates/validated/sal/sal_tcs.idl tcs kernel_TrackingTarget java
-      makesalcode $SAL_WORK_DIR/idl-templates/validated/sal/sal_tcs.idl tcs kernel_TrackingTarget isocpp
-      makesalcode $SAL_WORK_DIR/idl-templates/validated/sal/sal_tcs.idl tcs kernel_TrackingTarget python
-}
 
-
+#
+## Documented proc \c salfullgen .
+#
+#  Test routine to run full set of generators
+#
 proc salfullgen { } {
 global SAL_WORK_DIR OPTIONS
   set atypes [lsort [glob $SAL_WORK_DIR/idl-templates/validated/sal/*.idl]]
@@ -836,6 +926,13 @@ global SAL_WORK_DIR OPTIONS
   }
 }
 
+#
+## Documented proc \c salidlgen .
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] lang Language to generate code for
+#
+#  Generate IDL file for a Subsystem/CSC
+#
 proc salidlgen { base lang } {
 global SAL_WORK_DIR OPTIONS ONEDDSGEN
    if { $OPTIONS(verbose) } {stdlog "###TRACE>>> salidlgen $base $lang"}
@@ -850,7 +947,7 @@ global SAL_WORK_DIR OPTIONS ONEDDSGEN
        }
        if { $lang == "java"} {
          set result none
-         modidlforjava $base
+         modIdlForJava $base
          catch { set result [exec make -f Makefile.saj_[set base]_types] } bad
          if { $result == "none" } {stdlog $bad ; errorexit "Failed to generate Java DDS types" }
        }
@@ -864,6 +961,12 @@ global SAL_WORK_DIR OPTIONS ONEDDSGEN
 
 
 
+#
+## Documented proc \c salpythonshlibgen .
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Generate Python shared library file for a Subsystem/CSC
+#
 proc salpythonshlibgen { base } {
 global SAL_WORK_DIR OPTIONS
    if { $OPTIONS(verbose) } {stdlog "###TRACE>>> salpythonshlibgen $base"}
@@ -878,6 +981,13 @@ global SAL_WORK_DIR OPTIONS
 }
 
 
+#
+## Documented proc \c saljavaclassgen .
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] id Topic identifier
+#
+#  Generate Java class file for a SAL Topic
+#
 proc saljavaclassgen { base id } {
 global SAL_WORK_DIR OPTIONS
  if { $OPTIONS(verbose) } {stdlog "###TRACE>>> saljavaclassgen $base $id"}
@@ -899,6 +1009,13 @@ global SAL_WORK_DIR OPTIONS
  if { $OPTIONS(verbose) } {stdlog "###TRACE<<< saljavaclassgen $base $id"}
 }
 
+#
+## Documented proc \c saljavaclassgen .
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] id Topic identifier
+#
+#  Generate C++ test program for a SAL Topic
+#
 proc salcpptestgen { base id } {
 global SAL_WORK_DIR OPTIONS DONE_CMDEVT
   if { $OPTIONS(verbose) } {stdlog "###TRACE>>> salcpptestgen $base $id"}

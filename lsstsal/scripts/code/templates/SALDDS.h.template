@@ -136,8 +136,6 @@
       int			error;
 /// ack is the ack field for the most recent ackCmd message (commands)
       int			ack;
-/// activehost is the private_identity field of the most recent command
-      int			activehost;
 /// activeidentity is the private_identity field of the most recent command
       string			activeidentity;
 /// activeorigin is the private_origin field of the most recent command
@@ -209,7 +207,6 @@
       int historySync;
       double rcvdTime;
       salU64  origin;
-      long ddsIPaddress;
       char domainName[128];
       char partitionPrefix[128];
       salActor sal[SAL__ACTORS_MAXCOUNT];

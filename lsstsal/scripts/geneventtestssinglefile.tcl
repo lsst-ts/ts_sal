@@ -1,3 +1,23 @@
+#!/usr/bin/env tclsh
+## \file geneventtestssinglefile.tcl
+# \brief Generate C++ code to test the SAL Event API
+#
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, V3 
+#\n
+# Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
+#\n
+#
+#
+#\code
+
+
+#
+## Documented proc \c geneventtestssinglefilescpp .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Generate C++ code to test the SAL Command API
+#
 proc geneventtestssinglefilescpp { subsys } {
     # Creates multiple files which contains an implementation of all the
     # events defined within this subsys.

@@ -1,5 +1,26 @@
+#!/usr/bin/env tclsh
+## \file gensimplepybind11.tcl
+# \brief This contains procedures to create the pybind11
+#  C++ binding for the SAL API
+#
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, V3 
+#\n
+# Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
+#\n
+#
+#
+#\code
 
 
+#
+## Documented proc \c genpythonbinding .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Generate the C++ code the the pybind11 based SAL API. The interface
+#  consists of a header file and a shared library that can be imported
+#  into python at runtime.
+#
 proc genpythonbinding { subsys } {
 global SAL_DIR SAL_WORK_DIR SYSDIC VPROPS CMD_ALIASES EVT_ALIASES TLM_ALIASES
   puts stdout "Generating pybind11 bindings"
@@ -17,7 +38,6 @@ global SAL_DIR SAL_WORK_DIR SYSDIC VPROPS CMD_ALIASES EVT_ALIASES TLM_ALIASES
         .def_readwrite( \"ack\", &SALData_ackcmdC::ack )    
         .def_readwrite( \"error\", &SALData_ackcmdC::error )    
         .def_readwrite( \"result\", &SALData_ackcmdC::result )    
-        .def_readwrite( \"host\", &SALData_ackcmdC::host )    
         .def_readwrite( \"identity\", &SALData_ackcmdC::identity )    
         .def_readwrite( \"origin\", &SALData_ackcmdC::origin )    
         .def_readwrite( \"cmdtype\", &SALData_ackcmdC::cmdtype )    

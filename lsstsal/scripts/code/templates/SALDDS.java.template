@@ -78,7 +78,6 @@ public class SAL_SALData {
         private String rcvIdentity;
         private int subsystemID;
         private int origin;
-        private int ddsIPaddress;
         private String domainName;
         private String partitionPrefix;
         private int lastActor_telemetry;
@@ -262,25 +261,12 @@ public class SAL_SALData {
 	{
 		Random randGen = new java.util.Random();
                 String pname = System.getenv("LSST_DDS_PARTITION_PREFIX");
-                String ipaddress = System.getenv("LSST_DDS_IP");
                 String hname = System.getenv("LSST_DDS_HISTORYSYNC");
                 String qname = System.getenv("LSST_DDS_QOS");
                 if (pname != null) {
                    partitionPrefix = pname;
                 } else {
                    System.out.println("=== WARNING : LSST_DDS_PARTITION_PREFIX not defined\n");
-                }
-		if (ipaddress == null) {
-		  ddsIPaddress = (int)randGen.nextInt(99999999);
-                } else {
-                  int ipasint = 0;
-                  String[] ipAddressinArray = ipaddress.split("\\.");
-		  for (int i=0;i<ipAddressinArray.length;i++) {
-		     int power = 3-i;
-		     int ip = Integer.parseInt(ipAddressinArray[i]);
-                     ipasint += ip * Math.pow(256,power);
-                  }
-		  ddsIPaddress = ipasint;
                 }
                 if (hname == null) {
                    historySync = 0;

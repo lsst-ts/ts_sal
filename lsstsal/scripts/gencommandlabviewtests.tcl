@@ -1,4 +1,25 @@
+#!/usr/bin/env tclsh
+## \file gencommandlabviewtests.tcl
+# \brief Generate C++ code to test the LabVIEW SAL shared library routines
+#  This tests the interaction with the SAL LabVIEW Monitor for the Subsystem.
+#
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, V3 
+#\n
+# Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
+#\n
+#
+#
+#\code
 
+
+#
+## Documented proc \c gencommandlabviewtests .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Generate C++ code to test the LabVIEW SAL shared library routines
+#  This tests the interaction with the SAL LabVIEW Monitor for the Subsystem.
+#
 proc gencommandlabviewtests { subsys } {
 global CMD_ALIASES CMDS SAL_DIR SAL_WORK_DIR SYSDIC
  if { [info exists CMD_ALIASES($subsys)] } {

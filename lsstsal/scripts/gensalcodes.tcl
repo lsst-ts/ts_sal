@@ -1,3 +1,22 @@
+#!/usr/bin/env tclsh
+## \file gensalcodes.tcl
+# \brief This contains utility routines to generate SAL API code
+#
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, V3 
+#\n
+# Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
+#\n
+#
+#
+#\code
+
+#
+## Documented proc \c checkTopicTypes .
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Check the existance of tcl format topic defnitions, and read them in
+#
 proc checkTopicTypes { base } {
 global SAL_WORK_DIR OPTIONS CMD_ALIASES EVENT_ALIASES TLM_ALIASES CMDS EVTS TLMS
   if { $OPTIONS(verbose) } {stdlog "###TRACE>>> checkTopicTypes $base"}
@@ -27,6 +46,13 @@ global SAL_WORK_DIR OPTIONS CMD_ALIASES EVENT_ALIASES TLM_ALIASES CMDS EVTS TLMS
 
 
 
+#
+## Documented proc \c genTelemetryCodes .
+# \param[in] idlfile File containing IDL format data
+# \param[in] targets List of Subsystems/CSCs to generate code for
+#
+#  Generate SAL API code for a set of Subsystems/CSCs
+#
 proc genTelemetryCodes { idlfile targets } {
 global DONE_CMDEVT OPTIONS ONEPYTHON SAL_DIR
   if { $OPTIONS(verbose) } {stdlog "###TRACE>>> genTelemetryCodes $targets"}
@@ -73,6 +99,12 @@ global DONE_CMDEVT OPTIONS ONEPYTHON SAL_DIR
 }
 
 
+#
+## Documented proc \c genGenericCodes .
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Generate the generic code sections for SAL APIs
+#
 proc genGenericCodes { base } {
 global OPTIONS SAL_WORK_DIR DONE_CMDEVT
   if { $OPTIONS(verbose) } {stdlog "###TRACE>>> genGenericCodes $base"}
@@ -111,6 +143,12 @@ global OPTIONS SAL_WORK_DIR DONE_CMDEVT
 }
 
 
+#
+## Documented proc \c genGenericCodes .
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Generate the test programs for sets of SAL APIs (command,event,telemetry)
+#
 proc genSingleProcessTests { base } {
 global OPTIONS CMD_ALIASES EVENT_ALIASES TLM_ALIASES
   if { $OPTIONS(verbose) } {stdlog "###TRACE>>> genSingleProcessTests $base"}
