@@ -258,7 +258,11 @@ int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
   DataReader_var dreader = getReader(actorIdx);
   SALData::command_[set i][set revcode]DataReader_var SALReader = SALData::command_[set i][set revcode]DataReader::_narrow(dreader.in());
   checkHandle(SALReader.in(), \"SALData::command_[set i][set revcode]DataReader::_narrow\");
-  istatus = SALReader->take(Instances, info, 1,NOT_READ_SAMPLE_STATE, ANY_VIEW_STATE, ALIVE_INSTANCE_STATE);
+  if ( actorIdx != SAL__SALData_command_setAuthList_ACTOR ) \{
+    istatus = SALReader->take(Instances, info, 1,NOT_READ_SAMPLE_STATE, ANY_VIEW_STATE, ALIVE_INSTANCE_STATE);
+  \} else \{
+    istatus = SALReader->take(Instances, info, 1,NOT_READ_SAMPLE_STATE, ANY_VIEW_STATE, ANY_INSTANCE_STATE);
+  \}
   checkStatus(istatus, \"SALData::command_[set i][set revcode]DataReader::take\");
   if (Instances.length() > 0) \{
    j = Instances.length()-1;
@@ -304,11 +308,13 @@ int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
     ackdata.SALDataID = subsystemID;
 #endif
     ackdata.private_sndStamp = getCurrentTime();
-    if (checkAuthList(sal\[actorIdx\].activeidentity) != SAL__OK) \{
-       ackdata.ack = SAL__CMD_NOPERM;
-       ackdata.error = 1;
-       ackdata.result = DDS::string_dup(\"Commanding not permitted by authList setting\");
-       status = 0;
+    if ( actorIdx != SAL__SALData_command_setAuthList_ACTOR ) \{
+      if (checkAuthList(sal\[actorIdx\].activeidentity) != SAL__OK) \{
+        ackdata.ack = SAL__CMD_NOPERM;
+        ackdata.error = 1;
+        ackdata.result = DDS::string_dup(\"Commanding not permitted by authList setting\");
+        status = 0;
+      \}
     \}
 "
      puts $fout "    istatus = SALWriter->write(ackdata, ackHandle);"
@@ -340,6 +346,12 @@ salReturn SAL_SALData::waitForCompletion_[set i]( int cmdSeqNum , unsigned int t
 
    while (status != SAL__CMD_COMPLETE && countdown != 0) \{
       status = getResponse_[set i](response);
+      if (status == SAL__CMD_NOPERM) \{
+        if (debugLevel > 0) \{
+          cout << \"=== \[waitForCompletion_[set i]\] command \" << cmdSeqNum <<  \"Not permitted by authList\" << endl;
+        \}
+        return status;
+      \}
       if (status != SAL__CMD_NOACK) \{
         if (sal\[actorIdx\].rcvSeqNum != cmdSeqNum) \{ 
            status = SAL__CMD_NOACK;
@@ -655,7 +667,11 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
   		DataReader dreader = getReader(actorIdx);
   		command_[set i][set revcode]DataReader SALReader = command_[set i][set revcode]DataReaderHelper.narrow(dreader);
                 info = new SampleInfoSeqHolder();
-  		istatus = SALReader.take(SALInstance, info, 1, NOT_READ_SAMPLE_STATE.value, ANY_VIEW_STATE.value, ALIVE_INSTANCE_STATE.value);
+                if ( actorIdx != SAL__SALData_command_setAuthList_ACTOR ) \{
+  		  istatus = SALReader.take(SALInstance, info, 1, NOT_READ_SAMPLE_STATE.value, ANY_VIEW_STATE.value, ALIVE_INSTANCE_STATE.value);
+                \} else \{
+  		  istatus = SALReader.take(SALInstance, info, 1, NOT_READ_SAMPLE_STATE.value, ANY_VIEW_STATE.value, ANY_INSTANCE_STATE.value);
+                \}
 		if (SALInstance.value.length > 0) \{
    		  if (info.value\[0\].valid_data) \{
     		     if (debugLevel > 8) \{
@@ -685,12 +701,14 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
 		      rcvOrigin = SALInstance.value\[0\].private_origin;
 		      rcvIdentity = SALInstance.value\[0\].private_identity;
 		      ackdata.ack = SAL__CMD_ACK;
-		      if (checkAuthList(sal\[actorIdx\].activeidentity) != SAL__OK) \{
-       			ackdata.ack = SAL__CMD_NOPERM;
-       			ackdata.error = 1;
-       			ackdata.result = \"Commanding not permitted by authList setting\";
-       			status = 0;
-    		      \}
+                      if ( actorIdx != SAL__SALData_command_setAuthList_ACTOR ) \{
+		        if (checkAuthList(sal\[actorIdx\].activeidentity) != SAL__OK) \{
+       			  ackdata.ack = SAL__CMD_NOPERM;
+       			  ackdata.error = 1;
+       			  ackdata.result = \"Commanding not permitted by authList setting\";
+       			  status = 0;
+    		        \}
+                       \}
 "
       if { [info exists SYSDIC($subsys,keyedID)] } {
          puts $fout "		      ackdata.SALDataID = subsystemID;
@@ -726,6 +744,12 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
 
 	   while (status != SAL__CMD_COMPLETE && System.currentTimeMillis() < finishBy ) \{
 	      status = getResponse_[set i](ackcmd);
+              if (status == SAL__CMD_NOPERM) \{
+                if (debugLevel > 0) \{
+                  System.out.println( \"=== \[waitForCompletion_[set i]\] command \" + cmdSeqNum +  \"Not permitted by authList\");
+                \}
+                return status;
+              \}
 	      if (status != SAL__CMD_NOACK) \{
 	        if (sal\[actorIdx\].rcvSeqNum != cmdSeqNum) \{ 
 	           status = SAL__CMD_NOACK;

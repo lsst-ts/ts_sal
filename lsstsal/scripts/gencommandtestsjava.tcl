@@ -49,8 +49,13 @@ public class [set subsys]Commander_[set alias]Test extends TestCase \{
    	\}
 
 	public void test[set subsys]Commander_[set alias]() \{
+          String pidentity = System.getenv("LSST_IDENTITY");
 
-	  SAL_[set subsys] mgr = new SAL_[set subsys][set initializer];
+          if ( pidentity == null) \{
+   	    SAL_[set subsys] mgr = new SAL_[set subsys][set initializer];
+          \} else \{
+   	    SAL_[set subsys] mgr = new SAL_[set subsys](pidentity);
+          \}
 
 	  // Issue command
 	  int count=0;

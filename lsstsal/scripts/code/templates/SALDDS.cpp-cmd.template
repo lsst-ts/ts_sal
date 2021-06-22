@@ -136,18 +136,19 @@ salReturn SAL_SALData::checkAuthList(std::string private_identity)
   std::string my_identity = CSC_identity;
   SALData_command_setAuthListC SALInstance;
   SALData_logevent_authListC myData;
-
-  if ( sal[SAL__SALData_command_setAuthList_ACTOR ].isProcessor == false ) {
+  debugLevel=9;
+  if ( sal[SAL__SALData_command_setAuthList_ACTOR].isProcessor == false ) {
      status = salProcessor("SALData_command_setAuthList");
      status = salEventPub("SALData_logevent_authList");
   }
   cmdId = acceptCommand_setAuthList(&SALInstance);
+        cout << "=== setAuthList cmdId = " << cmdId << endl;
   if (cmdId > 0) {
-     if (debugLevel > 0) {
+//     if (debugLevel > 0) {
         cout << "=== command setAuthList received = " << endl;
         cout << "    authorizedUsers : " << SALInstance.authorizedUsers << endl;
         cout << "    nonAuthorizedCSCs : " << SALInstance.nonAuthorizedCSCs << endl;
-     }
+//     }
      authorizedUsers = removeSpaces(SALInstance.authorizedUsers);
      nonAuthorizedCSCs = removeSpaces(SALInstance.nonAuthorizedCSCs);
      myData.authorizedUsers = SALInstance.authorizedUsers;
