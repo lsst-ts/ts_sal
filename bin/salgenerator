@@ -347,6 +347,7 @@ if { $OPTIONS(lib) } {
     if { $s != "lib" } {
       stdlog "Building shared library for $s subsystem"
       set result none
+      if { $OPTIONS(verbose) } {stdlog "Calling $env(TS_SAL_DIR)/bin/buildsharedlib $s"}
       catch { set result [exec $env(TS_SAL_DIR)/bin/buildsharedlib $s] } bad
       if { $OPTIONS(verbose) } {stdlog $result}
     }

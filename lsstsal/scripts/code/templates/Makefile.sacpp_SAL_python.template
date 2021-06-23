@@ -3,6 +3,8 @@
 #----------------------------------------------------------------------------
 CFG = Release
 
+MKDIR         = mkdir -p
+
 ifeq ($(CFG), Release)
 CC            = gcc
 CXX           = g++
@@ -27,9 +29,6 @@ MV            = mv -f
 RM            = rm -rf
 CP            = cp -p
 NUL           = /dev/null
-MKDIR         = mkdir -p
-TESTDIRSTART  = test -d
-TESTDIREND    = ||
 TOUCH         = touch
 EXEEXT        = 
 LIBPREFIX     = lib
@@ -63,8 +62,6 @@ RM            = rm -rf
 CP            = cp -p
 NUL           = /dev/null
 MKDIR         = mkdir -p
-TESTDIRSTART  = test -d
-TESTDIREND    = ||
 TOUCH         = touch
 EXEEXT        = 
 LIBPREFIX     = lib
@@ -84,20 +81,16 @@ endif
 all: $(BIN)
 
 $(BIN): $(OBJS)
-	@$(TESTDIRSTART) "$(BTARGETDIR)" $(TESTDIREND) $(MKDIR) "$(BTARGETDIR)"
+	@$(MKDIR) "$(BTARGETDIR)"
 	$(LINK.cc) $(OBJS) $(LDLIBS) $(OUTPUT_OPTION)
 
 generated: $(GENERATED_DIRTY)
 	@-:
 
 
-.obj/SAL_SALSubsys$(OBJEXT): ../src/SAL_SALSubsys.cpp
-	@$(TESTDIRSTART) ".obj/../src" $(TESTDIREND) $(MKDIR) ".obj/../src"
-	$(COMPILE.cc) $(EXPORTFLAGS) $(OUTPUT_OPTION) ../src/SAL_SALSubsys.cpp
-
-.obj/SALPY_SALData$(OBJEXT): ../src/SALPY_SALData.cpp
-	@$(TESTDIRSTART) ".obj/../src" $(TESTDIREND) $(MKDIR) ".obj/../src"
-	$(COMPILE.cc) $(EXPORTFLAGS) $(OUTPUT_OPTION) ../src/SALPY_SALData.cpp
+.obj/*$(OBJEXT): ../src/$(notdir $@).cpp
+	@$(MKDIR) ".obj/../src"
+	$(COMPILE.cc) $(EXPORTFLAGS) $(OUTPUT_OPTION) $?
 
 clean:
 	-$(RM) $(OBJS)

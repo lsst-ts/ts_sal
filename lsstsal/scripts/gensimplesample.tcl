@@ -663,34 +663,44 @@ global SAL_DIR SAL_WORK_DIR SYSDIC ONEPYTHON DONE_CMDEVT OPTIONS
       cd $SAL_WORK_DIR
       set frep [open /tmp/sreplace4_[set base][set lang].sal w]
       puts $frep "#!/bin/sh"
+
       if { $lang == "cpp" } {
-        exec cp $SAL_DIR/code/templates/Makefile.sacpp_SAL_types.template [set base]/cpp/Makefile.sacpp_[set base]_types
-        puts $frep "perl -pi -w -e 's/SALDATA.idl/sal_[set base].idl/g;' [set base]/cpp/Makefile.sacpp_[set base]_types"
-###        puts $frep "perl -pi -w -e 's/SALDATA.idl/[file tail $idlfile]/g;' [set base]/cpp/Makefile.sacpp_[set base]_types"
-        puts $frep "perl -pi -w -e 's/SALData/sal_[set base]/g;' [set base]/cpp/Makefile.sacpp_[set base]_types"
-        puts $frep "perl -pi -w -e 's/sacpp_SAL_types/sacpp_[set base]_types/g;' [set base]/cpp/Makefile.sacpp_[set base]_types"
-        exec cp $SAL_DIR/code/templates/Makefile.sacpp_SAL_testcommands.template [set base]/cpp/src/Makefile.sacpp_[set base]_testcommands
-        puts $frep "perl -pi -w -e 's/_SAL_/_[set base]_/g;' [set base]/cpp/src/Makefile.sacpp_[set base]_testcommands"
-        puts $frep "perl -pi -w -e 's/SALSubsys/[set base]/g;' [set base]/cpp/src/Makefile.sacpp_[set base]_testcommands"
-        puts $frep "perl -pi -w -e 's/SALData/[set base]/g;' [set base]/cpp/src/Makefile.sacpp_[set base]_testcommands"
+        puts $frep "sed \\"
+        puts $frep "  -e 's/SALSubsys/[set base]/g' \\"
+        puts $frep "  -e 's/SALDATA.idl/sal_[set base].idl/g' \\"
+###        puts $frep "  -e 's/SALDATA.idl/[file tail $idlfile]/g' \\"
+        puts $frep "  -e 's/SALData/sal_[set base]/g' \\"
+        puts $frep "  -e 's/sacpp_SAL_types/sacpp_[set base]_types/g' \\"
+        puts $frep "$SAL_DIR/code/templates/Makefile.sacpp_SAL_types.template > [set base]/cpp/Makefile.sacpp_[set base]_types"
+
+        puts $frep "sed \\"
+        puts $frep "  -e 's/_SAL_/_[set base]_/g' \\"
+        puts $frep "  -e 's/SALSubsys/[set base]/g' \\"
+        puts $frep "  -e 's/SALData/[set base]/g' \\"
         if { [info exists SYSDIC($base,keyedID)] } {
-            puts $frep "perl -pi -w -e 's/#-DSAL_SUBSYSTEM/-DSAL_SUBSYSTEM/g;' [set base]/cpp/src/Makefile.sacpp_[set base]_testcommands"
+            puts $frep "  -e 's/#-DSAL_SUBSYSTEM/-DSAL_SUBSYSTEM/g' \\"
         }
-        exec cp $SAL_DIR/code/templates/Makefile.sacpp_SAL_testevents.template [set base]/cpp/src/Makefile.sacpp_[set base]_testevents
-        puts $frep "perl -pi -w -e 's/_SAL_/_[set base]_/g;' [set base]/cpp/src/Makefile.sacpp_[set base]_testevents"
-        puts $frep "perl -pi -w -e 's/SALSubsys/[set base]/g;' [set base]/cpp/src/Makefile.sacpp_[set base]_testevents"
-        puts $frep "perl -pi -w -e 's/SALData/[set base]/g;' [set base]/cpp/src/Makefile.sacpp_[set base]_testevents"
+        puts $frep "$SAL_DIR/code/templates/Makefile.sacpp_SAL_testcommands.template > [set base]/cpp/src/Makefile.sacpp_[set base]_testcommands"
+
+        puts $frep "sed \\"
+        puts $frep "  -e 's/_SAL_/_[set base]_/g' \\"
+        puts $frep "  -e 's/SALSubsys/[set base]/g' \\"
+        puts $frep "  -e 's/SALData/[set base]/g' \\"
         if { [info exists SYSDIC($base,keyedID)] } {
-            puts $frep "perl -pi -w -e 's/#-DSAL_SUBSYSTEM/-DSAL_SUBSYSTEM/g;' [set base]/cpp/src/Makefile.sacpp_[set base]_testevents"
+            puts $frep "  -e 's/#-DSAL_SUBSYSTEM/-DSAL_SUBSYSTEM/g' \\"
         }
+        puts $frep "$SAL_DIR/code/templates/Makefile.sacpp_SAL_testevents.template > [set base]/cpp/src/Makefile.sacpp_[set base]_testevents"
       }
+
       if { $lang == "java" } {
-        exec cp $SAL_DIR/code/templates/Makefile.saj_SAL_types.template [set base]/java/Makefile.saj_[set base]_types
-        puts $frep "perl -pi -w -e 's/SALDATA.idl/sal_[set base].idl/g;' [set base]/java/Makefile.saj_[set base]_types"
-#        puts $frep "perl -pi -w -e 's/SALDATA.idl/[file tail $idlfile]/g;' [set base]/java/Makefile.saj_[set base]_types"
-        puts $frep "perl -pi -w -e 's/SALData/[set base]/g;' [set base]/java/Makefile.saj_[set base]_types"
-        puts $frep "perl -pi -w -e 's/_SAL_/_[set base]_/g;' [set base]/java/Makefile.saj_[set base]_types"
+        puts $frep "sed \\"
+        puts $frep "  -e 's/SALDATA.idl/sal_[set base].idl/g' \\"
+#        puts $frep "  -e 's/SALDATA.idl/[file tail $idlfile]/g' \\"
+        puts $frep "  -e 's/SALData/[set base]/g' \\"
+        puts $frep "  -e 's/_SAL_/_[set base]_/g' \\"
+        puts $frep "$SAL_DIR/code/templates/Makefile.saj_SAL_types.template > [set base]/java/Makefile.saj_[set base]_types"
       }
+
       close $frep
       exec chmod 755 /tmp/sreplace4_[set base][set lang].sal
       catch { set result [exec /tmp/sreplace4_[set base][set lang].sal] } bad
@@ -755,94 +765,125 @@ global SAL_DIR SAL_WORK_DIR SYSDIC ONEPYTHON DONE_CMDEVT OPTIONS CMD_ALIASES
       set id [set base]_[set name]
       set frep [open /tmp/sreplace_[set base][set lang].sal w]
       puts $frep "#!/bin/sh"
+
       if { $lang == "cpp" } {
+        puts $frep "sed \\"
+        puts $frep "  -e 's/sacpp_SAL_types/sacpp_[set base]_types/g' \\"
+        puts $frep "  -e 's/_SAL_/_[set id]_/g' \\"
+        puts $frep "$SAL_DIR/code/templates/Makefile-cpp.template > [set id]/cpp/standalone/Makefile"
+
+        puts $frep "sed \\"
+        puts $frep "  -e 's/SALSubsys/[set base]/g' \\"
+        puts $frep "  -e 's/SALDATA.idl/[file tail $idlfile]/g' \\"
+        puts $frep "  -e 's/SALData/sal_[set base]/g' \\"
+        puts $frep "  -e 's/sacpp_SAL_types/sacpp_[set base]_types/g' \\"
+        puts $frep "$SAL_DIR/code/templates/Makefile.sacpp_SAL_types.template > [set base]/cpp/Makefile.sacpp_[set base]_types"
+
         exec cp $SAL_DIR/code/templates/Makefile-cpp.template [set id]/cpp/standalone/Makefile
-        puts $frep "perl -pi -w -e 's/sacpp_SAL_types/sacpp_[set base]_types/g;' [set id]/cpp/standalone/Makefile"
-        puts $frep "perl -pi -w -e 's/_SAL_/_[set id]_/g;' [set id]/cpp/standalone/Makefile"
-        exec cp $SAL_DIR/code/templates/Makefile.sacpp_SAL_types.template [set base]/cpp/Makefile.sacpp_[set base]_types
-        puts $frep "perl -pi -w -e 's/SALDATA.idl/[file tail $idlfile]/g;' [set base]/cpp/Makefile.sacpp_[set base]_types"
-        puts $frep "perl -pi -w -e 's/SALData/sal_[set base]/g;' [set base]/cpp/Makefile.sacpp_[set base]_types"
-        puts $frep "perl -pi -w -e 's/sacpp_SAL_types/sacpp_[set base]_types/g;' [set base]/cpp/Makefile.sacpp_[set base]_types"
+
         if { $name != "notused" } {
-          exec cp $SAL_DIR/code/templates/Makefile.sacpp_SAL_sub.template [set id]/cpp/standalone/Makefile.sacpp_[set id]_sub
-          puts $frep "perl -pi -w -e 's/_SAL_/_[set base]_/g;' [set id]/cpp/standalone/Makefile.sacpp_[set id]_sub"
-          puts $frep "perl -pi -w -e 's/SALSubsys/[set base]/g;' [set id]/cpp/standalone/Makefile.sacpp_[set id]_sub"
-          puts $frep "perl -pi -w -e 's/SALData/[set id]/g;' [set id]/cpp/standalone/Makefile.sacpp_[set id]_sub"
+          puts $frep "sed \\"
+          puts $frep "  -e 's/_SAL_/_[set base]_/g' \\"
+          puts $frep "  -e 's/SALSubsys/[set base]/g' \\"
+          puts $frep "  -e 's/SALData/[set id]/g' \\"
           if { [info exists SYSDIC($base,keyedID)] } {
-            puts $frep "perl -pi -w -e 's/#-DSAL_SUBSYSTEM/-DSAL_SUBSYSTEM/g;' [set id]/cpp/standalone/Makefile.sacpp_[set id]_sub"
+            puts $frep "  -e 's/#-DSAL_SUBSYSTEM/-DSAL_SUBSYSTEM/g' \\"
           }
-          exec cp $SAL_DIR/code/templates/Makefile.sacpp_SAL_pub.template [set id]/cpp/standalone/Makefile.sacpp_[set id]_pub
-          puts $frep "perl -pi -w -e 's/_SAL_/_[set base]_/g;' [set id]/cpp/standalone/Makefile.sacpp_[set id]_pub"
-          puts $frep "perl -pi -w -e 's/SALSubsys/[set base]/g;' [set id]/cpp/standalone/Makefile.sacpp_[set id]_pub"
-          puts $frep "perl -pi -w -e 's/SALData/[set id]/g;' [set id]/cpp/standalone/Makefile.sacpp_[set id]_pub"
+          puts $frep "$SAL_DIR/code/templates/Makefile.sacpp_SAL_sub.template > [set id]/cpp/standalone/Makefile.sacpp_[set id]_sub"
+
+          puts $frep "sed \\"
+          puts $frep "  -e 's/_SAL_/_[set base]_/g' \\"
+          puts $frep "  -e 's/SALSubsys/[set base]/g' \\"
+          puts $frep "  -e 's/SALData/[set id]/g' \\"
           if { [info exists SYSDIC($base,keyedID)] } {
-            puts $frep "perl -pi -w -e 's/#-DSAL_SUBSYSTEM/-DSAL_SUBSYSTEM/g;' [set id]/cpp/standalone/Makefile.sacpp_[set id]_pub"
+            puts $frep "  -e 's/#-DSAL_SUBSYSTEM/-DSAL_SUBSYSTEM/g' \\"
           }
+          puts $frep "$SAL_DIR/code/templates/Makefile.sacpp_SAL_pub.template > [set id]/cpp/standalone/Makefile.sacpp_[set id]_pub"
         }
+
         if { $name != "notused" } {
           modpubsubexamples $id
-          puts $frep "perl -pi -w -e 's/SALTopic/[set name]/g;' [set id]/cpp/src/[set id]DataPublisher.cpp"
-          puts $frep "perl -pi -w -e 's/SALNAMESTRING/[set base]_[set name]/g;' [set id]/cpp/src/[set id]DataPublisher.cpp"
-          puts $frep "perl -pi -w -e 's/SALData/$base/g;' [set id]/cpp/src/[set id]DataPublisher.cpp"
-          puts $frep "perl -pi -w -e 's/SALTopic/[set name]/g;' [set id]/cpp/src/[set id]DataSubscriber.cpp"
-          puts $frep "perl -pi -w -e 's/SALNAMESTRING/[set base]_[set name]/g;' [set id]/cpp/src/[set id]DataSubscriber.cpp"
-          puts $frep "perl -pi -w -e 's/SALData/$base/g;' [set id]/cpp/src/[set id]DataSubscriber.cpp"
+          puts $frep "sed -i -e 's/SALTopic/[set name]/g' [set id]/cpp/src/[set id]DataPublisher.cpp"
+          puts $frep "sed -i -e 's/SALNAMESTRING/[set base]_[set name]/g' [set id]/cpp/src/[set id]DataPublisher.cpp"
+          puts $frep "sed -i -e 's/SALData/$base/g' [set id]/cpp/src/[set id]DataPublisher.cpp"
+          puts $frep "sed -i -e 's/SALTopic/[set name]/g' [set id]/cpp/src/[set id]DataSubscriber.cpp"
+          puts $frep "sed -i -e 's/SALNAMESTRING/[set base]_[set name]/g' [set id]/cpp/src/[set id]DataSubscriber.cpp"
+          puts $frep "sed -i -e 's/SALData/$base/g' [set id]/cpp/src/[set id]DataSubscriber.cpp"
         }
       }
+
       if { $lang == "java"}  {
-        exec cp $SAL_DIR/code/templates/Makefile-java.template [set id]/java/standalone/Makefile
-        puts $frep "perl -pi -w -e 's/saj_SAL_types/saj_[set base]_types/g;' [set id]/java/standalone/Makefile"
-        puts $frep "perl -pi -w -e 's/_SAL_/_[set id]_/g;' [set id]/java/standalone/Makefile"
-        exec cp $SAL_DIR/code/templates/Makefile.saj_SAL_types.template [set base]/java/Makefile.saj_[set base]_types
-        puts $frep "perl -pi -w -e 's/SALDATA.idl/[file tail $idlfile]/g;' [set base]/java/Makefile.saj_[set base]_types"
-        puts $frep "perl -pi -w -e 's/SALData/[set base]/g;' [set base]/java/Makefile.saj_[set base]_types"
-        puts $frep "perl -pi -w -e 's/_SAL_/_[set base]_/g;' [set base]/java/Makefile.saj_[set base]_types"
-        exec cp $SAL_DIR/code/templates/Makefile-java.template [set id]/java/Makefile
-        puts $frep "perl -pi -w -e 's/_SAL_/_[set id]_/g;' [set id]/java/Makefile"
+        puts $frep "sed \\"
+        puts $frep "  -e 's/saj_SAL_types/saj_[set base]_types/g' \\"
+        puts $frep "  -e 's/_SAL_/_[set id]_/g' \\"
+        puts $frep "$SAL_DIR/code/templates/Makefile-java.template > [set id]/java/standalone/Makefile"
+
+        puts $frep "sed \\"
+        puts $frep "  -e 's/SALDATA.idl/[file tail $idlfile]/g' \\"
+        puts $frep "  -e 's/SALData/[set base]/g' \\"
+        puts $frep "  -e 's/_SAL_/_[set base]_/g' \\"
+        puts $frep "$SAL_DIR/code/templates/Makefile.saj_SAL_types.template > [set base]/java/Makefile.saj_[set base]_types"
+
+        puts $frep "sed \\"
+        puts $frep "  -e 's/_SAL_/_[set id]_/g' \\"
+        puts $frep "$SAL_DIR/code/templates/Makefile-java.template > [set id]/java/Makefile"
+
         if { $name != "notused" } {
-          exec cp $SAL_DIR/code/templates/Makefile.saj_SAL_pub.template [set id]/java/standalone/Makefile.saj_[set id]_pub
-          puts $frep "perl -pi -w -e 's/_SAL_/_[set id]_/g;' [set id]/java/standalone/Makefile.saj_[set id]_pub"
-          puts $frep "perl -pi -w -e 's/SALTopic/[set id]/g;' [set id]/java/standalone/Makefile.saj_[set id]_pub"
-          puts $frep "perl -pi -w -e 's/SALData/[set base]/g;' [set id]/java/standalone/Makefile.saj_[set id]_pub"
-          exec cp $SAL_DIR/code/templates/Makefile.saj_SAL_sub.template [set id]/java/standalone/Makefile.saj_[set id]_sub
-          puts $frep "perl -pi -w -e 's/_SAL_/_[set id]_/g;' [set id]/java/standalone/Makefile.saj_[set id]_sub"
-          puts $frep "perl -pi -w -e 's/SALTopic/[set id]/g;' [set id]/java/standalone/Makefile.saj_[set id]_sub"
-          puts $frep "perl -pi -w -e 's/SALData/[set base]/g;' [set id]/java/standalone/Makefile.saj_[set id]_sub"
-          exec cp $SAL_DIR/code/templates/SALTopicDataPublisher.java.template [set id]/java/src/[set id]DataPublisher.java
+          puts $frep "sed \\"
+          puts $frep "  -e 's/_SAL_/_[set id]_/g' \\"
+          puts $frep "  -e 's/SALTopic/[set id]/g' \\"
+          puts $frep "  -e 's/SALData/[set base]/g' \\"
+          puts $frep "$SAL_DIR/code/templates/Makefile.saj_SAL_pub.template > [set id]/java/standalone/Makefile.saj_[set id]_pub"
+
+          puts $frep "sed \\"
+          puts $frep "  -e 's/_SAL_/_[set id]_/g' \\"
+          puts $frep "  -e 's/SALTopic/[set id]/g' \\"
+          puts $frep "  -e 's/SALData/[set base]/g' \\"
+          puts $frep "$SAL_DIR/code/templates/Makefile.saj_SAL_sub.template > [set id]/java/standalone/Makefile.saj_[set id]_sub"
+
+          puts $frep "sed \\"
           if { [info exists SYSDIC($base,keyedID)] } {
-            puts $frep "perl -pi -w -e 's/SALSUBSYSID/aKey/g;' [set id]/java/src/[set id]DataPublisher.java"
+            puts $frep "  -e 's/SALSUBSYSID/aKey/g' \\"
           } else {
-            puts $frep "perl -pi -w -e 's/SALSUBSYSID//g;' [set id]/java/src/[set id]DataPublisher.java"
+            puts $frep "  -e 's/SALSUBSYSID//g' \\"
           }
-          puts $frep "perl -pi -w -e 's/SALTopic/[set name]/g;' [set id]/java/src/[set id]DataPublisher.java"
-          puts $frep "perl -pi -w -e 's/SALData/$base/g;' [set id]/java/src/[set id]DataPublisher.java"
-          puts $frep "perl -pi -w -e 's/SALNAMESTRING/[set id]/g;' [set id]/java/src/[set id]DataPublisher.java"
-          exec cp $SAL_DIR/code/templates/SALTopicDataSubscriber.java.template [set id]/java/src/[set id]DataSubscriber.java
+          puts $frep "  -e 's/SALTopic/[set name]/g' \\"
+          puts $frep "  -e 's/SALData/$base/g' \\"
+          puts $frep "  -e 's/SALNAMESTRING/[set id]/g' \\"
+          puts $frep "$SAL_DIR/code/templates/SALTopicDataPublisher.java.template > [set id]/java/src/[set id]DataPublisher.java"
+
+          puts $frep "sed \\"
           if { [info exists SYSDIC($base,keyedID)] } {
-            puts $frep "perl -pi -w -e 's/SALSUBSYSID/aKey/g;' [set id]/java/src/[set id]DataSubscriber.java"
+            puts $frep "  -e 's/SALSUBSYSID/aKey/g' \\"
           } else {
-            puts $frep "perl -pi -w -e 's/SALSUBSYSID//g;' [set id]/java/src/[set id]DataSubscriber.java"
+            puts $frep "  -e 's/SALSUBSYSID//g' \\"
           }
-          puts $frep "perl -pi -w -e 's/SALTopic/[set name]/g;' [set id]/java/src/[set id]DataSubscriber.java"
-          puts $frep "perl -pi -w -e 's/SALData/$base/g;' [set id]/java/src/[set id]DataSubscriber.java"
-          puts $frep "perl -pi -w -e 's/SALNAMESTRING/[set id]/g;' [set id]/java/src/[set id]DataSubscriber.java"
+          puts $frep "  -e 's/SALTopic/[set name]/g' \\"
+          puts $frep "  -e 's/SALData/$base/g' \\"
+          puts $frep "  -e 's/SALNAMESTRING/[set id]/g' \\"
+          puts $frep "$SAL_DIR/code/templates/SALTopicDataSubscriber.java.template > [set id]/java/src/[set id]DataSubscriber.java"
         }
         exec cp $SAL_DIR/code/templates/ErrorHandler.java [set id]/java/src/ErrorHandler.java
         exec cp $SAL_DIR/code/templates/ErrorHandler.java [set base]/java/src/ErrorHandler.java
-        exec cp $SAL_DIR/code/templates/runsample.template [set id]/java/standalone/[set id].run
-        puts $frep "perl -pi -w -e 's/SALTopic/[set id]/g;' [set id]/java/standalone/[set id].run"
-        puts $frep "perl -pi -w -e 's/SALData/$base/g;' [set id]/java/standalone/[set id].run"
-        puts $frep "perl -pi -w -e 's/_SAL_/_[set id]_/g;' [set id]/java/standalone/[set id].run"
+
+        puts $frep "sed \\"
+        puts $frep "  -e 's/SALTopic/[set id]/g' \\"
+        puts $frep "  -e 's/SALData/$base/g' \\"
+        puts $frep "  -e 's/_SAL_/_[set id]_/g' \\"
+        puts $frep "$SAL_DIR/code/templates/runsample.template > [set id]/java/standalone/[set id].run"
       }
       if { $lang == "PyDDS" } {
-        exec cp $SAL_DIR/code/templates/SALTopicPublisher.py.template [set id]/python/[set id]Publisher.py
-        puts $frep "perl -pi -w -e 's/SALData/$base/g;' [set id]/python/[set id]Publisher.py"
-        puts $frep "perl -pi -w -e 's/SALTopic/$name/g;' [set id]/python/[set id]Publisher.py"
-        puts $frep "perl -pi -w -e 's/SALDATA.idl/[file tail $idlfile]/g;' [set id]/python/[set id]Publisher.py"
-        exec cp $SAL_DIR/code/templates/SALTopicSubscriber.py.template [set id]/python/[set id]Subscriber.py
-        puts $frep "perl -pi -w -e 's/SALData/$base/g;' [set id]/python/[set id]Subscriber.py"
-        puts $frep "perl -pi -w -e 's/SALTopic/$name/g;' [set id]/python/[set id]Subscriber.py"
-        puts $frep "perl -pi -w -e 's/SALDATA.idl/[file tail $idlfile]/g;' [set id]/python/[set id]Subscriber.py"
+        puts $frep "sed \\"
+        puts $frep "  -e 's/SALData/$base/g' \\"
+        puts $frep "  -e 's/SALTopic/$name/g' \\"
+        puts $frep "  -e 's/SALDATA.idl/[file tail $idlfile]/g' \\"
+        puts $frep "$SAL_DIR/code/templates/SALTopicPublisher.py.template > [set id]/python/[set id]Publisher.py"
+
+        puts $frep "sed \\"
+        puts $frep "  -e 's/SALData/$base/g' \\"
+        puts $frep "  -e 's/SALTopic/$name/g' \\"
+        puts $frep "  -e 's/SALDATA.idl/[file tail $idlfile]/g' \\"
+        puts $frep "$SAL_DIR/code/templates/SALTopicSubscriber.py.template > [set id]/python/[set id]Subscriber.py"
       }
       close $frep
       exec chmod 755 /tmp/sreplace_[set base][set lang].sal
@@ -856,11 +897,12 @@ global SAL_DIR SAL_WORK_DIR SYSDIC ONEPYTHON DONE_CMDEVT OPTIONS CMD_ALIASES
       if { $lang == "cpp" } {
         set frep [open /tmp/sreplace2_[set base][set lang].sal w]
         puts $frep "#!/bin/sh"
-        puts $frep "perl -pi -w -e 's/SALData/$base/g;' [set base]/cpp/src/SAL_[set base].h"
-        puts $frep "perl -pi -w -e 's/SALData/$base/g;' [set base]/cpp/src/SAL_[set base].cpp"
+
+        puts $frep "sed -i -e 's/SALData/$base/g' [set base]/cpp/src/SAL_[set base].h"
+        puts $frep "sed -i -e 's/SALData/$base/g' [set base]/cpp/src/SAL_[set base].cpp"
         if { [info exists CMD_ALIASES($base)] } {
           set revcode [getRevCode [set base]_ackcmd short]
-          puts $frep "perl -pi -w -e 's/SALResponse/$base\:\:ackcmd[set revcode]/g;' [set base]/cpp/src/SAL_[set base].cpp"
+          puts $frep "sed -i -e 's/SALResponse/$base\:\:ackcmd[set revcode]/g' [set base]/cpp/src/SAL_[set base].cpp"
         }
         close $frep
         exec chmod 755 /tmp/sreplace2_[set base][set lang].sal
@@ -870,12 +912,13 @@ global SAL_DIR SAL_WORK_DIR SYSDIC ONEPYTHON DONE_CMDEVT OPTIONS CMD_ALIASES
       if { $lang == "java" } {
         set frep [open /tmp/sreplace2_[set base][set lang].sal w]
         puts $frep "#!/bin/sh"
-        puts $frep "perl -pi -w -e 's/SALData/$base/g;' [set id]/java/src/org/lsst/sal/SAL_[set base].java"
-        puts $frep "perl -pi -w -e 's/SALData/$base/g;' [set base]/java/src/org/lsst/sal/SAL_[set base].java"
+
+        puts $frep "sed -i -e 's/SALData/$base/g' [set id]/java/src/org/lsst/sal/SAL_[set base].java"
+        puts $frep "sed -i -e 's/SALData/$base/g' [set base]/java/src/org/lsst/sal/SAL_[set base].java"
         if { [info exists CMD_ALIASES($base)] } {
           set revcode [getRevCode [set base]_ackcmd short]
-          puts $frep "perl -pi -w -e 's/SALResponse/ackcmd[set revcode]/g;' [set id]/java/src/org/lsst/sal/SAL_[set base].java"
-          puts $frep "perl -pi -w -e 's/SALResponse/ackcmd[set revcode]/g;' [set base]/java/src/org/lsst/sal/SAL_[set base].java"
+          puts $frep "sed -i -e 's/SALResponse/ackcmd[set revcode]/g' [set id]/java/src/org/lsst/sal/SAL_[set base].java"
+          puts $frep "sed -i -e 's/SALResponse/ackcmd[set revcode]/g' [set base]/java/src/org/lsst/sal/SAL_[set base].java"
         }
         close $frep
         exec chmod 755 /tmp/sreplace2_[set base][set lang].sal

@@ -3,6 +3,8 @@
 #----------------------------------------------------------------------------
 CFG = Release
 
+MKDIR         = mkdir -p
+
 ifeq ($(CFG), Release)
 CC            = gcc
 CXX           = g++
@@ -24,9 +26,6 @@ MV            = mv -f
 RM            = rm -rf
 CP            = cp -p
 NUL           = /dev/null
-MKDIR         = mkdir -p
-TESTDIRSTART  = test -d
-TESTDIREND    = ||
 TOUCH         = touch
 EXEEXT        = 
 LIBPREFIX     = lib
@@ -66,9 +65,6 @@ MV            = mv -f
 RM            = rm -rf
 CP            = cp -p
 NUL           = /dev/null
-MKDIR         = mkdir -p
-TESTDIRSTART  = test -d
-TESTDIREND    = ||
 TOUCH         = touch
 EXEEXT        = 
 LIBPREFIX     = lib
@@ -94,12 +90,12 @@ endif
 
 all: $(SHLIB)
 
-$(SHLIB): $(OBJS)
-	@$(TESTDIRSTART) "$(SHTARGETDIR)" $(TESTDIREND) $(MKDIR) "$(SHTARGETDIR)"
+$(SHLIB): $(IDL) $(OBJS)
+	@$(MKDIR) "$(SHTARGETDIR)"
 	$(LINK.cc) $(SHFLAGS) $(OBJS) $(LDLIBS) $(OUTPUT_OPTION)
 
-$(LIB): $(OBJS)
-	@$(TESTDIRSTART) "$(LTARGETDIR)" $(TESTDIREND) $(MKDIR) "$(LTARGETDIR)"
+$(LIB): $(IDL) $(OBJS)
+	@$(MKDIR) "$(LTARGETDIR)"
 	$(AR) $(ARFLAGS) $(LIB) $(OBJS) 
 
 SPACE           = $(should_be_unset) $(should_be_unset)
@@ -111,26 +107,14 @@ GENERATED_DIRTY = ./SALDataSplDcps.h ./SALDataDcps.cpp ./SALData.cpp ./SALDataDc
 	"$(OSPL_HOME)/bin/idlpp" -I "$(OSPL_HOME)/etc/idl" -S -l cpp SALDATA.idl
 
 .PRECIOUS: $(GENERATED_DIRTY)
-$(OBJS): $(GENERATED_DIRTY)
+$(IDL): $(GENERATED_DIRTY)
 
 generated: $(GENERATED_DIRTY)
 	@-:
 
-.obj/SALDataDcps$(OBJEXT): ./SALDataDcps.cpp
-	@$(TESTDIRSTART) ".obj/." $(TESTDIREND) $(MKDIR) ".obj/."
-	$(COMPILE.cc) $(EXPORTFLAGS) $(OUTPUT_OPTION) ./SALDataDcps.cpp
-
-.obj/SALData$(OBJEXT): ./SALData.cpp
-	@$(TESTDIRSTART) ".obj/." $(TESTDIREND) $(MKDIR) ".obj/."
-	$(COMPILE.cc) $(EXPORTFLAGS) $(OUTPUT_OPTION) ./SALData.cpp
-
-.obj/SALDataDcps_impl$(OBJEXT): ./SALDataDcps_impl.cpp
-	@$(TESTDIRSTART) ".obj/." $(TESTDIREND) $(MKDIR) ".obj/."
-	$(COMPILE.cc) $(EXPORTFLAGS) $(OUTPUT_OPTION) ./SALDataDcps_impl.cpp
-
-.obj/SALDataSplDcps$(OBJEXT): ./SALDataSplDcps.cpp
-	@$(TESTDIRSTART) ".obj/." $(TESTDIREND) $(MKDIR) ".obj/."
-	$(COMPILE.cc) $(EXPORTFLAGS) $(OUTPUT_OPTION) ./SALDataSplDcps.cpp
+.obj/%$(OBJEXT): %.cpp
+	@$(MKDIR) $(dir $@)
+	$(COMPILE.cc) $(EXPORTFLAGS) $(OUTPUT_OPTION) $?
 
 clean:
 	-$(RM) $(OBJS)
