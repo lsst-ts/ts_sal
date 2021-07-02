@@ -38,10 +38,13 @@ class MakeIdlFile:
     ----------
     name : `str`
         Name of SAL component, e.g. ``"ScriptQueue"``.
+    keep_all : `bool`
+        Keep intermediate files generated in ``SAL_WORK_DIR``?
     """
 
-    def __init__(self, name):
+    def __init__(self, name, keep_all):
         self.name = name
+        self.keep_all = keep_all
         self.xml_dir = lsst.ts.xml.get_pkg_root()
         self.sal_work_dir = utils.get_env_dir(
             "SAL_WORK_DIR", "$SAL_WORK_DIR must be defined"
@@ -100,19 +103,22 @@ class MakeIdlFile:
         print(f"*** Copy {self.idl_file_from_path} to {self.idl_file_to_path} ***")
         shutil.copy(self.idl_file_from_path, self.idl_file_to_path)
 
-        print(f"*** Cleanup {self.name} files ***")
-        self.delete_files()
+        if not self.keep_all:
+            print(f"*** Cleanup {self.name} files ***")
+            self.delete_files()
 
         print(f"*** Done generating {self.name} IDL file ***")
 
 
-def make_idl_file(name):
+def make_idl_file(name, keep_all):
     """Make the IDL file for a specified SAL component.
 
     Parameters
     ----------
     name : `str`
         Name of SAL component, e.g. ``"ScriptQueue"``.
+    keep_all : `bool`
+        Keep all generated files?
     """
-    maker = MakeIdlFile(name)
+    maker = MakeIdlFile(name=name, keep_all=keep_all)
     maker.run()

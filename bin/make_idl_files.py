@@ -29,6 +29,11 @@ parser.add_argument(
     help="Names of SAL components to exclude. "
     "If an entry appears in both `components` and `exclude` then it is excluded.",
 )
+parser.add_argument(
+    "--keep",
+    action="store_true",
+    help="Keep intermediate files generated in SAL_WORK_DIR",
+)
 
 args = parser.parse_args()
 
@@ -42,4 +47,4 @@ if args.exclude:
 print(f"Making IDL files for: {', '.join(components)}")
 if not args.dry_run:
     for name in components:
-        make_idl_file(name=name)
+        make_idl_file(name=name, keep_all=args.keep)
