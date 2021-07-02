@@ -1,0 +1,120 @@
+#!/usr/bin/wish
+
+proc runcommand { subsys } {
+global IDENTITY SAL_DIR RESULT TIMEOUT
+   .cmd$subsys configure -bg yellow  -activebackground yellow -text "Send $subsys enable command ..."
+   update
+   set res [exec $SAL_DIR/sendEnableCommand.py $subsys "$IDENTITY" $TIMEOUT]
+   if { [lsearch $res "ok"] > -1 } {
+     .cmd$subsys configure -bg lightgreen -activebackground lightgreen
+     set RESULT($subsys) "Completed OK"
+   }
+   if { [lsearch $res "timed"] > -1 } {
+     .cmd$subsys configure -bg yellow -activebackground yellow
+     set RESULT($subsys) "Timed out"
+   }
+   if { [lsearch $res "authList"] > -1 } {
+     .cmd$subsys configure -bg orange -activebackground orange
+     set RESULT($subsys) "Not permitted by authList"
+   }
+   .cmd$subsys configure -text "Send $subsys enable command"
+}
+
+proc doit { } {
+global CSCS IDENTITY USERS SAL_DIR RESULT SUBSYSTEMS
+  set progress "."
+  .doit configure -bg yellow -activebackground yellow -text "Send authList commands $progress"
+  update
+  foreach i $SUBSYSTEMS {
+    set res [exec $SAL_DIR/setAuthList.py $i "$USERS" "$CSCS" 2]
+    .doit configure -bg yellow -activebackground yellow -text "Send authList commands $progress"
+    set progress "[set progress]."
+    update
+  }
+  .doit configure -bg lightgreen -activebackground lightgreen -text "Send authList commands"
+}
+
+
+set argv "cpp ATAOS ATOODS ATPtg"
+set lang [lindex $argv 0]
+set SUBSYSTEMS [lrange $argv 1 end]
+
+set SAL_DIR $env(SAL_DIR)
+set SAL_WORK_DIR $env(SAL_WORK_DIR)
+set OPTIONS(verbose) 0
+source $SAL_DIR/update_ts_xml_dictionary.tcl
+parseSystemDictionary
+set my 0
+wm geometry  . 400x400
+wm title . "SAL authList command launcher"
+
+label .userl -text "Users : "
+entry .userv -width 60 -bg LightBlue -textvariable USERS
+incr my 5
+place .userl -x 10 -y $my
+place .userv -x 80 -y $my
+incr my 30
+
+label .cscsl -text "CSCs : "
+entry .cscsv -width 60 -bg LightBlue -textvariable CSCS
+incr my 5
+place .cscsl -x 10 -y $my
+place .cscsv -x 80 -y $my
+incr my 30
+
+button .doit -text "Send authList commands" -width 66 -bg lightgreen -command doit
+place .doit -x 10 -y $my
+incr my 40
+
+label .timel -text "Timeout : "
+set TIMEOUT 10
+entry .timev -width 10 -bg LightBlue -textvariable TIMEOUT
+incr my 5
+place .timel -x 330 -y $my
+place .timev -x 400 -y $my
+set TIMEOUT 10
+
+label .idl -text "Commanders Identity : "
+entry .idv -width 10 -bg LightBlue -textvariable IDENTITY
+place .idl -x 10 -y $my
+place .idv -x 162 -y $my
+incr my 30
+
+foreach i $argv {
+   set y 0
+   button .cmd$i -text "Send $i enable command" -width 30 -command "runcommand $i"
+   set RESULT($i) "-----------------------"
+   place .cmd$i -x 10 -y $my
+   label .rcmd$i -textvariable RESULT($i)
+   incr my 3
+   place .rcmd$i -x 300 -y $my 
+   incr my 30
+}
+
+incr my 5
+button .done -text "Exit commander" -width 66 -bg orange -command exit
+place .done -x 10 -y $my
+wm geometry . 576x$my
+
+set x 580
+set y 10
+foreach i $SUBSYTEMS {
+   if { $lang == "java" } {
+     set rdir [lindex [glob $SAL_WORK_DIR/maven/[set i]*] end]
+     set fout [open /tmp/java_[set i]_enable_controller w]
+     puts $fout "#!/bin/sh
+cd $rdir
+mvn -Dtest=[set i]Controller_enable.java test
+"
+     close $fout
+     exec chmod 755 /tmp/java_[set i]_enable_controller
+     exec xterm -geometry +[set x]+[set y] -e /tmp/java_[set i]_enable_controller &
+   }
+   if { $lang == "cpp" } {
+     exec xterm -geometry +[set x]+[set y] -e $SAL_WORK_DIR/[set i]/cpp/src/sacpp_[set i]_enable_controller &
+   }
+   incr x 100
+   incr y 100
+}
+
+

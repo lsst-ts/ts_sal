@@ -20,7 +20,8 @@
 #
 
 proc gencommandtestsjava { subsys } {
-global CMD_ALIASES CMDS EVENT_ALIASES EVTS SAL_WORK_DIR SYSDIC SAL_DIR
+global CMD_ALIASES CMDS EVENT_ALIASES EVTS SAL_WORK_DIR SYSDIC SAL_DIR OPTIONS
+ if { $OPTIONS(verbose) } {stdlog "###TRACE>>> gencommandtestsjava $subsys"}
  if { [info exists CMD_ALIASES($subsys)] } {
    if { [info exists SYSDIC($subsys,keyedID)] } {
        set initializer "( (short) 1)"
@@ -50,7 +51,7 @@ public class [set subsys]Commander_[set alias]Test extends TestCase \{
 
 	public void test[set subsys]Commander_[set alias]() \{
 
-	  SAL_[set subsys] mgr = new SAL_[set subsys][set initializer];
+   	  SAL_[set subsys] mgr = new SAL_[set subsys][set initializer];
 
 	  // Issue command
 	  int count=0;
@@ -180,6 +181,72 @@ public class [set subsys]Controller_[set alias]Test extends TestCase \{
     catch { set result [exec /tmp/makerep.sal] } bad
     if { $bad != "" } {puts stdout $bad}
   }
+  if { $OPTIONS(verbose) } {stdlog "###TRACE<<< gencommandtestsjava $subsys"}
 }
 
- 
+#
+## Documented proc \c genauthlisttestsjava .
+# \param[in] subsys Name of CSC/Subsystem as defined in SALSubsystems.xml
+#
+#  Generates the authList test script for a Subsystem/CSC.
+#  The tests start a Java controller, and then sends a set of
+#  authList's and tries to issue a command with each.
+#
+#
+
+proc genauthlisttestsjava { subsys } {
+global CMD_ALIASES CMDS EVENT_ALIASES EVTS SAL_WORK_DIR SYSDIC SAL_DIR OPTIONS
+  if { $OPTIONS(verbose) } {stdlog "###TRACE>>> genauthlisttestsjava $subsys"}
+  if { [info exists SYSDIC($subsys,java)] } {
+    if { [info exists CMD_ALIASES($subsys)] } {
+      set rdir [lindex [glob $SAL_WORK_DIR/maven/[set subsys]*] end]
+      set fout [open $SAL_WORK_DIR/[set subsys]/java/java_[set subsys]_enable_controller w]
+      puts $fout "#!/bin/sh
+cd $rdir
+mvn -Dtest=[set subsys]Controller_enable.java test
+"
+      close $fout
+      exec chmod 755 $SAL_WORK_DIR/[set subsys]/java/java_[set subsys]_enable_controller
+      set fout [open $SAL_WORK_DIR/[set subsys]/java/testAuthList.sh w]
+      puts $fout "#!/bin/sh
+echo \"Starting java_[set subsys]_enable_controller\"
+$SAL_WORK_DIR/[set subsys]/java/java_[set subsys]_enable_controller &
+sleep 5
+echo \"Test with authList not set at all, default identity=[set subsys]\"
+$SAL_WORK_DIR/[set subsys]/sacpp_[set subsys]_enable_commander
+echo \"Test with authList not set at all, default identity=user@host\"
+$SAL_DIR/[set subsys]/sacpp_[set subsys]_enable_commander
+python3 $SAL_DIR/sendEnableCommand.py $subsys \"user@host\" 5
+echo \"Test with authList authorizedUsers=user@host, default identity=user@host\"
+$SAL_DIR/[set subsys]/sacpp_[set subsys]_enable_commander
+python3 $SAL_DIR/setAuthList.py $subsys \"user@host\" \"\" 1
+python3 $SAL_DIR/sendEnableCommand.py $subsys \"user@host\" 5
+echo \"Test with authList authorizedUsers=user@host,user2@other, default identity=user@host\"
+$SAL_DIR/[set subsys]/sacpp_[set subsys]_enable_commander
+python3 $SAL_DIR/setAuthList.py $subsys \"user@host,user2@other\" \"\" 1
+python3 $SAL_DIR/sendEnableCommand.py $subsys \"user@host\" 5
+echo \"Test with authList authorizedUsers=user@host,user2@other, default identity=user2@other\"
+$SAL_DIR/[set subsys]/sacpp_[set subsys]_enable_commander
+python3 $SAL_DIR/setAuthList.py $subsys \"user@host,user2@other\" \"\" 1
+python3 $SAL_DIR/sendEnableCommand.py $subsys \"user2@other\" 5
+echo \"Test with authList authorizedUsers=user@host,user2@other, nonAuthorizedCSCS=Test default identity=user2@other\"
+$SAL_DIR/[set subsys]/sacpp_[set subsys]_enable_commander
+python3 $SAL_DIR/setAuthList.py $subsys \"user@host,user2@other\" \"Test\" 1
+python3 $SAL_DIR/sendEnableCommand.py $subsys \"user2@other\" 5
+echo \"Test with authList authorizedUsers=user@host,user2@other, nonAuthorizedCSCS=Test default identity=Test\"
+$SAL_DIR/[set subsys]/sacpp_[set subsys]_enable_commander
+python3 $SAL_DIR/sendEnableCommand.py $subsys \"Test\" 5
+echo \"Test with authList authorizedUsers=user@host,user2@other, nonAuthorizedCSCS=MTM1M3,MTM2,Test default identity=MTM2\"
+$SAL_DIR/[set subsys]/sacpp_[set subsys]_enable_commander
+python3 $SAL_DIR/setAuthList.py $subsys \"user@host,user2@other\" \"MTM1M3,MTM2,Test\" 1
+python3 $SAL_DIR/sendEnableCommand.py $subsys \"MTM2\" 5
+echo \"Finished testing authList with $subsys\"
+"
+      close $fout
+    }
+  }
+  if { $OPTIONS(verbose) } {stdlog "###TRACE<<< genauthlisttestsjava $subsys"}
+}
+
+
+

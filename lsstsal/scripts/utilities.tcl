@@ -138,7 +138,7 @@ global SAL_WORK_DIR OPTIONS CMD_ALIASES EVENT_ALIASES TLM_ALIASES
         checkFileAsset $SAL_WORK_DIR/[set subsys]/labview/sal_[set subsys].idl
         checkFileAsset $SAL_WORK_DIR/[set subsys]/cpp/src/SAL_[set subsys]LV.h
    }
-   if { $OPTIONS(verbose) } {stdlog "###TRACE<<< checkAssets $subsys $language "}
+   if { $OPTIONS(verbose) } {stdlog "###TRACE<<< checkAssets $subsys"}
 }
 
 #
