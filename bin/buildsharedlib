@@ -5,13 +5,15 @@
 cd $SAL_WORK_DIR
 echo "work dir is $SAL_WORK_DIR"
 echo "ospl home is $OSPL_HOME"
-rm -fr tmplib
-mkdir -p tmplib
-cp $1/cpp/src/.obj/SAL_$1.o tmplib/.
-cp $1/cpp/.obj/* tmplib/.
-g++ -o lib/libSAL_$1.so -shared  -fPIC -L"." -L$OSPL_HOME/lib -Wl,-rpath,$OSPL_HOME/lib tmplib/*.o -l"dcpssacpp" -l"dcpsgapi" -l"ddsuser" -l"ddskernel" -l"ddsserialization" -l"ddsconfparser" -l"ddsconf" -l"ddsdatabase" -l"ddsutil" -l"ddsos" -ldl -lrt -lrt -lpthread
-ar -ru lib/libSAL_$1.a tmplib/*.o
-ranlib lib/libSAL_$1.a
-cp $1/cpp/src/*.h include/.
-cp $1/cpp/*.h include/.
 
+# all objects linked into library
+OBJS="$1/cpp/.obj/*.o $1/cpp/src/.obj/SAL_$1.o"
+
+set -x
+ar -rus -v lib/libSAL_$1.a ${OBJS}
+g++ -o lib/libSAL_$1.so -shared  -fPIC -L"." -L$OSPL_HOME/lib -Wl,-rpath,$OSPL_HOME/lib ${OBJS} -l"dcpssacpp" -l"dcpsgapi" -l"ddsuser" -l"ddskernel" -l"ddsserialization" -l"ddsconfparser" -l"ddsconf" -l"ddsdatabase" -l"ddsutil" -l"ddsos" -ldl -lrt -lrt -lpthread
+set +x
+
+echo "Copying includes"
+cp -v $1/cpp/*.h include
+cp -v $1/cpp/src/*.h include

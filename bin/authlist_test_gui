@@ -35,8 +35,10 @@ global CSCS IDENTITY USERS SAL_DIR RESULT SUBSYSTEMS
 }
 
 
-set argv "ATAOS ATOODS ATPtg"
-set SUBSYSTEMS $argv
+set argv "cpp ATAOS ATOODS ATPtg"
+set lang [lindex $argv 0]
+set SUBSYSTEMS [lrange $argv 1 end]
+
 set SAL_DIR $env(SAL_DIR)
 set SAL_WORK_DIR $env(SAL_WORK_DIR)
 set OPTIONS(verbose) 0
@@ -96,8 +98,21 @@ wm geometry . 576x$my
 
 set x 580
 set y 10
-foreach i $argv {
-   exec xterm -geometry +[set x]+[set y] -e $SAL_WORK_DIR/$i/cpp/src/sacpp_[set i]_enable_controller &
+foreach i $SUBSYTEMS {
+   if { $lang == "java" } {
+     set rdir [lindex [glob $SAL_WORK_DIR/maven/[set i]*] end]
+     set fout [open /tmp/java_[set i]_enable_controller w]
+     puts $fout "#!/bin/sh
+cd $rdir
+mvn -Dtest=[set i]Controller_enable.java test
+"
+     close $fout
+     exec chmod 755 /tmp/java_[set i]_enable_controller
+     exec xterm -geometry +[set x]+[set y] -e /tmp/java_[set i]_enable_controller &
+   }
+   if { $lang == "cpp" } {
+     exec xterm -geometry +[set x]+[set y] -e $SAL_WORK_DIR/[set i]/cpp/src/sacpp_[set i]_enable_controller &
+   }
    incr x 100
    incr y 100
 }

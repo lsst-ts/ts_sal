@@ -119,6 +119,10 @@ global CMD_ALIASES CMDS DONE_CMDEVT ACKREVCODE REVCODE SAL_WORK_DIR OPTIONS
        catch { set result [gencommandtestscpp $subsys] } bad
        if { $result == "none" } {stdlog $bad ; errorexit "failure in gencommandtestscpp" }
        stdlog "$result"
+       set result none
+       catch { set result [genauthlisttestscpp $subsys] } bad
+       if { $result == "none" } {stdlog $bad ; errorexit "failure in genauthlisttestscpp" }
+       stdlog "$result"
      }
   }
   if { $lang == "java" }  {
@@ -128,8 +132,10 @@ global CMD_ALIASES CMDS DONE_CMDEVT ACKREVCODE REVCODE SAL_WORK_DIR OPTIONS
      if { $result == "none" } {stdlog $bad ; errorexit "failure in gencmdaliasjava" }
      stdlog "$result"
      if { $DONE_CMDEVT == 0} {
+       set result none
        catch { set result [gencommandtestsjava $subsys] } bad
        stdlog "$result"
+       if { $result == "none" } {stdlog $bad ; errorexit "failure in gencommandtestsjava" }
      }
   }
   if { $lang == "python" } {

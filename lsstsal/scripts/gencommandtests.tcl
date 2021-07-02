@@ -21,7 +21,8 @@
 #  per-command Topic type. 
 #
 proc gencommandtestscpp { subsys } {
-global CMD_ALIASES CMDS SAL_WORK_DIR SYSDIC DONE_CMDEVT
+global CMD_ALIASES CMDS SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS
+ if { $OPTIONS(verbose) } {stdlog "###TRACE>>> gencommandtestscpp $subsys"}
  if { [info exists CMD_ALIASES($subsys)] && $DONE_CMDEVT == 0 } {
    foreach alias $CMD_ALIASES($subsys) {
     if { [info exists CMDS($subsys,$alias,param)] } {
@@ -243,7 +244,63 @@ SRC           = ../src/SAL_[set subsys].cpp $extrasrc"
    close $fout
    exec cp /tmp/Makefile.sacpp_[set subsys]_testcommands $SAL_WORK_DIR/$subsys/cpp/src/Makefile.sacpp_[set subsys]_testcommands
  }
+ if { $OPTIONS(verbose) } {stdlog "###TRACE<<< gencommandtestscpp $subsys"}
 }
 
  
+#
+## Documented proc \c genauthlisttestscpp .
+# \param[in] subsys Name of CSC/Subsystem as defined in SALSubsystems.xml
+#
+#  Generates the authList test script for a Subsystem/CSC.
+#  The test starts a controller, and then sends a set of
+#  authList's and tries to issue a command with each.
+#
+proc genauthlisttestscpp { subsys } {
+global CMD_ALIASES CMDS SAL_WORK_DIR SYSDIC DONE_CMDEVT SAL_DIR OPTIONS
+  if { $OPTIONS(verbose) } {stdlog "###TRACE>>> genauthlisttestscpp $subsys"}
+  if { [info exists SYSDIC($subsys,cpp)] } {
+    if { [info exists CMD_ALIASES($subsys)] && $DONE_CMDEVT == 0 } {
+      set fout [open $SAL_WORK_DIR/[set subsys]/cpp/src/testAuthList.sh w]
+      puts $fout "#!/bin/sh
+echo \"Starting sacpp_[set subsys]_enable_controller\"
+$SAL_WORK_DIR/[set subsys]/sacpp_[set subsys]_enable_controller &
+sleep 5
+echo \"Test with authList not set at all, default identity=[set subsys]\"
+$SAL_WORK_DIR/[set subsys]/sacpp_[set subsys]_enable_commander
+echo \"Test with authList not set at all, default identity=user@host\"
+$SAL_DIR/[set subsys]/sacpp_[set subsys]_enable_commander
+python3 $SAL_DIR/sendEnableCommand.py $subsys \"user@host\" 5
+echo \"Test with authList authorizedUsers=user@host, default identity=user@host\"
+$SAL_DIR/[set subsys]/sacpp_[set subsys]_enable_commander
+python3 $SAL_DIR/setAuthList.py $subsys \"user@host\" \"\" 1
+python3 $SAL_DIR/sendEnableCommand.py $subsys \"user@host\" 5
+echo \"Test with authList authorizedUsers=user@host,user2@other, default identity=user@host\"
+$SAL_DIR/[set subsys]/sacpp_[set subsys]_enable_commander
+python3 $SAL_DIR/setAuthList.py $subsys \"user@host,user2@other\" \"\" 1
+python3 $SAL_DIR/sendEnableCommand.py $subsys \"user@host\" 5
+echo \"Test with authList authorizedUsers=user@host,user2@other, default identity=user2@other\"
+$SAL_DIR/[set subsys]/sacpp_[set subsys]_enable_commander
+python3 $SAL_DIR/setAuthList.py $subsys \"user@host,user2@other\" \"\" 1
+python3 $SAL_DIR/sendEnableCommand.py $subsys \"user2@other\" 5
+echo \"Test with authList authorizedUsers=user@host,user2@other, nonAuthorizedCSCS=Test default identity=user2@other\"
+$SAL_DIR/[set subsys]/sacpp_[set subsys]_enable_commander
+python3 $SAL_DIR/setAuthList.py $subsys \"user@host,user2@other\" \"Test\" 1
+python3 $SAL_DIR/sendEnableCommand.py $subsys \"user2@other\" 5
+echo \"Test with authList authorizedUsers=user@host,user2@other, nonAuthorizedCSCS=Test default identity=Test\"
+$SAL_DIR/[set subsys]/sacpp_[set subsys]_enable_commander
+python3 $SAL_DIR/sendEnableCommand.py $subsys \"Test\" 5
+echo \"Test with authList authorizedUsers=user@host,user2@other, nonAuthorizedCSCS=MTM1M3,MTM2,Test default identity=MTM2\"
+$SAL_DIR/[set subsys]/sacpp_[set subsys]_enable_commander
+python3 $SAL_DIR/setAuthList.py $subsys \"user@host,user2@other\" \"MTM1M3,MTM2,Test\" 1
+python3 $SAL_DIR/sendEnableCommand.py $subsys \"MTM2\" 5
+echo \"Finished testing authList with $subsys\"
+"
+      close $fout
+    }
+  }
+  if { $OPTIONS(verbose) } {stdlog "###TRACE<<< genauthlisttestscpp $subsys"}
+}
+
+
 

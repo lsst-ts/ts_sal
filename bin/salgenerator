@@ -256,9 +256,12 @@ if { $OPTIONS(apidoc) } {
 
 if { $OPTIONS(maven) } {
   cd $SAL_WORK_DIR
+  source $SAL_DIR/gencommandtestsjava.tcl
   source $SAL_DIR/mavenize.tcl
+  source $SAL_DIR/gensalcodes.tcl
   set mvnrelease [set XMLVERSION]_[exec cat $env(TS_SAL_DIR)/VERSION][set RELVERSION]
   foreach subsys $TSUBSYSTEMS {
+    checkTopicTypes $subsys
     set result ""
     set bad ""
     puts stdout "Creating maven directories maven/[set subsys]-[set mvnrelease]"
@@ -276,6 +279,10 @@ if { $OPTIONS(maven) } {
     catch { set result [exec mvn -Dmaven.javadoc.skip=true -DskipTests install] } bad
     puts stdout "$result"
     puts stderr "$bad"
+    set result none
+    catch { set result [genauthlisttestsjava $subsys] } bad
+    stdlog "$result"
+    if { $result == "none" } {stdlog $bad ; errorexit "failure in genauthlisttestsjava" }
 #     puts stdout "Updating local repository"
 #     catch { set result [exec mvn install -DperformRelease=true -DcreateChecksum=true] } bad
 #     puts stdout "$result"
@@ -336,7 +343,6 @@ if { $OPTIONS(sal) } {
       if { $OPTIONS(verbose) } {stdlog $result}
     }
   } else {
-    exec rm -fr $SAL_WORK_DIR/[set base]/cpp
     exec cp $SAL_WORK_DIR/idl-templates/validated/sal/sal_revCoded_[set base].idl $SAL_WORK_DIR/[set base]/.
   }
   checkAssets $base
@@ -347,6 +353,7 @@ if { $OPTIONS(lib) } {
     if { $s != "lib" } {
       stdlog "Building shared library for $s subsystem"
       set result none
+      if { $OPTIONS(verbose) } {stdlog "Calling $env(TS_SAL_DIR)/bin/buildsharedlib $s"}
       catch { set result [exec $env(TS_SAL_DIR)/bin/buildsharedlib $s] } bad
       if { $OPTIONS(verbose) } {stdlog $result}
     }
