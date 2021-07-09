@@ -103,7 +103,6 @@ class TestData:
             "int0",
             "long0",
             "longLong0",
-            "octet0",
             "unsignedShort0",
             "unsignedInt0",
             "unsignedLong0",
@@ -117,12 +116,10 @@ class TestData:
         return (
             "boolean0",
             "byte0",
-            "char0",
             "short0",
             "int0",
             "long0",
             "longLong0",
-            "octet0",
             "unsignedShort0",
             "unsignedInt0",
             "unsignedLong0",
@@ -191,7 +188,6 @@ class TestData:
         data.boolean0[:] = np.random.choice([False, True], size=(nelts,))
         for field_name in (
             "byte0",
-            "octet0",
             "short0",
             "int0",
             "long0",
@@ -221,13 +217,10 @@ class TestData:
         empty_arrays = SALPY_Test.Test_arraysC()
         data.boolean0 = np.random.choice([False, True])
         printable_chars = [c for c in string.ascii_letters + string.digits]
-        # char0 is a string of arbitrary length (IDL_Size not specified)
-        data.char0 = "".join(np.random.choice(printable_chars, size=(100,)))
         # string0 is a string with max length 20 (IDL_Size=20)
         data.string0 = "".join(np.random.choice(printable_chars, size=(20,)))
         for field_name in (
             "byte0",
-            "octet0",
             "short0",
             "int0",
             "long0",
