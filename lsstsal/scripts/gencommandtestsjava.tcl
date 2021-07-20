@@ -145,9 +145,6 @@ public class [set subsys]Controller_[set alias]Test extends TestCase \{
           short aKey   = 1;
 	  int status   = SAL_[set subsys].SAL__OK;
 	  int cmdId    = 0;
-          int timeout  = 300;
-          boolean finished=false;
-
 	  // Initialize
 	  SAL_[set subsys] cmd = new SAL_[set subsys][set initializer];
 
@@ -155,22 +152,15 @@ public class [set subsys]Controller_[set alias]Test extends TestCase \{
 	  [set subsys].command_[set alias] command = new [set subsys].command_[set alias]();
           System.out.println(\"[set subsys]_[set alias] controller ready \");
 
-	  while (!finished) \{
+	  while (cmdId > -1) \{
              cmd.checkAuthList(\"\");
 	     cmdId = cmd.acceptCommand_[set alias](command);
 	     if (cmdId > 0) \{
-	       if (timeout > 0) \{
-	          cmd.ackCommand_[set alias](cmdId, SAL_[set subsys].SAL__CMD_INPROGRESS, 0, \"Ack : OK\");
- 	          try \{Thread.sleep(timeout);\} catch (InterruptedException e)  \{ e.printStackTrace(); \}
-	       \}       
+	       cmd.ackCommand_[set alias](cmdId, SAL_[set subsys].SAL__CMD_INPROGRESS, 0, \"Ack : OK\");
+  	       try \{Thread.sleep(1000);\} catch (InterruptedException e)  \{ e.printStackTrace(); \}
 	       cmd.ackCommand_[set alias](cmdId, SAL_[set subsys].SAL__CMD_COMPLETE, 0, \"Done : OK\");
-               finished = true;
 	     \}
-             timeout = timeout-1;
-             if (timeout == 0) \{
-               finished = true;
-             \}
- 	     try \{Thread.sleep(1000);\} catch (InterruptedException e)  \{ e.printStackTrace(); \}
+  	     try \{Thread.sleep(1000);\} catch (InterruptedException e)  \{ e.printStackTrace(); \}
 	  \}
 
 	  /* Remove the DataWriters etc */
