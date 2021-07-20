@@ -279,7 +279,6 @@ public class SAL_SALData {
                   telemetryQos = new QosProvider(qname,"TelemetryProfile");
                   ackcmdQos = new QosProvider(qname,"AckcmdProfile");
                 }
-                CSC_identity = "SALData";
                 origin = (int)randGen.nextInt(99999999);
 		hasReader = false;
 		hasWriter = false;
@@ -288,7 +287,7 @@ public class SAL_SALData {
 		hasEventWriter = false;
 		hasProcessor = false;
 		subsystemID = 0;
-		debugLevel = 0;
+		debugLevel = 1;
                 System.loadLibrary("salUtils");
                 initSalActors();
 	}

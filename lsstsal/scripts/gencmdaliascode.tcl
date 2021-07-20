@@ -354,7 +354,7 @@ salReturn SAL_SALData::waitForCompletion_[set i]( int cmdSeqNum , unsigned int t
       status = getResponse_[set i](response);
       if (status == SAL__CMD_NOPERM) \{
         if (debugLevel > 0) \{
-          cout << \"=== \[waitForCompletion_[set i]\] command \" << cmdSeqNum <<  \"Not permitted by authList\" << endl;
+          cout << \"=== \[waitForCompletion_[set i]\] command \" << cmdSeqNum <<  \" Not permitted by authList\" << endl;
         \}
         return status;
       \}
@@ -752,7 +752,7 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
 	      status = getResponse_[set i](ackcmd);
               if (status == SAL__CMD_NOPERM) \{
                 if (debugLevel > 0) \{
-                  System.out.println( \"=== \[waitForCompletion_[set i]\] command \" + cmdSeqNum +  \"Not permitted by authList\");
+                  System.out.println( \"=== \[waitForCompletion_[set i]\] command \" + cmdSeqNum +  \" Not permitted by authList\");
                 \}
                 return status;
               \}
@@ -1120,49 +1120,52 @@ global SYSDIC
      	    nonAuthorizedCSCs = SALInstance.nonAuthorizedCSCs.replaceAll(\"\\\\s+\",\"\");
      	    myData.authorizedUsers = SALInstance.authorizedUsers;
      	    myData.nonAuthorizedCSCs = SALInstance.nonAuthorizedCSCs;
+            ackCommand_setAuthList( cmdId, SAL__CMD_COMPLETE, 0, \"OK\" );
      	    logEvent_authList(myData, 1);
           \}
-          StringTokenizer tokenizer2 = new StringTokenizer(nonAuthorizedCSCs, \",\");        
-          while (tokenizer2.hasMoreTokens()) \{
+          boolean ignoreCheck = private_identity.equals(\"\");
+          if (ignoreCheck == false) \{
+           StringTokenizer tokenizer2 = new StringTokenizer(nonAuthorizedCSCs, \",\");        
+           while (tokenizer2.hasMoreTokens()) \{
             String next2 = tokenizer2.nextToken();
             boolean ok1 = next2.equals(my_identity);
             if (ok1) \{ 
-              if ( debugLevel > 0) \{ System.out.println(\"authList check : \" + next2 + \" allowed\"); \}
+              if ( debugLevel > 1) \{ System.out.println(\"authList check : \" + next2 + \" allowed\"); \}
               return SAL__OK;
             \} else \{
               boolean ok2 = next2.equals(private_identity);
               if (ok2) \{ 
-                if ( debugLevel > 0) \{ System.out.println(\"authList check : \" + next2 + \" forbidden\"); \}
+                if ( debugLevel > 1) \{ System.out.println(\"authList check : \" + next2 + \" forbidden\"); \}
                 return SAL__CMD_NOPERM;
               \}
               StringTokenizer tokenizer3 = new StringTokenizer(private_identity, \":\");        
               while (tokenizer3.hasMoreTokens()) \{
                 String next3 = tokenizer3.nextToken();
                 boolean ok3 = next3.equals(next2);
-                if ( debugLevel > 0) \{ System.out.println(\"authList check : \" + next3 + \" \" + ok3); \}
+                if ( debugLevel > 1) \{ System.out.println(\"authList check : \" + next3 + \" \" + ok3); \}
                 if (ok3) \{ 
-                  if ( debugLevel > 0) \{ System.out.println(\"authList check : \" + next3 + \" forbidden\"); \}
+                  if ( debugLevel > 1) \{ System.out.println(\"authList check : \" + next3 + \" forbidden\"); \}
                   return SAL__CMD_NOPERM;
                 \}
               \}
             \}
-          \}
-          StringTokenizer tokenizer4 = new StringTokenizer(authorizedUsers, \",\");        
-          while (tokenizer4.hasMoreTokens()) \{
+           \}
+           StringTokenizer tokenizer4 = new StringTokenizer(authorizedUsers, \",\");        
+           while (tokenizer4.hasMoreTokens()) \{
             String next = tokenizer4.nextToken();
             boolean ok = next.equals(private_identity);
             if (ok) \{ 
-              if ( debugLevel > 0) \{ System.out.println(\"authList check : \" + next + \" allowed\"); \}
+              if ( debugLevel > 1) \{ System.out.println(\"authList check : \" + next + \" allowed\"); \}
               return SAL__OK;
             \}
-            return SAL__CMD_NOPERM;
-          \}        
-          StringTokenizer tokenizer5 = new StringTokenizer(private_identity, \"@\");        
-          while (tokenizer5.hasMoreTokens()) \{
+           \}        
+           StringTokenizer tokenizer5 = new StringTokenizer(private_identity, \"@\");        
+           while (tokenizer5.hasMoreTokens()) \{
             iat++;
             if (iat > 1) \{
               return SAL__CMD_NOPERM;
             \}
+           \}
           \}
           return SAL__OK;      
         \}

@@ -215,7 +215,7 @@
       int lastActor_event;
 
 ///   Holds the private_identity of this SAL Object, set at creation
-      char *CSC_identity;
+      char CSC_identity[128];
 
 ///   Holds the current authList authorizedUsers list
       std::string authorizedUsers;

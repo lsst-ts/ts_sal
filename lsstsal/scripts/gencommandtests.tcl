@@ -75,10 +75,13 @@ int main (int argc, char *argv\[\])
   \} 
   SAL_[set subsys] mgr = SAL_[set subsys]([set subsys]ID);"
    } else {
-      puts $fcmd "  SAL_[set subsys] mgr = SAL_[set subsys]();"
+      puts $fcmd "
+  char *auth=getenv(\"LSST_IDENTITY\");
+  SAL_[set subsys] *mgr = new SAL_[set subsys](auth);
+"
    }
    puts $fcmd "
-  mgr.salCommand(\"[set subsys]_command_[set alias]\");
+  mgr->salCommand(\"[set subsys]_command_[set alias]\");
 "
   set cpars $CMDS($subsys,$alias)
   set fin [open $SAL_WORK_DIR/include/SAL_[set subsys]_command_[set alias]Cargs.tmp r]
@@ -88,12 +91,16 @@ int main (int argc, char *argv\[\])
   close $fin
   puts $fcmd "
   // generate command
-  cmdId = mgr.issueCommand_[set alias](&myData);
-  cout << \"=== command $alias issued = \" << endl;
-  status = mgr.waitForCompletion_[set alias](cmdId, timeout);
-
+  cmdId = mgr->issueCommand_[set alias](&myData);
+  cout << \"=== command $alias issued = \" << endl;"
+  if { $alias == "setAuthList" } {
+    puts $fcmd "  sleep(2);"
+  } else {
+    puts $fcmd "  status = mgr->waitForCompletion_[set alias](cmdId, timeout);"
+  } 
+  puts $fcmd "
   /* Remove the DataWriters etc */
-  mgr.salShutdown();
+  mgr->salShutdown();
   if (status != SAL__CMD_COMPLETE) \{
      exit(1);
   \}
@@ -149,6 +156,7 @@ int test_[set subsys]_[set alias]_controller()
   cout << \"=== [set subsys]_[set alias] controller ready \" << endl;
 
   while (1) \{
+    mgr.checkAuthList(\"\");
     // receive command
     cmdId = mgr.acceptCommand_[set alias](&SALInstance);
     if (cmdId > 0) \{
@@ -244,6 +252,7 @@ SRC           = ../src/SAL_[set subsys].cpp $extrasrc"
    close $fout
    exec cp /tmp/Makefile.sacpp_[set subsys]_testcommands $SAL_WORK_DIR/$subsys/cpp/src/Makefile.sacpp_[set subsys]_testcommands
  }
+ genauthlisttestscpp $subsys
  if { $OPTIONS(verbose) } {stdlog "###TRACE<<< gencommandtestscpp $subsys"}
 }
 
@@ -259,46 +268,53 @@ SRC           = ../src/SAL_[set subsys].cpp $extrasrc"
 proc genauthlisttestscpp { subsys } {
 global CMD_ALIASES CMDS SAL_WORK_DIR SYSDIC DONE_CMDEVT SAL_DIR OPTIONS
   if { $OPTIONS(verbose) } {stdlog "###TRACE>>> genauthlisttestscpp $subsys"}
-  if { [info exists SYSDIC($subsys,cpp)] } {
-    if { [info exists CMD_ALIASES($subsys)] && $DONE_CMDEVT == 0 } {
-      set fout [open $SAL_WORK_DIR/[set subsys]/cpp/src/testAuthList.sh w]
-      puts $fout "#!/bin/sh
+  set fout [open $SAL_WORK_DIR/[set subsys]/cpp/src/testAuthList.sh w]
+  puts $fout "#!/bin/sh
+echo \"=====================================================================\"
 echo \"Starting sacpp_[set subsys]_enable_controller\"
-$SAL_WORK_DIR/[set subsys]/sacpp_[set subsys]_enable_controller &
-sleep 5
+$SAL_WORK_DIR/[set subsys]/cpp/src/sacpp_[set subsys]_enable_controller &
+sleep 10
+echo \"=====================================================================\"
 echo \"Test with authList not set at all, default identity=[set subsys]\"
-$SAL_WORK_DIR/[set subsys]/sacpp_[set subsys]_enable_commander
-echo \"Test with authList not set at all, default identity=user@host\"
-$SAL_DIR/[set subsys]/sacpp_[set subsys]_enable_commander
-python3 $SAL_DIR/sendEnableCommand.py $subsys \"user@host\" 5
-echo \"Test with authList authorizedUsers=user@host, default identity=user@host\"
-$SAL_DIR/[set subsys]/sacpp_[set subsys]_enable_commander
-python3 $SAL_DIR/setAuthList.py $subsys \"user@host\" \"\" 1
-python3 $SAL_DIR/sendEnableCommand.py $subsys \"user@host\" 5
-echo \"Test with authList authorizedUsers=user@host,user2@other, default identity=user@host\"
-$SAL_DIR/[set subsys]/sacpp_[set subsys]_enable_commander
-python3 $SAL_DIR/setAuthList.py $subsys \"user@host,user2@other\" \"\" 1
-python3 $SAL_DIR/sendEnableCommand.py $subsys \"user@host\" 5
-echo \"Test with authList authorizedUsers=user@host,user2@other, default identity=user2@other\"
-$SAL_DIR/[set subsys]/sacpp_[set subsys]_enable_commander
-python3 $SAL_DIR/setAuthList.py $subsys \"user@host,user2@other\" \"\" 1
-python3 $SAL_DIR/sendEnableCommand.py $subsys \"user2@other\" 5
-echo \"Test with authList authorizedUsers=user@host,user2@other, nonAuthorizedCSCS=Test default identity=user2@other\"
-$SAL_DIR/[set subsys]/sacpp_[set subsys]_enable_commander
-python3 $SAL_DIR/setAuthList.py $subsys \"user@host,user2@other\" \"Test\" 1
-python3 $SAL_DIR/sendEnableCommand.py $subsys \"user2@other\" 5
-echo \"Test with authList authorizedUsers=user@host,user2@other, nonAuthorizedCSCS=Test default identity=Test\"
-$SAL_DIR/[set subsys]/sacpp_[set subsys]_enable_commander
-python3 $SAL_DIR/sendEnableCommand.py $subsys \"Test\" 5
-echo \"Test with authList authorizedUsers=user@host,user2@other, nonAuthorizedCSCS=MTM1M3,MTM2,Test default identity=MTM2\"
-$SAL_DIR/[set subsys]/sacpp_[set subsys]_enable_commander
-python3 $SAL_DIR/setAuthList.py $subsys \"user@host,user2@other\" \"MTM1M3,MTM2,Test\" 1
-python3 $SAL_DIR/sendEnableCommand.py $subsys \"MTM2\" 5
+unset LSST_IDENTITY
+$SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_setAuthList_commander   \"\" \"\"
+$SAL_WORK_DIR/[set subsys]/cpp/src/sacpp_[set subsys]_enable_commander 1
+echo \"=====================================================================\"
+echo \"Test with authList not set at all, identity=user@host\"
+export LSST_IDENTITY=user@host
+$SAL_WORK_DIR/[set subsys]/cpp/src/sacpp_[set subsys]_enable_commander 1
+echo \"=====================================================================\"
+echo \"Test with authList authorizedUsers=user@host, identity=user@host\"
+$SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_setAuthList_commander   \"user@host\" \"\"
+$SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_enable_commander 1
+echo \"=====================================================================\"
+echo \"Test with authList authorizedUsers=user@host,user2@other, identity=user@host\"
+$SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_setAuthList_commander   \"user@host,user2@other\" \"\"
+$SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_enable_commander 1
+echo \"=====================================================================\"
+echo \"Test with authList authorizedUsers=user@host,user2@other, identity=user2@other\"
+export LSST_IDENTITY=user2@other
+$SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_setAuthList_commander   \"user@host,user2@other\" \"\"
+$SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_enable_commander 1
+echo \"=====================================================================\"
+echo \"Test with authList authorizedUsers=user@host,user2@other, nonAuthorizedCSCs=Test identity=user2@other\"
+export LSST_IDENTITY=user2@other
+$SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_setAuthList_commander   \"user@host,user2@other\" \"Test\"
+$SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_enable_commander 1
+echo \"=====================================================================\"
+echo \"Test with authList authorizedUsers=user@host,user2@other, nonAuthorizedCSCs=Test identity=Test\"
+export LSST_IDENTITY=Test
+$SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_enable_commander 1
+echo \"Test with authList authorizedUsers=user@host,user2@other, nonAuthorizedCSCs=MTM1M3,MTM2,Test identity=MTM2\"
+export LSST_IDENTITY=MTM2
+$SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_setAuthList_commander   \"user@host,user2@other\" \"MTM1M3,MTM2,Test\"
+$SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_enable_commander 1
+echo \"=====================================================================\"
 echo \"Finished testing authList with $subsys\"
+echo \"=====================================================================\"
 "
-      close $fout
-    }
-  }
+  close $fout
+  exec chmod 755 $SAL_WORK_DIR/[set subsys]/cpp/src/testAuthList.sh
   if { $OPTIONS(verbose) } {stdlog "###TRACE<<< genauthlisttestscpp $subsys"}
 }
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env tclsh
 ## \file managetypes.tcl
-# \brief This contains procedures to help manage the diffent
+# \brief This contains procedures to help manage the different
 #  IDL/C++/Java/LabVIEW data types
 #
 # This Source Code Form is subject to the terms of the GNU Public\n
@@ -509,8 +509,6 @@ proc lvtypebuilder { base name type size } {
 set TYPESUBS(string) char
 set TYPESUBS(String) char
 set TYPESUBS(byte)   "unsigned char"
-set TYPESUBS(char)   char
-set TYPESUBS(octet)  "unsigned char"
 set TYPESUBS(int)    int
 set TYPESUBS(short)  short
 set TYPESUBS(int8)   "unsigned char"
@@ -532,8 +530,7 @@ set TYPESUBS(unsignedlonglong) long
 set ATYPESUBS(string) StrHdl
 set ATYPESUBS(String) StrHdl
 set ATYPESUBS(byte)   I8ArrayHdl
-set ATYPESUBS(char)   StrHdl
-set ATYPESUBS(octet)  U8ArrayHdl
+set ATYPESUBS(octet)  I8ArrayHdl
 set ATYPESUBS(int)    I32ArrayHdl
 set ATYPESUBS(short)  I16ArrayHdl
 set ATYPESUBS(int8)   I8ArrayHdl
@@ -556,7 +553,6 @@ set ATYPESUBS(unsignedlonglong) U64ArrayHdl
 
 set TYPESIZE(String) 1
 set TYPESIZE(string) 1
-set TYPESIZE(char)   1
 set TYPESIZE(byte)   1
 set TYPESIZE(octet)  1
 set TYPESIZE(short)  2
@@ -586,7 +582,6 @@ set TYPESIZE(unsignedlong)   4
 set TYPESIZE(unsignedlonglong) 8
 
 set TYPEFORMAT(byte)   "%hhu"
-set TYPEFORMAT(char)   "%s"
 set TYPEFORMAT(octet)  "%hhu"
 set TYPEFORMAT(short)  "%d"
 set TYPEFORMAT(int16)  "%d"

@@ -136,57 +136,56 @@ salReturn SAL_SALData::checkAuthList(std::string private_identity)
   std::string my_identity = CSC_identity;
   SALData_command_setAuthListC SALInstance;
   SALData_logevent_authListC myData;
-  debugLevel=9;
   if ( sal[SAL__SALData_command_setAuthList_ACTOR].isProcessor == false ) {
      status = salProcessor("SALData_command_setAuthList");
      status = salEventPub("SALData_logevent_authList");
   }
   cmdId = acceptCommand_setAuthList(&SALInstance);
-        cout << "=== setAuthList cmdId = " << cmdId << endl;
   if (cmdId > 0) {
-//     if (debugLevel > 0) {
+     if (debugLevel > 0) {
         cout << "=== command setAuthList received = " << endl;
         cout << "    authorizedUsers : " << SALInstance.authorizedUsers << endl;
         cout << "    nonAuthorizedCSCs : " << SALInstance.nonAuthorizedCSCs << endl;
-//     }
+     }
      authorizedUsers = removeSpaces(SALInstance.authorizedUsers);
      nonAuthorizedCSCs = removeSpaces(SALInstance.nonAuthorizedCSCs);
      myData.authorizedUsers = SALInstance.authorizedUsers;
      myData.nonAuthorizedCSCs = SALInstance.nonAuthorizedCSCs;
      logEvent_authList(&myData, 1);
+     ackCommand_setAuthList( cmdId, SAL__CMD_COMPLETE, 0, "OK" );
   }
-  std::stringstream ssUsers(authorizedUsers);
-  std::stringstream ssCSCs(nonAuthorizedCSCs);
-  std::stringstream ssid(private_identity);
-  while(getline(ssCSCs, token, delimiter)) {
-     std::cout << token << std::endl;
+  if ( private_identity.compare("") != 0 ) {
+   std::stringstream ssUsers(authorizedUsers);
+   std::stringstream ssCSCs(nonAuthorizedCSCs);
+   std::stringstream ssid(private_identity);
+   while(getline(ssCSCs, token, delimiter)) {
      if ( token.compare(my_identity) == 0 ) {
         return SAL__OK;
      } else {
        std::stringstream ssIdentity(private_identity);
        while(getline(ssIdentity, token2, delimiter2)) {
-         if (debugLevel > 0) { std::cout << "authList check : " << "split - " << token2 << std::endl; }
+         if (debugLevel > 1) { std::cout << "authList check : " << "split - " << token2 << std::endl; }
          if ( token2.compare(token) == 0 ) {
-           if (debugLevel > 0) { std::cout << "authList check : " << token << " == " << private_identity << " : Forbidden" << std::endl; }
+           if (debugLevel > 1) { std::cout << "authList check : " << token << " == " << private_identity << " : Forbidden" << std::endl; }
            return SAL__CMD_NOPERM;
          }
        }
        if ( token.compare(private_identity) == 0 ) {
-          if (debugLevel > 0) { std::cout << "authList check : " << token << " : Forbidden" << std::endl; }
+          if (debugLevel > 1) { std::cout << "authList check : " << token << " : Forbidden" << std::endl; }
           return SAL__CMD_NOPERM;
        }
      }
-  }
-  while(getline(ssUsers, token, delimiter)) {
-     if (debugLevel > 0) { std::cout << "authList check : " << token << std::endl; }
+   }
+   while(getline(ssUsers, token, delimiter)) {
+     if (debugLevel > 1) { std::cout << "authList check : " << token << std::endl; }
      if ( token.compare(private_identity) == 0 ) {
         return SAL__OK;
      }
-     return SAL__CMD_NOPERM;
-  }
-  while(getline(ssid, token, delimiter3)) {
+   }
+   while(getline(ssid, token, delimiter3)) {
      iat++;
      if (iat > 1) { return SAL__CMD_NOPERM; }
+   }
   }
   status = SAL__OK;
   return status;  

@@ -9,33 +9,42 @@
 #include "QosProvider.h"
 using namespace SALData;
 
+SAL_SALData::SAL_SALData()
+{
+   strncpy(CSC_identity, "SALData", 128);
+   initSalEnvironment(0);
+}
+
 SAL_SALData::SAL_SALData(int aKey, char *identity)
 {
-   CSC_identity=(char *)malloc(128);
-   sprintf(CSC_identity,"%s",identity);
+   char *id = (char *)malloc(128);
+   if (identity == NULL) {
+     sprintf(id,"SALData:%d",aKey);
+   } else {
+     sprintf(id,"%s:%d",identity,aKey);
+   }
+   strncpy(CSC_identity, id, 128);
    initSalEnvironment(aKey);
 }
 
 SAL_SALData::SAL_SALData(int aKey)
 {
-   CSC_identity=(char *)malloc(128);
-   sprintf(CSC_identity,"SALData:%d",aKey);
+   char *id = (char *)malloc(128);
+   sprintf(id,"SALData:%d",aKey);
+   strncpy(CSC_identity, id, 128);
    initSalEnvironment(aKey);
 }
 
 SAL_SALData::SAL_SALData(char *identity)
 {
-   CSC_identity=(char *)malloc(128);
-   sprintf(CSC_identity,"%s",identity);
+   if (identity == NULL) {
+     strncpy(CSC_identity, "SALData", 128);
+   } else {
+     strncpy(CSC_identity, identity, 128);
+   }
    initSalEnvironment(0);
 }
 
-SAL_SALData::SAL_SALData()
-{
-   CSC_identity=(char *)malloc(128);
-   sprintf(CSC_identity,"SALData");
-   initSalEnvironment(0);
-}
 
 void SAL_SALData::initSalEnvironment(int aKey)
 {
