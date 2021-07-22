@@ -235,7 +235,7 @@ public class SAL_SALData {
                 CSC_identity = String.format("SALData:%d" , aKey);
 		initSalEnvironment(aKey);
 	}
-#else
+#endif
         public SAL_SALData(String identity)
 	{
                 CSC_identity = String.format("%s" , identity);
@@ -246,7 +246,7 @@ public class SAL_SALData {
                 CSC_identity = "SALData";
 		initSalEnvironment(0);
 	}
-#endif
+
 
 /** Environment setup for a SAL_SALData object.
   *

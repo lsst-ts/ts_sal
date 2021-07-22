@@ -73,7 +73,7 @@ int main (int argc, char *argv\[\])
   if (getenv(\"LSST_[string toupper [set subsys]]_ID\") != NULL) \{
      sscanf(getenv(\"LSST_[string toupper [set subsys]]_ID\"),\"%d\",&[set subsys]ID);
   \} 
-  SAL_[set subsys] mgr = SAL_[set subsys]([set subsys]ID);"
+  SAL_[set subsys] *mgr = new SAL_[set subsys]([set subsys]ID);"
    } else {
       puts $fcmd "
   char *auth=getenv(\"LSST_IDENTITY\");

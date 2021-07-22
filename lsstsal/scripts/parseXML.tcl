@@ -133,13 +133,13 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
       if { $tag == "/SALCommand" } {
          set intopic 0
          set CMD_ALIASES($subsys) [lappend CMD_ALIASES($subsys) $alias]
-         if { $itemid == 6 } {
-            puts stdout "WARNING : Command $alias has no data fields , adding default value item"
-            lappend CMDS($subsys,$alias,param) "boolean value"
-            lappend CMDS($subsys,$alias,plist) value
-            puts $fout "	  boolean	value;"
-            puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",1,\"value\",\"boolean\",1,\"unitless\",1,\"\",\"\",\"Dummy to prevent empty structs\");"
-         }
+#         if { $itemid == 6 } {
+#            puts stdout "WARNING : Command $alias has no data fields , adding default value item"
+#            lappend CMDS($subsys,$alias,param) "boolean value"
+#            lappend CMDS($subsys,$alias,plist) value
+#            puts $fout "	  boolean	value;"
+#            puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",1,\"value\",\"boolean\",1,\"unitless\",1,\"\",\"\",\"Dummy to prevent empty structs\");"
+#         }
          if { $explanation != "" } {set CMDS($subsys,$alias,help) $explanation}
       }
       if { $tag == "/SALTelemetry" } {

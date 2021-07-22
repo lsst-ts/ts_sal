@@ -512,6 +512,7 @@ set TYPESUBS(byte)   "unsigned char"
 set TYPESUBS(int)    int
 set TYPESUBS(short)  short
 set TYPESUBS(int8)   "unsigned char"
+set TYPESUBS(octet)  "unsigned char"
 set TYPESUBS(int16)  short
 set TYPESUBS(int32)  long
 set TYPESUBS(long)   int

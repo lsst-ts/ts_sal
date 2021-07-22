@@ -202,11 +202,11 @@ public class [set subsys]Controller_[set alias]Test extends TestCase \{
 #
 
 proc genauthlisttestsjava { subsys } {
-global CMD_ALIASES CMDS EVENT_ALIASES EVTS SAL_WORK_DIR SYSDIC SAL_DIR OPTIONS
+global CMD_ALIASES CMDS EVENT_ALIASES EVTS SAL_WORK_DIR SYSDIC SAL_DIR OPTIONS XMLVERSION SALVERSION
   if { $OPTIONS(verbose) } {stdlog "###TRACE>>> genauthlisttestsjava $subsys"}
   if { [info exists SYSDIC($subsys,java)] } {
     if { [info exists CMD_ALIASES($subsys)] } {
-      set rdir [lindex [glob $SAL_WORK_DIR/maven/[set subsys]*] end]
+      set rdir $SAL_WORK_DIR/maven/[set subsys]-[set XMLVERSION]_[set SALVERSION] 
       set fout [open $SAL_WORK_DIR/[set subsys]/java/src/java_[set subsys]_enable_controller w]
       puts $fout "#!/bin/sh
 cd $rdir
@@ -285,6 +285,5 @@ echo \"=====================================================================\"
   exec chmod 755 $SAL_WORK_DIR/[set subsys]/java/src/testAuthList.sh
   if { $OPTIONS(verbose) } {stdlog "###TRACE<<< genauthlisttestsjava $subsys"}
 }
-
 
 
