@@ -100,7 +100,7 @@ global SAL_WORK_DIR REVCODE OPTIONS SALVERSION
             if { [lindex [lindex $rec 0] 0] != "const" } {
               set item [getItemName $rec]
               if { $item == "[set subsys]ID" } {
-                set annot " // @Metadata=(Description=\"Index number for CSC with multiple instances\")"
+                set annot " // @Metadata=(Description=Units=\"unitless\",\"Index number for CSC with multiple instances\")"
               } else {
                 set lookup [exec grep "(\"$curtopic\"," $SAL_WORK_DIR/sql/[set subsys]_items.sql | grep ",\"$item\""]
                 set ign [string length "INSERT INTO [set subsys]_items VALUES "]
