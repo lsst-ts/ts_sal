@@ -137,18 +137,6 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
          if { $explanation != "" } {set CMDS($subsys,$alias,help) $explanation}
          set METADATA([set subsys]_ackcmd,description) "Command ack replies"
          set METADATA([set subsys]_ackcmd,description) "unitless"
-#         set METADATA([set subsys]_ackcmd,private_revCode,units) "unitless"
-#         set METADATA([set subsys]_ackcmd,private_sndStamp,units) "seconds"
-#         set METADATA([set subsys]_ackcmd,private_rcvStamp,units) "seconds"
-#         set METADATA([set subsys]_ackcmd,private_seqNum,units) "unitless"
-#         set METADATA([set subsys]_ackcmd,private_identity,units) "unitless"
-#         set METADATA([set subsys]_ackcmd,private_origin,units) "unitless"
-#         set METADATA([set subsys]_ackcmd,private_revCode,description) "Revision hashcode"
-#         set METADATA([set subsys]_ackcmd,private_sndStamp,description) "Time of instance publication"
-#         set METADATA([set subsys]_ackcmd,private_rcvStamp,description) "Time of instance reception"
-#         set METADATA([set subsys]_ackcmd,private_seqNum,description) "Sequence number"
-#         set METADATA([set subsys]_ackcmd,private_identity,description) "Identity of publisher"
-#         set METADATA([set subsys]_ackcmd,private_origin,description) "PID of publisher"
          add_ackcmd_metadata $subsys
       }
       if { $tag == "/SALTelemetry" } {
