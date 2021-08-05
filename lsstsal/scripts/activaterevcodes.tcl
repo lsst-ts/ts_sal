@@ -60,7 +60,7 @@ proc getItemName { rec } {
 #    units - include/SAL_[set subsys]_salpy_units.pyb3
 #
 proc activeRevCodes { subsys } {
-global SAL_WORK_DIR REVCODE OPTIONS SALVERSION
+global SAL_WORK_DIR REVCODE OPTIONS SALVERSION METADATA
   if { $OPTIONS(verbose) } {stdlog "###TRACE>>> activeRevCodes $subsys"}
   set fin [open $SAL_WORK_DIR/idl-templates/validated/sal/sal_[set subsys].idl r]
   set fout [open $SAL_WORK_DIR/idl-templates/validated/sal/sal_revCoded_[set subsys].idl w]
@@ -77,14 +77,14 @@ global SAL_WORK_DIR REVCODE OPTIONS SALVERSION
      if { [lindex $r2 0] == "struct" } {
        set curtopic [set subsys]_[lindex $r2 1]
        set id [lindex $r2 1]
-       set desc ""
-       catch { set desc [string trim [lindex [split [exec grep "###Description $curtopic :" $SAL_WORK_DIR/sql/[set subsys]_items.sql] ":"] 1]] }
-       if { $id != "command" && $id != "logevent" } {
+       set desc $METADATA([set subsys]_[lindex $r2 1],description)
+#       catch { set desc [string trim [lindex [split [exec grep "###Description $curtopic :" $SAL_WORK_DIR/sql/[set subsys]_items.sql] ":"] 1]] }
+#       if { $id != "command" && $id != "logevent" } {
          set annot " // @Metadata=(Description=\"$desc\")"
          puts $fout "struct [set id]_[string range [set REVCODE([set subsys]_$id)] 0 7] \{ $annot"
-       } else {
-         puts $fout $rec
-       }
+#       } else {
+#         puts $fout $rec
+#       }
      } else {
        if { [lindex $r2 0] == "#pragma" } {
           set id [lindex $r2 2]
@@ -95,22 +95,27 @@ global SAL_WORK_DIR REVCODE OPTIONS SALVERSION
           }
        } else {
           set annot ""
-          if { $curtopic != "command" && $curtopic != "logevent" } {
-           catch {
+#          if { $curtopic != "command" && $curtopic != "logevent" } {
+#           catch {
             if { [lindex [lindex $rec 0] 0] != "const" } {
               set item [getItemName $rec]
               if { $item == "[set subsys]ID" } {
-                set annot " // @Metadata=(Description=Units=\"unitless\",\"Index number for CSC with multiple instances\")"
+                set annot " // @Metadata=(Units=\"unitless\",Description=\"Index number for CSC with multiple instances\")"
+                set mu "unitless"
               } else {
-                set lookup [exec grep "(\"$curtopic\"," $SAL_WORK_DIR/sql/[set subsys]_items.sql | grep ",\"$item\""]
-                set ign [string length "INSERT INTO [set subsys]_items VALUES "]
-                set mdata [split [string trim [string range "$lookup" $ign end] "();"] ","]
-                set annot " // @Metadata=(Units=[lindex $mdata 5],Description=[lindex $mdata 9])"
+#                set lookup [exec grep "(\"$curtopic\"," $SAL_WORK_DIR/sql/[set subsys]_items.sql | grep ",\"$item\""]
+#                set ign [string length "INSERT INTO [set subsys]_items VALUES "]
+#                set mdata [split [string trim [string range "$lookup" $ign end] "();"] ","]
+#                set annot " // @Metadata=(Units=[lindex $mdata 5],Description=[lindex $mdata 9])"
+                set mn [string trim $curtopic ";"]
+                set mu $METADATA($mn,$item,units)
+                set md $METADATA($mn,$item,description)
+                set annot " // @Metadata=(Units=\"$mu\",Description=\"$md\")"
               }
-              puts $fpyb "	m.attr(\"[set curtopic]C_[set item]_units\") = [lindex $mdata 5];"
+              puts $fpyb "	m.attr(\"[set curtopic]C_[set item]_units\") = $mu;"
             }
-           }
-          }
+#           }
+#          }
           if { [string range $annot 0 2] != " //" } { set annot "" }
           puts $fout "$rec[set annot]"
        }

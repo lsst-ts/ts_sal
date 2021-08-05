@@ -44,6 +44,7 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
    set fsql [open $SAL_WORK_DIR/sql/[set subsys]_items.sql a]
    set tname none
    set itemid 0
+   set tdesc 0
    set intopic 0
    while { [gets $fin rec] > -1 } {
       set st [string trim $rec]
@@ -133,14 +134,22 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
       if { $tag == "/SALCommand" } {
          set intopic 0
          set CMD_ALIASES($subsys) [lappend CMD_ALIASES($subsys) $alias]
-#         if { $itemid == 6 } {
-#            puts stdout "WARNING : Command $alias has no data fields , adding default value item"
-#            lappend CMDS($subsys,$alias,param) "boolean value"
-#            lappend CMDS($subsys,$alias,plist) value
-#            puts $fout "	  boolean	value;"
-#            puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",1,\"value\",\"boolean\",1,\"unitless\",1,\"\",\"\",\"Dummy to prevent empty structs\");"
-#         }
          if { $explanation != "" } {set CMDS($subsys,$alias,help) $explanation}
+         set METADATA([set subsys]_ackcmd,description) "Command ack replies"
+         set METADATA([set subsys]_ackcmd,description) "unitless"
+#         set METADATA([set subsys]_ackcmd,private_revCode,units) "unitless"
+#         set METADATA([set subsys]_ackcmd,private_sndStamp,units) "seconds"
+#         set METADATA([set subsys]_ackcmd,private_rcvStamp,units) "seconds"
+#         set METADATA([set subsys]_ackcmd,private_seqNum,units) "unitless"
+#         set METADATA([set subsys]_ackcmd,private_identity,units) "unitless"
+#         set METADATA([set subsys]_ackcmd,private_origin,units) "unitless"
+#         set METADATA([set subsys]_ackcmd,private_revCode,description) "Revision hashcode"
+#         set METADATA([set subsys]_ackcmd,private_sndStamp,description) "Time of instance publication"
+#         set METADATA([set subsys]_ackcmd,private_rcvStamp,description) "Time of instance reception"
+#         set METADATA([set subsys]_ackcmd,private_seqNum,description) "Sequence number"
+#         set METADATA([set subsys]_ackcmd,private_identity,description) "Identity of publisher"
+#         set METADATA([set subsys]_ackcmd,private_origin,description) "PID of publisher"
+         add_ackcmd_metadata $subsys
       }
       if { $tag == "/SALTelemetry" } {
          set TLM_ALIASES($subsys) [lappend TLM_ALIASES($subsys) $alias]
@@ -182,6 +191,7 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
         set fout [open $SAL_WORK_DIR/idl-templates/[set tname].idl w]
         puts $fout "struct $tname \{"
         add_private_idl $fout
+        add_private_metadata [set tname]
         puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",1,\"private_revCode\",\"char\",32,\"unitless\",1,\"\",\"\",\"Revision code of topic\");"
         puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",2,\"private_sndStamp\",\"double\",1,\"second\",1,\"\",\"\",\"TAI at sender\");"
         puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",3,\"private_rcvStamp\",\"double\",1,\"second\",1,\"\",\"\",\"TAI at receiver\");"
@@ -193,6 +203,8 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
            puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",8,\"[set subsys]ID\",\"int\",1,\"unitless\",1,\"\",\"\",\"Index of $subsys instance\");"
            set itemid 7
         }
+        set tdesc 1
+        set METADATA($tname,description) "No description provided" 
         set alias [getAlias $tname]
         if { $ctype == "command" } {
            set CMDS($subsys,$alias) $alias
@@ -221,7 +233,6 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
       if { $tag == "/SALEvent" || $tag == "/SALCommand" || $tag == "/SALTelemetry" } {
          enumsToIDL $subsys $alias $fout
          puts $fsql "###Description $tname : $DESC($subsys,$alias,help)"
-         set METADATA($tname,description) $DESC($subsys,$alias,help)
       }
       if { $tag == "IDL_Type"} {
          set type $value 
@@ -231,13 +242,16 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
       if { $tag == "IDL_Size"}        {set sdim $value}
       if { $tag == "Description"}     {
          set desc [join [split $value ",\"\'\`"] " "]
-         if { $itemid == 6 } { set DESC($subsys,$alias,help) "$desc"}
+         if { $tdesc } { set DESC($subsys,$alias,help) "$desc"}
+         if { $tdesc } { set METADATA($tname,description) "$desc" ; set tdesc 0}
       }
       if { $tag == "Frequency"}       {set freq $value}
       if { $tag == "Range"}           {set range $value}
       if { $tag == "Sensor_location"} {set location $value}
       if { $tag == "Count"}           {set idim $value}
-      if { $tag == "Units"}           {set unit [string trim $value]}
+      if { $tag == "Units"}           {
+         set unit [string trim $value]
+      }
       if { $tag == "/item" } {
          set chktype $type
          if { [lindex $chktype 0] == "unsigned" } { set chktype [lindex $chktype 1] }
@@ -286,9 +300,9 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
          }
          if { $unit != "" } {
             set UNITS($subsys,$alias,$item) $unit
-            set METADATA($tname,$item,units) $unit
          }
          set METADATA($tname,$item,description) $desc
+         set METADATA($tname,$item,units) $unit
          puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",$itemid,\"$item\",\"$type\",$idim,\"$unit\",$freq,\"$range\",\"$location\",\"$desc\");"
       }
    }
@@ -366,6 +380,57 @@ global SYSDIC IDXENUMDONE
       }
       set IDXENUMDONE($subsys) 1
    }
+}
+
+#
+## Documented proc \c add_private_metadata .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Add the METADATA for private_ items in topics
+#
+proc add_private_metadata { topic } {
+global METADATA
+  set METADATA([set topic],private_revCode,units) "unitless"
+  set METADATA([set topic],private_sndStamp,units) "seconds"
+  set METADATA([set topic],private_rcvStamp,units) "seconds"
+  set METADATA([set topic],private_seqNum,units) "unitless"
+  set METADATA([set topic],private_identity,units) "unitless"
+  set METADATA([set topic],private_origin,units) "unitless"
+  set METADATA([set topic],private_revCode,description) "Revision hashcode"
+  set METADATA([set topic],private_sndStamp,description) "Time of instance publication"
+  set METADATA([set topic],private_rcvStamp,description) "Time of instance reception"
+  set METADATA([set topic],private_seqNum,description) "Sequence number"
+  set METADATA([set topic],private_identity,description) "Identity of publisher"
+  set METADATA([set topic],private_origin,description) "PID of publisher"
+  if { [lindex [split $topic "_"] 1] == "logevent" } {
+     set METADATA([set topic],priority,description) "Priority level"
+     set METADATA([set topic],priority,units) "unitless"
+  }
+}
+
+#
+## Documented proc \c add_ackcmd_metadata .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Add the METADATA for private_ items in topics
+#
+proc add_ackcmd_metadata { subsys } {
+global METADATA
+  add_private_metadata [set subsys]_ackcmd
+  set METADATA([set subsys]_ackcmd,ack,units) "unitless"
+  set METADATA([set subsys]_ackcmd,error,units) "seconds"
+  set METADATA([set subsys]_ackcmd,result,units) "seconds"
+  set METADATA([set subsys]_ackcmd,identity,units) "unitless"
+  set METADATA([set subsys]_ackcmd,origin,units) "unitless"
+  set METADATA([set subsys]_ackcmd,cmdtype,units) "unitless"
+  set METADATA([set subsys]_ackcmd,timeout,units) "unitless"
+  set METADATA([set subsys]_ackcmd,ack,description) "unitless"
+  set METADATA([set subsys]_ackcmd,error,description) "seconds"
+  set METADATA([set subsys]_ackcmd,result,description) "seconds"
+  set METADATA([set subsys]_ackcmd,identity,description) "unitless"
+  set METADATA([set subsys]_ackcmd,origin,description) "unitless"
+  set METADATA([set subsys]_ackcmd,cmdtype,description) "unitless"
+  set METADATA([set subsys]_ackcmd,timeout,description) "unitless"
 }
 
 
