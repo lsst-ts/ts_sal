@@ -101,7 +101,7 @@ global SAL_WORK_DIR REVCODE OPTIONS SALVERSION METADATA
                 set md $METADATA($mn,$item,description)
                 set annot " // @Metadata=(Units=\"$mu\",Description=\"$md\")"
               }
-              puts $fpyb "	m.attr(\"[set curtopic]C_[set item]_units\") = $mu;"
+              puts $fpyb "	m.attr(\"[set curtopic]C_[set item]_units\") = \"$mu\";"
             }
           if { [string range $annot 0 2] != " //" } { set annot "" }
           puts $fout "$rec[set annot]"
