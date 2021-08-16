@@ -3,6 +3,9 @@
 set OPTIONS(verbose) 0
 set SAL_DIR $env(SAL_DIR)
 set SAL_WORK_DIR $env(SAL_WORK_DIR)
+puts stdout "Updating XML"
+exec updateXML
+
 source $env(SAL_DIR)/add_system_dictionary.tcl
 
 set EVERYTHING [lsort $SYSDIC(systems)]

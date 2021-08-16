@@ -196,11 +196,20 @@ public class [set subsys]CommanderTest extends TestCase \{
 	    [set subsys].command_[set alias] command  = new [set subsys].command_[set alias]();
 
 	    command.private_revCode = \"[string trim $revcode _]\";
-	    command.device = \"$alias\";
-	    command.property =  \"\";
-	    command.action =  \"\";
-	    command.itemValue = \"\";
-
+"
+     if { $alias == "setAuthList" } {
+       puts $fout "
+            String pname = System.getenv(\"LSST_AUTHLIST_USERS\");
+            if (pname != null) \{
+               command.authorizedUsers=pname;
+            \}
+            String cname = System.getenv(\"LSST_AUTHLIST_CSCS\");
+            if (cname != null) \{
+               command.nonAuthorizedCSCs=cname;
+            \}
+"
+     }
+     puts $fout "
 	    cmdId = mgr.issueCommand_[set alias](command);
 
 	    try \{Thread.sleep(1000);\} catch (InterruptedException e)  \{ e.printStackTrace(); \}

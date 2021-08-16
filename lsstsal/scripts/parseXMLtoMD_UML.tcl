@@ -306,9 +306,7 @@ global TLMS TLM_ALIASES EVENT_ENUM ENUM EATYPE IGNORE
     puts $fout "			<packagedElement xmi:type='uml:Package' xmi:id='_rC9AbVqtEeiGoKJ3GcWAXw' name='IDL_Datatypes'>
 				<packagedElement xmi:type='uml:DataType' xmi:id='_rC9ncFqtEeiGoKJ3GcWAXw' name='string'/>
 				<packagedElement xmi:type='uml:DataType' xmi:id='_rC9ncVqtEeiGoKJ3GcWAXw' name='short'/>
-				<packagedElement xmi:type='uml:DataType' xmi:id='_rC9nclqtEeiGoKJ3GcWAXw' name='char'/>
 				<packagedElement xmi:type='uml:DataType' xmi:id='_rC9nc1qtEeiGoKJ3GcWAXw' name='unsigned short'/>
-				<packagedElement xmi:type='uml:DataType' xmi:id='_rC9ndFqtEeiGoKJ3GcWAXw' name='octet'/>
 				<packagedElement xmi:type='uml:DataType' xmi:id='_rC9ndVqtEeiGoKJ3GcWAXw' name='boolean'/>
 				<packagedElement xmi:type='uml:DataType' xmi:id='_rC9ndlqtEeiGoKJ3GcWAXw' name='long'/>
 				<packagedElement xmi:type='uml:DataType' xmi:id='_rC9nd1qtEeiGoKJ3GcWAXw' name='unsigned long'/>

@@ -79,10 +79,6 @@ global NEWCONSTS IDLSIZES IDLRESERVED
       set v "  $type	$id\[$siz\]"
      }
    }
-   if { $type == "char" } {
-     set tid [lindex [split $id "\["] 0]
-     set v "  string<$siz>	$tid"
-   }
 #puts stdout "valid is $v"
    if { [lsearch $IDLRESERVED [string tolower $id]] > -1 } {errorexit "Invalid use of IDL reserved token $id"}
    if { $op == "dim" } {return $siz}
@@ -468,11 +464,10 @@ source $env(SAL_DIR)/utilities.tcl
 source $env(SAL_DIR)/add_system_dictionary.tcl
 source $env(SAL_DIR)/add_private_idl.tcl
 
-set IDLTYPES "boolean char byte octet short int long longlong float double string unsigned const"
+set IDLTYPES "boolean byte short int long longlong float double string unsigned const"
 set IDLSIZES(byte)     1
-set IDLSIZES(char)     1
+set IDLSIZES(octet)     1
 set IDLSIZES(unsignedbyte)     1
-set IDLSIZES(octet)    1
 set IDLSIZES(boolean)  2
 set IDLSIZES(string)   1
 set IDLSIZES(short)    2

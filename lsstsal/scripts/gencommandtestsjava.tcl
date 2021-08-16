@@ -26,7 +26,7 @@ global CMD_ALIASES CMDS EVENT_ALIASES EVTS SAL_WORK_DIR SYSDIC SAL_DIR OPTIONS
    if { [info exists SYSDIC($subsys,keyedID)] } {
        set initializer "( (short) 1)"
    } else {
-       set initializer "()"
+       set initializer "(\"[set subsys]\")"
    }
    foreach alias $CMD_ALIASES($subsys) {
     if { [info exists CMDS($subsys,$alias,param)] } {
@@ -50,8 +50,8 @@ public class [set subsys]Commander_[set alias]Test extends TestCase \{
    	\}
 
 	public void test[set subsys]Commander_[set alias]() \{
-
-   	  SAL_[set subsys] mgr = new SAL_[set subsys][set initializer];
+          String idname = System.getenv(\"LSST_IDENTITY\");
+     	  SAL_[set subsys]   mgr = new SAL_[set subsys](idname);
 
 	  // Issue command
 	  int count=0;
@@ -65,9 +65,21 @@ public class [set subsys]Commander_[set alias]Test extends TestCase \{
 	    [set subsys].command_[set alias] command  = new [set subsys].command_[set alias]();
 
 	    command.private_revCode = \"[string trim $revcode _]\";"
-  set cpars $CMDS($subsys,$alias)
-  set narg 1
-  foreach p $CMDS($subsys,$alias,param) {
+  if { $alias == "setAuthList" } {
+       puts $fcmd "
+            String pname = System.getenv(\"LSST_AUTHLIST_USERS\");
+            if (pname != null) \{
+               command.authorizedUsers=pname;
+            \}
+            String cname = System.getenv(\"LSST_AUTHLIST_CSCS\");
+            if (cname != null) \{
+               command.nonAuthorizedCSCs=cname;
+            \}
+"
+   } else {
+     set cpars $CMDS($subsys,$alias)
+     set narg 1
+     foreach p $CMDS($subsys,$alias,param) {
        set pname [lindex $p 1]
        set ptype [lindex $p 0]
        if { [llength [split $pname "()"]] > 1 } {
@@ -94,13 +106,17 @@ public class [set subsys]Commander_[set alias]Test extends TestCase \{
        }
       }
       incr narg 1
+     }
   }
   puts $fcmd "
 	    cmdId = mgr.issueCommand_[set alias](command);
 
-	    try \{Thread.sleep(1000);\} catch (InterruptedException e)  \{ e.printStackTrace(); \}
-	    status = mgr.waitForCompletion_[set alias](cmdId, timeout);
-
+	    try \{Thread.sleep(1000);\} catch (InterruptedException e)  \{ e.printStackTrace(); \}"
+  if { $alias != "setAuthList" } {
+     puts $fcmd "            		
+	    status = mgr.waitForCompletion_[set alias](cmdId, timeout);"
+  }
+  puts $fcmd "
 	    /* Remove the DataWriters etc */
 	    mgr.salShutdown();
 
@@ -129,9 +145,6 @@ public class [set subsys]Controller_[set alias]Test extends TestCase \{
           short aKey   = 1;
 	  int status   = SAL_[set subsys].SAL__OK;
 	  int cmdId    = 0;
-          int timeout  = 3;
-          boolean finished=false;
-
 	  // Initialize
 	  SAL_[set subsys] cmd = new SAL_[set subsys][set initializer];
 
@@ -139,22 +152,15 @@ public class [set subsys]Controller_[set alias]Test extends TestCase \{
 	  [set subsys].command_[set alias] command = new [set subsys].command_[set alias]();
           System.out.println(\"[set subsys]_[set alias] controller ready \");
 
-	  while (!finished) \{
-
+	  while (cmdId > -1) \{
+             cmd.checkAuthList(\"\");
 	     cmdId = cmd.acceptCommand_[set alias](command);
 	     if (cmdId > 0) \{
-	       if (timeout > 0) \{
-	          cmd.ackCommand_[set alias](cmdId, SAL_[set subsys].SAL__CMD_INPROGRESS, 0, \"Ack : OK\");
- 	          try \{Thread.sleep(timeout);\} catch (InterruptedException e)  \{ e.printStackTrace(); \}
-	       \}       
+	       cmd.ackCommand_[set alias](cmdId, SAL_[set subsys].SAL__CMD_INPROGRESS, 0, \"Ack : OK\");
+  	       try \{Thread.sleep(1000);\} catch (InterruptedException e)  \{ e.printStackTrace(); \}
 	       cmd.ackCommand_[set alias](cmdId, SAL_[set subsys].SAL__CMD_COMPLETE, 0, \"Done : OK\");
-               finished = true;
 	     \}
-             timeout = timeout-1;
-             if (timeout == 0) \{
-               finished = true;
-             \}
- 	     try \{Thread.sleep(1000);\} catch (InterruptedException e)  \{ e.printStackTrace(); \}
+  	     try \{Thread.sleep(1000);\} catch (InterruptedException e)  \{ e.printStackTrace(); \}
 	  \}
 
 	  /* Remove the DataWriters etc */
@@ -181,6 +187,7 @@ public class [set subsys]Controller_[set alias]Test extends TestCase \{
     catch { set result [exec /tmp/makerep.sal] } bad
     if { $bad != "" } {puts stdout $bad}
   }
+  genauthlisttestsjava $subsys
   if { $OPTIONS(verbose) } {stdlog "###TRACE<<< gencommandtestsjava $subsys"}
 }
 
@@ -195,58 +202,88 @@ public class [set subsys]Controller_[set alias]Test extends TestCase \{
 #
 
 proc genauthlisttestsjava { subsys } {
-global CMD_ALIASES CMDS EVENT_ALIASES EVTS SAL_WORK_DIR SYSDIC SAL_DIR OPTIONS
+global CMD_ALIASES CMDS EVENT_ALIASES EVTS SAL_WORK_DIR SYSDIC SAL_DIR OPTIONS XMLVERSION SALVERSION
   if { $OPTIONS(verbose) } {stdlog "###TRACE>>> genauthlisttestsjava $subsys"}
   if { [info exists SYSDIC($subsys,java)] } {
     if { [info exists CMD_ALIASES($subsys)] } {
-      set rdir [lindex [glob $SAL_WORK_DIR/maven/[set subsys]*] end]
-      set fout [open $SAL_WORK_DIR/[set subsys]/java/java_[set subsys]_enable_controller w]
+      set rdir $SAL_WORK_DIR/maven/[set subsys]-[set XMLVERSION]_[set SALVERSION] 
+      set fout [open $SAL_WORK_DIR/[set subsys]/java/src/java_[set subsys]_enable_controller w]
       puts $fout "#!/bin/sh
 cd $rdir
-mvn -Dtest=[set subsys]Controller_enable.java test
+mvn -q -Dtest=[set subsys]Controller_enableTest.java test
 "
       close $fout
-      exec chmod 755 $SAL_WORK_DIR/[set subsys]/java/java_[set subsys]_enable_controller
-      set fout [open $SAL_WORK_DIR/[set subsys]/java/testAuthList.sh w]
+      exec chmod 755 $SAL_WORK_DIR/[set subsys]/java/src/java_[set subsys]_enable_controller
+      set fout [open $SAL_WORK_DIR/[set subsys]/java/src/java_[set subsys]_enable_commander w]
       puts $fout "#!/bin/sh
+cd $rdir
+mvn -q -Dtest=[set subsys]Commander_enableTest.java test
+"
+      close $fout
+      exec chmod 755 $SAL_WORK_DIR/[set subsys]/java/src/java_[set subsys]_enable_commander
+      set fout [open $SAL_WORK_DIR/[set subsys]/java/src/java_[set subsys]_authList_commander w]
+      puts $fout "#!/bin/sh
+cd $rdir
+mvn -q -Dtest=[set subsys]Commander_setAuthListTest.java test
+"
+      close $fout
+      exec chmod 755 $SAL_WORK_DIR/[set subsys]/java/src/java_[set subsys]_authList_commander
+      set fout [open $SAL_WORK_DIR/[set subsys]/java/src/testAuthList.sh w]
+      puts $fout "#!/bin/sh
+echo \"=====================================================================\"
 echo \"Starting java_[set subsys]_enable_controller\"
-$SAL_WORK_DIR/[set subsys]/java/java_[set subsys]_enable_controller &
-sleep 5
+$SAL_WORK_DIR/[set subsys]/java/src/java_[set subsys]_enable_controller &
+sleep 10
+echo \"=====================================================================\"
 echo \"Test with authList not set at all, default identity=[set subsys]\"
-$SAL_WORK_DIR/[set subsys]/sacpp_[set subsys]_enable_commander
-echo \"Test with authList not set at all, default identity=user@host\"
-$SAL_DIR/[set subsys]/sacpp_[set subsys]_enable_commander
-python3 $SAL_DIR/sendEnableCommand.py $subsys \"user@host\" 5
-echo \"Test with authList authorizedUsers=user@host, default identity=user@host\"
-$SAL_DIR/[set subsys]/sacpp_[set subsys]_enable_commander
-python3 $SAL_DIR/setAuthList.py $subsys \"user@host\" \"\" 1
-python3 $SAL_DIR/sendEnableCommand.py $subsys \"user@host\" 5
-echo \"Test with authList authorizedUsers=user@host,user2@other, default identity=user@host\"
-$SAL_DIR/[set subsys]/sacpp_[set subsys]_enable_commander
-python3 $SAL_DIR/setAuthList.py $subsys \"user@host,user2@other\" \"\" 1
-python3 $SAL_DIR/sendEnableCommand.py $subsys \"user@host\" 5
-echo \"Test with authList authorizedUsers=user@host,user2@other, default identity=user2@other\"
-$SAL_DIR/[set subsys]/sacpp_[set subsys]_enable_commander
-python3 $SAL_DIR/setAuthList.py $subsys \"user@host,user2@other\" \"\" 1
-python3 $SAL_DIR/sendEnableCommand.py $subsys \"user2@other\" 5
-echo \"Test with authList authorizedUsers=user@host,user2@other, nonAuthorizedCSCS=Test default identity=user2@other\"
-$SAL_DIR/[set subsys]/sacpp_[set subsys]_enable_commander
-python3 $SAL_DIR/setAuthList.py $subsys \"user@host,user2@other\" \"Test\" 1
-python3 $SAL_DIR/sendEnableCommand.py $subsys \"user2@other\" 5
-echo \"Test with authList authorizedUsers=user@host,user2@other, nonAuthorizedCSCS=Test default identity=Test\"
-$SAL_DIR/[set subsys]/sacpp_[set subsys]_enable_commander
-python3 $SAL_DIR/sendEnableCommand.py $subsys \"Test\" 5
-echo \"Test with authList authorizedUsers=user@host,user2@other, nonAuthorizedCSCS=MTM1M3,MTM2,Test default identity=MTM2\"
-$SAL_DIR/[set subsys]/sacpp_[set subsys]_enable_commander
-python3 $SAL_DIR/setAuthList.py $subsys \"user@host,user2@other\" \"MTM1M3,MTM2,Test\" 1
-python3 $SAL_DIR/sendEnableCommand.py $subsys \"MTM2\" 5
+unset LSST_IDENTITY
+export LSST_AUTHLIST_USERS=\"\"
+export LSST_AUTHLIST_CSCS=\"\"
+$SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_authList_commander
+$SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_enable_commander 
+echo \"=====================================================================\"
+echo \"Test with authList not set at all, identity=user@host\"
+export LSST_IDENTITY=user@host
+$SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_enable_commander
+echo \"=====================================================================\"
+echo \"Test with authList authorizedUsers=user@host, identity=user@host\"
+export LSST_AUTHLIST_USERS=user@host
+$SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_authList_commander
+$SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_enable_commander 
+echo \"=====================================================================\"
+echo \"Test with authList authorizedUsers=user@host,user2@other, identity=user@host\"
+export LSST_AUTHLIST_USERS=user@host,user2@other
+export LSST_IDENTITY=user2@other
+$SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_authList_commander
+$SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_enable_commander
+echo \"=====================================================================\"
+echo \"Test with authList authorizedUsers=user@host,user2@other, identity=user2@other\"
+$SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_authList_commander
+$SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_enable_commander
+echo \"=====================================================================\"
+echo \"Test with authList authorizedUsers=user@host,user2@other, nonAuthorizedCSCs=Test identity=user2@other\"
+export LSST_AUTHLIST_CSCS=Test
+$SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_authList_commander
+$SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_enable_commander
+echo \"=====================================================================\"
+echo \"Test with authList authorizedUsers=user@host,user2@other, nonAuthorizedCSCs=Test identity=Test\"
+export LSST_IDENTITY=Test
+$SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_enable_commander
+echo \"=====================================================================\"
+echo \"Test with authList authorizedUsers=user@host,user2@other, nonAuthorizedCSCs=MTM1M3,MTM2,Test identity=MTM2\"
+export LSST_AUTHLIST_CSCS=MTM1M3,MTM2,Test
+export LSST_IDENTITY=MTM2
+$SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_authList_commander
+$SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_enable_commander
+echo \"=====================================================================\"
 echo \"Finished testing authList with $subsys\"
+echo \"=====================================================================\"
 "
       close $fout
     }
   }
+  exec chmod 755 $SAL_WORK_DIR/[set subsys]/java/src/testAuthList.sh
   if { $OPTIONS(verbose) } {stdlog "###TRACE<<< genauthlisttestsjava $subsys"}
 }
-
 
 
