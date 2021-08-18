@@ -1,4 +1,8 @@
-This is release 5.1.1 of the SAL SDK (March 5th 2021)
+This is release 5.1.2 of the SAL SDK (August 18th 2021)
+
+Chages for 5.1.2
+
+Hotfix to populate missing private field values for Java ackcmd
 
 Changes for 5.1.1
 
