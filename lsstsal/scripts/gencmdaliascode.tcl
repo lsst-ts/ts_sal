@@ -261,6 +261,7 @@ int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
     ackHandle = SALWriter->register_instance(ackdata);
     ackdata.SALDataID = subsystemID;
 #endif
+    ackdata.private_revCode = DDS::string_dup(\"[string trim $ACKREVCODE _]\");
     ackdata.private_sndStamp = getCurrentTime();"
      puts $fout "    istatus = SALWriter->write(ackdata, ackHandle);"
      puts $fout "    checkStatus(istatus, \"SALData::ackcmd[set ACKREVCODE]DataWriter::write\");"
@@ -435,7 +436,7 @@ salReturn SAL_SALData::getResponse_[set i]C(SALData_ackcmdC *response)
    puts $fout "
 salReturn SAL_SALData::ackCommand_[set i]( int cmdId, salLONG ack, salLONG error, char *result )
 \{
-     ReturnCode_t istatus = -1;
+   ReturnCode_t istatus = -1;
    InstanceHandle_t ackHandle = DDS::HANDLE_NIL;
    int actorIdx = SAL__SALData_ackcmd_ACTOR;
    int actorIdxCmd = SAL__SALData_command_[set i]_ACTOR;
@@ -471,6 +472,7 @@ salReturn SAL_SALData::ackCommand_[set i]( int cmdId, salLONG ack, salLONG error
    ackHandle = SALWriter->register_instance(ackdata);
    ackdata.SALDataID = subsystemID;
 #endif
+   ackdata.private_revCode = DDS::string_dup(\"[string trim $ACKREVCODE _]\");
    ackdata.private_sndStamp = getCurrentTime();
    istatus = SALWriter->write(ackdata, ackHandle);
    checkStatus(istatus, \"SALData::ackcmd[set ACKREVCODE]DataWriter::return_loan\");
@@ -521,6 +523,7 @@ salReturn SAL_SALData::ackCommand_[set i]C(SALData_ackcmdC *response )
    ackHandle = SALWriter->register_instance(ackdata);
    ackdata.SALDataID = subsystemID;
 #endif
+   ackdata.private_revCode = DDS::string_dup(\"[string trim $ACKREVCODE _]\");
    ackdata.private_sndStamp = getCurrentTime();
    istatus = SALWriter->write(ackdata, ackHandle);
    checkStatus(istatus, \"SALData::ackcmd[set ACKREVCODE]DataWriter::return_loan\");
@@ -781,6 +784,8 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
                 ackdata.private_host = ddsIPaddress;
                 ackdata.private_origin = origin;
                 ackdata.private_identity = CSC_identity;
+                ackdata.private_sndStamp = getCurrentTime();
+                ackdata.private_revCode = \"[string trim $ACKREVCODE _]\";
    		ackdata.result = result;"
       if { [info exists SYSDIC($subsys,keyedID)] } {
          puts $fout "   		ackdata.SALDataID = subsystemID;"
