@@ -229,7 +229,11 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
       }
       if { $tag == "IDL_Size"}        {set sdim $value}
       if { $tag == "Description"}     {
-         set desc [join [split $value ",\"\'\`"] " "]
+         if { [lindex [split $rec "/"] end] != "Description>" } {
+           set desc [getTopicURL $subsys $tname]
+         } else {
+           set desc $value
+         }
          if { $tdesc } { set DESC($subsys,$alias,help) "$desc"}
          if { $tdesc } { set METADATA($tname,description) "$desc" ; set tdesc 0}
       }

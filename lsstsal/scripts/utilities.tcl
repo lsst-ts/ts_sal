@@ -178,6 +178,17 @@ proc skipPrivate { fidl } {
   foreach i "1 2 3 4 5 6 7" {gets $fidl rec}
 }
 
+#
+## Documented proc \c safeString .
+#  \param[input] 
+#
+#  Make an input string safe from tcl parsing
+#
+proc safeString { input } {
+#  set escquote [join [split $input "\""] {\"}]
+  set safe [subst -nobackslashes -nocommands -novariables $input ]
+  return $safe
+}
 
 #
 ## Documented proc \c getTopicNames .
@@ -225,12 +236,30 @@ proc getTopicURL  { base topic } {
 #
 proc updateMetaData { subsys } {
 global METADATA SAL_WORK_DIR
-  set fmeta [open $SAL_WORK_DIR/idl-templates/validated/[set subsys]_metadata.tcl w]
+  set fmeta [open $SAL_WORK_DIR/idl-templates/validated/[set subsys]_metadata.dat w]
   foreach i [lsort [array names METADATA]] {
-     puts $fmeta "set METADATA($i) \"$METADATA($i)\""
+     puts $fmeta "$i $METADATA($i)"
   }
   close $fmeta
 }
+
+#
+## Documented proc \c readMetaData .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Update the METADATA array contents from disk copy
+#
+proc readMetaData { subsys } {
+global METADATA SAL_WORK_DIR
+  set fmeta [open $SAL_WORK_DIR/idl-templates/validated/[set subsys]_metadata.dat r]
+  while { [gets $fmeta rec] > -1 } {
+    set id [lindex [split $rec " "] 0]
+    set METADATA($id) [join [safeString [lrange [split $rec " "] 1 end]] " "]
+  }
+  close $fmeta
+}
+
+
 
 #
 ## Documented proc \c doxygenateIDL .

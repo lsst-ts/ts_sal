@@ -23,6 +23,7 @@
 proc gencommandtestscpp { subsys } {
 global CMD_ALIASES CMDS SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS
  if { $OPTIONS(verbose) } {stdlog "###TRACE>>> gencommandtestscpp $subsys"}
+ if { $subsys == "LOVE" } {return}
  if { [info exists CMD_ALIASES($subsys)] && $DONE_CMDEVT == 0 } {
    foreach alias $CMD_ALIASES($subsys) {
     if { [info exists CMDS($subsys,$alias,param)] } {

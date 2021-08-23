@@ -22,6 +22,7 @@
 proc gencommandtestsjava { subsys } {
 global CMD_ALIASES CMDS EVENT_ALIASES EVTS SAL_WORK_DIR SYSDIC SAL_DIR OPTIONS
  if { $OPTIONS(verbose) } {stdlog "###TRACE>>> gencommandtestsjava $subsys"}
+ if { $subsys == "LOVE" } {return}
  if { [info exists CMD_ALIASES($subsys)] } {
    if { [info exists SYSDIC($subsys,keyedID)] } {
        set initializer "( (short) 1)"
