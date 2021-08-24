@@ -110,6 +110,7 @@ salReturn SAL_SALData::salProcessor(char *cmdAlias)
   return SAL__OK;
 }
 
+// NOT FOR LOVE CSC
 
 std::string SAL_SALData::removeSpaces(std::string word) {
     std::string newWord;

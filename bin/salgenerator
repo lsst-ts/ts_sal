@@ -325,7 +325,7 @@ if { $OPTIONS(sal) } {
   source $SAL_DIR/gensalcodes.tcl
   checkTopicTypes $base
   source $SAL_WORK_DIR/idl-templates/validated/[set base]_revCodes.tcl
-  source $SAL_WORK_DIR/idl-templates/validated/[set base]_metadata.tcl
+  readMetaData $base
   catch { set idlfile [makesalidl $base] } bad
   puts stdout $bad
   puts stdout $idlfile

@@ -152,6 +152,7 @@ global OPTIONS SAL_WORK_DIR DONE_CMDEVT
 proc genSingleProcessTests { base } {
 global OPTIONS CMD_ALIASES EVENT_ALIASES TLM_ALIASES
   if { $OPTIONS(verbose) } {stdlog "###TRACE>>> genSingleProcessTests $base"}
+  if { $base ==" LOVE" } {return}
   if { $OPTIONS(cpp) } {
     set result none
     if { [info exists CMD_ALIASES($base)] } {

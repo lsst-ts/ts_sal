@@ -6,8 +6,8 @@
 Version History
 ###############
 
-This is release 6.0.0 of the SAL SDK (June 1st 2021)
-----------------------------------------------------
+This is release 6.0.0 of the SAL SDK (August 18th 2021)
+-------------------------------------------------------
 
 Changes for 6.0.0
 =================
@@ -32,7 +32,10 @@ Changes for 6.0.0
 
 * Change getXXXVersion's to static for C++
 
+Changes for 5.1.2
+=================
 
+* Hotfix to populate missing private field values for Java ackcmd
 
 Changes for 5.1.1
 =================

@@ -24,21 +24,33 @@ source $SAL_DIR/activaterevcodes.tcl
 ## Documented proc \c addgenericcmdcode .
 # \param[in] fout File handle of output file
 # \param[in] lang Target language to generate code for
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
 #
 #  Copy the generic DDS code to manage command Topics
 #  using the template in code/templates/SALDDS.lang.template
 #  where lang = cpp,python,java
 #
-proc addgenericcmdcode { fout lang } {
+proc addgenericcmdcode { fout lang subsys } {
 global OPTIONS SAL_DIR
-  if { $OPTIONS(verbose) } {stdlog "###TRACE>>> addgenericcmdcode $lang $fout"}
+  if { $OPTIONS(verbose) } {stdlog "###TRACE>>> addgenericcmdcode $lang $fout $subsys"}
   stdlog "Generate command generic support for $lang"
   set fin [open  $SAL_DIR/code/templates/SALDDS.[set lang]-cmd.template r]
-  while { [gets $fin rec] > -1 } {
-    puts $fout $rec
+  if { $subsys == "LOVE" } {
+     set done 0
+     while { [gets $fin rec] > -1 && $done == 0} {
+       if { $rec == "// NOT FOR LOVE CSC" } {
+          set done 1
+       } else {
+         puts $fout $rec
+       }
+     }
+  } else {
+     while { [gets $fin rec] > -1 } {
+       puts $fout $rec
+     }
   }
   close $fin
-  if { $OPTIONS(verbose) } {stdlog "###TRACE<<< addgenericcmdcode $lang $fout"}
+  if { $OPTIONS(verbose) } {stdlog "###TRACE<<< addgenericcmdcode $lang $fout $subsys"}
 }
 
 
@@ -109,7 +121,7 @@ global CMD_ALIASES CMDS DONE_CMDEVT ACKREVCODE REVCODE SAL_WORK_DIR OPTIONS
      }
   }
   if { $lang == "cpp" } {
-     addgenericcmdcode $fout $lang
+     addgenericcmdcode $fout $lang $subsys
      set result none
      catch { set result [gencmdaliascpp $subsys $fout] } bad
      if { $result == "none" } {stdlog $bad ; errorexit "failure in gencmdaliascpp" }
@@ -152,7 +164,7 @@ global CMD_ALIASES CMDS DONE_CMDEVT ACKREVCODE REVCODE SAL_WORK_DIR OPTIONS
   if { $lang == "isocpp" } {
      set result none
      if { $result == "none" } {stdlog $bad ; errorexit "failure in addgenericcmdcode" }
-     addgenericcmdcode $fout $lang
+     addgenericcmdcode $fout $lang $subsys
      catch { set result [gencmdaliasisocpp $subsys $fout] } bad
      if { $result == "none" } {stdlog $bad ; errorexit "failure in gencmdaliasisocpp" }
      stdlog "$result"
@@ -264,11 +276,7 @@ int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
   DataReader_var dreader = getReader(actorIdx);
   SALData::command_[set i][set revcode]DataReader_var SALReader = SALData::command_[set i][set revcode]DataReader::_narrow(dreader.in());
   checkHandle(SALReader.in(), \"SALData::command_[set i][set revcode]DataReader::_narrow\");
-  if ( actorIdx != SAL__SALData_command_setAuthList_ACTOR ) \{
-    istatus = SALReader->take(Instances, info, 1,NOT_READ_SAMPLE_STATE, ANY_VIEW_STATE, ALIVE_INSTANCE_STATE);
-  \} else \{
-    istatus = SALReader->take(Instances, info, 1,NOT_READ_SAMPLE_STATE, ANY_VIEW_STATE, ANY_INSTANCE_STATE);
-  \}
+  istatus = SALReader->take(Instances, info, 1,NOT_READ_SAMPLE_STATE, ANY_VIEW_STATE, ANY_INSTANCE_STATE);
   checkStatus(istatus, \"SALData::command_[set i][set revcode]DataReader::take\");
   if (Instances.length() > 0) \{
    j = Instances.length()-1;
@@ -292,6 +300,8 @@ int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
     ackdata.error = 0;
     ackdata.result = DDS::string_dup(\"SAL ACK\");
     status = Instances\[j\].private_seqNum;
+    ackdata.private_revCode =  DDS::string_dup(\"[string trim $ACKREVCODE _]\");
+    ackdata.private_sndStamp = getCurrentTime();
     rcvdTime = getCurrentTime();
     sal\[actorIdx\].rcvStamp = rcvdTime;
     sal\[actorIdx\].sndStamp = Instances\[j\].private_sndStamp;
@@ -314,6 +324,9 @@ int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
     ackdata.SALDataID = subsystemID;
 #endif
     ackdata.private_sndStamp = getCurrentTime();
+"
+     if { $subsys != "LOVE" } {
+       puts $fout "
     if ( actorIdx != SAL__SALData_command_setAuthList_ACTOR ) \{
       if (checkAuthList(sal\[actorIdx\].activeidentity) != SAL__OK) \{
         ackdata.ack = SAL__CMD_NOPERM;
@@ -323,6 +336,7 @@ int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
       \}
     \}
 "
+     }
      puts $fout "    istatus = SALWriter->write(ackdata, ackHandle);"
      puts $fout "    checkStatus(istatus, \"SALData::ackcmd[set ACKREVCODE]DataWriter::write\");"
    puts $fout "
@@ -534,6 +548,7 @@ salReturn SAL_SALData::ackCommand_[set i]( int cmdId, salLONG ack, salLONG error
    ackHandle = SALWriter->register_instance(ackdata);
    ackdata.SALDataID = subsystemID;
 #endif
+   ackdata.private_revCode = DDS::string_dup(\"[string trim $ACKREVCODE _]\");
    ackdata.private_sndStamp = getCurrentTime();
    istatus = SALWriter->write(ackdata, ackHandle);
    checkStatus(istatus, \"SALData::ackcmd[set ACKREVCODE]DataWriter::return_loan\");
@@ -581,6 +596,7 @@ salReturn SAL_SALData::ackCommand_[set i]C(SALData_ackcmdC *response )
    ackHandle = SALWriter->register_instance(ackdata);
    ackdata.SALDataID = subsystemID;
 #endif
+   ackdata.private_revCode = DDS::string_dup(\"[string trim $ACKREVCODE _]\");
    ackdata.private_sndStamp = getCurrentTime();
    istatus = SALWriter->write(ackdata, ackHandle);
    checkStatus(istatus, \"SALData::ackcmd[set ACKREVCODE]DataWriter::return_loan\");
@@ -673,11 +689,7 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
   		DataReader dreader = getReader(actorIdx);
   		command_[set i][set revcode]DataReader SALReader = command_[set i][set revcode]DataReaderHelper.narrow(dreader);
                 info = new SampleInfoSeqHolder();
-                if ( actorIdx != SAL__SALData_command_setAuthList_ACTOR ) \{
-  		  istatus = SALReader.take(SALInstance, info, 1, NOT_READ_SAMPLE_STATE.value, ANY_VIEW_STATE.value, ALIVE_INSTANCE_STATE.value);
-                \} else \{
-  		  istatus = SALReader.take(SALInstance, info, 1, NOT_READ_SAMPLE_STATE.value, ANY_VIEW_STATE.value, ANY_INSTANCE_STATE.value);
-                \}
+  		istatus = SALReader.take(SALInstance, info, 1, NOT_READ_SAMPLE_STATE.value, ANY_VIEW_STATE.value, ANY_INSTANCE_STATE.value);
 		if (SALInstance.value.length > 0) \{
    		  if (info.value\[0\].valid_data) \{
     		     if (debugLevel > 8) \{
@@ -698,6 +710,8 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
       puts $fout "		      ackdata.private_identity = SALInstance.value\[0\].private_identity;
 		      ackdata.private_origin = SALInstance.value\[0\].private_origin;
 		      ackdata.private_seqNum = SALInstance.value\[0\].private_seqNum;
+                      ackdata.private_revCode = \"[string trim $ACKREVCODE _]\";
+                      ackdata.private_sndStamp = getCurrentTime();
 		      ackdata.error  = 0;
 		      ackdata.result = \"SAL ACK\";"
            copyfromjavasample $fout $subsys command_[set i]
@@ -707,6 +721,9 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
 		      rcvOrigin = SALInstance.value\[0\].private_origin;
 		      rcvIdentity = SALInstance.value\[0\].private_identity;
 		      ackdata.ack = SAL__CMD_ACK;
+"
+           if { $subsys != "LOVE" } {
+              puts $fout "
                       if ( actorIdx != SAL__SALData_command_setAuthList_ACTOR ) \{
 		        if (checkAuthList(sal\[actorIdx\].activeidentity) != SAL__OK) \{
        			  ackdata.ack = SAL__CMD_NOPERM;
@@ -716,6 +733,7 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
     		        \}
                        \}
 "
+           }
       if { [info exists SYSDIC($subsys,keyedID)] } {
          puts $fout "		      ackdata.SALDataID = subsystemID;
 		      ackHandle = SALWriter.register_instance(ackdata);"
@@ -885,6 +903,8 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
                 ackdata.identity = sal\[actorIdx\].activeidentity;
                 ackdata.private_origin = origin;
                 ackdata.private_identity = CSC_identity;
+                ackdata.private_revCode = \"[string trim $ACKREVCODE _]\";
+                ackdata.private_sndStamp = getCurrentTime();
    		ackdata.result = result;"
       if { [info exists SYSDIC($subsys,keyedID)] } {
          puts $fout "   		ackdata.SALDataID = subsystemID;"
@@ -1080,8 +1100,8 @@ global SYSDIC
 	  createReader(actorIdx,false);
 "
    }
-   set cmdrevcode [getRevCode [set subsys]_command_setAuthList short]
-   set evtrevcode [getRevCode [set subsys]_logevent_authList short]
+#   set cmdrevcode [getRevCode [set subsys]_command_setAuthList short]
+#   set evtrevcode [getRevCode [set subsys]_logevent_authList short]
    puts $fout "
           if (sal\[actorIdx\].isProcessor == false) \{
   	    //create Publisher
@@ -1096,7 +1116,16 @@ global SYSDIC
 	  sal\[actorIdx\].isProcessor = true;
           sal\[actorIdx\].sampleAge = 1.0;
 	\}
-
+"
+   if { $subsys == "LOVE" } {
+      puts $fout "
+	public int checkAuthList(String private_identity)
+	\{
+             return SAL__OK;
+        \}
+"
+   } else {
+      puts $fout "
 	public int checkAuthList(String private_identity)
 	\{
           int cmdId;
@@ -1170,6 +1199,7 @@ global SYSDIC
           return SAL__OK;      
         \}
 "
+   }
 }
 
 
