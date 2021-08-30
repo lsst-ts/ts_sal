@@ -1,8 +1,22 @@
+This is release 5.2.1 of the SAL SDK (August 30th 2021)
+
+Changes for 5.2.1
+
+Merged the v5.1.2 HotFix
+
+This is release 5.2.0 of the SAL SDK (July 9th 2021)
+
+Changes for 5.2.0
+
+Remove the octet and char data-types from testutils
+
 This is release 5.1.2 of the SAL SDK (August 18th 2021)
 
 Changes for 5.1.2
 
 Hotfix to populate missing private field values for Java ackcmd
+
+This is release 5.1.1 of the SAL SDK (March 5th 2021)
 
 Changes for 5.1.1
 
