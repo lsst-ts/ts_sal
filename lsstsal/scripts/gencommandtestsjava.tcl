@@ -203,25 +203,27 @@ public class [set subsys]Controller_[set alias]Test extends TestCase \{
 #
 
 proc genauthlisttestsjava { subsys } {
-global CMD_ALIASES CMDS EVENT_ALIASES EVTS SAL_WORK_DIR SYSDIC SAL_DIR OPTIONS XMLVERSION SALVERSION
+global env CMD_ALIASES CMDS EVENT_ALIASES EVTS SAL_WORK_DIR SYSDIC SAL_DIR OPTIONS
+global RELVERSION XMLVERSION SALVERSION
+  set mvnrelease [set XMLVERSION]_[exec cat $env(TS_SAL_DIR)/VERSION][set RELVERSION]
   if { $OPTIONS(verbose) } {stdlog "###TRACE>>> genauthlisttestsjava $subsys"}
   if { [info exists SYSDIC($subsys,java)] } {
     if { [info exists CMD_ALIASES($subsys)] } {
-      set rdir $SAL_WORK_DIR/maven/[set subsys]-[set XMLVERSION]_[set SALVERSION] 
-      set fout [open $SAL_WORK_DIR/[set subsys]/java/src/java_[set subsys]_enable_controller w]
+      set rdir $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease] 
+      set fout [open $SAL_WORK_DIR/[set subsys]/java/src/java_[set subsys]_setLogLevel_controller w]
       puts $fout "#!/bin/sh
 cd $rdir
-mvn -q -Dtest=[set subsys]Controller_enableTest.java test
+mvn -q -Dtest=[set subsys]Controller_setLogLevelTest.java test
 "
       close $fout
-      exec chmod 755 $SAL_WORK_DIR/[set subsys]/java/src/java_[set subsys]_enable_controller
-      set fout [open $SAL_WORK_DIR/[set subsys]/java/src/java_[set subsys]_enable_commander w]
+      exec chmod 755 $SAL_WORK_DIR/[set subsys]/java/src/java_[set subsys]_setLogLevel_controller
+      set fout [open $SAL_WORK_DIR/[set subsys]/java/src/java_[set subsys]_setLogLevel_commander w]
       puts $fout "#!/bin/sh
 cd $rdir
-mvn -q -Dtest=[set subsys]Commander_enableTest.java test
+mvn -q -Dtest=[set subsys]Commander_setLogLevelTest.java test
 "
       close $fout
-      exec chmod 755 $SAL_WORK_DIR/[set subsys]/java/src/java_[set subsys]_enable_commander
+      exec chmod 755 $SAL_WORK_DIR/[set subsys]/java/src/java_[set subsys]_setLogLevel_commander
       set fout [open $SAL_WORK_DIR/[set subsys]/java/src/java_[set subsys]_authList_commander w]
       puts $fout "#!/bin/sh
 cd $rdir
@@ -232,50 +234,60 @@ mvn -q -Dtest=[set subsys]Commander_setAuthListTest.java test
       set fout [open $SAL_WORK_DIR/[set subsys]/java/src/testAuthList.sh w]
       puts $fout "#!/bin/sh
 echo \"=====================================================================\"
-echo \"Starting java_[set subsys]_enable_controller\"
-$SAL_WORK_DIR/[set subsys]/java/src/java_[set subsys]_enable_controller &
+echo \"Starting java_[set subsys]_setLogLevel_controller\"
+$SAL_WORK_DIR/[set subsys]/java/src/java_[set subsys]_setLogLevel_controller &
 sleep 10
 echo \"=====================================================================\"
 echo \"Test with authList not set at all, default identity=[set subsys]\"
+echo \"Expect : completed ok\"
 unset LSST_IDENTITY
 export LSST_AUTHLIST_USERS=\"\"
 export LSST_AUTHLIST_CSCS=\"\"
 $SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_authList_commander
-$SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_enable_commander 
+$SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_setLogLevel_commander 
 echo \"=====================================================================\"
 echo \"Test with authList not set at all, identity=user@host\"
+echo \"Expect : Not permitted by authList\"
 export LSST_IDENTITY=user@host
-$SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_enable_commander
+$SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_setLogLevel_commander
 echo \"=====================================================================\"
 echo \"Test with authList authorizedUsers=user@host, identity=user@host\"
+echo \"Expect : completed ok\"
 export LSST_AUTHLIST_USERS=user@host
 $SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_authList_commander
-$SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_enable_commander 
+$SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_setLogLevel_commander 
 echo \"=====================================================================\"
 echo \"Test with authList authorizedUsers=user@host,user2@other, identity=user@host\"
+echo \"Expect : completed ok\"
 export LSST_AUTHLIST_USERS=user@host,user2@other
 export LSST_IDENTITY=user2@other
 $SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_authList_commander
-$SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_enable_commander
+$SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_setLogLevel_commander
 echo \"=====================================================================\"
 echo \"Test with authList authorizedUsers=user@host,user2@other, identity=user2@other\"
+echo \"Expect : completed ok\"
 $SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_authList_commander
-$SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_enable_commander
+$SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_setLogLevel_commander
 echo \"=====================================================================\"
 echo \"Test with authList authorizedUsers=user@host,user2@other, nonAuthorizedCSCs=Test identity=user2@other\"
+echo \"Expect : completed ok\"
 export LSST_AUTHLIST_CSCS=Test
 $SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_authList_commander
-$SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_enable_commander
+$SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_setLogLevel_commander
 echo \"=====================================================================\"
 echo \"Test with authList authorizedUsers=user@host,user2@other, nonAuthorizedCSCs=Test identity=Test\"
+echo \"Expect : Not permitted by authList\"
 export LSST_IDENTITY=Test
-$SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_enable_commander
+$SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_setLogLevel_commander
 echo \"=====================================================================\"
 echo \"Test with authList authorizedUsers=user@host,user2@other, nonAuthorizedCSCs=MTM1M3,MTM2,Test identity=MTM2\"
+echo \"Expect : Not permitted by authList\"
 export LSST_AUTHLIST_CSCS=MTM1M3,MTM2,Test
 export LSST_IDENTITY=MTM2
 $SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_authList_commander
-$SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_enable_commander
+$SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_setLogLevel_commander
+sleep 10
+pkill -9 java_[set subsys]
 echo \"=====================================================================\"
 echo \"Finished testing authList with $subsys\"
 echo \"=====================================================================\"
