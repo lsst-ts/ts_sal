@@ -21,7 +21,7 @@ SAL_SALData::SAL_SALData(int aKey, char *identity)
    if (identity == NULL) {
      sprintf(id,"SALData:%d",aKey);
    } else {
-     sprintf(id,"%s:%d",identity,aKey);
+     sprintf(id,"%s",identity);
    }
    strncpy(CSC_identity, id, 128);
    initSalEnvironment(aKey);

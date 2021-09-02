@@ -71,10 +71,18 @@ int main (int argc, char *argv\[\])
    if { [info exists SYSDIC($subsys,keyedID)] } {
       puts $fcmd "
   int [set subsys]ID = 1;
+  char *identity = (char *)malloc(128);
   if (getenv(\"LSST_[string toupper [set subsys]]_ID\") != NULL) \{
      sscanf(getenv(\"LSST_[string toupper [set subsys]]_ID\"),\"%d\",&[set subsys]ID);
   \} 
-  SAL_[set subsys] *mgr = new SAL_[set subsys]([set subsys]ID);"
+  if (getenv(\"LSST_IDENTITY\") != NULL) \{
+     char *auth = getenv(\"LSST_IDENTITY\");
+     sprintf(identity,\"%s\",auth);
+  \} else \{
+    sprintf(identity,\"[set subsys]:%d\",[set subsys]ID);
+  \}
+  SAL_[set subsys] *mgr = new SAL_[set subsys]([set subsys]ID,identity);
+"
    } else {
       puts $fcmd "
   char *auth=getenv(\"LSST_IDENTITY\");
