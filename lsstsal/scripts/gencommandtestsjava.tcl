@@ -288,6 +288,7 @@ $SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_authList_commander
 $SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_setLogLevel_commander
 sleep 10
 pkill -9 java_[set subsys]
+pkill -9 java
 echo \"=====================================================================\"
 echo \"Finished testing authList with $subsys\"
 echo \"=====================================================================\"
