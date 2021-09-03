@@ -417,10 +417,12 @@ global VPROPS TYPEFORMAT
          puts $fcod5 "    myData.$VPROPS(name)=argv\[$idx\];"
          puts $fcod6 "    cout << \"    $VPROPS(name) : \" << data->$VPROPS(name) << endl;"
          if { [lsearch "device property action itemValue" $VPROPS(name)] < 0 } {
+              set copydim $VPROPS(dim)
+              if { $copydim < 0 } {set copydim 999}
               puts $fcod7 "
            int $VPROPS(name)Size = (*(data->$VPROPS(name)))->size ;
            int i[set VPROPS(name)];
-           for (i[set VPROPS(name)]=0;i[set VPROPS(name)]<$VPROPS(dim)-1 && i[set VPROPS(name)]<$VPROPS(name)Size;i[set VPROPS(name)]++)\{[set VPROPS(base)]_memIO->client\[LVClient\].[set VPROPS(topic)]LV_$VPROPS(name)_bufferOut\[i[set VPROPS(name)]\] = (*(data->$VPROPS(name)))->data\[i[set VPROPS(name)]\];\}
+           for (i[set VPROPS(name)]=0;i[set VPROPS(name)]<$copydim && i[set VPROPS(name)]<$VPROPS(name)Size;i[set VPROPS(name)]++)\{[set VPROPS(base)]_memIO->client\[LVClient\].[set VPROPS(topic)]LV_$VPROPS(name)_bufferOut\[i[set VPROPS(name)]\] = (*(data->$VPROPS(name)))->data\[i[set VPROPS(name)]\];\}
            [set VPROPS(base)]_memIO->client\[LVClient\].[set VPROPS(topic)]LV_$VPROPS(name)_bufferOut\[i[set VPROPS(name)]\] = 0;
            if (iverbose > 1) \{
              cout << \"Client \" << LVClient << \" Outgoing string $VPROPS(topic) $VPROPS(name), \" << [set VPROPS(base)]_memIO->client\[LVClient\].[set VPROPS(topic)]LV_$VPROPS(name)_bufferOut << endl;
