@@ -226,7 +226,11 @@ public class SAL_SALData {
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
         public SAL_SALData(int aKey, String identity)
 	{
-                CSC_identity = String.format("%s" , identity);
+                if (identity == null) {
+                   CSC_identity = String.format("SALData:%d" , aKey);
+                } else {
+                   CSC_identity = String.format("%s" , identity);
+                }
 		initSalEnvironment(aKey);
 	}
 
@@ -238,7 +242,11 @@ public class SAL_SALData {
 #endif
         public SAL_SALData(String identity)
 	{
-                CSC_identity = String.format("%s" , identity);
+                if (identity == null) {
+                  CSC_identity = "SALData";
+                } else {
+                  CSC_identity = String.format("%s" , identity);
+                }
 		initSalEnvironment(0);
 	}
 	public SAL_SALData()
