@@ -260,12 +260,12 @@ echo \"=====================================================================\"
 echo \"Test with authList authorizedUsers=user@host,user2@other, identity=user@host\"
 echo \"Expect : completed ok\"
 export LSST_AUTHLIST_USERS=user@host,user2@other
-export LSST_IDENTITY=user2@other
 $SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_authList_commander
 $SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_setLogLevel_commander
 echo \"=====================================================================\"
 echo \"Test with authList authorizedUsers=user@host,user2@other, identity=user2@other\"
 echo \"Expect : completed ok\"
+export LSST_IDENTITY=user2@other
 $SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_authList_commander
 $SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_setLogLevel_commander
 echo \"=====================================================================\"
