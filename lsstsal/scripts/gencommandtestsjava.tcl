@@ -60,7 +60,7 @@ public class [set subsys]Commander_[set alias]Test extends TestCase \{
           int status=0;
 
 
-            int timeout=3;
+            int timeout=10;
 
   	    mgr.salCommand(\"[set subsys]_command_[set alias]\");
 	    [set subsys].command_[set alias] command  = new [set subsys].command_[set alias]();
