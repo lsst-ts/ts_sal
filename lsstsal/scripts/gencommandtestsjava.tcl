@@ -283,9 +283,9 @@ echo \"Expect : Not permitted by authList\"
 export LSST_IDENTITY=Test
 $SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_setLogLevel_commander
 echo \"=====================================================================\"
-echo \"Test with authList authorizedUsers=user@host,user2@other, nonAuthorizedCSCs=MTM1M3,MTM2,Test identity=MTM2\"
+echo \"Test with authList authorizedUsers=user@host,user2@other, nonAuthorizedCSCs=[set testnoauth],Test identity=[set testnoauth]\"
 echo \"Expect : Not permitted by authList\"
-export LSST_AUTHLIST_CSCS=MTM1M3,MTM2,Test
+export LSST_AUTHLIST_CSCS=[set testnoauth],Test
 export LSST_IDENTITY=[set testnoauth]
 $SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_authList_commander
 $SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_setLogLevel_commander

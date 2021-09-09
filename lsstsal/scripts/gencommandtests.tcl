@@ -324,10 +324,10 @@ echo \"Expect : Not permitted by authList\"
 export LSST_IDENTITY=Test
 $SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_setLogLevel_commander 1
 echo \"=====================================================================\"
-echo \"Test with authList authorizedUsers=user@host,user2@other, nonAuthorizedCSCs=MTM1M3,MTM2,Test identity=MTM2\"
+echo \"Test with authList authorizedUsers=user@host,user2@other, nonAuthorizedCSCs=[set testnoauth],Test identity=[set testnoauth]\"
 echo \"Expect : Not permitted by authList\"
 export LSST_IDENTITY=[set testnoauth]
-$SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_setAuthList_commander   \"user@host,user2@other\" \"MTM1M3,MTM2,Test\"
+$SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_setAuthList_commander   \"user@host,user2@other\" \"[set testnoauth],Test\"
 $SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_setLogLevel_commander 1
 sleep 10
 pkill -9 sacpp_[set subsys]
