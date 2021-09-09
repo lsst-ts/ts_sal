@@ -147,7 +147,8 @@ public class [set subsys]Controller_[set alias]Test extends TestCase \{
 	  int status   = SAL_[set subsys].SAL__OK;
 	  int cmdId    = 0;
 	  // Initialize
-	  SAL_[set subsys] cmd = new SAL_[set subsys][set initializer];
+          String idname = System.getenv(\"LSST_IDENTITY\");
+     	  SAL_[set subsys] cmd = new SAL_[set subsys](idname);
 
 	  cmd.salProcessor(\"[set subsys]_command_[set alias]\");
 	  [set subsys].command_[set alias] command = new [set subsys].command_[set alias]();
@@ -232,6 +233,8 @@ mvn -q -Dtest=[set subsys]Commander_setAuthListTest.java test
       close $fout
       exec chmod 755 $SAL_WORK_DIR/[set subsys]/java/src/java_[set subsys]_authList_commander
       set fout [open $SAL_WORK_DIR/[set subsys]/java/src/testAuthList.sh w]
+      set testnoauth "MTM1M3"
+      if { $subsys == "MTM1M3" } {set testnoauth "MTRotator"}
       puts $fout "#!/bin/sh
 echo \"=====================================================================\"
 echo \"Starting java_[set subsys]_setLogLevel_controller\"
@@ -283,7 +286,7 @@ echo \"=====================================================================\"
 echo \"Test with authList authorizedUsers=user@host,user2@other, nonAuthorizedCSCs=MTM1M3,MTM2,Test identity=MTM2\"
 echo \"Expect : Not permitted by authList\"
 export LSST_AUTHLIST_CSCS=MTM1M3,MTM2,Test
-export LSST_IDENTITY=MTM2
+export LSST_IDENTITY=[set testnoauth]
 $SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_authList_commander
 $SAL_WORK_DIR/$subsys/java/src/java_[set subsys]_setLogLevel_commander
 sleep 10

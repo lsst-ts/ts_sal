@@ -278,6 +278,8 @@ proc genauthlisttestscpp { subsys } {
 global CMD_ALIASES CMDS SAL_WORK_DIR SYSDIC DONE_CMDEVT SAL_DIR OPTIONS
   if { $OPTIONS(verbose) } {stdlog "###TRACE>>> genauthlisttestscpp $subsys"}
   set fout [open $SAL_WORK_DIR/[set subsys]/cpp/src/testAuthList.sh w]
+  set testnoauth "MTM1M3"
+  if { $subsys == "MTM1M3" } {set testnoauth "MTRotator"}
   puts $fout "#!/bin/sh
 echo \"=====================================================================\"
 echo \"Starting sacpp_[set subsys]_setLogLevel_controller\"
@@ -324,7 +326,7 @@ $SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_setLogLevel_commander 1
 echo \"=====================================================================\"
 echo \"Test with authList authorizedUsers=user@host,user2@other, nonAuthorizedCSCs=MTM1M3,MTM2,Test identity=MTM2\"
 echo \"Expect : Not permitted by authList\"
-export LSST_IDENTITY=MTM2
+export LSST_IDENTITY=[set testnoauth]
 $SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_setAuthList_commander   \"user@host,user2@other\" \"MTM1M3,MTM2,Test\"
 $SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_setLogLevel_commander 1
 sleep 10
