@@ -1,3 +1,9 @@
+This is release 5.2.3 of the SAL SDK (September 13th 2021)
+
+Changes for 5.2.3
+
+Update `make_idl_file.py` and `make_salpy_lib.py` in order to support components with generic topics only.
+
 This is release 5.2.2 of the SAL SDK (September 3rd 2021)
 
 Changes for 5.2.2
