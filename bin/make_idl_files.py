@@ -41,6 +41,13 @@ if args.all:
     components = lsst.ts.xml.subsystems
 else:
     components = args.components
+    invalid_components = set(components) - set(lsst.ts.xml.subsystems)
+
+    if len(invalid_components) > 0:
+        raise RuntimeError(
+            f"The following components are not part of sal subsystems {invalid_components}. "
+            "Check spelling and try again."
+        )
 if args.exclude:
     exclude = set(args.exclude)
     components = [name for name in components if name not in exclude]
