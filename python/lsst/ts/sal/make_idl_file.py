@@ -62,19 +62,6 @@ class MakeIdlFile:
             for n in ("SALGenerics", "SALSubsystems")
         ]
         sal_xml_paths = glob.glob(os.path.join(interfaces_dir, self.name, "*.xml"))
-        if not sal_xml_paths:
-            print(f"Note: SAL component {self.name} only uses generic topics")
-            dummy_xml_event_file = os.path.join(
-                self.sal_work_dir, f"{self.name}_Events.xml"
-            )
-            with open(dummy_xml_event_file, "w") as fp:
-                fp.write(
-                    """<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="http://lsst-sal.tuc.noao.edu/schema/SALEventSet.xsl"?>
-<SALEventSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://lsst-sal.tuc.noao.edu/schema/SALEventSet.xsd">
-</SALEventSet>
-"""
-                )
 
         for xmlpath in std_xml_paths + sal_xml_paths:
             shutil.copy(xmlpath, self.sal_work_dir)
