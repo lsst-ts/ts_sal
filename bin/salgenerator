@@ -92,17 +92,16 @@ foreach i $argv {
     if { $xml == "" } {
       puts stdout "
 *******************************************************************************
-******************** ERROR - Subsystem not defined ****************************
+*********************** WARNING - Generics only *******************************
 *******************************************************************************
 
 	$env(SAL_WORK_DIR) has no XML definition files for
 
- 	the $i subsystem, please check spelling, or add the files
+ 	the $i subsystem. Including generics only.
 
 
 *******************************************************************************
 *******************************************************************************"
-      exit 4
     }
     if { [lsearch $SYSDIC(systems) $i] > -1 } {
       lappend TSUBSYSTEMS $i
@@ -188,6 +187,23 @@ if { $OPTIONS(validate) || $OPTIONS(idl) } {
         source $SAL_DIR/processgenerics.tcl
         generategenerics $i
       }
+    }
+    set xml ""
+    catch { set xml [glob [set i]_*.xml] }
+    if { $xml == "" } {
+      puts stdout "
+*******************************************************************************
+******************** ERROR - Subsystem not defined ****************************
+*******************************************************************************
+
+	$env(SAL_WORK_DIR) has no XML definition files for
+
+ 	the $i subsystem, please check spelling, or add the files
+
+
+*******************************************************************************
+*******************************************************************************"
+      exit 5
     }
     gentopicdefsql $i
     foreach t "Telemetry Commands Events Generics" {
