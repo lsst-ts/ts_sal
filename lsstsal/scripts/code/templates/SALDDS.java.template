@@ -295,7 +295,7 @@ public class SAL_SALData {
 		hasEventWriter = false;
 		hasProcessor = false;
 		subsystemID = 0;
-		debugLevel = 1;
+		debugLevel = 0;
                 System.loadLibrary("salUtils");
                 initSalActors();
 	}

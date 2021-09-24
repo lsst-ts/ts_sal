@@ -109,14 +109,11 @@ proc insertCommandersJava { subsys file_writer } {
                 set pspl [split $pname "()"]
                 set pname [lindex $pspl 0]
                 set pdim  [lindex $pspl 1]
-                while { $l < $pdim } {
-                    switch $ptype {
-                        boolean { puts $file_writer "            command.[set pname]\[$l\] = true;" }
-                        double  { puts $file_writer "            command.[set pname]\[$l\] = (double) 1.0;" }
-                        int     { puts $file_writer "            command.[set pname]\[$l\] = (int) 1;" }
-                        long    { puts $file_writer "            command.[set pname]\[$l\] = (int) 1;" }
-                    }
-                    incr l 1
+                switch $ptype {
+                    boolean { puts $file_writer "            for (int i=0; i<$pdim; i++) \{command.[set pname]\[i\] = true; \}" }
+                    double  { puts $file_writer "            for (int i=0; i<$pdim; i++) \{command.[set pname]\[i\] = (double) 1.0; \}" }
+                    int     { puts $file_writer "            for (int i=0; i<$pdim; i++) \{command.[set pname]\[i\] = (int) 1; \}" }
+                    long    { puts $file_writer "            for (int i=0; i<$pdim; i++) \{command.[set pname]\[i\] = (int) 1; \}" }
                 }
             } else {
                 switch $ptype {

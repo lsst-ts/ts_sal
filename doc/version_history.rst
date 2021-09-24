@@ -6,11 +6,17 @@
 Version History
 ###############
 
-This is release 6.0.0 of the SAL SDK (August 18th 2021)
+This is release 6.0.0 of the SAL SDK (September 24th 2021)
 -------------------------------------------------------
 
 Changes for 6.0.0
 =================
+
+* Reset debugLevel=0 for Java 
+
+* Add support for single element 1-D arrays for Java 
+
+* Rollup single test loops to avoid code-to-large Java errors
 
 * Add authList support for C++/SALPY/Java/LabVIEW CSC's
 

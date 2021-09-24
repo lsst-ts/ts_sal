@@ -205,7 +205,7 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
         set DESC($subsys,$alias,help) ""
       }
       if { $tag == "EFDB_Name"} {
-        set item $value ; set unit "" ; set type "unknown"
+        set item $value ; set unit "" ; set type "unknown" ; set isjarray 0
         incr itemid 1
         set desc "" ; set range "" ; set location ""
         set freq 0.054 ; set sdim 1
@@ -222,6 +222,7 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
          enumsToIDL $subsys $alias $fout
          puts $fsql "###Description $tname : $DESC($subsys,$alias,help)"
       }
+      if { $tag == "IsJavaArray" } { set isjarray 1 }
       if { $tag == "IDL_Type"} {
          set type $value 
          if { $type == "long long" } {set type "longlong"}
@@ -263,7 +264,7 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
                set declare "   string $item;"
             }
          } else {
-            if { $idim > 1 } {
+            if { $idim > 1 || $isjarray } {
                set declare "   $type $item\[[set idim]\];"
             } else {
                set declare "   $type $item;"
