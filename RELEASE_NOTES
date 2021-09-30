@@ -1,4 +1,11 @@
-This is release 5.2.4 of the SAL SDK (September 13th 2021)
+This is release 5.2.5 of the SAL SDK (September 29th 2021)
+
+Changes for 5.2.5
+
+Check existance of OSPL_RELEASE environment variable
+
+Use static for the getSALVersion/getXMLVersion/getOSPLVersion methods
+
 
 Changes for 5.2.4
 

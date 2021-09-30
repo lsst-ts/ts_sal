@@ -302,13 +302,13 @@
       int getLeapSeconds();
 
 /// Returns the current SAL version e.g. "4.1.0"
-      std::string getSALVersion();
+      static std::string getSALVersion();
 
 /// Returns the current XML version e.g. "5.0.0"
-      std::string getXMLVersion();
+      static std::string getXMLVersion();
 
 /// Returns the current OpenSpliceDDS version e.g. "6.9.181127OSS"
-      std::string getOSPLVersion();
+      static std::string getOSPLVersion();
 
 /** Sets up the DDS data type low level support for the named DDS type
   @param topicName is the name of the DDS topic
