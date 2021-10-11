@@ -1055,7 +1055,7 @@ global SAL_WORK_DIR OPTIONS
 }
 
 #
-## Documented proc \c saljavaclassgen .
+## Documented proc \c salcppclassgen .
 # \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
 # \param[in] id Topic identifier
 #
@@ -1089,10 +1089,10 @@ global SAL_WORK_DIR SAL_DIR OPTIONS DONE_CMDEVT
    catch {stdlog "$bad"}
    stdlog "cpp : Done Event/Logger"
    set DONE_CMDEVT 1
-   if { $subsys == "Test" } {
-      exec cp $SAL_DIR/code/templates/Makefile.sacpp_TestWithSalobj $SAL_WORK_DIR/$subsys/cpp/src/.
-      exec cp $SAL_DIR/code/templates/sacpp_TestWithSalobj.cpp $SAL_WORK_DIR/$subsys/cpp/src/.
-      cd $SAL_WORK_DIR/$subsys/cpp/src
+   if { $base == "Test" } {
+      exec cp $SAL_DIR/code/templates/Makefile.sacpp_TestWithSalobj $SAL_WORK_DIR/$base/cpp/src/.
+      exec cp $SAL_DIR/code/templates/sacpp_TestWithSalobj.cpp $SAL_WORK_DIR/$base/cpp/src/.
+      cd $SAL_WORK_DIR/$base/cpp/src
       exec make -f Makefile.sacpp_TestWithSalobj
    }
    cd $SAL_WORK_DIR
