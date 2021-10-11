@@ -1062,7 +1062,7 @@ global SAL_WORK_DIR OPTIONS
 #  Generate C++ test program for a SAL Topic
 #
 proc salcpptestgen { base id } {
-global SAL_WORK_DIR OPTIONS DONE_CMDEVT
+global SAL_WORK_DIR SAL_DIR OPTIONS DONE_CMDEVT
   if { $OPTIONS(verbose) } {stdlog "###TRACE>>> salcpptestgen $base $id"}
   if { $OPTIONS(fastest) == 0 } {
     if { $id != "[set base]_notused" } {
@@ -1089,6 +1089,12 @@ global SAL_WORK_DIR OPTIONS DONE_CMDEVT
    catch {stdlog "$bad"}
    stdlog "cpp : Done Event/Logger"
    set DONE_CMDEVT 1
+   if { $subsys == "Test" } {
+      exec cp $SAL_DIR/code/templates/Makefile.sacpp_TestWithSalobj $SAL_WORK_DIR/$subsys/cpp/src/.
+      exec cp $SAL_DIR/code/templates/sacpp_TestWithSalobj.cpp $SAL_WORK_DIR/$subsys/cpp/src/.
+      cd $SAL_WORK_DIR/$subsys/cpp/src
+      exec make -f Makefile.sacpp_TestWithSalobj
+   }
    cd $SAL_WORK_DIR
   }
   if { $OPTIONS(verbose) } {stdlog "###TRACE<<< salcpptestgen $base $id"}
