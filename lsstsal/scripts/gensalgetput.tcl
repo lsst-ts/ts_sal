@@ -727,8 +727,9 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS
     sal\[actorIdx\].sndSeqNum++;
     if (debugLevel > 0) \{
       System.out.println(\"=== \[putSample $name\] writing a message containing :\");
-      System.out.println(\"    revCode  : \" + SALInstance.private_revCode);
-      System.out.println(\"    sndStamp  : \" + SALInstance.private_sndStamp);
+      System.out.println(\"  revCode  : \" + SALInstance.private_revCode);
+      System.out.println(\"  sndStamp  : \" + SALInstance.private_sndStamp);
+      System.out.println(\"  identity : \" + SALInstance.private_identity);
     \}"
         copytojavasample $fout $base $name
         if { [info exists SYSDIC($base,keyedID)] } {
@@ -786,12 +787,12 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS
       if (debugLevel > 0) \{
     for (int i = 0; i < numsamp; i++) \{
         System.out.println(\"=== \[getSample $name \] message received :\" + i);
-        System.out.println(\"    revCode  : \"
-            + SALInstance.value\[i\].private_revCode);
-              System.out.println(\"     sndStamp  : \" + SALInstance.value\[i\].private_sndStamp);
+        System.out.println(\"  revCode  : \" + SALInstance.value\[i\].private_revCode);
+        System.out.println(\"  identity : \" + SALInstance.value\[i\].private_identity);
+        System.out.println(\"  sndStamp  : \" + SALInstance.value\[i\].private_sndStamp);
         System.out.println(\"  sample_state : \" + infoSeq.value\[i\].sample_state);
-        System.out.println(\"    view_state : \" + infoSeq.value\[i\].view_state);
-        System.out.println(\"instance_state : \" + infoSeq.value\[i\].instance_state);
+        System.out.println(\"  view_state : \" + infoSeq.value\[i\].view_state);
+        System.out.println(\"  instance_state : \" + infoSeq.value\[i\].instance_state);
     \}
       \}
             int j=numsamp-1;

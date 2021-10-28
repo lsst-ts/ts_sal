@@ -281,6 +281,7 @@ global CMD_ALIASES CMDS SAL_WORK_DIR SYSDIC DONE_CMDEVT SAL_DIR OPTIONS
   set testnoauth "MTM1M3"
   if { $subsys == "MTM1M3" } {set testnoauth "MTRotator"}
   puts $fout "#!/bin/sh
+export LSST_DDS_ENABLE_AUTHLIST=1
 echo \"=====================================================================\"
 echo \"Starting sacpp_[set subsys]_setLogLevel_controller\"
 $SAL_WORK_DIR/[set subsys]/cpp/src/sacpp_[set subsys]_setLogLevel_controller &

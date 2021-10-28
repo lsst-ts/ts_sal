@@ -5,6 +5,6 @@ if [ "$#" -ne 2 ]; then
     exit -1
 fi
 
-echo "Starting Java minimal controller"
+echo "Starting Java minimal commander"
 cd $SAL_WORK_DIR/maven/Test-*$SAL_VERSION
-mvn -Dindex=$1 -DlogLevel=$2 -Dtest=TestWithSalobjTest test
+mvn -Dindex=$1 -DlogLevel=$2 -Dtest=TestWithSalobjTargetTest test

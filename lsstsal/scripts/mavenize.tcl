@@ -149,6 +149,7 @@ global env SAL_WORK_DIR SAL_DIR OSPL_VERSION XMLVERSION RELVERSION TS_SAL_DIR
   exec cp $SAL_DIR/../lib/junit.jar $SAL_WORK_DIR/maven/libs/.
   if { $subsys == "Test" } {
     exec cp $SAL_DIR/code/templates/TestWithSalobjTest.java $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/test/java/.
+    exec cp $SAL_DIR/code/templates/TestWithSalobjTargetTest.java $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/test/java/.
   }
 }
 

@@ -48,9 +48,11 @@ SAL_SALData::SAL_SALData(char *identity)
 
 void SAL_SALData::initSalEnvironment(int aKey)
 {
+   int aenable;
    char *pname = getenv("LSST_DDS_PARTITION_PREFIX");
    char *qname = getenv("LSST_DDS_QOS");
    char *sname = getenv("LSST_DDS_HISTORYSYNC");
+   char *aname = getenv("LSST_DDS_ENABLE_AUTHLIST");
    if ( pname != NULL ) {
       strncpy(partitionPrefix, pname, 128);
    } else {
@@ -68,6 +70,13 @@ void SAL_SALData::initSalEnvironment(int aKey)
       sscanf(sname,"%d",&historySync);
    } else {
       historySync = 0;
+   }
+   authListEnabled = false;
+   if ( aname != NULL ) {
+      sscanf(aname,"%d",&aenable);
+      if (aenable == 1) {
+        authListEnabled = true;
+      }
    }
    hasReader = false;
    hasWriter = false;

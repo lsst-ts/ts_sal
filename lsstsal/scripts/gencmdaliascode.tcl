@@ -1131,6 +1131,11 @@ global SYSDIC
           int cmdId;
           int iat = 0;
   	  String my_identity = CSC_identity;
+
+          if ( !authListEnabled ) \{
+             return SAL__OK;
+          \}
+
           boolean defaultCheck = private_identity.equals(CSC_identity);
           if (defaultCheck) \{
              return SAL__OK;
