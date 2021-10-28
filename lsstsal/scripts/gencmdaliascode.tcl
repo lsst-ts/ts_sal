@@ -1091,7 +1091,7 @@ global SYSDIC
   	  // Filter expr
           String expr\[\] = new String\[0\];
           String sFilter = \"SALDataID = \" + subsystemID;
-          String fCmd = \"filteredCmd\" + sal\[actorIdx\].topicHandle;
+          String fCmd = \"filteredCmd_\" + sal\[actorIdx\].topicHandle;
     	  createContentFilteredTopic(actorIdx,fCmd, sFilter, expr);
  	  createReader(actorIdx,false);
 "
