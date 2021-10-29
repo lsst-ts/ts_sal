@@ -6,11 +6,17 @@
 Version History
 ###############
 
-This is release 6.0.0 of the SAL SDK (September 24th 2021)
+This is release 6.0.0 of the SAL SDK (October 28th 2021)
 -------------------------------------------------------
 
 Changes for 6.0.0
 =================
+
+* Add support for LSST_DDS_ENABLE_AUTHLIST environmetn variable
+
+* Add interlanguage tests for C++ and Java and salobj
+
+* Replace <Generics> with <AddedGenerics> and new selection strategy
 
 * Reset debugLevel=0 for Java 
 
