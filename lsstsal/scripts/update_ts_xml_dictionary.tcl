@@ -68,17 +68,14 @@ global env SYSDIC SAL_WORK_DIR OPTIONS
       if { $tag == "Description" } {
          set SYSDIC($name,Description) $value
       }
+      if { $tag == "AddedGenerics" } {
+         addGenerics $name $value
+      }
       if { $tag == "Generics" } {
-         if { $value == "yes" } {
-            set SYSDIC($name,hasAllGenerics) 1
-         } else {
-            if { [llength [split $value ,]] > 1 } {
-               validateGenerics $name $value
-               if { $OPTIONS(verbose) } {puts stdout "TRACE------ $name has generics $value"}
-               set SYSDIC($name,hasGenerics) 1
-               set SYSDIC($name,genericsUsed) $value
-            }
-         }
+         puts stdout "
+************************************************************************
+********** WARNING : Deprecated <Generics> tag found, ignoring *********
+************************************************************************"
       }
       if { $tag == "Enumeration" || $tag == "IndexEnumeration" } {
          if { $value != "" && $value != "no" } {
@@ -144,6 +141,55 @@ global SYSDIC
          errorexit "Bad Subsystem '$subsys' in SALSubsystems.xml\n***               Unknown generic - $chkg"
       }
    }
+}
+
+#
+## Documented proc \c addGenerics .
+#
+#  Process the addedGenerics
+#
+proc addGenerics { name glist } {
+global SYSDIC
+  buildGenericCategories
+  catch {unset SYSDIC($name,hasAllGenerics)}
+  set SYSDIC($name,genericsUsed) $SYSDIC(Category,mandatory)
+  if { $glist != "" } {
+    foreach t [split $glist ","] {
+      if { [info exists SYSDIC(Category,$t)] } {
+        set SYSDIC($name,genericsUsed) "$SYSDIC($name,genericsUsed),$SYSDIC(Category,$t)"
+      } else {
+        set SYSDIC($name,genericsUsed) "$SYSDIC($name,genericsUsed),$t"
+      }
+    }
+  }
+}
+
+#
+## Documented proc \c buildGenericCategories .
+#
+#  Build the available Generic topic categories from SALGenerics.xml
+#
+proc buildGenericCategories { } {
+global SYSDIC SAL_WORK_DIR
+  set SYSDIC(GenericCategories) ""
+  set fcat [open $SAL_WORK_DIR/SALGenerics.xml r]
+  while { [gets $fcat rec] > -1 } {
+    set tag   [lindex [split $rec "<>"] 1]
+    set value [lindex [split $rec "<>"] 2]
+    if { $tag == "EFDB_Topic" } {
+       set gname [join [lrange [split $value "_"] 1 end] "_"]
+    }
+    if { $tag == "Category" } {
+       if { [lsearch $SYSDIC(GenericCategories) $value] < 0 } {
+         lappend SYSDIC(GenericCategories) $value
+       }
+       lappend SYSDIC(Category,$value) $gname
+    }
+  }
+  close $fcat
+  foreach c $SYSDIC(GenericCategories) {
+    set SYSDIC(Category,$c) [join $SYSDIC(Category,$c) ","]
+  }
 }
 
 
