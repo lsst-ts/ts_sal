@@ -6,4 +6,4 @@ if [ "$#" -ne 2 ]; then
 fi
 
 echo "Starting CPP minimal controller"
-$SAL_WORK_DIR/Test/cpp/src/sacpp_TestWithSalobj $1 $2
+/opt/lsst/ts_sal/bin/sacpp_TestWithSalobj $1 $2

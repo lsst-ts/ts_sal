@@ -6,4 +6,4 @@ if [ "$#" -ne 2 ]; then
 fi
 
 echo "Starting CPP minimal commander"
-$SAL_WORK_DIR/Test/cpp/src/sacpp_TestWithSalobjTarget $1 $2
+/opt/lsst/ts_sal/bin/sacpp_TestWithSalobjTarget $1 $2

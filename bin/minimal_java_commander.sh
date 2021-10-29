@@ -6,5 +6,5 @@ if [ "$#" -ne 2 ]; then
 fi
 
 echo "Starting Java minimal commander"
-cd $SAL_WORK_DIR/maven/Test-*$SAL_VERSION
+cd /opt/lsst/ts_sal/maven/Test
 mvn -Dindex=$1 -DlogLevel=$2 -Dtest=TestWithSalobjTargetTest test
