@@ -265,8 +265,13 @@ string SAL_SALData::getXMLVersion()
 
 string SAL_SALData::getOSPLVersion()
 \{
-     string osplver = getenv(\"OSPL_RELEASE\");
-     return osplver;
+     string osplversion;
+     char *osplrelease = getenv(\"OSPL_RELEASE\");
+     if (osplrelease == NULL) \{
+        throw std::runtime_error(\"getOSPLVersion failed: OSPL_RELEASE environment not setup\");
+     \}
+     osplversion = osplrelease;
+     return osplversion;
 \}
 "
 }
@@ -297,9 +302,12 @@ public String getXMLVersion()
 /// Returns the current OpenSpliceDDS version e.g. \"6.9.181127OSS\"
 public String getOSPLVersion()
 \{
-    String osplver = System.getenv(\"OSPL_RELEASE\");
-    return osplver;
-\}
+  String osplrelease = System.getenv(\"OSPL_RELEASE\");
+    if (osplrelease == null) \{
+      System.out.println(\"Error in getOSPLVersion: OSPL_RELEASE environment not setup\");
+      System.exit(-1);
+    \}
+    return osplrelease;\}
 "
 }
 
