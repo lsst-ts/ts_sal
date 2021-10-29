@@ -57,6 +57,7 @@ global env SYSDIC SAL_WORK_DIR OPTIONS
   if { $OPTIONS(verbose) } {puts stdout "###TRACE>>> parseSystemDictionary"}
   set SYSDIC(systems) ""
   getValidGenerics
+  buildGenericCategories
   set fin [open $env(SAL_WORK_DIR)/SALSubsystems.xml r]
   while { [gets $fin rec] > -1 } {
       set tag   [lindex [split $rec "<>"] 1]
@@ -67,6 +68,7 @@ global env SYSDIC SAL_WORK_DIR OPTIONS
       }
       if { $tag == "Description" } {
          set SYSDIC($name,Description) $value
+         set SYSDIC($name,genericsUsed) $SYSDIC(Category,mandatory)
       }
       if { $tag == "AddedGenerics" } {
          addGenerics $name $value
@@ -150,7 +152,6 @@ global SYSDIC
 #
 proc addGenerics { name glist } {
 global SYSDIC
-  buildGenericCategories
   catch {unset SYSDIC($name,hasAllGenerics)}
   set SYSDIC($name,genericsUsed) $SYSDIC(Category,mandatory)
   if { $glist != "" } {
