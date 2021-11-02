@@ -137,6 +137,9 @@ salReturn SAL_SALData::checkAuthList(std::string private_identity)
   std::string my_identity = CSC_identity;
   SALData_command_setAuthListC SALInstance;
   SALData_logevent_authListC myData;
+
+  if ( !authListEnabled ) return SAL__OK;
+
   if ( sal[SAL__SALData_command_setAuthList_ACTOR].isProcessor == false ) {
      status = salProcessor("SALData_command_setAuthList");
      status = salEventPub("SALData_logevent_authList");

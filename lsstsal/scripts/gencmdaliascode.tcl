@@ -1091,7 +1091,7 @@ global SYSDIC
   	  // Filter expr
           String expr\[\] = new String\[0\];
           String sFilter = \"SALDataID = \" + subsystemID;
-          String fCmd = \"filteredCmd\" + sal\[actorIdx\].topicHandle;
+          String fCmd = \"filteredCmd_\" + sal\[actorIdx\].topicHandle;
     	  createContentFilteredTopic(actorIdx,fCmd, sFilter, expr);
  	  createReader(actorIdx,false);
 "
@@ -1131,6 +1131,11 @@ global SYSDIC
           int cmdId;
           int iat = 0;
   	  String my_identity = CSC_identity;
+
+          if ( !authListEnabled ) \{
+             return SAL__OK;
+          \}
+
           boolean defaultCheck = private_identity.equals(CSC_identity);
           if (defaultCheck) \{
              return SAL__OK;

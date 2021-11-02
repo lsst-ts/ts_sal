@@ -265,8 +265,13 @@ string SAL_SALData::getXMLVersion()
 
 string SAL_SALData::getOSPLVersion()
 \{
-     string osplver = getenv(\"OSPL_RELEASE\");
-     return osplver;
+     string osplversion;
+     char *osplrelease = getenv(\"OSPL_RELEASE\");
+     if (osplrelease == NULL) \{
+        throw std::runtime_error(\"getOSPLVersion failed: OSPL_RELEASE environment not setup\");
+     \}
+     osplversion = osplrelease;
+     return osplversion;
 \}
 "
 }
@@ -297,9 +302,12 @@ public String getXMLVersion()
 /// Returns the current OpenSpliceDDS version e.g. \"6.9.181127OSS\"
 public String getOSPLVersion()
 \{
-    String osplver = System.getenv(\"OSPL_RELEASE\");
-    return osplver;
-\}
+  String osplrelease = System.getenv(\"OSPL_RELEASE\");
+    if (osplrelease == null) \{
+      System.out.println(\"Error in getOSPLVersion: OSPL_RELEASE environment not setup\");
+      System.exit(-1);
+    \}
+    return osplrelease;\}
 "
 }
 
@@ -727,8 +735,9 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS
     sal\[actorIdx\].sndSeqNum++;
     if (debugLevel > 0) \{
       System.out.println(\"=== \[putSample $name\] writing a message containing :\");
-      System.out.println(\"    revCode  : \" + SALInstance.private_revCode);
-      System.out.println(\"    sndStamp  : \" + SALInstance.private_sndStamp);
+      System.out.println(\"  revCode  : \" + SALInstance.private_revCode);
+      System.out.println(\"  sndStamp  : \" + SALInstance.private_sndStamp);
+      System.out.println(\"  identity : \" + SALInstance.private_identity);
     \}"
         copytojavasample $fout $base $name
         if { [info exists SYSDIC($base,keyedID)] } {
@@ -786,12 +795,12 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS
       if (debugLevel > 0) \{
     for (int i = 0; i < numsamp; i++) \{
         System.out.println(\"=== \[getSample $name \] message received :\" + i);
-        System.out.println(\"    revCode  : \"
-            + SALInstance.value\[i\].private_revCode);
-              System.out.println(\"     sndStamp  : \" + SALInstance.value\[i\].private_sndStamp);
+        System.out.println(\"  revCode  : \" + SALInstance.value\[i\].private_revCode);
+        System.out.println(\"  identity : \" + SALInstance.value\[i\].private_identity);
+        System.out.println(\"  sndStamp  : \" + SALInstance.value\[i\].private_sndStamp);
         System.out.println(\"  sample_state : \" + infoSeq.value\[i\].sample_state);
-        System.out.println(\"    view_state : \" + infoSeq.value\[i\].view_state);
-        System.out.println(\"instance_state : \" + infoSeq.value\[i\].instance_state);
+        System.out.println(\"  view_state : \" + infoSeq.value\[i\].view_state);
+        System.out.println(\"  instance_state : \" + infoSeq.value\[i\].instance_state);
     \}
       \}
             int j=numsamp-1;

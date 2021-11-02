@@ -236,6 +236,7 @@ mvn -q -Dtest=[set subsys]Commander_setAuthListTest.java test
       set testnoauth "MTM1M3"
       if { $subsys == "MTM1M3" } {set testnoauth "MTRotator"}
       puts $fout "#!/bin/sh
+export LSST_DDS_ENABLE_AUTHLIST=1
 echo \"=====================================================================\"
 echo \"Starting java_[set subsys]_setLogLevel_controller\"
 $SAL_WORK_DIR/[set subsys]/java/src/java_[set subsys]_setLogLevel_controller &

@@ -21,7 +21,7 @@
 #  per-command Topic type. 
 #
 proc gencommandtestscpp { subsys } {
-global CMD_ALIASES CMDS SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS
+global CMD_ALIASES CMDS SAL_WORK_DIR SAL_DIR SYSDIC DONE_CMDEVT OPTIONS
  if { $OPTIONS(verbose) } {stdlog "###TRACE>>> gencommandtestscpp $subsys"}
  if { $subsys == "LOVE" } {return}
  if { [info exists CMD_ALIASES($subsys)] && $DONE_CMDEVT == 0 } {
@@ -281,6 +281,7 @@ global CMD_ALIASES CMDS SAL_WORK_DIR SYSDIC DONE_CMDEVT SAL_DIR OPTIONS
   set testnoauth "MTM1M3"
   if { $subsys == "MTM1M3" } {set testnoauth "MTRotator"}
   puts $fout "#!/bin/sh
+export LSST_DDS_ENABLE_AUTHLIST=1
 echo \"=====================================================================\"
 echo \"Starting sacpp_[set subsys]_setLogLevel_controller\"
 $SAL_WORK_DIR/[set subsys]/cpp/src/sacpp_[set subsys]_setLogLevel_controller &
