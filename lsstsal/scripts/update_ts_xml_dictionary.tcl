@@ -156,6 +156,7 @@ global SYSDIC
   set SYSDIC($name,genericsUsed) $SYSDIC(Category,mandatory)
   if { $glist != "" } {
     foreach t [split $glist ","] {
+      set t [string trim $t " "]
       if { [info exists SYSDIC(Category,$t)] } {
         set SYSDIC($name,genericsUsed) "$SYSDIC($name,genericsUsed),$SYSDIC(Category,$t)"
       } else {
