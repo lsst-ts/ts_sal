@@ -180,13 +180,11 @@ if { $OPTIONS(validate) || $OPTIONS(idl) } {
   foreach i $all {
     set IDXENUMDONE($i) 0
     if { [file exists $SAL_WORK_DIR/SALGenerics.xml] } {
-      if { [info exists SYSDIC($i,hasGenerics)] || [info exists SYSDIC($i,hasAllGenerics)] } {
-        set x none
-        puts stdout "Add Generic Commands and Events"
-        set SALSubsys $i
-        source $SAL_DIR/processgenerics.tcl
-        generategenerics $i
-      }
+      set x none
+      puts stdout "Add Generic Commands and Events"
+      set SALSubsys $i
+      source $SAL_DIR/processgenerics.tcl
+      generategenerics $i
     }
     set xml ""
     catch { set xml [glob [set i]_*.xml] }

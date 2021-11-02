@@ -29,15 +29,13 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
    set checkGenerics 0
    set subsys [lindex [split [file tail $fname] _] 0]
    if { [lindex [split $fname "_."] 1] == "Generics" } {
-     if { [info exists SYSDIC([set subsys],hasAllGenerics)] == 0} {
-       if { $OPTIONS(verbose) } {stdlog "###TRACE------ Checking which generics are in use"}
-       set checkGenerics 1
-       if { [info exists SYSDIC([set subsys],genericsUsed)] } {
-         set gflag [split $SYSDIC([set subsys],genericsUsed) ,]
-         foreach g $gflag {
-            set chkg [string trim $g]
-            set genericsUsed([set subsys]_[set chkg]) 1
-         }
+     if { $OPTIONS(verbose) } {stdlog "###TRACE------ Checking which generics are in use"}
+     set checkGenerics 1
+     if { [info exists SYSDIC([set subsys],genericsUsed)] } {
+       set gflag [split $SYSDIC([set subsys],genericsUsed) ,]
+       foreach g $gflag {
+          set chkg [string trim $g]
+          set genericsUsed([set subsys]_[set chkg]) 1
        }
      }
    }
