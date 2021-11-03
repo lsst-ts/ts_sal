@@ -261,7 +261,9 @@ SRC           = ../src/SAL_[set subsys].cpp $extrasrc"
    close $fout
    exec cp /tmp/Makefile.sacpp_[set subsys]_testcommands $SAL_WORK_DIR/$subsys/cpp/src/Makefile.sacpp_[set subsys]_testcommands
  }
- genauthlisttestscpp $subsys
+ if { [lsearch $CMD_ALIASES([set subsys]) "setLogLevel"] > -1 } {
+   genauthlisttestscpp $subsys
+ }
  if { $OPTIONS(verbose) } {stdlog "###TRACE<<< gencommandtestscpp $subsys"}
 }
 
@@ -291,45 +293,45 @@ echo \"Test with authList not set at all, default identity=[set subsys]\"
 echo \"Expect : completed ok\"
 unset LSST_IDENTITY
 $SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_setAuthList_commander   \"\" \"\"
-$SAL_WORK_DIR/[set subsys]/cpp/src/sacpp_[set subsys]_setLogLevel_commander 1
+$SAL_WORK_DIR/[set subsys]/cpp/src/sacpp_[set subsys]_setLogLevel_commander 1 \"\"
 echo \"=====================================================================\"
 echo \"Test with authList not set at all, identity=user@host\"
 echo \"Expect : Not permitted by authList\"
 export LSST_IDENTITY=user@host
-$SAL_WORK_DIR/[set subsys]/cpp/src/sacpp_[set subsys]_setLogLevel_commander 1
+$SAL_WORK_DIR/[set subsys]/cpp/src/sacpp_[set subsys]_setLogLevel_commander 1 \"\"
 echo \"=====================================================================\"
 echo \"Test with authList authorizedUsers=user@host, identity=user@host\"
 echo \"Expect : completed ok\"
 $SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_setAuthList_commander   \"user@host\" \"\"
-$SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_setLogLevel_commander 1
+$SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_setLogLevel_commander 1 \"\"
 echo \"=====================================================================\"
 echo \"Test with authList authorizedUsers=user@host,user2@other, identity=user@host\"
 echo \"Expect : completed ok\"
 $SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_setAuthList_commander   \"user@host,user2@other\" \"\"
-$SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_setLogLevel_commander 1
+$SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_setLogLevel_commander 1 \"\"
 echo \"=====================================================================\"
 echo \"Test with authList authorizedUsers=user@host,user2@other, identity=user2@other\"
 echo \"Expect : completed ok\"
 export LSST_IDENTITY=user2@other
 $SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_setAuthList_commander   \"user@host,user2@other\" \"\"
-$SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_setLogLevel_commander 1
+$SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_setLogLevel_commander 1 \"\"
 echo \"=====================================================================\"
 echo \"Test with authList authorizedUsers=user@host,user2@other, nonAuthorizedCSCs=Test identity=user2@other\"
 echo \"Expect : completed ok\"
 export LSST_IDENTITY=user2@other
 $SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_setAuthList_commander   \"user@host,user2@other\" \"Test\"
-$SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_setLogLevel_commander 1
+$SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_setLogLevel_commander 1 \"\"
 echo \"=====================================================================\"
 echo \"Test with authList authorizedUsers=user@host,user2@other, nonAuthorizedCSCs=Test identity=Test\"
 echo \"Expect : Not permitted by authList\"
 export LSST_IDENTITY=Test
-$SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_setLogLevel_commander 1
+$SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_setLogLevel_commander 1 \"\"
 echo \"=====================================================================\"
 echo \"Test with authList authorizedUsers=user@host,user2@other, nonAuthorizedCSCs=[set testnoauth],Test identity=[set testnoauth]\"
 echo \"Expect : Not permitted by authList\"
 export LSST_IDENTITY=[set testnoauth]
 $SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_setAuthList_commander   \"user@host,user2@other\" \"[set testnoauth],Test\"
-$SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_setLogLevel_commander 1
+$SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_setLogLevel_commander 1 \"\"
 sleep 10
 pkill -9 sacpp_[set subsys]
 echo \"=====================================================================\"
