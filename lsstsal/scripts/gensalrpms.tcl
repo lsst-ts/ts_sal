@@ -54,8 +54,9 @@ global OPTIONS SAL_DIR SALVERSION XMLVERSION SAL_WORK_DIR
     copyasset $SAL_WORK_DIR/Test/cpp/src/sacpp_TestWithSalobj [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/bin/.
     copyasset $SAL_WORK_DIR/Test/cpp/src/sacpp_TestWithSalobjTarget [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/bin/.
     exec mkdir -p [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/maven
-    exec cp -r $SAL_WORK_DIR/maven/Test-[set XMLVERSION]_[set SALVERSION] [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/maven/.
-    exec mv [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/maven/Test-[set XMLVERSION]_[set SALVERSION] [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/maven/Test
+    set mname [glob $SAL_WORK_DIR/maven/Test-[set XMLVERSION]_[set SALVERSION]*]
+    exec cp -r $mname [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/maven/.
+    exec mv [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/maven/[file tail $mname] [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/maven/Test
     if { $OPTIONS(verbose) } {puts stdout "###TRACE<<< copylangtests"}
 }
 
