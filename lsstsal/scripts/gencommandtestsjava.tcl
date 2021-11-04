@@ -189,7 +189,9 @@ public class [set subsys]Controller_[set alias]Test extends TestCase \{
     catch { set result [exec /tmp/makerep.sal] } bad
     if { $bad != "" } {puts stdout $bad}
   }
-  genauthlisttestsjava $subsys
+  if { [lsearch $CMD_ALIASES([set subsys]) "setLogLevel"] > -1 } {
+    genauthlisttestsjava $subsys
+  }
   if { $OPTIONS(verbose) } {stdlog "###TRACE<<< gencommandtestsjava $subsys"}
 }
 
