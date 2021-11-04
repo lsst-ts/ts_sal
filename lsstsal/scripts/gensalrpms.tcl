@@ -46,7 +46,7 @@ global OPTIONS
 #
 proc copylangtests { rpmname } {
 global OPTIONS SAL_DIR SALVERSION XMLVERSION RELVERSION SAL_WORK_DIR env
-    set mvnrelease [set XMLVERSION]_[exec cat $env(TS_SAL_DIR)/VERSION][set RELVERSION]
+    set mvnrelease [set XMLVERSION]_[exec cat $env(TS_SAL_DIR)/VERSION][join [split $RELVERSION "_"] "-"]
     if { $OPTIONS(verbose) } {puts stdout "###TRACE>>> copylangtests"}
     copyasset $SAL_DIR/../../bin/minimal_cpp_commander.sh [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/bin/.
     copyasset $SAL_DIR/../../bin/minimal_cpp_controller.sh [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/bin/.
@@ -55,7 +55,7 @@ global OPTIONS SAL_DIR SALVERSION XMLVERSION RELVERSION SAL_WORK_DIR env
     copyasset $SAL_WORK_DIR/Test/cpp/src/sacpp_TestWithSalobj [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/bin/.
     copyasset $SAL_WORK_DIR/Test/cpp/src/sacpp_TestWithSalobjTarget [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/bin/.
     exec mkdir -p [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/maven
-    exec cp -r $SAL_WORK_DIR/maven/Test-[set mvnrelease] [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/maven/.
+    exec cp -rv $SAL_WORK_DIR/maven/Test-[set mvnrelease] [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/maven/.
     exec mv [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/maven/Test-[set mvnrelease] [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/maven/Test
     if { $OPTIONS(verbose) } {puts stdout "###TRACE<<< copylangtests"}
 }
