@@ -64,9 +64,6 @@ set RELVERSION ""
 if { [string range [lindex $argv end] 0 7] == "version=" } {
   set RELVERSION [string range [lindex $argv end] 8 end]
   set argv [lrange $argv 0 [expr [llength $argv]-2]]
-  if { $OPTIONS(rpm) } {
-    set RELVERSION [join [split $RELVERSION "-"] "_"]
-  }
 }
 
 puts stdout "SAL generator - [set SALVERSION]"
