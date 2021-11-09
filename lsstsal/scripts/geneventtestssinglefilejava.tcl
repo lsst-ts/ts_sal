@@ -80,7 +80,8 @@ proc insertSendersJava { subsys file_writer } {
     puts $file_writer "    \}\n"
     puts $file_writer "    public void test[set subsys]Event_all() \{"
     puts $file_writer "        SAL_[set subsys] mgr = new SAL_[set subsys][set initializer];"
-    
+    puts $file_writer "        mgr.setDebugLevel(1);"
+
     foreach alias $EVENT_ALIASES($subsys) {
         puts $file_writer "        mgr.salEventPub(\"[set subsys]_logevent_[set alias]\");"
     }
@@ -155,6 +156,7 @@ proc insertLoggersJava { subsys file_writer } {
 
     puts $file_writer "    public void test[set subsys]EventLogger_all() \{"
     puts $file_writer "        SAL_[set subsys] mgr = new SAL_[set subsys][set initializer];"
+    puts $file_writer "        mgr.setDebugLevel(1);"
     
     foreach alias $EVENT_ALIASES($subsys) {
         puts $file_writer "        mgr.salEventSub(\"[set subsys]_logevent_[set alias]\");"

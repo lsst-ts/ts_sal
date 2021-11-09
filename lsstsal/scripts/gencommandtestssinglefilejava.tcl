@@ -81,6 +81,7 @@ proc insertCommandersJava { subsys file_writer } {
 
     puts $file_writer "    public void test[set subsys]Commander_All() \{"
     puts $file_writer "        SAL_[set subsys] mgr = new SAL_[set subsys][set initializer];"
+    puts $file_writer "        mgr.setDebugLevel(1);"
     foreach alias $CMD_ALIASES($subsys) {
         puts $file_writer "        mgr.salCommand(\"[set subsys]_command_[set alias]\");"
     }
@@ -162,6 +163,7 @@ proc insertControllersJava { subsys file_writer } {
 
     puts $file_writer "    public void test[set subsys]Controller_All() \{"
     puts $file_writer "        SAL_[set subsys] mgr = new SAL_[set subsys][set initializer];"
+    puts $file_writer "        mgr.setDebugLevel(1);"
     foreach alias $CMD_ALIASES($subsys) {
         puts $file_writer "        mgr.salProcessor(\"[set subsys]_command_[set alias]\");"
     }

@@ -53,6 +53,7 @@ public class [set subsys]Commander_[set alias]Test extends TestCase \{
 	public void test[set subsys]Commander_[set alias]() \{
           String idname = System.getenv(\"LSST_IDENTITY\");
      	  SAL_[set subsys]   mgr = new SAL_[set subsys](idname);
+          mgr.setDebugLevel(1);
 
 	  // Issue command
 	  int count=0;
@@ -149,6 +150,7 @@ public class [set subsys]Controller_[set alias]Test extends TestCase \{
 	  // Initialize
           String idname = System.getenv(\"LSST_IDENTITY\");
      	  SAL_[set subsys] cmd = new SAL_[set subsys](idname);
+          cmd.setDebugLevel(1);
 
 	  cmd.salProcessor(\"[set subsys]_command_[set alias]\");
 	  [set subsys].command_[set alias] command = new [set subsys].command_[set alias]();
