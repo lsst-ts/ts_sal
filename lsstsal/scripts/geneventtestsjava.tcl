@@ -52,6 +52,7 @@ public class [set subsys]Event_[set alias]Test extends TestCase \{
 
           short aKey=1;
 	  SAL_[set subsys] mgr = new SAL_[set subsys][set initializer];
+          mgr.setDebugLevel(1);
 
 	  // Issue Event
           int status=0;
@@ -128,6 +129,7 @@ public class [set subsys]EventLogger_[set alias]Test extends TestCase \{
 
 	  // Initialize
 	  SAL_[set subsys] evt = new SAL_[set subsys][set initializer];
+          evt.setDebugLevel(1);
           evt.salEventSub(\"[set subsys]_logevent_[set alias]\");
 	  [set subsys].logevent_[set alias] event = new [set subsys].logevent_[set alias]();
           System.out.println(\"Event [set alias] logger ready \");

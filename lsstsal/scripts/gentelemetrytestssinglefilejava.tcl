@@ -80,6 +80,7 @@ proc insertPublishersJava { subsys file_writer } {
     puts $file_writer "    \}\n"
     puts $file_writer "    public void test[set subsys]Publisher_all() \{"
     puts $file_writer "        SAL_[set subsys] mgr = new SAL_[set subsys][set initializer];"
+    puts $file_writer "        mgr.setDebugLevel(1);"
 
     foreach alias $TLM_ALIASES($subsys) {
         puts $file_writer "        mgr.salTelemetryPub(\"[set subsys]_[set alias]\");"
@@ -133,6 +134,7 @@ proc insertSubscribersJava { subsys file_writer } {
     puts $file_writer "    \}\n"
     puts $file_writer "    public void test[set subsys]Subscriber_all() \{"
     puts $file_writer "        SAL_[set subsys] mgr = new SAL_[set subsys][set initializer];"
+    puts $file_writer "        mgr.setDebugLevel(1);"
 
     foreach alias $TLM_ALIASES($subsys) {
         puts $file_writer "        mgr.salTelemetrySub(\"[set subsys]_[set alias]\");"
