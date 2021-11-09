@@ -66,18 +66,14 @@ public class [set subsys]Event_[set alias]Test extends TestCase \{
        set pname [lindex $p 1]
        set ptype [lindex $p 0]
        if { [llength [split $pname "()"]] > 1 } {
-        set l 0
         set pspl [split $pname "()"]
         set pname [lindex $pspl 0]
         set pdim  [lindex $pspl 1]
-        while { $l < $pdim } {
-         switch $ptype {
-          boolean { puts $fcmd "       	    event.[set pname]\[$l\] = true;" }
-          double  { puts $fcmd "  	    event.[set pname]\[$l\] = (double) 1.0;" }
-          int     { puts $fcmd "  	    event.[set pname]\[$l\] = (int) 1;" }
-          long    { puts $fcmd "  	    event.[set pname]\[$l\] = (int) 1;" }
-         }
-         incr l 1
+        switch $ptype {
+          boolean { puts $fcmd "            for (int i=0; i<$pdim; i++) \{event.[set pname]\[i\] = true; \}" }
+          double  { puts $fcmd "            for (int i=0; i<$pdim; i++) \{event.[set pname]\[i\] = (double) 1.0; \}" }
+          int     { puts $fcmd "            for (int i=0; i<$pdim; i++) \{event.[set pname]\[i\] = (int) 1; \}" }
+          long    { puts $fcmd "            for (int i=0; i<$pdim; i++) \{event.[set pname]\[i\] = (int) 1; \}" }
         }
        } else {
         switch $ptype {
