@@ -302,7 +302,7 @@ public class SAL_SALData {
 		hasEventReader = false;
 		hasEventWriter = false;
 		hasProcessor = false;
-		subsystemID = 0;
+		subsystemID = aKey;
 		debugLevel = 0;
                 System.loadLibrary("salUtils");
                 initSalActors();
