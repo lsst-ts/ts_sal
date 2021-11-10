@@ -1,13 +1,23 @@
-
-# set SAL_WORK_DIR $env(SAL_WORK_DIR)
-# set SAL_DIR $env(SAL_DIR)
-# source $SAL_DIR/utilities.tcl
-# source $SAL_DIR/geneventtestsjava.tcl
-# source $SAL_WORK_DIR/idl-templates/validated/camera_evtdef.tcl
-# geneventtestsjava camera
+#!/usr/bin/env tclsh
+## \file geneventtestsjava.tcl
+# \brief Generate Java code to test the SAL Command API
 #
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, V3 
+#\n
+# Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
+#\n
+#
+#
+#\code
 
 
+#
+## Documented proc \c geneventtestsjava .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Generate Java code to test the SAL Event API
+#
 
 proc geneventtestsjava { subsys } {
 global EVENT_ALIASES EVTS EVENT_ALIASES EVTS SAL_WORK_DIR SYSDIC SAL_DIR
@@ -42,6 +52,7 @@ public class [set subsys]Event_[set alias]Test extends TestCase \{
 
           short aKey=1;
 	  SAL_[set subsys] mgr = new SAL_[set subsys][set initializer];
+          mgr.setDebugLevel(1);
 
 	  // Issue Event
           int status=0;
@@ -55,18 +66,14 @@ public class [set subsys]Event_[set alias]Test extends TestCase \{
        set pname [lindex $p 1]
        set ptype [lindex $p 0]
        if { [llength [split $pname "()"]] > 1 } {
-        set l 0
         set pspl [split $pname "()"]
         set pname [lindex $pspl 0]
         set pdim  [lindex $pspl 1]
-        while { $l < $pdim } {
-         switch $ptype {
-          boolean { puts $fcmd "       	    event.[set pname]\[$l\] = true;" }
-          double  { puts $fcmd "  	    event.[set pname]\[$l\] = (double) 1.0;" }
-          int     { puts $fcmd "  	    event.[set pname]\[$l\] = (int) 1;" }
-          long    { puts $fcmd "  	    event.[set pname]\[$l\] = (int) 1;" }
-         }
-         incr l 1
+        switch $ptype {
+          boolean { puts $fcmd "            for (int i=0; i<$pdim; i++) \{event.[set pname]\[i\] = true; \}" }
+          double  { puts $fcmd "            for (int i=0; i<$pdim; i++) \{event.[set pname]\[i\] = (double) 1.0; \}" }
+          int     { puts $fcmd "            for (int i=0; i<$pdim; i++) \{event.[set pname]\[i\] = (int) 1; \}" }
+          long    { puts $fcmd "            for (int i=0; i<$pdim; i++) \{event.[set pname]\[i\] = (int) 1; \}" }
         }
        } else {
         switch $ptype {
@@ -118,6 +125,7 @@ public class [set subsys]EventLogger_[set alias]Test extends TestCase \{
 
 	  // Initialize
 	  SAL_[set subsys] evt = new SAL_[set subsys][set initializer];
+          evt.setDebugLevel(1);
           evt.salEventSub(\"[set subsys]_logevent_[set alias]\");
 	  [set subsys].logevent_[set alias] event = new [set subsys].logevent_[set alias]();
           System.out.println(\"Event [set alias] logger ready \");

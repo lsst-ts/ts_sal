@@ -31,6 +31,7 @@ import DDS.QosProvider;
 import org.lsst.sal.salActor;
 import org.lsst.sal.salUtils;
 import java.util.Random;
+import java.util.StringTokenizer;
 
 // INSERT SAL IMPORTS
 
@@ -77,18 +78,21 @@ public class SAL_SALData {
         private String rcvIdentity;
         private int subsystemID;
         private int origin;
-        private int ddsIPaddress;
         private String domainName;
         private String partitionPrefix;
         private int lastActor_telemetry;
         private int lastActor_command;
         private int lastActor_event;
         private String CSC_identity;
- 
+        private String authorizedUsers;
+        private String nonAuthorizedCSCs;
+        private Boolean authListEnabled;
+
         salUtils salUtil = new salUtils();
         salActor[] sal = new salActor[SAL__ACTORS_MAXCOUNT];
 
 // INSERT TYPE SUPPORT      
+
 
         public int getActorIndex (String topicName) {
           for (int i=0; i<SAL__ACTORS_MAXCOUNT;i++) {
@@ -102,6 +106,10 @@ public class SAL_SALData {
         }
 
 
+/** Sets up the DDS Publisher support for the named DDS type
+  @param topicName is the name of the DDS topic
+  @throws "Unknown Topic" if the topic is not defined
+ */    
 	public int salTelemetryPub(String topicName)
 	{
 	  int actorIdx = -1;
@@ -116,6 +124,10 @@ public class SAL_SALData {
 	  return status;
 	}
 
+/** Sets up the DDS Subscriber support for the named DDS type
+  @param topicName is the name of the DDS topic
+  @throws "Unknown Topic" if the topic is not defined
+ */    
 	public int salTelemetrySub(String topicName)
 	{
 	  int actorIdx = -1;
@@ -131,6 +143,10 @@ public class SAL_SALData {
 	}
 
 
+/** Sets up the DDS Publisher support for the indexed SAL Actor
+  @param actorIdx is the index of the DDS topic's salActor
+  @throws "Unknown Topic" if the topic is not defined
+ */    
         public int salTelemetryPub(int actorIdx)
 	{
 		String partitionName = domainName;
@@ -156,6 +172,10 @@ public class SAL_SALData {
 
 
 
+/** Sets up the DDS Subscriber support for the indexed SAL Actor
+  @param actorIdx is the index of the DDS topic's salActor
+  @throws "Unknown Topic" if the topic is not defined
+ */    
         public int salTelemetrySub(int actorIdx)
 	{
 		String partitionName = domainName;
@@ -191,16 +211,27 @@ public class SAL_SALData {
 
 
 
+/// Placeholder routine to be replaced by system wide logging once available
 	public void logError(int status) 
 	{
 		System.out.println("=== ERROR return value = " + status); 
 	}
 
+/** Constructor for the SAL_SALData object.
+  *
+  @param aKey is used to specify the index of an indexed component, or 0 for non-indexed ones
+  @param identity is used to specify the private_identity of a commander
+
+ */
         
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
         public SAL_SALData(int aKey, String identity)
 	{
-                CSC_identity = String.format("%s" , identity);
+                if (identity == null) {
+                   CSC_identity = String.format("SALData:%d" , aKey);
+                } else {
+                   CSC_identity = String.format("%s" , identity);
+                }
 		initSalEnvironment(aKey);
 	}
 
@@ -209,10 +240,14 @@ public class SAL_SALData {
                 CSC_identity = String.format("SALData:%d" , aKey);
 		initSalEnvironment(aKey);
 	}
-#else
+#endif
         public SAL_SALData(String identity)
 	{
-                CSC_identity = String.format("%s" , identity);
+                if (identity == null) {
+                  CSC_identity = "SALData";
+                } else {
+                  CSC_identity = String.format("%s" , identity);
+                }
 		initSalEnvironment(0);
 	}
 	public SAL_SALData()
@@ -220,40 +255,31 @@ public class SAL_SALData {
                 CSC_identity = "SALData";
 		initSalEnvironment(0);
 	}
-#endif
 
+
+/** Environment setup for a SAL_SALData object.
+  *
+  * + LSST_DDS_PARTITION_PREFIX is the name of the partition being used
+  * + LSST_DDS_IP is the IP address of the DDS ethernet interface
+  * + LSST_DDS_QOS is the optional path to the DDS QoS XML description
+  * + LSST_DDS_HISTORYSYNC is the maximum number of seconds to wait to obtain historical messages on a topic
+  *
+  @param aKey is used to specify the index of an indexed component, or 0 for non-indexed ones
+ */
         public void initSalEnvironment(int aKey)
 	{
 		Random randGen = new java.util.Random();
-                String dname = System.getenv("LSST_DDS_DOMAIN");
                 String pname = System.getenv("LSST_DDS_PARTITION_PREFIX");
-                String ipaddress = System.getenv("LSST_DDS_IP");
                 String hname = System.getenv("LSST_DDS_HISTORYSYNC");
                 String qname = System.getenv("LSST_DDS_QOS");
-                if (dname != null) {
-                   partitionPrefix = dname;
-                } else {
-                   partitionPrefix = "LSST";
-                }
+                String aname = System.getenv("LSST_DDS_ENABLE_AUTHLIST");
                 if (pname != null) {
                    partitionPrefix = pname;
                 } else {
-                   System.out.println("=== WARNING : LSST_DDS_PARTITION_PREFIX not defined, using deprecated alias LSST_DDS_DOMAIN\n This will stop working in SAL 6");
-                }
-		if (ipaddress == null) {
-		  ddsIPaddress = (int)randGen.nextInt(99999999);
-                } else {
-                  int ipasint = 0;
-                  String[] ipAddressinArray = ipaddress.split("\\.");
-		  for (int i=0;i<ipAddressinArray.length;i++) {
-		     int power = 3-i;
-		     int ip = Integer.parseInt(ipAddressinArray[i]);
-                     ipasint += ip * Math.pow(256,power);
-                  }
-		  ddsIPaddress = ipasint;
+                   System.out.println("=== WARNING : LSST_DDS_PARTITION_PREFIX not defined\n");
                 }
                 if (hname == null) {
-                   historySync = 30;
+                   historySync = 0;
                 } else {
                    historySync = Integer.parseInt(hname);
                 }
@@ -263,7 +289,12 @@ public class SAL_SALData {
                   telemetryQos = new QosProvider(qname,"TelemetryProfile");
                   ackcmdQos = new QosProvider(qname,"AckcmdProfile");
                 }
-                CSC_identity = "SALData";
+                authListEnabled = false;
+                if (aname != null) {
+                  if (Integer.valueOf(aname) == 1) {
+                    authListEnabled = true;
+                  } 
+                }
                 origin = (int)randGen.nextInt(99999999);
 		hasReader = false;
 		hasWriter = false;
@@ -278,6 +309,11 @@ public class SAL_SALData {
 	}
 
 
+/** Get the time from the system. The TAI time will be used, which assumes that the kernel 
+  * leap seconds offset has been correctly set. The getLeapSeconds method can be used to 
+  * do a simple sanity check
+  @return The current TAI system time
+ */
 	public double getCurrentTime()
 	{
   		double ts = salUtil.getTAISeconds();
@@ -340,6 +376,7 @@ public class SAL_SALData {
 
 
 
+/// Set the debug message output verbosity level for this SAL_SALData object
 	public int setDebugLevel( int level )
 	{
            int status = 0;
@@ -347,17 +384,20 @@ public class SAL_SALData {
 	   return status;	
 	}
 
+/// Get the current value of the debug message verbosity level for this SAL_SALData object
 	public int getDebugLevel( int level )
 	{
 	   return debugLevel;
 	}
 
+/// Get the current IP address
 	public int getOrigin()
 	{
 	   int status = 0;
 	   return status;
 	}
 
+/// Generic method to read the value of a SAL_SALData object internal state
 	public int getProperty(String property, String value)
 	{
 	   int status = SAL__OK;
@@ -370,6 +410,7 @@ public class SAL_SALData {
 	   return status;
 	}
 
+/// Generic method to set the value of a SAL_SALData object internal state
 	public int setProperty(String property, String value)
 	{
            int status = SAL__OK;
@@ -382,6 +423,7 @@ public class SAL_SALData {
 	}
  
 
+/// Close down the DDS support for this SAL_SALData object
 	public void salShutdown()
 	{
           if (participant != null) {
@@ -391,6 +433,10 @@ public class SAL_SALData {
 	}
 
 
+/** Sets up the DDS Subscriber support for the named DDS event topic
+  @param topicName is the name of the DDS topic
+  @throws "Unknown Topic" if the topic is not defined
+ */    
 	public int salEventSub(String topicName)
 	{
 		int status = SAL__ERROR;
@@ -401,6 +447,10 @@ public class SAL_SALData {
 		return status;
 	}
 
+/** Sets up the DDS Publisher support for the named DDS event topic
+  @param topicName is the name of the DDS topic
+  @throws "Unknown Topic" if the topic is not defined
+ */    
 	public int salEventPub(String topicName)
 	{
 		int status = SAL__ERROR;
@@ -411,6 +461,9 @@ public class SAL_SALData {
 		return status;
 	}
 
+/** Sets up the DDS Participant and specify a DDS partition for it
+  @param partition is the partition specifier of the DDS topic
+ */    
 	public void createParticipant(String partitionName) {
            if (participant == null) {
 		dpf = DomainParticipantFactory.get_instance();
@@ -424,6 +477,8 @@ public class SAL_SALData {
            }
 	}
 
+/** Deletes the DDS Participant
+ */    
 	public void deleteParticipant() {
 		dpf.delete_participant(participant);
 	}

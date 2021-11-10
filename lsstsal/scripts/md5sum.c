@@ -1,3 +1,9 @@
+/**
+  \file md5sum.c
+  \brief Calculate MD5 sum of a file, used to generate SAL revCode values
+ *
+ */
+
 /* GLOBAL.H - RSAREF types and constants
  */
 

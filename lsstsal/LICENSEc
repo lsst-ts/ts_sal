@@ -1,9 +1,10 @@
 // 
-// LSST Service Abstraction Layer
-// Copyright 2008 - 2014 LSST Corporation.
+// Service Abstraction Layer (ts_sal)
+// Copyright 2021 Vera C. Rubin Observatory
 // 
 // This product includes software developed by the
-// LSST Project (http://www.lsst.org/).
+// Rubin Observatory (https://www.lsst.org/).
+//
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by

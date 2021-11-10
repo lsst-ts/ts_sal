@@ -1,4 +1,16 @@
 #!/usr/bin/env tclsh
+## \file parseXMLtoMD_UML.tcl
+# \brief This contains procedures to generate Magic Draw compatible 
+#  XML describing the SAL XML Topics
+#
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, V3 
+#\n
+# Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
+#\n
+#
+#
+#\code
 
 source $env(SAL_DIR)/add_system_dictionary.tcl
 set TCODE(string) '_rC9ncFqtEeiGoKJ3GcWAXw'
@@ -17,6 +29,14 @@ set TCODE(float) '_rC-OgFqtEeiGoKJ3GcWAXw'
 set TCODE(double) '_rC-OgVqtEeiGoKJ3GcWAXw'
 set TCODE(byte) '_rC-OglqtEeiGoKJ3GcWAXw'
 
+#
+## Documented proc \c genEnumeration .
+# \param[in] fid File handle of output UML XML
+# \param[in] ename Element name
+# \param[in] enum An enumeration value
+#
+#  Generate an enumeration structure in UML
+#
 proc genEnumeration { fid ename enum } {
 global ENUMXID EXIDBASE
    set EXIDBASE($ename) "_18_5_3_b1b02ca_1519318452686_183403_[format %4.4d $ENUMXID]"
@@ -30,6 +50,13 @@ _b1b02ca_1519318452686_183403_[format %4.4d $ENUMXID]' name='[set i]'/>"
    puts $fid "		</packagedElement>"
 }
 
+#
+## Documented proc \c refEnumeration .
+# \param[in] fid File handle of output UML XML
+# \param[in] ename Element name
+#
+#  Reference an enumeration structure in UML
+#
 proc refEnumeration { fid ename } {
 global ENUMXID EXIDBASE
   puts $fid "<ownedAttribute xmi:type='uml:Property'  name='[set ename]' visibility='private' type='[set EXIDBASE($ename)]'>
@@ -49,6 +76,12 @@ global ENUMXID EXIDBASE
 </ownedAttribute>"
 }
 
+#
+## Documented proc \c genUnits .
+# \param[in] fid File handle of output UML XML
+#
+#  Generate a Units structure in UML
+#
 proc genUnits { fid } { 
    set nunit 1
    set xmibase "_18_5_2_ed9034f_1520634937974_583483_"
@@ -122,6 +155,12 @@ proc genUnits { fid } {
 
 
 
+#
+## Documented proc \c parseXMLtoUML .
+# \param[in] csclist List of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Generate a Magic Draw compatible UML (XML) file using the SAL XML as input
+#
 proc parseXMLtoUML { {csclist all } } { 
 global IDLRESERVED SAL_WORK_DIR SAL_DIR CMDS CMD_ALIASES EVTS EVENT_ALIASES SYSDIC TCODE
 global TLMS TLM_ALIASES EVENT_ENUM ENUM EATYPE IGNORE
@@ -267,9 +306,7 @@ global TLMS TLM_ALIASES EVENT_ENUM ENUM EATYPE IGNORE
     puts $fout "			<packagedElement xmi:type='uml:Package' xmi:id='_rC9AbVqtEeiGoKJ3GcWAXw' name='IDL_Datatypes'>
 				<packagedElement xmi:type='uml:DataType' xmi:id='_rC9ncFqtEeiGoKJ3GcWAXw' name='string'/>
 				<packagedElement xmi:type='uml:DataType' xmi:id='_rC9ncVqtEeiGoKJ3GcWAXw' name='short'/>
-				<packagedElement xmi:type='uml:DataType' xmi:id='_rC9nclqtEeiGoKJ3GcWAXw' name='char'/>
 				<packagedElement xmi:type='uml:DataType' xmi:id='_rC9nc1qtEeiGoKJ3GcWAXw' name='unsigned short'/>
-				<packagedElement xmi:type='uml:DataType' xmi:id='_rC9ndFqtEeiGoKJ3GcWAXw' name='octet'/>
 				<packagedElement xmi:type='uml:DataType' xmi:id='_rC9ndVqtEeiGoKJ3GcWAXw' name='boolean'/>
 				<packagedElement xmi:type='uml:DataType' xmi:id='_rC9ndlqtEeiGoKJ3GcWAXw' name='long'/>
 				<packagedElement xmi:type='uml:DataType' xmi:id='_rC9nd1qtEeiGoKJ3GcWAXw' name='unsigned long'/>

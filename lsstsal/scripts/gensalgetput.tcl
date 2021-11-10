@@ -1,8 +1,17 @@
 #!/usr/bin/env tclsh
-#
-# Generate SALDDS methods for getSample and putSample for all types
+## \file gensalgetput.tcl
+# \brief Generate SALDDS methods for getSample and putSample for all types
 # and generate salTypeSupport routine
 #
+#
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, V3 
+#\n
+# Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
+#\n
+#
+#
+#\code
 
 source $env(SAL_DIR)/geneventaliascode.tcl
 source $env(SAL_DIR)/gencmdaliascode.tcl
@@ -12,6 +21,14 @@ source $env(SAL_DIR)/activaterevcodes.tcl
 source $env(SAL_DIR)/gentelemetrytestssinglefile.tcl
 source $env(SAL_DIR)/gentelemetrytestssinglefilejava.tcl
 
+#
+## Documented proc \c insertcfragments .
+# \param[in] fout File handle of output file
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] name Name of SAL Topic
+#
+#  Generate the include file code for the SAL C++ API
+#
 proc insertcfragments { fout base name } {
 global SAL_WORK_DIR OPTIONS
    if { $OPTIONS(verbose) } {stdlog "###TRACE>>> insertcfragments $fout $base $name"}
@@ -44,10 +61,8 @@ salReturn SAL_[set base]::putSample_[set name]([set base]_[set name]C *data)
   sal\[actorIdx\].sndStamp = Instance.private_sndStamp;
   Instance.private_identity = DDS::string_dup(CSC_identity);
   Instance.private_origin = getpid();
-  Instance.private_host = ddsIPaddress;
   Instance.private_seqNum = sal\[actorIdx\].sndSeqNum;
   sal\[actorIdx\].sndSeqNum++;
-  Instance.private_host = 1;
    "
   set frag [open $SAL_WORK_DIR/include/SAL_[set base]_[set name]Cput.tmp r]
   while { [gets $frag rec] > -1} {puts $fout $rec}
@@ -108,7 +123,6 @@ salReturn SAL_[set base]::getSample_[set name]([set base]_[set name]C *data)
       cout << \"    sndStamp  : \" << Instances\[j\].private_sndStamp << endl;
       cout << \"    origin  : \" << Instances\[j\].private_origin << endl;
       cout << \"    identity  : \" << Instances\[j\].private_identity << endl;
-      cout << \"    host  : \" << Instances\[j\].private_host << endl;
     \}
     if ( (rcvdTime - Instances\[j\].private_sndStamp) < sal\[actorIdx\].sampleAge && Instances\[j\].private_origin != 0 ) \{
 "
@@ -177,6 +191,11 @@ salReturn SAL_[set base]::flushSamples_[set name]([set base]_[set name]C *data)
   if { $OPTIONS(verbose) } {stdlog "###TRACE<<< insertcfragments $fout $base $name"}
 }
 
+#
+## Documented proc \c testifdef .
+#
+#  Process a Java file to replace #ifdef regions
+#
 proc testifdef { } {
 global SYSDIC
   set SYSDIC(hexapod,keyedID) 1
@@ -194,6 +213,16 @@ global SYSDIC
 }
 
 
+#
+## Documented proc \c processifdefregion .
+# \param[in] fin File handle of input file
+# \param[in] fout File handle of output file
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Process a Java file to replace #ifdef regions by
+#  adding code for the sections required to process
+#  Topics with key's (ie more than one instance is allowed)
+#
 proc processifdefregion { fin fout base } {
 global SYSDIC
    if { [info exists SYSDIC($base,keyedID)] } {
@@ -213,6 +242,13 @@ global SYSDIC
    }
 }
 
+#
+## Documented proc \c addSWVersionsCPP .
+# \param[in] fout File handle of output file
+#
+#  Add software versioning routines to CPP API for
+#  getSALVersion,getXMLVersion,getOSPLVersion
+#
 proc addSWVersionsCPP { fout } {
 global SALVERSION env
    set xmldist [string trim [exec cat $env(SAL_WORK_DIR)/VERSION]]
@@ -240,34 +276,51 @@ string SAL_SALData::getOSPLVersion()
 "
 }
 
+#
+## Documented proc \c addSWVersionsJava .
+# \param[in] fout File handle of output file
+#
+#  Add software versioning routines to Java API for
+#  getSALVersion,getXMLVersion,getOSPLVersion
+#
 proc addSWVersionsJava { fout } {
 global SALVERSION env
    set xmldist [string trim [exec cat $env(SAL_WORK_DIR)/VERSION]]
   puts $fout "
+/// Returns the current SAL version e.g. \"4.1.0\"
 public String getSALVersion()
 \{
     return \"$SALVERSION\";
 \}
 
+/// Returns the current XML version e.g. \"5.0.0\"
 public String getXMLVersion()
 \{
     return \"$xmldist\";
 \}
 
+/// Returns the current OpenSpliceDDS version e.g. \"6.9.181127OSS\"
 public String getOSPLVersion()
 \{
-    String osplrelease = System.getenv(\"OSPL_RELEASE\");
+  String osplrelease = System.getenv(\"OSPL_RELEASE\");
     if (osplrelease == null) \{
       System.out.println(\"Error in getOSPLVersion: OSPL_RELEASE environment not setup\");
       System.exit(-1);
     \}
-    return osplrelease;
-\}
+    return osplrelease;\}
 "
 }
 
 
 
+#
+## Documented proc \c addActorIndexesCPP .
+# \param[in] idlfile Name of input IDL definition file
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] fout File handle of output file
+#
+#   Add code to support salActor data structure initialization in C++
+#
 proc addActorIndexesCPP { idlfile base fout } {
 global SAL_WORK_DIR
    set ptypes [lsort [split [exec grep pragma $idlfile] \n]]
@@ -359,6 +412,14 @@ void SAL_SALData::initSalActors ()
 \}"
 }
 
+#
+## Documented proc \c addActorIndexesJava .
+# \param[in] idlfile Name of input IDL definition file
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] fout File handle of output file
+#
+#   Add code to support salActor data structure initialization in Java
+#
 proc addActorIndexesJava { idlfile base fout } {
    set ptypes [lsort [split [exec grep pragma $idlfile] \n]]
    set idx 0
@@ -430,6 +491,14 @@ proc addActorIndexesJava { idlfile base fout } {
   \}"
 }
 
+#
+## Documented proc \c copyfromjavasample .
+# \param[in] fout File handle of output file
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] name Name of of SAL Topic
+#
+#   Add code to copy data from Java DDS sample
+#
 proc copyfromjavasample { fout base name } {
 global CMDS TLMS EVTS
         set ctype [string range $name 0 7]
@@ -491,6 +560,14 @@ global CMDS TLMS EVTS
         }
 }
 
+#
+## Documented proc \c copytojavasample .
+# \param[in] fout File handle of output file
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] name Name of of SAL Topic
+#
+#   Add code to copy data into Java DDS sample
+#
 proc copytojavasample { fout base name } {
 global CMDS TLMS EVTS
         set ctype [string range $name 0 7]
@@ -553,6 +630,17 @@ global CMDS TLMS EVTS
 }
 
 
+#
+## Documented proc \c addSALDDStypes .
+# \param[in] idlfile Name of input IDL definition file
+# \param[in] id Subsystem identity
+# \param[in] lang Language to generate code for (cpp,java,python)
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Generates code to publish and subscribe to samples of each type of 
+#  SAL Topic for a Subsystem/CSC, getSample,putSample,getNextSample,flushSamples
+#  and also code to manage the low level DDS Topic registration and management
+#
 proc addSALDDStypes { idlfile id lang base } {
 global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS
  if { $OPTIONS(verbose) } {stdlog "###TRACE>>>  addSALDDStypes $idlfile $id $lang $base "}
@@ -575,7 +663,11 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS
      if { [string range $rec 0 21] == "// INSERT TYPE SUPPORT" } {
         addActorIndexesJava $idlfile $base $fout
         addSWVersionsJava $fout
-        puts $fout "        public int salTypeSupport(String topicName) \{
+        puts $fout "
+/** Configure DDS type support for [set base] DDS topics. 
+  * @param topicName The DDS topic name
+  */
+        public int salTypeSupport(String topicName) \{
     String\[\] parts = topicName.split(\"_\");"
         foreach i $atypes {
            puts $fout "                if (\"[set base]\".equals(parts\[0\]) ) \{"
@@ -619,7 +711,11 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS
                set name [lindex $j 2]
                set revcode [getRevCode [set base]_[set name] short]
                set alias [string range $name 9 end]
-puts $fout "
+               set turl [getTopicURL $base $name]
+               puts $fout "
+/** Publish a sample of the $turl DDS topic. A publisher must already have been set up
+  * @param data The payload of the sample as defined in the XML for SALData
+  */
   public int putSample([set base].[set name] data)
   \{
           int status = SAL__OK;
@@ -639,8 +735,9 @@ puts $fout "
     sal\[actorIdx\].sndSeqNum++;
     if (debugLevel > 0) \{
       System.out.println(\"=== \[putSample $name\] writing a message containing :\");
-      System.out.println(\"    revCode  : \" + SALInstance.private_revCode);
-      System.out.println(\"    sndStamp  : \" + SALInstance.private_sndStamp);
+      System.out.println(\"  revCode  : \" + SALInstance.private_revCode);
+      System.out.println(\"  sndStamp  : \" + SALInstance.private_sndStamp);
+      System.out.println(\"  identity : \" + SALInstance.private_identity);
     \}"
         copytojavasample $fout $base $name
         if { [info exists SYSDIC($base,keyedID)] } {
@@ -661,6 +758,11 @@ puts $fout "
   \}
 
 
+/** Receive the latest sample of the $turl DDS topic. A subscriber must already have been set up.
+  * If there are no samples available then SAL__NO_UPDATES is returned, otherwise SAL__OK is returned.
+  * If there are multiple samples in the history cache, they are skipped over and only the most recent is supplied.
+  * @param data The payload of the sample as defined in the XML for SALData
+  */
   public int getSample([set base].[set name] data)
   \{
     int status =  -1;
@@ -679,7 +781,7 @@ puts $fout "
         } else {
           puts $fout "      createReader(actorIdx,false);"
         }
-         puts $fout "
+        puts $fout "
 	    sal\[actorIdx\].isReader = true;
 	  \}
 	  DataReader dreader = getReader(actorIdx);
@@ -693,12 +795,12 @@ puts $fout "
       if (debugLevel > 0) \{
     for (int i = 0; i < numsamp; i++) \{
         System.out.println(\"=== \[getSample $name \] message received :\" + i);
-        System.out.println(\"    revCode  : \"
-            + SALInstance.value\[i\].private_revCode);
-              System.out.println(\"     sndStamp  : \" + SALInstance.value\[i\].private_sndStamp);
+        System.out.println(\"  revCode  : \" + SALInstance.value\[i\].private_revCode);
+        System.out.println(\"  identity : \" + SALInstance.value\[i\].private_identity);
+        System.out.println(\"  sndStamp  : \" + SALInstance.value\[i\].private_sndStamp);
         System.out.println(\"  sample_state : \" + infoSeq.value\[i\].sample_state);
-        System.out.println(\"    view_state : \" + infoSeq.value\[i\].view_state);
-        System.out.println(\"instance_state : \" + infoSeq.value\[i\].instance_state);
+        System.out.println(\"  view_state : \" + infoSeq.value\[i\].view_state);
+        System.out.println(\"  instance_state : \" + infoSeq.value\[i\].instance_state);
     \}
       \}
             int j=numsamp-1;
@@ -721,6 +823,13 @@ puts $fout "
     return last;
   \}
 
+/** Receive the next sample of the $turl DDS topic from the history cache. 
+  * A subscriber must already have been set up
+  * If there are no samples available then SAL__NO_UPDATES is returned, otherwise SAL__OK is returned.
+  * If there are multiple samples in the history cache, they are iterated over by consecutive 
+  * calls to getNextSample_[set name]
+  * @param data The payload of the sample as defined in the XML for SALData
+  */
   public int getNextSample([set base].[set name] data)
   \{
     int status = -1;
@@ -732,6 +841,9 @@ puts $fout "
           return status;
   \}
 
+/** Empty the history cache of samples. After this only newly published samples
+  * will be available to getSample_[set name] or getNextSample_[set name]
+  */
   public int flushSamples([set base].[set name] data)
   \{
           int status = -1;
@@ -742,9 +854,7 @@ puts $fout "
           sal\[actorIdx\].sampleAge = 1.0e20;
           return SAL__OK;
   \}
-
 "
-
            }
         }
         gencmdaliascode $base java $fout
@@ -828,6 +938,7 @@ puts $fout "
               if { $OPTIONS(verbose) } {stdlog "###TRACE------ Processing topic $j"}
               set name [lindex $j 2]
               set revcode [getRevCode [set base]_[set name] short]
+              set turl [getTopicURL $base $name]
 puts $fout "
 salReturn SAL_[set base]::putSample([set base]::[set name][set revcode] data)
 \{
@@ -884,13 +995,13 @@ salReturn SAL_[set base]::getSample([set base]::[set name][set revcode]Seq data)
       salReturn putSample([set base]::[set name][set revcode] data);
       salReturn getSample([set base]::[set name][set revcode]Seq data);
 
-/** Publish a sample of the [set base]_[set name] DDS topic. A publisher must already have been set up
+/** Publish a sample of the $turl DDS topic. A publisher must already have been set up
   * @param data The payload of the sample as defined in the XML for SALData
   */
       salReturn putSample_[set name]([set base]_[set name]C *data);
 
 
-/** Receive the latest sample of the [set base]_[set name] DDS topic. A subscriber must already have been set up.
+/** Receive the latest sample of the $turl DDS topic. A subscriber must already have been set up.
   * If there are no samples available then SAL__NO_UPDATES is returned, otherwise SAL__OK is returned.
   * If there are multiple samples in the history cache, they are skipped over and only the most recent is supplied.
   * @param data The payload of the sample as defined in the XML for SALData
@@ -898,7 +1009,7 @@ salReturn SAL_[set base]::getSample([set base]::[set name][set revcode]Seq data)
       salReturn getSample_[set name]([set base]_[set name]C *data);
 
 
-/** Receive the next sample of the [set base]_[set name] DDS topic from the history cache. A subscriber must already have been set up
+/** Receive the next sample of the $turl DDS topic from the history cache. A subscriber must already have been set up
   * If there are no samples available then SAL__NO_UPDATES is returned, otherwise SAL__OK is returned.
   * If there are multiple samples in the history cache, they are iterated over by consecutive calls to getNextSample_[set name]
   * @param data The payload of the sample as defined in the XML for SALData
@@ -910,7 +1021,7 @@ salReturn SAL_[set base]::getSample([set base]::[set name][set revcode]Seq data)
   */
       salReturn flushSamples_[set name]([set base]_[set name]C *data);
 
-/** Provides the data from the most recently received sample. This may be a new sample that has not been read before
+/** Provides the data from the most recently received $turl sample. This may be a new sample that has not been read before
   * by the caller, or it may be a copy of the last received sample if no new data has since arrived.
   * If there are no samples available then SAL__NO_UPDATES is returned, otherwise SAL__OK is returned.
   * @param data The payload of the sample as defined in the XML for SALData
@@ -943,6 +1054,13 @@ salReturn SAL_[set base]::getSample([set base]::[set name][set revcode]Seq data)
  if { $OPTIONS(verbose) } {stdlog "###TRACE<<<  addSALDDStypes $idlfile $id $lang $base "}
 }
 
+#
+## Documented proc \c modpubsubexamples .
+# \param[in] id Subsystem identity
+#
+#  Generate test applcation to publish and subscribe to each type 
+#  of SAL Topic defined for a Subsystem/CSC
+#
 proc modpubsubexamples { id } {
 global SAL_DIR SAL_WORK_DIR OPTIONS
   if { $OPTIONS(verbose) } {stdlog "###TRACE>>> modpubsubexamples $id"}

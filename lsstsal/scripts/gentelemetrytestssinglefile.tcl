@@ -1,3 +1,23 @@
+#!/usr/bin/env tclsh
+## \file gentelemetrytestssinglefile.tcl
+# \brief Generate C++ code to test the SAL Telemetry API
+#
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, V3 
+#\n
+# Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
+#\n
+#
+#
+#\code
+
+
+#
+## Documented proc \c gentelemetrytestssinglefilescpp .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Generate C++ code to test the SAL Telemetry API
+#
 proc gentelemetrytestsinglefilescpp { subsys } {
     # Creates multiple files which contains an implementation of all the
     # telemtry defined within this subsys.

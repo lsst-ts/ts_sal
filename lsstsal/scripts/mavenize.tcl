@@ -1,34 +1,24 @@
 #!/usr/bin/env tclsh
-
-# set SAL_DIR $env(SAL_DIR)
-# set SAL_WORK_DIR $env(SAL_WORK_DIR)
-# source $SAL_DIR/versioning.tcl
+## \file mavenize.tcl
+# \brief This contains procedures to create and build a Maven
+# project for a SAL Java API 
 #
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, V3 
+#\n
+# Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
+#\n
+#
+#
+#\code
 
-#  Add this to pom when we have integration level tests
-#    <build>
-#        <plugins>
-#            <plugin>
-#                <artifactId>maven-invoker-plugin</artifactId>
-#                <version>1.9</version>
-#                <configuration>
-#                    <debug>true</debug>
-#                    <projectsDirectory>src/test</projectsDirectory>
-#                    <preBuildHookScript>setup.tcl</preBuildHookScript>
-#                    <postBuildHookScript>runtests.tcl</postBuildHookScript>
-#                </configuration>
-#                <executions>
-#                    <execution>
-#                        <id>integration-test</id>
-#                        <goals>
-#                            <goal>run</goal>
-#                        </goals>
-#                    </execution>
-#                </executions>
-#            </plugin>
-#        </plugins>
-#    </build>
 
+#
+## Documented proc \c mavenize .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Create the POM file and directory structure for a Maven project
+#
 proc mavenize { subsys } {
 global env SAL_WORK_DIR SAL_DIR OSPL_VERSION XMLVERSION RELVERSION TS_SAL_DIR
   set mvnrelease [set XMLVERSION]_[exec cat $env(TS_SAL_DIR)/VERSION][set RELVERSION]
@@ -157,9 +147,19 @@ global env SAL_WORK_DIR SAL_DIR OSPL_VERSION XMLVERSION RELVERSION TS_SAL_DIR
   exec mkdir -p $SAL_WORK_DIR/maven/libs
   exec cp $env(OSPL_HOME)/jar/dcpssaj.jar $SAL_WORK_DIR/maven/libs/.
   exec cp $SAL_DIR/../lib/junit.jar $SAL_WORK_DIR/maven/libs/.
+  if { $subsys == "Test" } {
+    exec cp $SAL_DIR/code/templates/TestWithSalobjTest.java $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/test/java/.
+    exec cp $SAL_DIR/code/templates/TestWithSalobjTargetTest.java $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/test/java/.
+  }
 }
 
 
+#
+## Documented proc \c mavenunittests .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Create the Java unit tests for a Subsystem/CSC
+#
 proc mavenunittests { subsys } {
 global env SAL_WORK_DIR SAL_DIR CMD_ALIASES CMDS SYSDIC XMLVERSION RELVERSION TS_SAL_DIR 
    set mvnrelease [set XMLVERSION]_[exec cat $env(TS_SAL_DIR)/VERSION][set RELVERSION]
@@ -200,11 +200,20 @@ public class [set subsys]CommanderTest extends TestCase \{
 	    [set subsys].command_[set alias] command  = new [set subsys].command_[set alias]();
 
 	    command.private_revCode = \"[string trim $revcode _]\";
-	    command.device = \"$alias\";
-	    command.property =  \"\";
-	    command.action =  \"\";
-	    command.itemValue = \"\";
-
+"
+     if { $alias == "setAuthList" } {
+       puts $fout "
+            String pname = System.getenv(\"LSST_AUTHLIST_USERS\");
+            if (pname != null) \{
+               command.authorizedUsers=pname;
+            \}
+            String cname = System.getenv(\"LSST_AUTHLIST_CSCS\");
+            if (cname != null) \{
+               command.nonAuthorizedCSCs=cname;
+            \}
+"
+     }
+     puts $fout "
 	    cmdId = mgr.issueCommand_[set alias](command);
 
 	    try \{Thread.sleep(1000);\} catch (InterruptedException e)  \{ e.printStackTrace(); \}

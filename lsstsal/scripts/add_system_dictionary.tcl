@@ -1,3 +1,26 @@
+#!/usr/bin/env tclsh
+## \file add_system_dictionary.tcl
+# \brief This contains procedures to calculate MD5 revision codes
+# used to uniqely identify versioned DDS Topic names, and to update the
+# System dictionary (SYSDIC) array which stores the per-subsystem
+# properties. 
+#
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, V3 
+#\n
+# Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
+#\n
+#
+#
+#\code
+
+
+#
+## Documented proc \c calcshmid .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Calculate the MD5 checksum for a file
+#
 proc calcshmid { subsys } {
   set fout [open /tmp/subsys.tmp w]
   puts $fout "$subsys"

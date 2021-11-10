@@ -1,7 +1,27 @@
 #!/usr/bin/env tclsh
+## \file activaterevcodes.tcl
+# \brief This contains procedures to create and manage the
+# MD5SUM revision codes used to uniqely identify versioned
+# DDS Topic names.
+#
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, V3 
+#\n
+# Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
+#\n
+#
+#
+#\code
 
 set SAL_WORK_DIR $env(SAL_WORK_DIR)
-
+#
+## Documented proc \c updateRevCodes .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Create the file idl-templates/validated/SUBSYSTEM_revCodes.tcl
+#  which can be used to create a REVCODE array containing all the codes
+#  for a particular Subsystem/CSC
+#
 proc updateRevCodes { subsys } {
 global SAL_WORK_DIR REVCODE
   set lidl [glob $SAL_WORK_DIR/idl-templates/validated/[set subsys]_*.idl]
@@ -16,6 +36,11 @@ global SAL_WORK_DIR REVCODE
 }
 
 
+## Documented proc \c getItemName .
+# \param[in] rec An input record, typically from an IDL file
+#
+#  Take an input IDL line and determine the name of an item
+#
 proc getItemName { rec } {
   if { [lindex $rec 0] == "unsigned" } { set rec [lrange $rec 1 end] }
   if { [lindex $rec 1] == "long" } { set rec [lrange $rec 1 end] }
@@ -24,8 +49,18 @@ proc getItemName { rec } {
 }
 
 
+## Documented proc \c activeRevCodes .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Parse an input IDL file and generate the revision code assets.
+#  Also creates the Metadata annotations for Unit and Description
+#
+#  These consist of :
+#    revCodes - idl-templates/validated/sal/sal_revCoded_SUBSYSTEM.idl
+#    units - include/SAL_[set subsys]_salpy_units.pyb3
+#
 proc activeRevCodes { subsys } {
-global SAL_WORK_DIR REVCODE OPTIONS SALVERSION
+global SAL_WORK_DIR REVCODE OPTIONS SALVERSION METADATA
   if { $OPTIONS(verbose) } {stdlog "###TRACE>>> activeRevCodes $subsys"}
   set fin [open $SAL_WORK_DIR/idl-templates/validated/sal/sal_[set subsys].idl r]
   set fout [open $SAL_WORK_DIR/idl-templates/validated/sal/sal_revCoded_[set subsys].idl w]
@@ -42,14 +77,9 @@ global SAL_WORK_DIR REVCODE OPTIONS SALVERSION
      if { [lindex $r2 0] == "struct" } {
        set curtopic [set subsys]_[lindex $r2 1]
        set id [lindex $r2 1]
-       set desc ""
-       catch { set desc [string trim [lindex [split [exec grep "###Description $curtopic :" $SAL_WORK_DIR/sql/[set subsys]_items.sql] ":"] 1]] }
-       if { $id != "command" && $id != "logevent" } {
+       set desc $METADATA([set subsys]_[lindex $r2 1],description)
          set annot " // @Metadata=(Description=\"$desc\")"
          puts $fout "struct [set id]_[string range [set REVCODE([set subsys]_$id)] 0 7] \{ $annot"
-       } else {
-         puts $fout $rec
-       }
      } else {
        if { [lindex $r2 0] == "#pragma" } {
           set id [lindex $r2 2]
@@ -60,22 +90,19 @@ global SAL_WORK_DIR REVCODE OPTIONS SALVERSION
           }
        } else {
           set annot ""
-          if { $curtopic != "command" && $curtopic != "logevent" } {
-           catch {
             if { [lindex [lindex $rec 0] 0] != "const" } {
               set item [getItemName $rec]
               if { $item == "[set subsys]ID" } {
-                set annot " // @Metadata=(Description=\"Index number for CSC with multiple instances\")"
+                set annot " // @Metadata=(Units=\"unitless\",Description=\"Index number for CSC with multiple instances\")"
+                set mu "unitless"
               } else {
-                set lookup [exec grep "(\"$curtopic\"," $SAL_WORK_DIR/sql/[set subsys]_items.sql | grep ",\"$item\""]
-                set ign [string length "INSERT INTO [set subsys]_items VALUES "]
-                set mdata [split [string trim [string range "$lookup" $ign end] "();"] ","]
-                set annot " // @Metadata=(Units=[lindex $mdata 5],Description=[lindex $mdata 9])"
+                set mn [string trim $curtopic ";"]
+                set mu $METADATA($mn,$item,units)
+                set md $METADATA($mn,$item,description)
+                set annot " // @Metadata=(Units=\"$mu\",Description=\"$md\")"
               }
-              puts $fpyb "	m.attr(\"[set curtopic]C_[set item]_units\") = [lindex $mdata 5];"
+              puts $fpyb "	m.attr(\"[set curtopic]C_[set item]_units\") = \"$mu\";"
             }
-           }
-          }
           if { [string range $annot 0 2] != " //" } { set annot "" }
           puts $fout "$rec[set annot]"
        }
@@ -89,6 +116,12 @@ global SAL_WORK_DIR REVCODE OPTIONS SALVERSION
 }
 
 
+## Documented proc \c getRevCode .
+# \param[in] topic Basic name of a DDS Topic
+# \param[in] type Optional format of MD5 (long=32 char, short=8)
+#
+#  This routine returns the revision code (MD5) of a named DDS Topic
+#
 proc getRevCode { topic { type "long"} } {
 global REVCODE
    if { [llength [split $topic _]] == 2 } {
@@ -105,9 +138,15 @@ global REVCODE
    return $revcode
 }
 
-proc modidlforjava { subsys } {
+## Documented proc \c modIdlForJava .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Creates a copy of the Subsystem/CSC IDL file which is compatible 
+#  with the Java option of the DDSGEN tool.
+#
+proc modIdlForJava { subsys } {
 global SAL_WORK_DIR REVCODE SYSDIC CMD_ALIASES OPTIONS
-  if { $OPTIONS(verbose) } {stdlog "###TRACE>>> modidlforjava $subsys"}
+  if { $OPTIONS(verbose) } {stdlog "###TRACE>>> modIdlForJava $subsys"}
   stdlog "Updating $subsys idl with revCodes"
   set lc [exec wc -l $SAL_WORK_DIR/idl-templates/validated/sal/sal_[set subsys].idl]
   set lcnt [expr [lindex $lc 0] -2]
@@ -131,7 +170,7 @@ global SAL_WORK_DIR REVCODE SYSDIC CMD_ALIASES OPTIONS
   }
   close $fin
   close $fout
-  if { $OPTIONS(verbose) } {stdlog "###TRACE<<< modidlforjava $subsys"}
+  if { $OPTIONS(verbose) } {stdlog "###TRACE<<< modIdlForJava $subsys"}
 }
 
 

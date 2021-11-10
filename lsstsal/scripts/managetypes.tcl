@@ -1,4 +1,27 @@
+#!/usr/bin/env tclsh
+## \file managetypes.tcl
+# \brief This contains procedures to help manage the different
+#  IDL/C++/Java/LabVIEW data types
+#
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, V3 
+#\n
+# Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
+#\n
+#
+#
+#\code
 
+
+#
+## Documented proc \c simpletypecode .
+# \param[in] name Name of a data item
+# \param[in] type Abstract data type
+# \param[in] size Dimension of data
+# \param[in] target Target language
+#
+#  Returns the code for the data type in the specified language
+#
 proc simpletypecode { name type size target } {
 global TYPESUBS
    set ltyp [string tolower $type]
@@ -105,6 +128,12 @@ global TYPESUBS
    }
 }
 
+#
+## Documented proc \c typeidltoc .
+# \param[in] rec Record from IDL input file
+#
+#  Return the C/C++ code for an IDL data type declaration
+#
 proc typeidltoc { rec } {
 global TYPESUBS VPROPS OPTIONS
    if { $OPTIONS(verbose) } {stdlog "### typeidltoc : $rec"}
@@ -186,15 +215,12 @@ global TYPESUBS VPROPS OPTIONS
 }
 
 
-proc testsimpletypecode { } {
-   foreach case "c idl sql" {
-      foreach typ "byte short int long float double string" {
-          puts stdout "$case $typ :: [simpletypecode test $typ 1 $case]"
-          puts stdout "$case $typ :: [simpletypecode test $typ 16 $case]"
-      }
-   }
-}
-
+#
+## Documented proc \c simpletypecode .
+# \param[in] rec Record from IDL input file
+#
+#  Return the LabVIEW C++ code for an IDL data type declaration
+#
 proc typeidltolv { rec } {
 global TYPESUBS ATYPESUBS VPROPS OPTIONS
    if { $OPTIONS(verbose) } {stdlog "### typeidltolv : $rec"}
@@ -239,6 +265,11 @@ global TYPESUBS ATYPESUBS VPROPS OPTIONS
 }
 
 
+#
+## Documented proc \c simpletypecode .
+#
+#  Test the simpletypecode routine
+#
 proc testsimpletypecode { } {
    foreach case "c idl sql" {
       foreach typ "byte short int long float double string" {
@@ -248,6 +279,16 @@ proc testsimpletypecode { } {
    }
 }
 
+## Documented proc \c transferdata .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] name Name of a data item
+# \param[in] type Abstract data type
+# \param[in] size Dimension of data
+# \param[in] target Direction of copy
+# \param[in] prefix Optional prefix for DDS sample names
+#
+#  Copy data from DDS Samples to shared memory data structures and back
+#
 proc transferdata { subsys name type size target {prefix ""} } {
 global TYPESIZE TYPEFORMAT
    set ltyp [string tolower $type]
@@ -430,6 +471,11 @@ global TYPESIZE TYPEFORMAT
    }
 }
 
+#
+## Documented proc \c testtransferdata .
+#
+#  Test the transferdata routine
+#
 proc testtransferdata { } {
    foreach case "ddstocache ddsfromcache tcltocache tclfromcache tcltest ctest" {
       foreach typ "byte short int long float double char" {
@@ -439,7 +485,16 @@ proc testtransferdata { } {
    }
 }
 
-proc lvtypebuilder { base op name type size } {
+#
+## Documented proc \c lvtypebuilder .
+# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] name Name of a data item
+# \param[in] type Abstract data type
+# \param[in] size Dimension of data
+# 
+#  Returns formatted LabVIEW C++ type
+#
+proc lvtypebuilder { base name type size } {
    set t [string tolower $type]
    if { $t == "char" || $size > 1 } {
       return "$base LStrHandle $name,"
@@ -454,11 +509,10 @@ proc lvtypebuilder { base op name type size } {
 set TYPESUBS(string) char
 set TYPESUBS(String) char
 set TYPESUBS(byte)   "unsigned char"
-set TYPESUBS(char)   char
-set TYPESUBS(octet)  "unsigned char"
 set TYPESUBS(int)    int
 set TYPESUBS(short)  short
 set TYPESUBS(int8)   "unsigned char"
+set TYPESUBS(octet)  "unsigned char"
 set TYPESUBS(int16)  short
 set TYPESUBS(int32)  long
 set TYPESUBS(long)   int
@@ -477,8 +531,7 @@ set TYPESUBS(unsignedlonglong) long
 set ATYPESUBS(string) StrHdl
 set ATYPESUBS(String) StrHdl
 set ATYPESUBS(byte)   I8ArrayHdl
-set ATYPESUBS(char)   StrHdl
-set ATYPESUBS(octet)  U8ArrayHdl
+set ATYPESUBS(octet)  I8ArrayHdl
 set ATYPESUBS(int)    I32ArrayHdl
 set ATYPESUBS(short)  I16ArrayHdl
 set ATYPESUBS(int8)   I8ArrayHdl
@@ -501,7 +554,6 @@ set ATYPESUBS(unsignedlonglong) U64ArrayHdl
 
 set TYPESIZE(String) 1
 set TYPESIZE(string) 1
-set TYPESIZE(char)   1
 set TYPESIZE(byte)   1
 set TYPESIZE(octet)  1
 set TYPESIZE(short)  2
@@ -531,7 +583,6 @@ set TYPESIZE(unsignedlong)   4
 set TYPESIZE(unsignedlonglong) 8
 
 set TYPEFORMAT(byte)   "%hhu"
-set TYPEFORMAT(char)   "%s"
 set TYPEFORMAT(octet)  "%hhu"
 set TYPEFORMAT(short)  "%d"
 set TYPEFORMAT(int16)  "%d"

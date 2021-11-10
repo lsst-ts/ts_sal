@@ -1,5 +1,23 @@
 #!/usr/bin/env tclsh
-
+## \file parseXML.tcl
+# \brief This contains procedures to parse the input SAL XML
+#  files and generate IDL
+#
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, V3 
+#\n
+# Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
+#\n
+#
+#
+#\code
+#
+## Documented proc \c parseXMLtoidl .
+# \param[in] fname Name of input XML file
+#
+#  Create the files in idl-templates corresponding to the 
+#  SAL Topics defined in an XML file
+#
 proc parseXMLtoidl { fname } { 
 global IDLRESERVED SAL_WORK_DIR SAL_DIR CMDS CMD_ALIASES EVTS EVENT_ALIASES IDLTYPES
 global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIONS METADATA
@@ -11,21 +29,20 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
    set checkGenerics 0
    set subsys [lindex [split [file tail $fname] _] 0]
    if { [lindex [split $fname "_."] 1] == "Generics" } {
-     if { [info exists SYSDIC([set subsys],hasAllGenerics)] == 0} {
-       if { $OPTIONS(verbose) } {stdlog "###TRACE------ Checking which generics are in use"}
-       set checkGenerics 1
-       if { [info exists SYSDIC([set subsys],genericsUsed)] } {
-         set gflag [split $SYSDIC([set subsys],genericsUsed) ,]
-         foreach g $gflag {
-            set chkg [string trim $g]
-            set genericsUsed([set subsys]_[set chkg]) 1
-         }
+     if { $OPTIONS(verbose) } {stdlog "###TRACE------ Checking which generics are in use"}
+     set checkGenerics 1
+     if { [info exists SYSDIC([set subsys],genericsUsed)] } {
+       set gflag [split $SYSDIC([set subsys],genericsUsed) ,]
+       foreach g $gflag {
+          set chkg [string trim $g]
+          set genericsUsed([set subsys]_[set chkg]) 1
        }
      }
    }
    set fsql [open $SAL_WORK_DIR/sql/[set subsys]_items.sql a]
    set tname none
    set itemid 0
+   set tdesc 0
    set intopic 0
    while { [gets $fin rec] > -1 } {
       set st [string trim $rec]
@@ -115,14 +132,10 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
       if { $tag == "/SALCommand" } {
          set intopic 0
          set CMD_ALIASES($subsys) [lappend CMD_ALIASES($subsys) $alias]
-         if { $itemid == 6 } {
-            puts stdout "WARNING : Command $alias has no data fields , adding default value item"
-            lappend CMDS($subsys,$alias,param) "boolean value"
-            lappend CMDS($subsys,$alias,plist) value
-            puts $fout "	  boolean	value;"
-            puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",1,\"value\",\"boolean\",1,\"unitless\",1,\"\",\"\",\"Dummy to prevent empty structs\");"
-         }
          if { $explanation != "" } {set CMDS($subsys,$alias,help) $explanation}
+         set METADATA([set subsys]_ackcmd,description) "Command ack replies"
+         set METADATA([set subsys]_ackcmd,description) "unitless"
+         add_ackcmd_metadata $subsys
       }
       if { $tag == "/SALTelemetry" } {
          set TLM_ALIASES($subsys) [lappend TLM_ALIASES($subsys) $alias]
@@ -164,18 +177,20 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
         set fout [open $SAL_WORK_DIR/idl-templates/[set tname].idl w]
         puts $fout "struct $tname \{"
         add_private_idl $fout
+        add_private_metadata [set tname]
         puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",1,\"private_revCode\",\"char\",32,\"unitless\",1,\"\",\"\",\"Revision code of topic\");"
         puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",2,\"private_sndStamp\",\"double\",1,\"second\",1,\"\",\"\",\"TAI at sender\");"
         puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",3,\"private_rcvStamp\",\"double\",1,\"second\",1,\"\",\"\",\"TAI at receiver\");"
         puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",4,\"private_seqNum\",\"int\",1,\"unitless\",1,\"\",\"\",\"Sequence number\");"
         puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",5,\"private_identity\",\"int\",1,\"unitless\",1,\"\",\"\",\"Identity of originator\");"
         puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",6,\"private_origin\",\"int\",1,\"unitless\",1,\"\",\"\",\"PID code of sender\");"
-        puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",7,\"private_host\",\"int\",1,\"unitless\",1,\"\",\"\",\"IP of sender\");"
-        set itemid 7
+        set itemid 6
         if { [info exists SYSDIC($subsys,keyedID)] } {
            puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",8,\"[set subsys]ID\",\"int\",1,\"unitless\",1,\"\",\"\",\"Index of $subsys instance\");"
-           set itemid 8
+           set itemid 7
         }
+        set tdesc 1
+        set METADATA($tname,description) "No description provided" 
         set alias [getAlias $tname]
         if { $ctype == "command" } {
            set CMDS($subsys,$alias) $alias
@@ -188,7 +203,7 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
         set DESC($subsys,$alias,help) ""
       }
       if { $tag == "EFDB_Name"} {
-        set item $value ; set unit "" ; set type "unknown"
+        set item $value ; set unit "" ; set type "unknown" ; set isjarray 0
         incr itemid 1
         set desc "" ; set range "" ; set location ""
         set freq 0.054 ; set sdim 1
@@ -204,8 +219,8 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
       if { $tag == "/SALEvent" || $tag == "/SALCommand" || $tag == "/SALTelemetry" } {
          enumsToIDL $subsys $alias $fout
          puts $fsql "###Description $tname : $DESC($subsys,$alias,help)"
-         set METADATA($tname,description) $DESC($subsys,$alias,help)
       }
+      if { $tag == "IsJavaArray" } { set isjarray 1 }
       if { $tag == "IDL_Type"} {
          set type $value 
          if { $type == "long long" } {set type "longlong"}
@@ -213,14 +228,21 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
       }
       if { $tag == "IDL_Size"}        {set sdim $value}
       if { $tag == "Description"}     {
-         set desc [join [split $value ","] ";"]
-         if { $itemid == 6 } { set DESC($subsys,$alias,help) "$desc"}
+         if { [lindex [split $rec "/"] end] != "Description>" } {
+           set desc [getTopicURL $subsys $tname]
+         } else {
+           set desc $value
+         }
+         if { $tdesc } { set DESC($subsys,$alias,help) "$desc"}
+         if { $tdesc } { set METADATA($tname,description) "$desc" ; set tdesc 0}
       }
       if { $tag == "Frequency"}       {set freq $value}
       if { $tag == "Range"}           {set range $value}
       if { $tag == "Sensor_location"} {set location $value}
       if { $tag == "Count"}           {set idim $value}
-      if { $tag == "Units"}           {set unit [string trim $value]}
+      if { $tag == "Units"}           {
+         set unit [string trim $value]
+      }
       if { $tag == "/item" } {
          set chktype $type
          if { [lindex $chktype 0] == "unsigned" } { set chktype [lindex $chktype 1] }
@@ -240,7 +262,7 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
                set declare "   string $item;"
             }
          } else {
-            if { $idim > 1 } {
+            if { $idim > 1 || $isjarray } {
                set declare "   $type $item\[[set idim]\];"
             } else {
                set declare "   $type $item;"
@@ -269,9 +291,9 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
          }
          if { $unit != "" } {
             set UNITS($subsys,$alias,$item) $unit
-            set METADATA($tname,$item,units) $unit
          }
          set METADATA($tname,$item,description) $desc
+         set METADATA($tname,$item,units) $unit
          puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",$itemid,\"$item\",\"$type\",$idim,\"$unit\",$freq,\"$range\",\"$location\",\"$desc\");"
       }
    }
@@ -331,6 +353,13 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
    if { $OPTIONS(verbose) } {stdlog "###TRACE<<< parseXMLtoidl $fname"}
 }
 
+#
+## Documented proc \c indexedEnumsToIDL .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] fout File handle of output IDL file
+#
+#  Generate an IDL const definition for a SAL XML indexed enumeration
+#
 proc indexedEnumsToIDL { subsys fout } {
 global SYSDIC IDXENUMDONE
    if { [info exists SYSDIC($subsys,IndexEnumeration)] && $IDXENUMDONE($subsys) == 0 } {
@@ -344,7 +373,66 @@ global SYSDIC IDXENUMDONE
    }
 }
 
+#
+## Documented proc \c add_private_metadata .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Add the METADATA for private_ items in topics
+#
+proc add_private_metadata { topic } {
+global METADATA
+  set METADATA([set topic],private_revCode,units) "unitless"
+  set METADATA([set topic],private_sndStamp,units) "seconds"
+  set METADATA([set topic],private_rcvStamp,units) "seconds"
+  set METADATA([set topic],private_seqNum,units) "unitless"
+  set METADATA([set topic],private_identity,units) "unitless"
+  set METADATA([set topic],private_origin,units) "unitless"
+  set METADATA([set topic],private_revCode,description) "Revision hashcode"
+  set METADATA([set topic],private_sndStamp,description) "Time of instance publication"
+  set METADATA([set topic],private_rcvStamp,description) "Time of instance reception"
+  set METADATA([set topic],private_seqNum,description) "Sequence number"
+  set METADATA([set topic],private_identity,description) "Identity of publisher"
+  set METADATA([set topic],private_origin,description) "PID of publisher"
+  if { [lindex [split $topic "_"] 1] == "logevent" } {
+     set METADATA([set topic],priority,description) "Priority level"
+     set METADATA([set topic],priority,units) "unitless"
+  }
+}
 
+#
+## Documented proc \c add_ackcmd_metadata .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Add the METADATA for private_ items in topics
+#
+proc add_ackcmd_metadata { subsys } {
+global METADATA
+  add_private_metadata [set subsys]_ackcmd
+  set METADATA([set subsys]_ackcmd,ack,units) "unitless"
+  set METADATA([set subsys]_ackcmd,error,units) "seconds"
+  set METADATA([set subsys]_ackcmd,result,units) "seconds"
+  set METADATA([set subsys]_ackcmd,identity,units) "unitless"
+  set METADATA([set subsys]_ackcmd,origin,units) "unitless"
+  set METADATA([set subsys]_ackcmd,cmdtype,units) "unitless"
+  set METADATA([set subsys]_ackcmd,timeout,units) "unitless"
+  set METADATA([set subsys]_ackcmd,ack,description) "unitless"
+  set METADATA([set subsys]_ackcmd,error,description) "seconds"
+  set METADATA([set subsys]_ackcmd,result,description) "seconds"
+  set METADATA([set subsys]_ackcmd,identity,description) "unitless"
+  set METADATA([set subsys]_ackcmd,origin,description) "unitless"
+  set METADATA([set subsys]_ackcmd,cmdtype,description) "unitless"
+  set METADATA([set subsys]_ackcmd,timeout,description) "unitless"
+}
+
+
+#
+## Documented proc \c enumsToIDL .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] alias Aliased name of Topic
+# \param[in] fout File handle of output IDL file
+#
+#  Generate an IDL const definition for a SAL Event XML enumeration
+#
 proc enumsToIDL { subsys alias fout } {
 global EVENT_ENUM EDONE
    if { [info exists EVENT_ENUM($alias)] && [info exists EDONE($alias)] == 0} {
@@ -381,6 +469,12 @@ global EVENT_ENUM EDONE
    }
 }
 
+#
+## Documented proc \c validateEnumeration .
+# \param[in] elist List of SAL XML enumeration definitions
+#
+#  Check the syntax of SAL XML enumerations
+#
 proc validateEnumeration { elist } {
    set hasvals [llength [split $elist "="]]
    if { $hasvals > 1 } {
@@ -399,6 +493,12 @@ proc validateEnumeration { elist } {
 }
 
 
+#
+## Documented proc \c genhtmlcommandtable .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Generate an html formatted table for the Command Topics
+#
 proc genhtmlcommandtable { subsys } {
 global IDLRESERVED SAL_WORK_DIR SAL_DIR CMDS CMD_ALIASES EVTS EVENT_ALIASES UNITS DESC
   exec mkdir -p $SAL_WORK_DIR/html/[set subsys]
@@ -429,6 +529,12 @@ global IDLRESERVED SAL_WORK_DIR SAL_DIR CMDS CMD_ALIASES EVTS EVENT_ALIASES UNIT
   close $fout
 }
 
+#
+## Documented proc \c genhtmleventtable .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Generate an html formatted table for the Event Topics
+#
 proc genhtmleventtable { subsys } {
 global IDLRESERVED SAL_WORK_DIR SAL_DIR CMDS CMD_ALIASES EVTS EVENT_ALIASES UNITS DESC
   exec mkdir -p $SAL_WORK_DIR/html/[set subsys]
@@ -462,6 +568,12 @@ global IDLRESERVED SAL_WORK_DIR SAL_DIR CMDS CMD_ALIASES EVTS EVENT_ALIASES UNIT
 
 
 
+#
+## Documented proc \c genhtmltelemetrytable .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Generate an html formatted table for the Telemetry Topics
+#
 proc genhtmltelemetrytable { subsys } {
 global IDLRESERVED SAL_WORK_DIR SAL_DIR TLMS TLM_ALIASES UNITS DESC
   exec mkdir -p $SAL_WORK_DIR/html/[set subsys]

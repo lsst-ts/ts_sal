@@ -102,8 +102,7 @@ class BasicTestCase(BaseSalTestCase):
         """
 
         def get_astropy_tai_minus_utc():
-            """Get TAI-UTC at the current time, in seconds, using astropy.
-            """
+            """Get TAI-UTC at the current time, in seconds, using astropy."""
             # Unfortunately I can't just output
             # curr_time.tai.unix - curr_time.utc.unix
             # because they are identical.
@@ -388,8 +387,7 @@ class BasicTestCase(BaseSalTestCase):
         self.assertEqual(retcode, SALPY_Test.SAL__NO_UPDATES)
 
     def test_evt_late_joiner_newest(self):
-        """Test that a late joiner can see an event using getEvent.
-        """
+        """Test that a late joiner can see an event using getEvent."""
         self.controller.salEventPub("Test_logevent_arrays")
         time.sleep(STD_SLEEP)
 
@@ -454,8 +452,7 @@ class BasicTestCase(BaseSalTestCase):
 
 
 class ScriptTestCase(unittest.TestCase):
-    """A few tests require CSC that doesn't use generics, so we use Script.
-    """
+    """A few tests require CSC that doesn't use generics, so we use Script."""
 
     def test_generics_no(self):
         """Test that setting generics to `no` avoids generics."""
@@ -464,8 +461,7 @@ class ScriptTestCase(unittest.TestCase):
 
 
 class ErrorHandlingTestCase(BaseSalTestCase):
-    """Test misuse of the API
-    """
+    """Test misuse of the API"""
 
     def test_multiple_shutdown(self):
         # Having no asserts is poor practice, but I'm not sure what else
@@ -499,22 +495,19 @@ class ErrorHandlingTestCase(BaseSalTestCase):
             self.remote.salTelemetrySub(bad_tel_name)
 
     def test_cmd_no_registration(self):
-        """Test getting and putting topics without registering them first.
-        """
+        """Test getting and putting topics without registering them first."""
         data = SALPY_Test.Test_command_setScalarsC()
 
         self.check_cmd_get_put_raises(data=data, exception=RuntimeError)
 
     def test_evt_no_registration(self):
-        """Test getting and putting topics without registering them first.
-        """
+        """Test getting and putting topics without registering them first."""
         data = SALPY_Test.Test_logevent_scalarsC()
 
         self.check_evt_get_put_raises(data=data, exception=RuntimeError)
 
     def test_tel_no_registration(self):
-        """Test getting and putting topics without registering them first.
-        """
+        """Test getting and putting topics without registering them first."""
         data = SALPY_Test.Test_scalarsC()
 
         self.check_tel_get_put_raises(data=data, exception=RuntimeError)
@@ -675,8 +668,7 @@ class ErrorHandlingTestCase(BaseSalTestCase):
             self.controller.putSample_scalars(data)
 
     def test_wrong_length_arrays(self):
-        """Check that setting sending too long an array causes an error.
-        """
+        """Check that setting sending too long an array causes an error."""
         data = SALPY_Test.Test_arraysC()
         float1_len = len(data.float0)
         bad_float_data = np.arange(float1_len + 1, dtype=data.float0.dtype)
@@ -755,8 +747,7 @@ class ErrorHandlingTestCase(BaseSalTestCase):
 
 
 class LsstDdsQosTestCase(unittest.TestCase):
-    """Test that ts_sal gracefully handles incorrect $LSST_DDS_QOS.
-    """
+    """Test that ts_sal gracefully handles incorrect $LSST_DDS_QOS."""
 
     def setUp(self):
         self.data_dir = pathlib.Path(__file__).parent / "data"
@@ -766,8 +757,7 @@ class LsstDdsQosTestCase(unittest.TestCase):
         os.environ["LSST_DDS_QOS"] = self.original_lsst_dds_qos
 
     def test_qos_no_env_var(self):
-        """Test that LSST_DDS_QOS must be defined.
-        """
+        """Test that LSST_DDS_QOS must be defined."""
         del os.environ["LSST_DDS_QOS"]
         with self.assertRaises(RuntimeError):
             SALPY_Test.SAL_Test(1)

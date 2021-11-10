@@ -1,14 +1,33 @@
+#!/usr/bin/env tclsh
+## \file geneventtestssinglefilejava.tcl
+# \brief Generate Java code to test the SAL Command API
+#
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, V3 
+#\n
+# Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
+#\n
+#
+#
+#\code
+
+
+#
+## Documented proc \c geneventtestssinglefilejava .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Generate Java code to test the SAL Event API
+#
+# Creates a two Java programs which contains an implementation of all the
+# commands defined within this subsys. To generate these programs you must
+# follow the SAL guidlines for generating Java libraries. 
+# 
+# 1) Navigate to /ts_sal/test/maven/[subsystem][vesion]/ with two terminals.
+# 2) In one terminal run `mvn -Dtest=[subsystem]EventLogger_all test`
+# 3) In another terminal run `mvn -Dtest=[subsystem]Event_all test` AFTER
+#    the controller prints `===== [set subsys] all controllers ready =====`
+#
 proc geneventtestssinglefilejava { subsys } {
-    ###
-    # Creates a two Java programs which contains an implementation of all the
-    # commands defined within this subsys. To generate these programs you must
-    # follow the SAL guidlines for generating Java libraries. 
-    # 
-    # 1) Navigate to /ts_sal/test/maven/[subsystem][vesion]/ with two terminals.
-    # 2) In one terminal run `mvn -Dtest=[subsystem]EventLogger_all test`
-    # 3) In another terminal run `mvn -Dtest=[subsystem]Event_all test` AFTER
-    #    the controller prints `===== [set subsys] all controllers ready =====`
-    ###
 
     global SAL_WORK_DIR
 
@@ -61,7 +80,8 @@ proc insertSendersJava { subsys file_writer } {
     puts $file_writer "    \}\n"
     puts $file_writer "    public void test[set subsys]Event_all() \{"
     puts $file_writer "        SAL_[set subsys] mgr = new SAL_[set subsys][set initializer];"
-    
+    puts $file_writer "        mgr.setDebugLevel(1);"
+
     foreach alias $EVENT_ALIASES($subsys) {
         puts $file_writer "        mgr.salEventPub(\"[set subsys]_logevent_[set alias]\");"
     }
@@ -87,14 +107,11 @@ proc insertSendersJava { subsys file_writer } {
                 set pspl [split $pname "()"]
                 set pname [lindex $pspl 0]
                 set pdim  [lindex $pspl 1]
-                while { $l < $pdim } {
-                    switch $ptype {
-                        boolean { puts $file_writer "            event.[set pname]\[$l\] = true;" }
-                        double  { puts $file_writer "            event.[set pname]\[$l\] = (double) 1.0;" }
-                        int     { puts $file_writer "            event.[set pname]\[$l\] = (int) 1;" }
-                        long    { puts $file_writer "            event.[set pname]\[$l\] = (int) 1;" }
-                     }
-                incr l 1
+                switch $ptype {
+                    boolean { puts $file_writer "            for (int i=0; i<$pdim; i++) \{event.[set pname]\[i\] = true; \}" }
+                    double  { puts $file_writer "            for (int i=0; i<$pdim; i++) \{event.[set pname]\[i\] = (double) 1.0; \}" }
+                    int     { puts $file_writer "            for (int i=0; i<$pdim; i++) \{event.[set pname]\[i\] = (int) 1; \}" }
+                    long    { puts $file_writer "            for (int i=0; i<$pdim; i++) \{event.[set pname]\[i\] = (int) 1; \}" }
                 }
             } else {
                 switch $ptype {
@@ -139,6 +156,7 @@ proc insertLoggersJava { subsys file_writer } {
 
     puts $file_writer "    public void test[set subsys]EventLogger_all() \{"
     puts $file_writer "        SAL_[set subsys] mgr = new SAL_[set subsys][set initializer];"
+    puts $file_writer "        mgr.setDebugLevel(1);"
     
     foreach alias $EVENT_ALIASES($subsys) {
         puts $file_writer "        mgr.salEventSub(\"[set subsys]_logevent_[set alias]\");"

@@ -9,51 +9,54 @@
 #include "QosProvider.h"
 using namespace SALData;
 
+SAL_SALData::SAL_SALData()
+{
+   strncpy(CSC_identity, "SALData", 128);
+   initSalEnvironment(0);
+}
+
 SAL_SALData::SAL_SALData(int aKey, char *identity)
 {
-   CSC_identity=(char *)malloc(128);
-   sprintf(CSC_identity,"%s",identity);
+   char *id = (char *)malloc(128);
+   if (identity == NULL) {
+     sprintf(id,"SALData:%d",aKey);
+   } else {
+     sprintf(id,"%s",identity);
+   }
+   strncpy(CSC_identity, id, 128);
    initSalEnvironment(aKey);
 }
 
 SAL_SALData::SAL_SALData(int aKey)
 {
-   CSC_identity=(char *)malloc(128);
-   sprintf(CSC_identity,"SALData:%d",aKey);
+   char *id = (char *)malloc(128);
+   sprintf(id,"SALData:%d",aKey);
+   strncpy(CSC_identity, id, 128);
    initSalEnvironment(aKey);
 }
 
 SAL_SALData::SAL_SALData(char *identity)
 {
-   CSC_identity=(char *)malloc(128);
-   sprintf(CSC_identity,"%s",identity);
+   if (identity == NULL) {
+     strncpy(CSC_identity, "SALData", 128);
+   } else {
+     strncpy(CSC_identity, identity, 128);
+   }
    initSalEnvironment(0);
 }
 
-SAL_SALData::SAL_SALData()
-{
-   CSC_identity=(char *)malloc(128);
-   sprintf(CSC_identity,"SALData");
-   initSalEnvironment(0);
-}
 
 void SAL_SALData::initSalEnvironment(int aKey)
 {
-   int v1,v2,v3,v4;
-   char *dname = getenv("LSST_DDS_DOMAIN");
+   int aenable;
    char *pname = getenv("LSST_DDS_PARTITION_PREFIX");
    char *qname = getenv("LSST_DDS_QOS");
    char *sname = getenv("LSST_DDS_HISTORYSYNC");
-   char *ipaddr = getenv("LSST_DDS_IP");
-   if ( dname != NULL ) {
-      strncpy(partitionPrefix, dname, 128);
-   } else {
-      strncpy(partitionPrefix, "LSST", 128);
-   }
+   char *aname = getenv("LSST_DDS_ENABLE_AUTHLIST");
    if ( pname != NULL ) {
       strncpy(partitionPrefix, pname, 128);
    } else {
-      cout << "=== WARNING : LSST_DDS_PARTITION_PREFIX not defined, using deprecated alias LSST_DDS_DOMAIN" << endl << "This will stop working in SAL 6" << endl;
+      throw std::runtime_error("ERROR : Cannot find envvar LSST_DDS_PARTITION_PREFIX");
    }
    if ( qname != NULL ) {
       commandQos = new QosProvider (qname,"CommandProfile");
@@ -66,13 +69,15 @@ void SAL_SALData::initSalEnvironment(int aKey)
    if ( sname != NULL ) {
       sscanf(sname,"%d",&historySync);
    } else {
-      historySync = 30;
+      historySync = 0;
    }
-   ddsIPaddress = 1;
-   if (ipaddr != NULL) {
-      sscanf(ipaddr,"%d.%d.%d.%d", &v1 , &v2, &v3, &v4);
-      ddsIPaddress = 256*256*256*v1 + 256*256*v2 + 256*v3 + v4;
-   } 
+   authListEnabled = false;
+   if ( aname != NULL ) {
+      sscanf(aname,"%d",&aenable);
+      if (aenable == 1) {
+        authListEnabled = true;
+      }
+   }
    hasReader = false;
    hasWriter = false;
    hasCommand = false;

@@ -4,14 +4,13 @@
 
   #include <string>
   #include <cassert>
-  #include <string>
+  #include <sstream>
   #include <iostream>
   #include <fstream>
   #include <vector>
   #include <string.h>
   #include <stdlib.h>
   #include <stdio.h>
-  #include <string.h>
   #include <time.h>
   #include <sys/time.h>
   #include <sys/timex.h>
@@ -137,8 +136,6 @@
       int			error;
 /// ack is the ack field for the most recent ackCmd message (commands)
       int			ack;
-/// activehost is the private_identity field of the most recent command
-      int			activehost;
 /// activeidentity is the private_identity field of the most recent command
       string			activeidentity;
 /// activeorigin is the private_origin field of the most recent command
@@ -210,14 +207,22 @@
       int historySync;
       double rcvdTime;
       salU64  origin;
-      long ddsIPaddress;
       char domainName[128];
       char partitionPrefix[128];
       salActor sal[SAL__ACTORS_MAXCOUNT];
       int lastActor_telemetry;
       int lastActor_command;
       int lastActor_event;
-      char *CSC_identity;
+      bool authListEnabled;
+
+///   Holds the private_identity of this SAL Object, set at creation
+      char CSC_identity[128];
+
+///   Holds the current authList authorizedUsers list
+      std::string authorizedUsers;
+
+///   Holds the current authList nonAuthorizedCSCs list
+      std::string nonAuthorizedCSCs;
 
     public:
 
@@ -316,7 +321,11 @@
  */    
       salReturn salTypeSupport(char *topicName);
 
+///  Remove whitespace from the a string
+     std::string removeSpaces(std::string list);
 
+///  Check the current commands private_identity against the authList
+      salReturn checkAuthList(std::string private_identity);
 
 /// Set the debug message output verbosity level for this SAL_SALData object
       salReturn setDebugLevel( int level );

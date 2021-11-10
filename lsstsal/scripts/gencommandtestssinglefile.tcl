@@ -1,3 +1,23 @@
+#!/usr/bin/env tclsh
+## \file gencommandtestssinglefile.tcl
+# \brief Generate C++ code to test the SAL Command API
+#
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, V3 
+#\n
+# Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
+#\n
+#
+#
+#\code
+
+
+#
+## Documented proc \c gencommandtestssinglefilecpp .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Generate C++ code to test the SAL Command API
+#
 proc gencommandtestsinglefilescpp { subsys } {
     # Creates multiple files which contains an implementation of all the
     # commands defined within this subsys.
@@ -162,8 +182,8 @@ proc insertControllers { subsys file_writer } {
 proc insertMakeFile { subsys file_writer } {
 global SYSDIC
     set keyed ""
-    if { [info exists SYSDIC($subsys,KEYID)] } {
-       set keyed "-DSAL_SUBSYSTEM_ID_IS_KEYED
+    if { [info exists SYSDIC($subsys,keyedID)] } {
+      set keyed "-DSAL_SUBSYSTEM_ID_IS_KEYED"
     }
     puts $file_writer "#----------------------------------------------------------------------------"
     puts $file_writer "#       Macros"

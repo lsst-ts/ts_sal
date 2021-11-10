@@ -1,3 +1,25 @@
+#!/usr/bin/env tclsh
+## \file geneventlabviewtests.tcl
+# \brief Generate C++ code to test the LabVIEW SAL shared library routines
+#  This tests the interaction with the SAL LabVIEW Monitor for the Subsystem.
+#
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, V3 
+#\n
+# Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
+#\n
+#
+#
+#\code
+
+
+#
+## Documented proc \c geneventlabviewtests .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Generate C++ code to test the LabVIEW SAL shared library routines
+#  This tests the interaction with the SAL LabVIEW Monitor for the Subsystem.
+#
 
 proc geneventlabviewtests { subsys } {
 global EVENT_ALIASES EVTS SAL_WORK_DIR SAL_DIR

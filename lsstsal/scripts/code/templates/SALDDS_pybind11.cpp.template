@@ -57,6 +57,14 @@ auto make_array(T array) -> std::function<py::array(typename array_trait<T>::obj
 
 
 PYBIND11_MODULE(SALPY_SALData,m){
+     m.doc() = R"pbdoc(
+         .. currentmodule:: SALPY_SALData
+
+         .. autosummary::
+            :toctree:
+
+            SAL_SALData
+// INSERT_SAL_PYTHON_TOPICNAMES
 
 // INSERT_SAL_PYTHON_DATATYPES
     py::class_<SAL_SALData>(m,"SAL_SALData")
@@ -136,6 +144,10 @@ PYBIND11_MODULE(SALPY_SALData,m){
             "getSentTime"
             , (::salReturn ( ::SAL_SALData::* )( char * ) )( &::SAL_SALData::getSentTime )
             , ( py::arg("topicName") ) )    
+        .def( 
+            "checkAuthList"
+            , (::salReturn ( ::SAL_SALData::* )( std::string ) )( &::SAL_SALData::checkAuthList )
+            , ( py::arg("private_identity") ) )    
 // INSERT_SAL_PYTHON_GETPUT
         ;
 

@@ -3,6 +3,9 @@
 set OPTIONS(verbose) 0
 set SAL_DIR $env(SAL_DIR)
 set SAL_WORK_DIR $env(SAL_WORK_DIR)
+puts stdout "Updating XML"
+exec updateXML
+
 source $env(SAL_DIR)/add_system_dictionary.tcl
 
 set EVERYTHING [lsort $SYSDIC(systems)]
@@ -29,9 +32,6 @@ if { $argv == "" || [lsearch $argv idl] > -1 } {
 
 
 if { $argv == "" || [lsearch $argv validate] > -1} {
-  puts stdout "Removing old idl-templates"
-  exec rm -fr idl-templates
-
   puts stdout  "Validating interfaces"
   foreach subsys $EVERYTHING {
    if { [info exists DO($subsys)] } {
@@ -130,6 +130,17 @@ if { $argv == "" || [lsearch $argv rpm] > -1 } {
 }
 
 
+if { $argv == "" || [lsearch $argv apidoc] > -1 } {
+ puts stdout  "Updating Documentation"
+ foreach subsys $EVERYTHING {
+  if { [info exists DO($subsys)] } {
+   set bad ""
+   set result ""
+   catch { set results [exec salgenerator $subsys apidoc] } bad
+   puts stdout "$result $bad"
+  }
+ }
+}
 
 
 

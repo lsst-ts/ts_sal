@@ -1,6 +1,22 @@
 #!/usr/bin/env tclsh
+## \file genddspython.tcl
+# \brief This contains procedures generate helper files for
+#  the DDS native python api CSC's
+#
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, V3 
+#\n
+# Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
+#\n
+#
+#
+#\code
 
 
+#
+## Documented proc \c enumToPython .
+# \param[in] str Convert a SAL XML enumeration name to python compatible
+#
 proc enumToPython { str } {
   if { [string toupper $str] == $str } {return $str}
   set pieces [regexp -all -inline {[a-z]+|[A-Z][a-z]*} $str]
@@ -8,6 +24,10 @@ proc enumToPython { str } {
 }
 
 
+#
+## Documented proc \c dojoin .
+# \param[in] pieces Reformat a SAL XML enumeration name
+#
 proc dojoin { pieces } {
    set res ""
    set llast 0
@@ -28,11 +48,23 @@ proc dojoin { pieces } {
 }
 
 
+#
+## Documented proc \c ucname .
+# \param[in] name Uppercase a SAL XML enumeration name
+#
+#  Format name as upper case
+#
 proc ucname { name } {
   set parts [split $name ,]
   set res [toucamcase [lindex $parts 0]][toucamcase [lindex $parts 1]]
 }
 
+#
+## Documented proc \c toucamcase .
+# \param[in] str camelCase a SAL XML enumeration name
+#
+#  Format name as camelCase
+#
 proc toucamcase { str } {
    set caps [enumToPython $str]
    set out ""
@@ -43,6 +75,12 @@ proc toucamcase { str } {
 }
 
 
+#
+## Documented proc \c genPythonEnums .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Generate a set python enumerations for a SAL XML enumeration
+#
 proc genPythonEnums { subsys } {
 global SAL_WORK_DIR EVENT_ENUMS
   if { [file exists $SAL_WORK_DIR/idl-templates/validated/[set subsys]_evtdef.tcl] } {
@@ -75,6 +113,11 @@ global SAL_WORK_DIR EVENT_ENUMS
   }
 }
 
+#
+## Documented proc \c testPythonEnums .
+#
+#  Test python generation for all SAL XML enumerations
+#
 proc testPythonEmums { } {
 global SYSDIC
   foreach subsys $SYSDIC(systems) {

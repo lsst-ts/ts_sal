@@ -1,3 +1,18 @@
+#!/usr/bin/env tclsh
+## \file geneventaliascode.tcl
+# \brief This contains procedures to create the SAL API code
+#  to manager the Event Topics. It generates code and tests
+#  for C++, Python (pybind11), and Java APIs
+#
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, V3 
+#\n
+# Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
+#\n
+#
+#
+#\code
+
 
 
 source $SAL_DIR/geneventtests.tcl 
@@ -6,6 +21,16 @@ source $SAL_DIR/geneventtestsjava.tcl
 source $SAL_DIR/geneventtestssinglefilejava.tcl
 source $SAL_DIR/gentestspython.tcl 
 
+## Documented proc \c geneventaliascode .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] lang Target language to generate code for
+# \param[in] fout File handle of output file
+#
+#  Generates the Event handling code for a Subsystem/CSC.
+#  Code is generated for getEvent,logEvent
+#  per Event Topic type. This routine generates header code, and then calls 
+#  per language routines to generate the rest.
+#
 proc geneventaliascode { subsys lang fout } {
 global EVENT_ALIASES EVTS DONE_CMDEVT
  if { [info exists EVENT_ALIASES($subsys)] } {
@@ -13,15 +38,16 @@ global EVENT_ALIASES EVTS DONE_CMDEVT
   if { $lang == "include" } {
      foreach i $EVENT_ALIASES($subsys) { 
       if { [info exists EVTS($subsys,$i,param)] } {
+         set turl [getTopicURL $subsys $i]
          puts $fout "
 /** Publish a [set i] logevent message
-  * @param data is the logevent payload
+  * @param data is the logevent payload $turl
   * @priority is a user configurable priority, larger is higher priority
   */
       salReturn logEvent_[set i]( SALData_logevent_[set i]C *data, int priority );      
 
 /** Receive a logevent message.
-  * @param data is the logevent payload
+  * @param data is the logevent payload $turl
   * @returns SAL__NO_UPDATES if no data is available, or SAL__OK otherwise
   */
       int getEvent_[set i]( SALData_logevent_[set i]C *data );"
@@ -74,6 +100,15 @@ global EVENT_ALIASES EVTS DONE_CMDEVT
 }
 
 
+#
+## Documented proc \c geneventaliascpp .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] fout File handle of output file
+#
+#  Generates the Event handling code for a Subsystem/CSC.
+#  Code is generated for getEvent,logEvent
+#  per Event Topic type. This routine generates C++ code.
+#
 proc geneventaliascpp { subsys fout } {
 global EVENT_ALIASES EVTS SAL_WORK_DIR OPTIONS
    if { $OPTIONS(verbose) } {stdlog "###TRACE>>> geneventaliascpp $subsys $fout"}
@@ -112,12 +147,26 @@ salReturn SAL_SALData::logEvent_[set i]( SALData_logevent_[set i]C *data, int pr
 }
 
 
+#
+## Documented proc \c geneventaliasjava .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] fout File handle of output file
+#
+#  Generates the Command handling code for a Subsystem/CSC.
+#  Code is generated for getEvent,logEvent
+#  per-command Topic type. This routine generates Java code.
+#
 proc geneventaliasjava { subsys fout } {
 global EVENT_ALIASES EVTS
    foreach i $EVENT_ALIASES($subsys) {
     if { [info exists EVTS($subsys,$i,param)] } {
       stdlog "	: alias = $i"
+      set turl [getTopicURL $subsys $i]
       puts $fout "
+/** Receive a logevent message.
+  * @param data is the logevent payload $turl
+  * @returns SAL__NO_UPDATES if no data is available, or SAL__OK otherwise
+  */
 	public int getEvent_[set i](SALData.logevent_[set i] anEvent)
 	\{
 	  int status =  -1;
@@ -134,6 +183,10 @@ global EVENT_ALIASES EVTS
 	  return status;
 	\}
 
+/** Publish a [set i] logevent message
+  * @param data is the logevent payload $turl
+  * @priority is a user configurable priority, larger is higher priority
+  */
 	public int logEvent_[set i]( SALData.logevent_[set i] event, int priority )
 	\{
 	   int status = 0;
@@ -157,6 +210,15 @@ global EVENT_ALIASES EVTS
 
 
 
+#
+## Documented proc \c geneventaliaspython .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] fout File handle of output file
+#
+#  Generates the Command handling code for a Subsystem/CSC.
+#  Code is generated for getEvent,putEvent
+#  per Event Topic type. This routine generates C++/pybind11 wrapper code.
+#
 proc geneventaliaspython { subsys fout } {
 global EVENT_ALIASES EVTS
    foreach i $EVENT_ALIASES($subsys) {
@@ -174,13 +236,23 @@ global EVENT_ALIASES EVTS
 
 
 
+#
+## Documented proc \c geneventaliasisocpp .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] fout File handle of output file
+#
+#  Generates the Event handling code for a Subsystem/CSC.
+#  Code is generated for getEvent,logEvent
+#  per Event Topic type. This routine generates ISO C++ wrapper code.
+#  NOT YET IMPLEMENTED
+#
 proc geneventaliasisocpp { subsys fout } {
 global EVENT_ALIASES
    foreach i $EVENT_ALIASES { 
     if { [info exists EVTS($subsys,$i,param)] } {
       stdlog "	: alias = $i"
     } else {
-#      stdlog "Alias $i has no parameters - uses standard [set subsys]_command"
+#      stdlog "Alias $i has no parameters - uses standard [set subsys]_logevent"
     }
    }
 }

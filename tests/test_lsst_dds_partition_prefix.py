@@ -51,8 +51,7 @@ class SimpleController:
         asyncio.ensure_future(self.handle_setScalars())
 
     async def handle_setScalars(self):
-        """Handle the setScalars command.
-        """
+        """Handle the setScalars command."""
         while self.run:
             await asyncio.sleep(POLL_INTERVAL)
             cmd_id = self.manager.acceptCommand_setScalars(self.setScalars_data)
@@ -116,7 +115,7 @@ class SimpleRemote:
             if ack.ack == SALPY_Test.SAL__CMD_COMPLETE:
                 return int0
             elif ack.ack == SALPY_Test.SAL__CMD_FAILED:
-                raise ValueError(f"Command failed")
+                raise ValueError(f'{"Command failed"}')
             else:
                 raise RuntimeError(f"Command ended with unexpected ack.ack={ack.ack}")
 

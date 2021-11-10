@@ -1,3 +1,25 @@
+#!/usr/bin/env tclsh
+## \file geneventtests.tcl
+# \brief This contains procedures to create the SAL API tests 
+#  It generates code and tests for C++ Event Topics
+#
+# This Source Code Form is subject to the terms of the GNU Public\n
+# License, V3 
+#\n
+# Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
+#\n
+#
+#
+#\code
+
+#
+## Documented proc \c geneventtestscpp .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+#
+#  Generates the Event handling code for a Subsystem/CSC.
+#  Code is generated for a send and a log task
+#  per Event Topic type. 
+#
 
 proc geneventtestscpp { subsys } {
 global EVENT_ALIASES EVTS SAL_WORK_DIR DONE_CMDEVT
