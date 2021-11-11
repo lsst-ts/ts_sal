@@ -40,28 +40,6 @@ global OPTIONS
 
 
 #
-## Documented proc \c copylangtests .
-# \param[in] asset Path a file to include in the RPM
-# \param[in] dest Destination directory for copy
-#
-proc copylangtests { rpmname } {
-global OPTIONS SAL_DIR SALVERSION XMLVERSION RELVERSION SAL_WORK_DIR env
-    set mvnrelease [set XMLVERSION]_[exec cat $env(TS_SAL_DIR)/VERSION][set RELVERSION]
-    if { $OPTIONS(verbose) } {puts stdout "###TRACE>>> copylangtests"}
-    copyasset $SAL_DIR/../../bin/minimal_cpp_commander.sh [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/bin/.
-    copyasset $SAL_DIR/../../bin/minimal_cpp_controller.sh [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/bin/.
-    copyasset $SAL_DIR/../../bin/minimal_java_commander.sh [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/bin/.
-    copyasset $SAL_DIR/../../bin/minimal_java_controller.sh [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/bin/.
-    copyasset $SAL_WORK_DIR/Test/cpp/src/sacpp_TestWithSalobj [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/bin/.
-    copyasset $SAL_WORK_DIR/Test/cpp/src/sacpp_TestWithSalobjTarget [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/bin/.
-    exec mkdir -p [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/maven
-    exec cp -r $SAL_WORK_DIR/maven/Test-[set mvnrelease] [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/maven/.
-    exec mv [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/maven/Test-[set mvnrelease] [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/maven/Test
-    if { $OPTIONS(verbose) } {puts stdout "###TRACE<<< copylangtests"}
-}
-
-
-#
 ## Documented proc \c updatetests .
 # \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
 # \param[in] rpmname Name of the rpm base directory
@@ -88,9 +66,6 @@ global SAL_WORK_DIR XMLVERSION
          copyasset $i [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/bin/.
          puts stdout "Done $subsys $i"
       }
-    }
-    if { $subsys == "Test" } {
-      copylangtests $rpmname
     }
   }
 }
