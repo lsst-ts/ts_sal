@@ -250,8 +250,7 @@ global SYSDIC
 #  getSALVersion,getXMLVersion,getOSPLVersion
 #
 proc addSWVersionsCPP { fout } {
-global SALVERSION env
-   set xmldist [string trim [exec cat $env(SAL_WORK_DIR)/VERSION]]
+global SALVERSION XMLVERSION env
   puts $fout "
 string SAL_SALData::getSALVersion()
 \{
@@ -260,7 +259,7 @@ string SAL_SALData::getSALVersion()
 
 string SAL_SALData::getXMLVersion()
 \{
-    return \"$xmldist\";
+    return \"$XMLVERSION\";
 \}
 
 string SAL_SALData::getOSPLVersion()
@@ -284,8 +283,7 @@ string SAL_SALData::getOSPLVersion()
 #  getSALVersion,getXMLVersion,getOSPLVersion
 #
 proc addSWVersionsJava { fout } {
-global SALVERSION env
-   set xmldist [string trim [exec cat $env(SAL_WORK_DIR)/VERSION]]
+global SALVERSION XMLVERSION env
   puts $fout "
 /// Returns the current SAL version e.g. \"4.1.0\"
 public String getSALVersion()
@@ -296,7 +294,7 @@ public String getSALVersion()
 /// Returns the current XML version e.g. \"5.0.0\"
 public String getXMLVersion()
 \{
-    return \"$xmldist\";
+    return \"$XMLVERSION\";
 \}
 
 /// Returns the current OpenSpliceDDS version e.g. \"6.9.181127OSS\"

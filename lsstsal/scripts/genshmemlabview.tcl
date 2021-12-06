@@ -345,8 +345,8 @@ global SAL_DIR SAL_WORK_DIR
 #  Generate the C++ code to support the SAL Topic data exchange with LabVIEW
 #
 proc genlabviewcpp { base ptypes } {
-global SAL_DIR SAL_WORK_DIR SYSDIC LVSTRINGS REVCODE CMD_ALIASES SALVERSION
-  set xmldist [string trim [exec cat $SAL_WORK_DIR/VERSION]]
+global SAL_DIR SAL_WORK_DIR SYSDIC LVSTRINGS REVCODE CMD_ALIASES SALVERSION XMLVERSION
+  set xmldist $XMLVERSION
   set idarg ""
   set idarg2 ""
   set idarg3 "     unsigned int [set base]ID = 0;"

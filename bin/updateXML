@@ -1,6 +1,0 @@
-#!/bin/sh
-rm -f *.xml
-cp -v $LSST_SDK_INSTALL/../ts_xml/VERSION .
-cp -v $LSST_SDK_INSTALL/../ts_xml/sal_interfaces/*.xml .
-cp -v $LSST_SDK_INSTALL/../ts_xml/sal_interfaces/*/*.xml .
-

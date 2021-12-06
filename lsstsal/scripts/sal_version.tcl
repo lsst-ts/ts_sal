@@ -9,9 +9,12 @@
 #
 #
 #\code
-if  { [info exists SALVERSION] == 0 } {
-  set SALVERSION [exec cat $env(LSST_SDK_INSTALL)/VERSION]
+
+if { [info exists SALVERSION] == 0 } {
+  cd $env(TS_SAL_DIR)
+  set SALVERSION [exec git describe --tags --dirty]
+  set SAL_BASE_DIR $env(SAL_DIR)/scripts
+  set SAL_CMAKE_DIR $SAL_BASE_DIR/code/simd/cmake
 }
-set SAL_BASE_DIR $env(SAL_DIR)/scripts
-set SAL_CMAKE_DIR $SAL_BASE_DIR/code/simd/cmake
+
 

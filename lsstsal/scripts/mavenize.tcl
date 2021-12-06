@@ -20,11 +20,14 @@
 #  Create the POM file and directory structure for a Maven project
 #
 proc mavenize { subsys } {
-global env SAL_WORK_DIR SAL_DIR OSPL_VERSION XMLVERSION RELVERSION TS_SAL_DIR
-  set mvnrelease [set XMLVERSION]_[exec cat $env(TS_SAL_DIR)/VERSION][set RELVERSION]
+global env SAL_WORK_DIR SAL_DIR OSPL_VERSION XMLVERSION RELVERSION SALVERSION TS_SAL_DIR
+  set mvnrelease [set XMLVERSION]_[set SALVERSION][set RELVERSION]
   exec mkdir -p $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/java/org/lsst/sal/[set subsys]
   exec mkdir -p $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/test/java
-  exec mkdir -p $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/resources
+  exec mkdir -p $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/resources/xml
+  set all [glob $env(TS_XML_DIR)/sal_interfaces/$subsys/[set subsys]_*.xml]
+  foreach xml $all { exec cp $xml $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/resources/xml/. }
+  exec cp $SAL_WORK_DIR/[set subsys]_Generics.xml  $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/resources/xml/. 
   exec ln -sf $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease] $SAL_WORK_DIR/maven/[set subsys]
   set fout [open $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/pom.xml w]
   puts $fout "
@@ -162,8 +165,8 @@ global env SAL_WORK_DIR SAL_DIR OSPL_VERSION XMLVERSION RELVERSION TS_SAL_DIR
 #  Create the Java unit tests for a Subsystem/CSC
 #
 proc mavenunittests { subsys } {
-global env SAL_WORK_DIR SAL_DIR CMD_ALIASES CMDS SYSDIC XMLVERSION RELVERSION TS_SAL_DIR 
-   set mvnrelease [set XMLVERSION]_[exec cat $env(TS_SAL_DIR)/VERSION][set RELVERSION]
+global env SAL_WORK_DIR SAL_DIR CMD_ALIASES CMDS SYSDIC XMLVERSION SALVERSION RELVERSION TS_SAL_DIR 
+   set mvnrelease [set XMLVERSION]_[set SALVERSION][set RELVERSION]
    if { [info exists SYSDIC($subsys,keyedID)] } {
        set initializer "( (short) 1)"
    } else {

@@ -60,12 +60,12 @@ proc getItemName { rec } {
 #    units - include/SAL_[set subsys]_salpy_units.pyb3
 #
 proc activeRevCodes { subsys } {
-global SAL_WORK_DIR REVCODE OPTIONS SALVERSION METADATA
+global SAL_WORK_DIR REVCODE OPTIONS SALVERSION METADATA XMLVERSION
   if { $OPTIONS(verbose) } {stdlog "###TRACE>>> activeRevCodes $subsys"}
   set fin [open $SAL_WORK_DIR/idl-templates/validated/sal/sal_[set subsys].idl r]
   set fout [open $SAL_WORK_DIR/idl-templates/validated/sal/sal_revCoded_[set subsys].idl w]
   set fpyb [open $SAL_WORK_DIR/include/SAL_[set subsys]_salpy_units.pyb3 w]
-  set xmlversion [exec cat $SAL_WORK_DIR/VERSION]
+  set xmlversion $XMLVERSION
   puts $fout "// SAL_VERSION=$SALVERSION XML_VERSION=$xmlversion"
   gets $fin rec ; puts $fout $rec
   while { [gets $fin rec] > -1 } {
