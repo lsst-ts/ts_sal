@@ -79,7 +79,7 @@ global SAL_WORK_DIR XMLVERSION
 #  Copies the necessary files into rpm base directory
 #
 proc updateruntime { subsys {withtest 0} } {
-global SAL_WORK_DIR XMLVERSION SAL_DIR SYSDIC SALVERSION
+global SAL_WORK_DIR XMLVERSION SAL_DIR SYSDIC SALVERSION env
   set rpmname $subsys
   if { $withtest } {set rpmname [set subsys]_test}
   exec rm -fr [set rpmname]-$XMLVERSION
@@ -136,11 +136,12 @@ global SAL_WORK_DIR XMLVERSION SAL_DIR SYSDIC SALVERSION
       copyasset $SAL_WORK_DIR/[set subsys]/cpp/sal_[set subsys]SplDcps.h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
       copyasset $SAL_DIR/code/templates/SAL_defines.h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
     }
-    foreach dtype "Commands Events Generics Telemetry" {
-      if { [file exists $SAL_WORK_DIR/[set subsys]_[set dtype].xml] } {
-        exec cp $SAL_WORK_DIR/[set subsys]_[set dtype].xml [set rpmname]-$XMLVERSION/opt/lsst/ts_xml/sal_interfaces/[set subsys]/.
+    foreach dtype "Commands Events Telemetry" {
+      if { [file exists $env(TS_XML_DIR)/sal_interfaces/$subsys/[set subsys]_[set dtype].xml] } {
+        exec cp $env(TS_XML_DIR)/sal_interfaces/$subsys/[set subsys]_[set dtype].xml [set rpmname]-$XMLVERSION/opt/lsst/ts_xml/sal_interfaces/[set subsys]/.
       }
     }
+    exec cp $SAL_WORK_DIR/[set subsys]_Generics.xml [set rpmname]-$XMLVERSION/opt/lsst/ts_xml/sal_interfaces/[set subsys]/.
     foreach dtype "Commands Events Telemetry" {
       if { [file exists $SAL_WORK_DIR/html/[set subsys]/[set subsys]_[set dtype].html] } {
         exec cp $SAL_WORK_DIR/html/[set subsys]/[set subsys]_[set dtype].html [set rpmname]-$XMLVERSION/opt/lsst/ts_xml/sal_interfaces/[set subsys]/.
@@ -240,7 +241,7 @@ global XMLVERSION env RPMFILES SAL_WORK_DIR
 #  Generate the SPEC file for the ts_sal_runtime RPM
 #
 proc generatemetarpm { } {
-global SYSDIC SALRELEASE SALVERSION SAL_WORK_DIR OSPL_VERSION RELVERSION env
+global SYSDIC SALRELEASE SALVERSION SAL_WORK_DIR OSPL_VERSION RELVERSION env XMLVERSION
    if { $RELVERSION != "" } {
      set release [set SALVERSION].[set RELVERSION]
      if { [string range $RELVERSION 0 0] == "_" } {
@@ -251,9 +252,10 @@ global SYSDIC SALRELEASE SALVERSION SAL_WORK_DIR OSPL_VERSION RELVERSION env
    } else {
      set release $SALVERSION
    }
-   set xmldist [string trim [exec cat $env(SAL_WORK_DIR)/VERSION]]
+   set xmldist $XMLVERSION
    set fout [open $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_runtime.spec w]
-   set rpmversion [exec cat $env(TS_XML_DIR)/VERSION]
+   set rpmversion $XMLVERSION
+   set release [join [split $release "-"] "."]
    puts $fout "
 %global __os_install_post %{nil}
 %define debug_package %{nil}
@@ -311,7 +313,7 @@ rpmbuild -ba -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_runtime.spec
 #  This is an RPM which Requires all the Auxtel RPMs
 #
 proc generateATmetarpm { } {
-global SYSDIC SALRELEASE SALVERSION SAL_WORK_DIR OSPL_VERSION RELVERSION env
+global SYSDIC SALRELEASE SALVERSION SAL_WORK_DIR OSPL_VERSION RELVERSION env XMLVERSION
    if { $RELVERSION != "" } {
      set release [set SALVERSION].[set RELVERSION]
      if { [string range $RELVERSION 0 0] == "_" } {
@@ -322,9 +324,10 @@ global SYSDIC SALRELEASE SALVERSION SAL_WORK_DIR OSPL_VERSION RELVERSION env
    } else {
      set release $SALVERSION
    }
-   set xmldist [string trim [exec cat $env(SAL_WORK_DIR)/VERSION]]
+   set xmldist $XMLVERSION
    set fout [open $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_ATruntime.spec w]
-   set rpmversion [exec cat $env(TS_XML_DIR)/VERSION]
+   set rpmversion $XMLVERSION
+   set release [join [split $release "-"] "."]
    puts $fout "
 %global __os_install_post %{nil}
 %define debug_package %{nil}
@@ -387,7 +390,7 @@ proc generaterpm { subsys } {
 global SAL_WORK_DIR SALVERSION SALRELEASE RPMFILES OSPL_VERSION RELVERSION XMLVERSION env
   exec rm -fr $SAL_WORK_DIR/rpm_[set subsys]
   exec mkdir -p $SAL_WORK_DIR/rpm_[set subsys]
-  set xmldist [string trim [exec cat $env(SAL_WORK_DIR)/VERSION]]
+  set xmldist $XMLVERSION
   set fout [open $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_[set subsys].spec w]
   if { $RELVERSION != "" } {
      if { [string range $RELVERSION 0 0] == "_" } {
@@ -398,8 +401,9 @@ global SAL_WORK_DIR SALVERSION SALRELEASE RPMFILES OSPL_VERSION RELVERSION XMLVE
   } else {
      set release $SALVERSION
   }
+  set release [join [split $release "-"] "."]
   puts $fout "Name: $subsys
-Version: [exec cat $env(TS_XML_DIR)/VERSION]
+Version: $XMLVERSION
 Release: [set release]%\{?dist\}
 Summary: SAL runtime for $subsys Subsystem
 Vendor: LSST
@@ -458,7 +462,7 @@ proc generatetestrpm { subsys } {
 global SAL_WORK_DIR SALVERSION SALRELEASE RPMFILES OSPL_VERSION RELVERSION XMLVERSION env
   exec rm -fr $SAL_WORK_DIR/rpm_[set subsys]
   exec mkdir -p $SAL_WORK_DIR/rpm_[set subsys]
-  set xmldist [string trim [exec cat $env(SAL_WORK_DIR)/VERSION]]
+  set xmldist $XMLVERSION
   set fout [open $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_[set subsys]_test.spec w]
   if { $RELVERSION != "" } {
      set release [set SALVERSION].[set RELVERSION]
@@ -470,7 +474,8 @@ global SAL_WORK_DIR SALVERSION SALRELEASE RPMFILES OSPL_VERSION RELVERSION XMLVE
   } else {
      set release $SALVERSION
   }
-   set rpmversion [exec cat $env(TS_XML_DIR)/VERSION]
+  set rpmversion $XMLVERSION
+  set release [join [split $release "-"] "."]
   puts $fout "Name: [set subsys]_test
 Version: [set rpmversion]
 Release: [set release]%\{?dist\}
@@ -640,7 +645,6 @@ cp -fr %\{name\}-%\{version\}/* %{buildroot}/.
 /opt/lsst/ts_sal/lib/libsalUtils.so
 /opt/lsst/ts_sal/etc/leap-seconds.list
 /opt/lsst/ts_sal/setup.env
-/opt/lsst/ts_sal/VERSION
 "
   close $fout
   exec mkdir -p ts_sal_utils-$SALVERSION/etc/systemd/system
@@ -670,7 +674,6 @@ WantedBy=ts_sal_settai.service
   copyasset $SAL_WORK_DIR/lib/libsalUtils.so ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/lib/.
   copyasset $SAL_DIR/leap-seconds.list ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/etc/.
   copyasset $env(TS_SAL_DIR)/setup.env ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/.
-  copyasset $SAL_DIR/../../VERSION ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/.
   exec tar cvzf $SAL_WORK_DIR/rpmbuild/SOURCES/ts_sal_utils-$SALVERSION.tgz ts_sal_utils-$SALVERSION
   exec rm -fr $SAL_WORK_DIR/rpmbuild/BUILD/ts_sal_utils-$SALVERSION/*
   exec cp -r ts_sal_utils-$SALVERSION $SAL_WORK_DIR/rpmbuild/BUILD/.

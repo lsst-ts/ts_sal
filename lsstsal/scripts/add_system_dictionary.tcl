@@ -29,7 +29,7 @@ proc calcshmid { subsys } {
   return $id
 }
 
-if { [file exists $env(SAL_WORK_DIR)/SALSubsystems.xml] } {
+if { [file exists $env(TS_XML_DIR)/sal_interfaces/SALSubsystems.xml] } {
    source $env(SAL_DIR)/update_ts_xml_dictionary.tcl
    parseSystemDictionary
 } else {
@@ -38,9 +38,7 @@ if { [file exists $env(SAL_WORK_DIR)/SALSubsystems.xml] } {
 ****************** WARNING - missing dictionary *******************************
 *******************************************************************************
 
-	$env(SAL_WORK_DIR)/SALSubsystems.xml not found
-
- 	Please copy it from the ts_xml installation
+	$env(TS_XML_DIR)/sal_interfaces/SALSubsystems.xml not found
 
 *******************************************************************************
 *******************************************************************************"

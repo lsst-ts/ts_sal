@@ -18,7 +18,7 @@
 #
 proc createSystemDictionary { } {
 global env SAL_WORK_DIR
-  set fout [open $SAL_WORK_DIR/SALSubsystems.xml w]
+  set fout [open $env(TS_XML_DIR)/sal_interfaces/SALSubsystems.xml w]
   puts $fout "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
   puts $fout "<?xml-stylesheet type=\"text/xsl\" href=\"http://github.com/lsst-ts/ts_xml/tree/master/schema/SALSubsystemSet.xsl\"?>"
   puts $fout "<SALSubsystemSet xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"
@@ -58,7 +58,7 @@ global env SYSDIC SAL_WORK_DIR OPTIONS
   set SYSDIC(systems) ""
   getValidGenerics
   buildGenericCategories
-  set fin [open $env(SAL_WORK_DIR)/SALSubsystems.xml r]
+  set fin [open $env(TS_XML_DIR)/sal_interfaces/SALSubsystems.xml r]
   while { [gets $fin rec] > -1 } {
       set tag   [lindex [split $rec "<>"] 1]
       set value [lindex [split $rec "<>"] 2]
@@ -121,8 +121,8 @@ global env SYSDIC SAL_WORK_DIR OPTIONS
 #  Mark valid generic topics for a Subsystem in SYSDIC
 #
 proc getValidGenerics { } {
-global SAL_WORK_DIR SYSDIC
-  set all [split [exec grep EFDB_Topic $SAL_WORK_DIR/SALGenerics.xml] \n]
+global SAL_WORK_DIR SYSDIC env
+  set all [split [exec grep EFDB_Topic $env(TS_XML_DIR)/sal_interfaces/SALGenerics.xml] \n]
   foreach g $all {
     set gid [string range [lindex [split $g "<>"]  2] 11 end]
     set SYSDIC(validGeneric,$gid) 1
@@ -172,9 +172,9 @@ global SYSDIC
 #  Build the available Generic topic categories from SALGenerics.xml
 #
 proc buildGenericCategories { } {
-global SYSDIC SAL_WORK_DIR
+global SYSDIC SAL_WORK_DIR env
   set SYSDIC(GenericCategories) ""
-  set fcat [open $SAL_WORK_DIR/SALGenerics.xml r]
+  set fcat [open $env(TS_XML_DIR)/sal_interfaces/SALGenerics.xml r]
   while { [gets $fcat rec] > -1 } {
     set tag   [lindex [split $rec "<>"] 1]
     set value [lindex [split $rec "<>"] 2]

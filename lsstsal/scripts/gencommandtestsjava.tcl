@@ -206,7 +206,7 @@ public class [set subsys]Controller_[set alias]Test extends TestCase \{
 proc genauthlisttestsjava { subsys } {
 global env CMD_ALIASES CMDS EVENT_ALIASES EVTS SAL_WORK_DIR SYSDIC SAL_DIR OPTIONS
 global RELVERSION XMLVERSION SALVERSION
-  set mvnrelease [set XMLVERSION]_[exec cat $env(TS_SAL_DIR)/VERSION][set RELVERSION]
+  set mvnrelease [set XMLVERSION]_[set SALVERSION][set RELVERSION]
   if { $OPTIONS(verbose) } {stdlog "###TRACE>>> genauthlisttestsjava $subsys"}
   if { [info exists SYSDIC($subsys,java)] } {
     if { [info exists CMD_ALIASES($subsys)] } {
