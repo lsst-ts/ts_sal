@@ -12,7 +12,7 @@
 
 if { [info exists SALVERSION] == 0 } {
   cd $env(TS_SAL_DIR)
-  set SALVERSION [exec git describe --tags --dirty]
+  set SALVERSION [string trim [exec git describe --tags --dirty] "v"]
   set SAL_BASE_DIR $env(SAL_DIR)/scripts
   set SAL_CMAKE_DIR $SAL_BASE_DIR/code/simd/cmake
 }

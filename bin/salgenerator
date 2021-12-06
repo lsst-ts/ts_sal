@@ -45,7 +45,7 @@ if { [file exists $SAL_WORK_DIR] == 0 } {
 
 if { [file exists $env(TS_XML_DIR)] } {
    cd $env(TS_XML_DIR)
-   set XMLVERSION [exec git describe --tags --dirty]
+   set XMLVERSION [string trim [exec git describe --tags --dirty] "v"]
  } else {
    errorexit "Please adjust setup.env so that TS_XML_DIR is correct"
 }
