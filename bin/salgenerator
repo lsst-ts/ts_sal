@@ -382,6 +382,8 @@ if { $OPTIONS(lib) } {
 if { $OPTIONS(rpm) } {
   cd $SAL_WORK_DIR
   source $SAL_DIR/gensalrpms.tcl
+  set SALVERSION [join [lrange [split $SALVERSION ".-_"] 0 2] "."]
+  set XMLVERSION [join [lrange [split $XMLVERSION ".-_"] 0 2] "."]
   foreach s $TSUBSYSTEMS {
     if { $s != "rpm" } {
       stdlog "Building runtime RPM for $s subsystem"
