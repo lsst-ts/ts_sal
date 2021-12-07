@@ -299,8 +299,8 @@ echo \"=====================================================================\"
 "
       close $fout
     }
+    exec chmod 755 $SAL_WORK_DIR/[set subsys]/java/src/testAuthList.sh
   }
-  exec chmod 755 $SAL_WORK_DIR/[set subsys]/java/src/testAuthList.sh
   if { $OPTIONS(verbose) } {stdlog "###TRACE<<< genauthlisttestsjava $subsys"}
 }
 
