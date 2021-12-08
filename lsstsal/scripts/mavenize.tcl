@@ -25,8 +25,10 @@ global env SAL_WORK_DIR SAL_DIR OSPL_VERSION XMLVERSION RELVERSION SALVERSION TS
   exec mkdir -p $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/java/org/lsst/sal/[set subsys]
   exec mkdir -p $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/test/java
   exec mkdir -p $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/resources/xml
-  set all [glob $env(TS_XML_DIR)/sal_interfaces/$subsys/[set subsys]_*.xml]
-  foreach xml $all { exec cp $xml $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/resources/xml/. }
+  catch {
+    set all [glob $env(TS_XML_DIR)/sal_interfaces/$subsys/[set subsys]_*.xml]
+    foreach xml $all { exec cp $xml $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/resources/xml/. }
+  }  
   exec cp $SAL_WORK_DIR/[set subsys]_Generics.xml  $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/resources/xml/. 
   exec ln -sf $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease] $SAL_WORK_DIR/maven/[set subsys]
   set fout [open $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/pom.xml w]
