@@ -340,7 +340,8 @@ class BasicTestCase(BaseSalTestCase):
         self.test_data.assert_arrays_equal(data, expected_data)
 
     def test_evt_late_joiner_oldest(self):
-        """Test that a late joiner can an event using getNextSample.
+        """Test that a late joiner can can read the most recent event using
+        getNextSample.
 
         Only one value is retrievable.
         """
