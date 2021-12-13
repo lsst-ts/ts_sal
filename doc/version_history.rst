@@ -9,6 +9,16 @@ Version History
 This is release 6.0.0 of the SAL SDK (October 28th 2021)
 -------------------------------------------------------
 
+Changes for 6.0.1
+=================
+
+* Improvements to tests/test_sal.py:
+
+  * The timeout argument was ignored in get_topic.
+  * Improved tests of AddedGenerics.
+    Test that ``Script`` has no ``enable`` command.
+    Test that ``Test`` has no ``enterControl`` command.
+
 Changes for 6.0.0
 =================
 
