@@ -56,7 +56,7 @@ class BaseSalTestCase(unittest.TestCase):
             Time limit, in seconds.
         """
         start_time = time.time()
-        while time.time() - start_time < 2:
+        while time.time() - start_time < timeout:
             retcode = func(data)
             time.sleep(STD_SLEEP)
             if retcode == SALPY_Test.SAL__OK:
@@ -451,13 +451,15 @@ class BasicTestCase(BaseSalTestCase):
         self.assertEqual(SALPY_Test.arrays_Int0ValueEnum_Five, 5)
 
 
-class ScriptTestCase(unittest.TestCase):
-    """A few tests require CSC that doesn't use generics, so we use Script."""
-
-    def test_generics_no(self):
-        """Test that setting generics to `no` avoids generics."""
-        self.assertFalse(hasattr(SALPY_Script, "Test_command_enterControlC"))
+class AddedGenericsTestCase(unittest.TestCase):
+    def test_no_csc_generics(self):
+        """Test a SAL component that does not have csc in AddedGenerics."""
+        self.assertFalse(hasattr(SALPY_Script, "Test_command_enableC"))
         self.assertFalse(hasattr(SALPY_Script, "Test_logevent_summaryStateC"))
+
+    def test_no_enter_control(self):
+        """Test that enterControl is not present for Test."""
+        self.assertFalse(hasattr(SALPY_Test, "Test_command_enterControlC"))
 
 
 class ErrorHandlingTestCase(BaseSalTestCase):
