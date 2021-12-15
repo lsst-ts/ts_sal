@@ -1,6 +1,5 @@
 package org.lsst.sal;
 
-import Test.arrays;
 import Test.command_setScalars;
 import Test.logevent_scalars;
 import Test.scalars;
@@ -269,10 +268,13 @@ public class ErrorHandlingTest extends BaseTestCase {
         }
     }
 
+    /**
+     * Test getting and putting command topics where a raise is expected,
+     * e.g. due to invalid data or not registering the topic first.
+     *
+     * @param data Data to use as the argument to the get and put functions.
+     */
     private void checkCmdGetPutRaises(command_setScalars data) {
-        // try/catch blocks like these are the accepted design pattern for
-        // JUnit tests to validated that a checked exception is thrown by the
-        // method that gets called.
         try {
             controller.acceptCommand_setScalars(data);
             Assert.fail("An exception should have been thrown.");
@@ -287,10 +289,13 @@ public class ErrorHandlingTest extends BaseTestCase {
         }
     }
 
+    /**
+     * Test getting and putting logevent topics where a raise is expected,
+     * e.g. due to invalid data or not registering the topic first.
+     *
+     * @param data Data to use as the argument to the get and put functions.
+     */
     private void checkEvtGetPutRaises(logevent_scalars data) {
-        // try/catch blocks like these are the accepted design pattern for
-        // JUnit tests to validated that a checked exception is thrown by the
-        // method that gets called.
         try {
             remote.getNextSample(data);
             Assert.fail("An exception should have been thrown.");
@@ -318,10 +323,16 @@ public class ErrorHandlingTest extends BaseTestCase {
         }
     }
 
+    /**
+     * Test getting and putting the telemetry scalars topic
+     * where a raise is expected.
+     * <p>
+     * Reasons this may raise include: incorrect data type,
+     * invalid data and not registering the topic first.
+     *
+     * @param data TData to use as the argument to the get and put functions.
+     */
     private void checkTelGetPutRaises(scalars data) {
-        // try/catch blocks like these are the accepted design pattern for
-        // JUnit tests to validated that a checked exception is thrown by the
-        // method that gets called.
         try {
             remote.getNextSample(data);
             Assert.fail("An exception should have been thrown.");

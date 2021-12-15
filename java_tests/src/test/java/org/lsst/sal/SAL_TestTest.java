@@ -29,8 +29,10 @@ public class SAL_TestTest extends BaseTestCase {
     }
 
     @Test
-    @Ignore("No astropy equivalent for java.")
     public void testGetLeapSeconds() {
+        salUtils salUtil = new salUtils();
+        int leapSeconds = salUtil.getLeapSeconds();
+        Assert.assertTrue(leapSeconds >= 0);
     }
 
     @Test

@@ -9,10 +9,10 @@ import org.junit.Test;
 public class SAL_ScriptTest {
 
     /**
-     * Test that setting generics to `no` avoids generics.
+     * Test a SAL component that does not have csc in AddedGenerics.
      */
     @Test
-    public void testGenericsNo() {
+    public void testNoCscGenerics() {
         Class<?> cls = SAL_Script.class;
         try {
             cls.getMethod("Test_command_enterControlC", cls);
@@ -22,6 +22,20 @@ public class SAL_ScriptTest {
         }
         try {
             cls.getMethod("Test_logevent_summaryStateC", cls);
+            Assert.fail("A NoSuchMethodException should have been raised.");
+        } catch (NoSuchMethodException e) {
+            Assert.assertNotNull(e);
+        }
+    }
+
+    /**
+     * Test that enterControl is not present for Test.
+     */
+    @Test
+    public void testNoEnterControl() {
+        Class<?> cls = SAL_Test.class;
+        try {
+            cls.getMethod("Test_command_enterControlC", cls);
             Assert.fail("A NoSuchMethodException should have been raised.");
         } catch (NoSuchMethodException e) {
             Assert.assertNotNull(e);

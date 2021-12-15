@@ -13,10 +13,6 @@ Changes for 6.1.0
 =================
 
 * Add Java unit tests for SAL
-
-Changes for 6.0.1
-=================
-
 * Improvements to tests/test_sal.py:
 
   * The timeout argument was ignored in get_topic.
