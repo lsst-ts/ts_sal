@@ -1,0 +1,134 @@
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.lsst.lsst-tsvm</groupId>
+    <artifactId>sal</artifactId>
+    <packaging>jar</packaging>
+    <name>java_tests</name>
+    <version>6.0.0</version>
+
+    <url>http://lsst-tsvm.lsst.org</url>
+    <licenses>
+        <license>
+            <name>LSST GPL</name>
+            <url>http://lsst-tsvm.lsst.org/LICENSE/</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
+    <organization>
+        <name>Rubin Observatory</name>
+        <url>http://lsst-tsvm.lsst.org</url>
+    </organization>
+    <developers>
+        <developer>
+            <id>wvreeven</id>
+            <name>Wouter van Reeven</name>
+            <email>wvanreeven@lsst.org</email>
+            <url>http://www.lsstcorp.org</url>
+            <organization>Rubin Observatory</organization>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>-7</timezone>
+        </developer>
+    </developers>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <executions>
+                    <execution>
+                        <id>default-compile</id>
+                        <phase>compile</phase>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/sal*.java</exclude>
+                            </excludes>
+                        </configuration>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>../test/maven/Script/src/main/java</source>
+                                <source>../test/maven/Test/src/main/java</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
+            <version>1.6.4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-mockito</artifactId>
+            <version>1.6.4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>opensplice.dds</groupId>
+            <artifactId>dcpssaj</artifactId>
+            <version>6.9.0</version>
+        </dependency>
+    </dependencies>
+    <repositories>
+        <repository>
+            <id>ocs-maven2-public</id>
+            <name>OCS Maven 2 central repository</name>
+            <url>http://repo-nexus.lsst.org/nexus/content/groups/ocs-maven2/</url>
+        </repository>
+    </repositories>
+    <distributionManagement>
+        <repository>
+            <id>ocs-maven2</id>
+            <name>OCS Maven2 Release repository</name>
+            <url>http://repo-nexus.lsst.org/nexus/content/repositories/ocs-maven2/</url>
+        </repository>
+        <snapshotRepository>
+            <id>ocs-maven2-snapshots</id>
+            <name>OCS Maven2 SNAPSHOTS repository</name>
+            <url>http://repo-nexus.lsst.org/nexus/content/repositories/ocs-maven2-snapshots/</url>
+        </snapshotRepository>
+        <site>
+            <id>ocs-maven2-site</id>
+            <name>OCS Maven2 site repository</name>
+            <url>dav:http://repo-nexus.lsst.org/nexus/content/sites/ocs-site/</url>
+        </site>
+    </distributionManagement>
+</project>
+

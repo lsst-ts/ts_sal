@@ -47,3 +47,4 @@ lib/*.so
 python/*.so
 .out
 *.log
+java_tests/target
