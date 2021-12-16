@@ -6,18 +6,16 @@
 Version History
 ###############
 
-This is release 6.0.0 of the SAL SDK (October 28th 2021)
--------------------------------------------------------
-
 Changes for 6.1.0
 =================
 
-* Add Java unit tests for SAL
+* Add Java unit tests for SAL.
 * Improvements to tests/test_sal.py:
 
   * The timeout argument was ignored in get_topic.
-  * Improved tests of AddedGenerics.
-    Test that ``Script`` has no ``enable`` command.
+  * Improved tests of AddedGenerics:
+
+    Test that ``Script`` has no ``enable`` command (instad of ``enterControl``, which is now rare).
     Test that ``Test`` has no ``enterControl`` command.
 
 Changes for 6.0.0

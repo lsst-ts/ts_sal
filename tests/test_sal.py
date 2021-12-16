@@ -453,7 +453,7 @@ class BasicTestCase(BaseSalTestCase):
 
 
 class AddedGenericsTestCase(unittest.TestCase):
-    def test_no_csc_generics(self):
+    def test_no_csc(self):
         """Test a SAL component that does not have csc in AddedGenerics."""
         self.assertFalse(hasattr(SALPY_Script, "Test_command_enableC"))
         self.assertFalse(hasattr(SALPY_Script, "Test_logevent_summaryStateC"))

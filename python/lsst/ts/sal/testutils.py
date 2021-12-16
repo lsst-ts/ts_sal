@@ -214,7 +214,8 @@ class TestData:
         import SALPY_Test
 
         empty_arrays = SALPY_Test.Test_arraysC()
-        data.boolean0 = np.random.choice([False, True])
+        # Cast to bool from np._bool to avoid a warning from numpy
+        data.boolean0 = bool(np.random.choice([False, True]))
         printable_chars = [c for c in string.ascii_letters + string.digits]
         # string0 is a string with max length 20 (IDL_Size=20)
         data.string0 = "".join(np.random.choice(printable_chars, size=(20,)))

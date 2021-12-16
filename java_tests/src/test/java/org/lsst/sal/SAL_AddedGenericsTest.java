@@ -3,25 +3,24 @@ package org.lsst.sal;
 import org.junit.Assert;
 import org.junit.Test;
 
-/**
- * A few tests require CSC that doesn't use generics, so we use Script.
- */
-public class SAL_ScriptTest {
+public class SAL_AddedGenericsTest {
 
     /**
-     * Test a SAL component that does not have csc in AddedGenerics.
+     * Test topics for a SAL component that does not have "csc" in AddedGenerics.
+     *
+     * Use Script: one of the few SAL component that is not a CSC.
      */
     @Test
-    public void testNoCscGenerics() {
+    public void testNoCsc() {
         Class<?> cls = SAL_Script.class;
         try {
-            cls.getMethod("Test_command_enterControlC", cls);
+            cls.getMethod("Script_command_enableC", cls);
             Assert.fail("A NoSuchMethodException should have been raised.");
         } catch (NoSuchMethodException e) {
             Assert.assertNotNull(e);
         }
         try {
-            cls.getMethod("Test_logevent_summaryStateC", cls);
+            cls.getMethod("Script_logevent_summaryStateC", cls);
             Assert.fail("A NoSuchMethodException should have been raised.");
         } catch (NoSuchMethodException e) {
             Assert.assertNotNull(e);
@@ -29,7 +28,7 @@ public class SAL_ScriptTest {
     }
 
     /**
-     * Test that enterControl is not present for Test.
+     * Test that a standard CSC does not have the "enterControl" command.
      */
     @Test
     public void testNoEnterControl() {
