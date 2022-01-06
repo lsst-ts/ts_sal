@@ -284,10 +284,15 @@ public class SAL_SALData {
                    historySync = Integer.parseInt(hname);
                 }
                 if (qname != null) {
-                  commandQos = new QosProvider(qname,"CommandProfile");
-                  eventQos = new QosProvider(qname,"EventProfile");
-                  telemetryQos = new QosProvider(qname,"TelemetryProfile");
-                  ackcmdQos = new QosProvider(qname,"AckcmdProfile");
+                  try {
+                    commandQos = new QosProvider(qname,"CommandProfile");
+                    eventQos = new QosProvider(qname,"EventProfile");
+                    telemetryQos = new QosProvider(qname,"TelemetryProfile");
+                    ackcmdQos = new QosProvider(qname,"AckcmdProfile");
+                  }
+                  catch (NullPointerException e) {
+                    throw new RuntimeException("ERROR : Cannot find file with LSST_DDS_QOS");
+                  }
                 } else {
                    throw new RuntimeException("ERROR : Cannot find envvar LSST_DDS_QOS profiles");
 		}
