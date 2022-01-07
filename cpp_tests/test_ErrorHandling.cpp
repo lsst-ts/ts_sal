@@ -82,17 +82,16 @@ TEST_CASE("Remote/controller") {
 	Test_logevent_scalarsC data;
 	for (int val = 0; val < READ_QUEUE_DEPTH + 10; val++) {
 	    data.int0 = val;
-	    int retcode = controller->logEvent_scalars(&data, 1);
-	    REQUIRE(retcode == 0);
+	    REQUIRE(controller->logEvent_scalars(&data, 1) == SAL__OK);
 	}
 
 	// make sure the queue overflowed
-	REQUIRE(remote->getNextSample_logevent_scalars(&data) == 0);
+	REQUIRE(remote->getNextSample_logevent_scalars(&data) == SAL__OK);
 	REQUIRE(data.int0 != 0);
 
 	int start_value = data.int0;
 	for (int i = 1; i < READ_QUEUE_DEPTH - 1; i++) {
-	    REQUIRE(remote->getNextSample_logevent_scalars(&data) == 0);
+	    REQUIRE(remote->getNextSample_logevent_scalars(&data) == SAL__OK);
 	    REQUIRE(data.int0 == start_value + i);
 	}
     }
@@ -105,17 +104,16 @@ TEST_CASE("Remote/controller") {
 	Test_scalarsC data;
 	for (int val = 0; val < READ_QUEUE_DEPTH + 10; val++) {
 	    data.int0 = val;
-	    int retcode = controller->putSample_scalars(&data);
-	    REQUIRE(retcode == 0);
+	    REQUIRE(controller->putSample_scalars(&data) == SAL__OK);
 	}
 
 	// make sure the queue overflowed
-	REQUIRE(remote->getNextSample_scalars(&data) == 0);
+	REQUIRE(remote->getNextSample_scalars(&data) == SAL__OK);
 	REQUIRE(data.int0 != 0);
 
 	int start_value = data.int0;
 	for (int i = 1; i < READ_QUEUE_DEPTH - 1; i++) {
-	    REQUIRE(remote->getNextSample_scalars(&data) == 0);
+	    REQUIRE(remote->getNextSample_scalars(&data) == SAL__OK);
 	    REQUIRE(data.int0 == start_value + i);
 	}
     }
