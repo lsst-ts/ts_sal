@@ -16,31 +16,28 @@ import java.io.File;
  * native libraries and doesn't unload them until the JVM stops.
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(System.class)
+@PrepareForTest(SAL_Test.class)
 public class LsstDdsQosTest {
 
     String dataDir;
-    String originalLsstDdsQos;
 
     @Before
     public void setUp() {
         dataDir = "../tests/data";
-        originalLsstDdsQos = System.getenv("LSST_DDS_QOS");
+        PowerMockito.mockStatic(System.class);
+        PowerMockito.when(System.getenv(Mockito.eq("LSST_DDS_PARTITION_PREFIX")))
+                .thenReturn(TestUtils.generateRandomString());
     }
 
     @Test
     public void testQosNoEnvVar() {
-        PowerMockito.mockStatic(System.class);
         PowerMockito.when(System.getenv(Mockito.eq("LSST_DDS_QOS"))).thenReturn(null);
         try {
             new SAL_Test(1);
             Assert.fail("An exception should have been thrown.");
-        } catch (UnsatisfiedLinkError e) {
-            // Note that the error message is
-            // Library "dcpssaj" could not be loaded: Native Library
-            // /opt/OpenSpliceDDS/V6.9.0/HDE/x86_64.linux/lib/libdcpssaj.so
-            // already loaded in another classloader
+        } catch (RuntimeException e) {
             Assert.assertNotNull(e);
+            Assert.assertEquals("ERROR : Cannot find envvar LSST_DDS_QOS profiles", e.getMessage());
         }
     }
 
@@ -49,15 +46,13 @@ public class LsstDdsQosTest {
         String filepath = dataDir + "/not_a_file";
         File file = new File(filepath);
         Assert.assertFalse(file.exists());
-        PowerMockito.mockStatic(System.class);
         PowerMockito.when(System.getenv(Mockito.eq("LSST_DDS_QOS"))).thenReturn("file://" + filepath);
         try {
             new SAL_Test(1);
-            // Note that enabling this Assert.fail line will make the unit test not pass
-            // since the native library already was loaded.
-            // Assert.fail("An exception should have been thrown.");
-        } catch (UnsatisfiedLinkError e) {
+            Assert.fail("An exception should have been thrown.");
+        } catch (RuntimeException e) {
             Assert.assertNotNull(e);
+            Assert.assertEquals("ERROR : Cannot find file with LSST_DDS_QOS", e.getMessage());
         }
     }
 
@@ -68,15 +63,13 @@ public class LsstDdsQosTest {
             String filepath = dataDir + "/QoS_no_" + profile + ".xml";
             File file = new File(filepath);
             Assert.assertTrue(file.exists());
-            PowerMockito.mockStatic(System.class);
             PowerMockito.when(System.getenv(Mockito.eq("LSST_DDS_QOS"))).thenReturn("file://" + filepath);
             try {
                 new SAL_Test(1);
-                // Note that enabling this Assert.fail line will make the unit test not pass
-                // since the native library already was loaded.
-                // Assert.fail("An exception should have been thrown.");
-            } catch (UnsatisfiedLinkError e) {
+                Assert.fail("An exception should have been thrown.");
+            } catch (RuntimeException e) {
                 Assert.assertNotNull(e);
+                Assert.assertEquals("ERROR : Cannot find " + profile + " in QoS", e.getMessage());
             }
         }
     }
