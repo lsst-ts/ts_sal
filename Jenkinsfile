@@ -81,10 +81,9 @@ pipeline {
                         "source ~/.setup.sh && " +
                         "conda install -y catch2 && " +
                         "export LSST_DDS_QOS=file:///home/saluser/repos/ts_ddsconfig/qos/QoS.xml && " +
-                        "cd /home/saluser/repos/ts_sal && " +
-                        "cp ../ts_xml/sal_interfaces/*.xml ../ts_xml/sal_interfaces/Test/*.xml test && " +
+                        "cd /home/saluser/repos/ts_sal/cpp_tests && " +
                         "salgenerator generate cpp Test && " +
-                        "cd cpp_tests && " +
+                        "salgenerator generate cpp Script && " +
                         "export LSST_DDS_PARTITION_PREFIX=test && " +
                         "make junit\""
                 }

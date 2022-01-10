@@ -17,7 +17,7 @@ CFLAGS := \
 	-I${SAL_HOME}/include                    \
 	-I${CONDA_PREFIX}/include
 
-LIBS := -L${SAL_WORK_DIR}/lib -lSAL_Test
+LIBS := -L${SAL_WORK_DIR}/lib -lSAL_Test -lSAL_Script
 
 ifneq ($(MAKECMDGOALS),clean)
     -include $(DEPS)
