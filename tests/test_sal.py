@@ -339,17 +339,26 @@ class BasicTestCase(BaseSalTestCase):
             self.get_topic(self.remote.getSample_arrays, data)
         self.test_data.assert_arrays_equal(data, expected_data)
 
-    def test_evt_late_joiner_oldest(self):
-        """Test that a late joiner can can read the most recent event using
-        getNextSample.
+    def check_evt_late_joiner_data(self, read_func, read_gets_oldest):
+        """Check event late-joiner data, using the logevent_arrays topic.
 
-        Only one value is retrievable.
+        Parameters
+        ----------
+        read_func : callable
+            Function to read data, e.g. self.remote.getEvent_arrays
+        read_gets_oldest : bool
+            Does the read function get the oldest data?
+            Set true for getNextSample and getEvent.
+            Set false for getSample.
         """
         self.controller.salEventPub("Test_logevent_arrays")
         time.sleep(STD_SLEEP)
 
+        nhist = 5
+
         data_list = []
-        for i in range(5):
+        # Write late-joiner samples (no subscriber yet)
+        for i in range(nhist):
             data = SALPY_Test.Test_logevent_arraysC()
             self.test_data.set_random_arrays(data)
             data_list.append(data)
@@ -359,76 +368,98 @@ class BasicTestCase(BaseSalTestCase):
 
         self.remote.salEventSub("Test_logevent_arrays")
         time.sleep(STD_SLEEP)
-        retcode = self.remote.getNextSample_logevent_arrays(data)
-        self.assertEqual(retcode, SALPY_Test.SAL__OK)
-        self.test_data.assert_arrays_equal(data, data_list[-1])
 
-    def test_tel_late_joiner_oldest(self):
+        if read_gets_oldest:
+            # Write new samples
+            for i in range(3):
+                data = SALPY_Test.Test_logevent_arraysC()
+                self.test_data.set_random_arrays(data)
+                data_list.append(data)
+                retcode = self.controller.logEvent_arrays(data, 1)
+                time.sleep(STD_SLEEP)
+                self.assertEqual(retcode, SALPY_Test.SAL__OK)
+
+            # getEvent reads the oldest message first, so we should see
+            # all historical samples, followed by new samples.
+            for expected_data in data_list:
+                data = SALPY_Test.Test_logevent_arraysC()
+                retcode = read_func(data)
+                self.assertEqual(retcode, SALPY_Test.SAL__OK)
+                self.test_data.assert_arrays_equal(data, expected_data)
+        else:
+            expected_data = data_list[-1]
+            retcode = read_func(data)
+            self.assertEqual(retcode, SALPY_Test.SAL__OK)
+            self.test_data.assert_arrays_equal(data, expected_data)
+
+        data = SALPY_Test.Test_logevent_arraysC()
+        retcode = read_func(data)
+        self.assertEqual(retcode, SALPY_Test.SAL__NO_UPDATES)
+
+    def test_evt_late_joiner_getEvent(self):
+        """Test that a late joiner can read historical data using
+        getEvent.
+        """
+        self.check_evt_late_joiner_data(
+            read_func=self.remote.getEvent_arrays, read_gets_oldest=True
+        )
+
+    def test_evt_late_joiner_getNextSample(self):
+        """Test that a late joiner can read historical data using
+        getNextSample.
+        """
+        self.check_evt_late_joiner_data(
+            read_func=self.remote.getNextSample_logevent_arrays, read_gets_oldest=True
+        )
+
+    def test_evt_late_joiner_getSample(self):
+        """Test that a late joiner can read one item of historical data using
+        getEvent.
+        """
+        self.check_evt_late_joiner_data(
+            read_func=self.remote.getSample_logevent_arrays, read_gets_oldest=False
+        )
+
+    def check_tel_no_late_joiner_data(self, read_func):
+        """Check that telemetry has no late-joiner data, using the arrays
+        topic.
+
+        Telemetry is volatile, so it should never have late-joiner data.
+
+        Parameters
+        ----------
+        read_func : callable
+            Function to read data, e.g. self.remote.getNextSample_arrays
+        """
+        self.controller.salTelemetryPub("Test_arrays")
+        time.sleep(STD_SLEEP)
+
+        data_list = []
+        for i in range(5):
+            data = SALPY_Test.Test_arraysC()
+            self.test_data.set_random_arrays(data)
+            data_list.append(data)
+            retcode = self.controller.putSample_arrays(data)
+            time.sleep(STD_SLEEP)
+            self.assertEqual(retcode, SALPY_Test.SAL__OK)
+
+        self.remote.salTelemetrySub("Test_arrays")
+        time.sleep(STD_SLEEP)
+        data = SALPY_Test.Test_arraysC()
+        retcode = read_func(data)
+        self.assertEqual(retcode, SALPY_Test.SAL__NO_UPDATES)
+
+    def test_tel_late_joiner_getNextSample(self):
         """Test that a late joiner cannot see historical telemetry
         using getNextSample.
-
-        Telemetry is volatile so there should be no late joiner data.
         """
-        self.controller.salTelemetryPub("Test_arrays")
-        time.sleep(STD_SLEEP)
+        self.check_tel_no_late_joiner_data(read_func=self.remote.getNextSample_arrays)
 
-        data_list = []
-        for i in range(5):
-            data = SALPY_Test.Test_arraysC()
-            self.test_data.set_random_arrays(data)
-            data_list.append(data)
-            retcode = self.controller.putSample_arrays(data)
-            time.sleep(STD_SLEEP)
-            self.assertEqual(retcode, SALPY_Test.SAL__OK)
-
-        self.remote.salTelemetrySub("Test_arrays")
-        time.sleep(STD_SLEEP)
-
-        retcode = self.remote.getNextSample_arrays(data)
-        self.assertEqual(retcode, SALPY_Test.SAL__NO_UPDATES)
-
-    def test_evt_late_joiner_newest(self):
-        """Test that a late joiner can see an event using getEvent."""
-        self.controller.salEventPub("Test_logevent_arrays")
-        time.sleep(STD_SLEEP)
-
-        data_list = []
-        for i in range(5):
-            data = SALPY_Test.Test_logevent_arraysC()
-            self.test_data.set_random_arrays(data)
-            data_list.append(data)
-            retcode = self.controller.logEvent_arrays(data, 1)
-            time.sleep(STD_SLEEP)
-            self.assertEqual(retcode, SALPY_Test.SAL__OK)
-
-        self.remote.salEventSub("Test_logevent_arrays")
-        time.sleep(STD_SLEEP)
-        retcode = self.remote.getEvent_arrays(data)
-        self.assertEqual(retcode, SALPY_Test.SAL__OK)
-        self.test_data.assert_arrays_equal(data, data_list[-1])
-
-    def test_tel_late_joiner_newest(self):
+    def test_tel_late_joiner_getSample(self):
         """Test that a late joiner cannot see historical telemetry
         using getSample.
-
-        Telemetry is volatile so there should be no late joiner data.
         """
-        self.controller.salTelemetryPub("Test_arrays")
-        time.sleep(STD_SLEEP)
-
-        data_list = []
-        for i in range(5):
-            data = SALPY_Test.Test_arraysC()
-            self.test_data.set_random_arrays(data)
-            data_list.append(data)
-            retcode = self.controller.putSample_arrays(data)
-            time.sleep(STD_SLEEP)
-            self.assertEqual(retcode, SALPY_Test.SAL__OK)
-
-        self.remote.salTelemetrySub("Test_arrays")
-        time.sleep(STD_SLEEP)
-        retcode = self.remote.getSample_arrays(data)
-        self.assertEqual(retcode, SALPY_Test.SAL__NO_UPDATES)
+        self.check_tel_no_late_joiner_data(read_func=self.remote.getSample_arrays)
 
     def test_enumerations(self):
         """Test enumerations."""
@@ -454,13 +485,44 @@ class BasicTestCase(BaseSalTestCase):
 
 class AddedGenericsTestCase(unittest.TestCase):
     def test_no_csc(self):
-        """Test a SAL component that does not have csc in AddedGenerics."""
-        self.assertFalse(hasattr(SALPY_Script, "Test_command_enableC"))
-        self.assertFalse(hasattr(SALPY_Script, "Test_logevent_summaryStateC"))
+        """Test a SAL component that does not have csc in AddedGenerics.
+
+        Also test for the presence of a few mandatory and component-specific
+        topics.
+        """
+        # Topics in the csc category, which Script does not use
+        self.assertFalse(hasattr(SALPY_Script, "Script_command_enableC"))
+        self.assertFalse(hasattr(SALPY_Script, "Script_logevent_summaryStateC"))
+
+        # Mandatory topics
+        self.assertTrue(hasattr(SALPY_Script, "Script_logevent_heartbeatC"))
+        self.assertTrue(hasattr(SALPY_Script, "Script_logevent_logMessageC"))
+
+        # Component-specific topics
+        self.assertTrue(hasattr(SALPY_Script, "Script_command_configureC"))
+        self.assertTrue(hasattr(SALPY_Script, "Script_logevent_checkpointsC"))
 
     def test_no_enter_control(self):
-        """Test that enterControl is not present for Test."""
+        """Test that enterControl is not present for Test.
+
+        Also test for the presence of a few expected csc, mandatory,
+        and component-specific topics.
+        """
+        # The enterControl command is not in the csc category
         self.assertFalse(hasattr(SALPY_Test, "Test_command_enterControlC"))
+
+        # Topics in the csc category
+        self.assertTrue(hasattr(SALPY_Test, "Test_command_enableC"))
+        self.assertTrue(hasattr(SALPY_Test, "Test_logevent_summaryStateC"))
+
+        # Mandatory topics
+        self.assertTrue(hasattr(SALPY_Test, "Test_logevent_heartbeatC"))
+        self.assertTrue(hasattr(SALPY_Test, "Test_logevent_logMessageC"))
+
+        # Component-specific topics
+        self.assertTrue(hasattr(SALPY_Test, "Test_command_waitC"))
+        self.assertTrue(hasattr(SALPY_Test, "Test_logevent_scalarsC"))
+        self.assertTrue(hasattr(SALPY_Test, "Test_arraysC"))
 
 
 class ErrorHandlingTestCase(BaseSalTestCase):
@@ -481,9 +543,9 @@ class ErrorHandlingTestCase(BaseSalTestCase):
         """
         bad_cmd_name = "Test_command_nonexistent"
         with self.assertRaises(RuntimeError):
-            self.controller.salCommand(bad_cmd_name)
+            self.controller.salProcessor(bad_cmd_name)
         with self.assertRaises(RuntimeError):
-            self.remote.salProcessor(bad_cmd_name)
+            self.remote.salCommand(bad_cmd_name)
 
         bad_evt_name = "Test_logevent_nonexistent"
         with self.assertRaises(RuntimeError):
@@ -609,8 +671,8 @@ class ErrorHandlingTestCase(BaseSalTestCase):
         # make sure the queue overflowed
         self.assertNotEqual(data.int0, 0)
 
-        start_value = data.int0
-        for i in range(1, nextra):
+        start_value = data.int0 + 1
+        for i in range(nextra):
             data = SALPY_Test.Test_logevent_scalarsC()
             self.get_topic(self.remote.getEvent_scalars, data)
             self.assertEqual(data.int0, start_value + i)
@@ -639,8 +701,8 @@ class ErrorHandlingTestCase(BaseSalTestCase):
         # make sure the queue overflowed
         self.assertNotEqual(data.int0, 0)
 
-        start_value = data.int0
-        for i in range(1, nextra):
+        start_value = data.int0 + 1
+        for i in range(nextra):
             data = SALPY_Test.Test_scalarsC()
             self.get_topic(self.remote.getNextSample_scalars, data)
             self.assertEqual(data.int0, start_value + i)
