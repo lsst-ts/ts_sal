@@ -11,10 +11,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.File;
 
-/**
- * This unit test class doesn't make much sense in Java due to the way JNI loads the
- * native libraries and doesn't unload them until the JVM stops.
- */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(SAL_Test.class)
 public class LsstDdsQosTest {

@@ -10,7 +10,7 @@ public class SAL_Test_EvtLateJoinerNewestTest extends BaseTestCase {
      * Test that a late joiner can see an event using getEvent.
      * <p>
      * Only one value should be retrievable but it turns out that all are. That is why
-     * this test case is in a separate file because otherwise all data from all previously
+     * this test case is in a separate class because otherwise all data from all previously
      * run unit tests are retrievable. It is unclear why this is the case.
      */
     @Test
