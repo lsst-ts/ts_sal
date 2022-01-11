@@ -10,8 +10,6 @@ import java.util.Random;
 
 public class BaseTestCase {
 
-    // Standard sleep time in ms.
-    final long STD_SLEEP = 1L;
     final long TIME_TO_WAIT = 2000L;
     SAL_Test remote;
     SAL_Test controller;
@@ -54,15 +52,25 @@ public class BaseTestCase {
      *                 or SAL__NO_UPDATES.
      * @param data     Data struct to fill.
      */
-    void getTopic(final String funcName, Object data) throws NoSuchMethodException, IllegalAccessException,
-            InvocationTargetException {
+    void getTopic(final String funcName, Object data) {
         Class<?> cls = this.remote.getClass();
-        final Method m = cls.getMethod(funcName, data.getClass());
+        final Method m;
+        try {
+            m = cls.getMethod(funcName, data.getClass());
+        } catch (NoSuchMethodException e) {
+            Assert.fail("The method " + funcName + " should exist.");
+            return;
+        }
         final long startTime = System.currentTimeMillis();
-        Integer retcode = SAL_Test.SAL__NO_UPDATES;
+        int retcode = SAL_Test.SAL__NO_UPDATES;
         while (System.currentTimeMillis() - startTime < TIME_TO_WAIT) {
-            retcode = (Integer) m.invoke(remote, data);
-            sleep(STD_SLEEP);
+            try {
+                retcode = (Integer) m.invoke(remote, data);
+            } catch (IllegalAccessException e) {
+                Assert.fail("The invoked method " + funcName + " should be public.");
+            } catch (InvocationTargetException e) {
+                Assert.fail("The method " + funcName + " should exist.");
+            }
             if (retcode == SAL_Test.SAL__OK) {
                 break;
             } else if (retcode == SAL_Test.SAL__NO_UPDATES) {

@@ -2,7 +2,6 @@ package org.lsst.sal;
 
 import Test.*;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class SAL_TestTest extends BaseTestCase {
@@ -51,12 +50,9 @@ public class SAL_TestTest extends BaseTestCase {
      * @throws Exception In case of a problem related to reflection.
      */
     @Test
-    @Ignore("Fails due to JNI limitations if run with all other unit tests.")
     public void testEvtGetOldest() throws Exception {
         remote.salEventSub("Test_logevent_scalars");
-        sleep(STD_SLEEP);
         controller.salEventPub("Test_logevent_scalars");
-        sleep(STD_SLEEP);
 
         final int numLoops = 3;
 
@@ -66,7 +62,6 @@ public class SAL_TestTest extends BaseTestCase {
             TestUtils.fillScalarsWithRandomValues(data);
             dataArray[i] = data;
             int retCode = controller.logEvent_scalars(data, 1);
-            sleep(STD_SLEEP);
             Assert.assertEquals(SAL_Test.SAL__OK, retCode);
         }
 
@@ -79,7 +74,6 @@ public class SAL_TestTest extends BaseTestCase {
         // at this point there should be nothing on the queue
         logevent_scalars data = new logevent_scalars();
         int retCode = remote.getEvent_scalars(data);
-        sleep(STD_SLEEP);
         Assert.assertEquals(SAL_Test.SAL__NO_UPDATES, retCode);
     }
 
@@ -91,9 +85,7 @@ public class SAL_TestTest extends BaseTestCase {
     @Test
     public void testTelGetOldest() throws Exception {
         remote.salTelemetrySub("Test_scalars");
-        sleep(STD_SLEEP);
         controller.salTelemetryPub("Test_scalars");
-        sleep(STD_SLEEP);
 
         final int numLoops = 3;
 
@@ -103,7 +95,6 @@ public class SAL_TestTest extends BaseTestCase {
             TestUtils.fillScalarsWithRandomValues(data);
             int retCode = controller.putSample(data);
             dataArray[i] = data;
-            sleep(STD_SLEEP);
             Assert.assertEquals(SAL_Test.SAL__OK, retCode);
         }
 
@@ -116,7 +107,6 @@ public class SAL_TestTest extends BaseTestCase {
         // at this point there should be nothing on the queue
         scalars data = new scalars();
         int retCode = remote.getNextSample(data);
-        sleep(STD_SLEEP);
         Assert.assertEquals(SAL_Test.SAL__NO_UPDATES, retCode);
     }
 
@@ -128,9 +118,7 @@ public class SAL_TestTest extends BaseTestCase {
     @Test
     public void testEvtGetNewest() throws Exception {
         remote.salEventSub("Test_logevent_arrays");
-        sleep(STD_SLEEP);
         controller.salEventPub("Test_logevent_arrays");
-        sleep(STD_SLEEP);
         final int numLoops = 3;
 
         logevent_arrays[] dataArray = new logevent_arrays[numLoops];
@@ -139,7 +127,6 @@ public class SAL_TestTest extends BaseTestCase {
             TestUtils.fillArraysWithRandomValues(data);
             dataArray[i] = data;
             int retCode = controller.logEvent_arrays(data, 1);
-            sleep(STD_SLEEP);
             Assert.assertEquals(SAL_Test.SAL__OK, retCode);
         }
 
@@ -150,11 +137,9 @@ public class SAL_TestTest extends BaseTestCase {
 
         // at this point there should be nothing on the queue
         int retcode = remote.getNextSample(data);
-        sleep(STD_SLEEP);
         Assert.assertEquals(retcode, SAL_Test.SAL__NO_UPDATES);
 
         retcode = remote.getSample(data);
-        sleep(STD_SLEEP);
         Assert.assertEquals(retcode, SAL_Test.SAL__NO_UPDATES);
     }
 
@@ -166,9 +151,7 @@ public class SAL_TestTest extends BaseTestCase {
     @Test
     public void testTelGetNewest() throws Exception {
         remote.salTelemetrySub("Test_arrays");
-        sleep(STD_SLEEP);
         controller.salTelemetryPub("Test_arrays");
-        sleep(STD_SLEEP);
         final int numLoops = 3;
 
         arrays[] dataList = new arrays[numLoops];
@@ -177,7 +160,6 @@ public class SAL_TestTest extends BaseTestCase {
             TestUtils.fillArraysWithRandomValues(data);
             dataList[i] = data;
             int retcode = controller.putSample(data);
-            sleep(STD_SLEEP);
             Assert.assertEquals(retcode, SAL_Test.SAL__OK);
         }
 
@@ -188,11 +170,9 @@ public class SAL_TestTest extends BaseTestCase {
 
         // at this point there should be nothing on the queue
         int retcode = remote.getNextSample(data);
-        sleep(STD_SLEEP);
         Assert.assertEquals(retcode, SAL_Test.SAL__NO_UPDATES);
 
         retcode = remote.getSample(data);
-        sleep(STD_SLEEP);
         Assert.assertEquals(retcode, SAL_Test.SAL__NO_UPDATES);
     }
 
@@ -206,9 +186,7 @@ public class SAL_TestTest extends BaseTestCase {
     @Test
     public void testEvtGetNewestAfterGetOldest() throws Exception {
         remote.salEventSub("Test_logevent_arrays");
-        sleep(STD_SLEEP);
         controller.salEventPub("Test_logevent_arrays");
-        sleep(STD_SLEEP);
         boolean[] getEvents = {false, true};
 
         for (boolean getEvent : getEvents) {
@@ -226,9 +204,7 @@ public class SAL_TestTest extends BaseTestCase {
     @Test
     public void testTelGetNewestAfterGetOldest() throws Exception {
         remote.salTelemetrySub("Test_arrays");
-        sleep(STD_SLEEP);
         controller.salTelemetryPub("Test_arrays");
-        sleep(STD_SLEEP);
 
         getNewestAfterGetOldest(false, false);
     }
@@ -262,7 +238,6 @@ public class SAL_TestTest extends BaseTestCase {
             } else {
                 retcode = controller.putSample((arrays) data);
             }
-            sleep(STD_SLEEP);
             Assert.assertEquals(retcode, SAL_Test.SAL__OK);
         }
 
@@ -277,7 +252,6 @@ public class SAL_TestTest extends BaseTestCase {
         } else {
             retcode = remote.getNextSample((arrays) data);
         }
-        sleep(STD_SLEEP);
         Assert.assertEquals(retcode, SAL_Test.SAL__OK);
         TestUtils.assertArraysEqual(expected_data, data);
 
@@ -285,38 +259,6 @@ public class SAL_TestTest extends BaseTestCase {
         expected_data = dataList[numLoops - 1];
         getTopic("getSample", data);
         TestUtils.assertArraysEqual(expected_data, data);
-    }
-
-    /**
-     * Test that a late joiner can can read the most recent event using getNextSample.
-     * <p>
-     * Only one value is retrievable.
-     */
-    @Test
-    @Ignore("Doesn't work because of JNI library loading and garbage collection.")
-    public void testEvtLateJoinerOldest() throws Exception {
-        final int numLoops = 5;
-        controller.salEventPub("Test_logevent_arrays");
-        sleep(STD_SLEEP);
-
-        logevent_arrays[] dataList = new logevent_arrays[numLoops];
-        for (int i = 0; i < numLoops; i++) {
-            logevent_arrays data = new logevent_arrays();
-            TestUtils.fillArraysWithRandomValues(data);
-            dataList[i] = data;
-            int retcode = controller.logEvent_arrays(data, 1);
-            sleep(STD_SLEEP);
-            Assert.assertEquals(retcode, SAL_Test.SAL__OK);
-        }
-
-        logevent_arrays data = new logevent_arrays();
-        remote.salEventSub("Test_logevent_arrays");
-        sleep(STD_SLEEP);
-
-        // In Python this next call gets the newest sample but in Java the oldest.
-        int retcode = remote.getNextSample(data);
-        Assert.assertEquals(retcode, SAL_Test.SAL__OK);
-        TestUtils.assertArraysEqual(data, dataList[numLoops - 1]);
     }
 
     /**
@@ -328,51 +270,18 @@ public class SAL_TestTest extends BaseTestCase {
     public void testTelLateJoinerOldest() throws Exception {
         final int numLoops = 5;
         controller.salTelemetryPub("Test_arrays");
-        sleep(STD_SLEEP);
 
         for (int i = 0; i < numLoops; i++) {
             arrays data = new arrays();
             TestUtils.fillArraysWithRandomValues(data);
             int retcode = controller.putSample(data);
-            sleep(STD_SLEEP);
             Assert.assertEquals(retcode, SAL_Test.SAL__OK);
         }
 
         arrays data = new arrays();
         remote.salTelemetrySub("Test_arrays");
-        sleep(STD_SLEEP);
         int retcode = remote.getNextSample(data);
         Assert.assertEquals(retcode, SAL_Test.SAL__NO_UPDATES);
-    }
-
-    /**
-     * Test that a late joiner can see an event using getEvent.
-     */
-    @Test
-    @Ignore("Doesn't work because of JNI library loading and garbage collection.")
-    public void testEvtLateJoinerNewest() throws Exception {
-        controller.salEventPub("Test_logevent_arrays");
-        sleep(STD_SLEEP);
-        final int numLoops = 5;
-
-        logevent_arrays[] dataList = new logevent_arrays[numLoops];
-        for (int i = 0; i < numLoops; i++) {
-            logevent_arrays data = new logevent_arrays();
-            TestUtils.fillArraysWithRandomValues(data);
-            dataList[i] = data;
-            int retcode = controller.logEvent_arrays(data, 1);
-            sleep(STD_SLEEP);
-            Assert.assertEquals(retcode, SAL_Test.SAL__OK);
-        }
-
-        remote.salEventSub("Test_logevent_arrays");
-        sleep(STD_SLEEP);
-        logevent_arrays data = new logevent_arrays();
-
-        // In Python this next call gets the newest sample but in Java the oldest.
-        int retcode = remote.getEvent_arrays(data);
-        Assert.assertEquals(retcode, SAL_Test.SAL__OK);
-        TestUtils.assertArraysEqual(data, dataList[numLoops - 1]);
     }
 
     /**
@@ -384,19 +293,16 @@ public class SAL_TestTest extends BaseTestCase {
     public void testTelLateJoinerNewest() throws Exception {
         final int numLoops = 5;
         controller.salTelemetryPub("Test_arrays");
-        sleep(STD_SLEEP);
 
         for (int i = 0; i < numLoops; i++) {
             arrays data = new arrays();
             TestUtils.fillArraysWithRandomValues(data);
             int retcode = controller.putSample(data);
-            sleep(STD_SLEEP);
             Assert.assertEquals(retcode, SAL_Test.SAL__OK);
         }
 
         arrays data = new arrays();
         remote.salTelemetrySub("Test_arrays");
-        sleep(STD_SLEEP);
         int retcode = remote.getSample(data);
         Assert.assertEquals(retcode, SAL_Test.SAL__NO_UPDATES);
     }

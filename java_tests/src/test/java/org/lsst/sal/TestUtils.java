@@ -41,7 +41,7 @@ public final class TestUtils {
      *
      * @return A String with random characters.
      */
-    private static String generateRandomString() {
+    public static String generateRandomString() {
         final int leftLimit = 97; // letter 'a'
         final int rightLimit = 122; // letter 'z'
         final int targetStringLength = 10;

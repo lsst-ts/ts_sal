@@ -4,10 +4,7 @@ import Test.command_setScalars;
 import Test.logevent_scalars;
 import Test.scalars;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
-
-import java.lang.reflect.InvocationTargetException;
 
 
 /**
@@ -112,14 +109,11 @@ public class ErrorHandlingTest extends BaseTestCase {
     public void testCmdBadDataTypes() {
         final String topic_name = "Test_command_setScalars";
         controller.salProcessor(topic_name);
-        sleep(STD_SLEEP);
         remote.salCommand(topic_name);
-        sleep(STD_SLEEP);
 
         //make sure this worked
         command_setScalars data = new command_setScalars();
         int cmd_id = remote.issueCommand_setScalars(data);
-        sleep(STD_SLEEP);
         Assert.assertTrue(cmd_id > 0);
 
         checkCmdGetPutRaises(null);
@@ -136,12 +130,10 @@ public class ErrorHandlingTest extends BaseTestCase {
         final String topic_name = "Test_logevent_scalars";
         controller.salEventPub(topic_name);
         remote.salEventSub(topic_name);
-        sleep(STD_SLEEP);
 
         //make sure this worked
         logevent_scalars data = new logevent_scalars();
         int retcode = controller.logEvent_scalars(data, 1);
-        sleep(STD_SLEEP);
         Assert.assertEquals(retcode, SAL_Test.SAL__OK);
 
         // This line doesn't work in Java. No exception is thrown.
@@ -158,14 +150,11 @@ public class ErrorHandlingTest extends BaseTestCase {
     public void testTelBadDataTypes() {
         final String topic_name = "Test_scalars";
         remote.salTelemetrySub(topic_name);
-        sleep(STD_SLEEP);
         controller.salTelemetryPub(topic_name);
-        sleep(STD_SLEEP);
 
         //make sure this worked
         scalars data = new scalars();
         int retcode = controller.putSample(data);
-        sleep(STD_SLEEP);
         Assert.assertEquals(retcode, SAL_Test.SAL__OK);
 
         // This line doesn't work in Java. No exception is thrown.
@@ -177,11 +166,9 @@ public class ErrorHandlingTest extends BaseTestCase {
      * the oldest data is lost and the newest data preserved.
      */
     @Test
-    public void testEvtOverflowBuffer() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    public void testEvtOverflowBuffer() {
         remote.salEventSub("Test_logevent_scalars");
-        sleep(STD_SLEEP);
         controller.salEventPub("Test_logevent_scalars");
-        sleep(STD_SLEEP);
 
         // nextra is the number of extra messages to write and read
         // beyond READ_QUEUE_DEPTH. It must be <= READ_QUEUE_DEPTH.
@@ -190,7 +177,6 @@ public class ErrorHandlingTest extends BaseTestCase {
         for (int val = 0; val < READ_QUEUE_DEPTH + nextra; val++) {
             data.int0 = val;
             int retcode = controller.logEvent_scalars(data, 1);
-            sleep(STD_SLEEP);
             Assert.assertEquals(retcode, SAL_Test.SAL__OK);
         }
 
@@ -212,11 +198,9 @@ public class ErrorHandlingTest extends BaseTestCase {
      * the oldest data is lost and the newest data preserved.
      */
     @Test
-    public void testTelOverflowBuffer() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    public void testTelOverflowBuffer() {
         remote.salTelemetrySub("Test_scalars");
-        sleep(STD_SLEEP);
         controller.salTelemetryPub("Test_scalars");
-        sleep(STD_SLEEP);
 
         // nextra is the number of extra messages to write and read
         // beyond READ_QUEUE_DEPTH. It must be <= READ_QUEUE_DEPTH.
@@ -225,7 +209,6 @@ public class ErrorHandlingTest extends BaseTestCase {
         for (int val = 0; val < READ_QUEUE_DEPTH + nextra; val++) {
             data.int0 = val;
             int retcode = controller.putSample(data);
-            sleep(STD_SLEEP);
             Assert.assertEquals(retcode, SAL_Test.SAL__OK);
         }
 
@@ -246,12 +229,9 @@ public class ErrorHandlingTest extends BaseTestCase {
      * Check that sending too long a string causes an error.
      */
     @Test
-    @Ignore("This test actually crashes the JVM.")
     public void testTooLongStrings() {
         remote.salTelemetrySub("Test_scalars");
-        sleep(STD_SLEEP);
         controller.salTelemetryPub("Test_scalars");
-        sleep(STD_SLEEP);
 
         // from the XML file;
         // unfortunately there is no way to ask SAL
