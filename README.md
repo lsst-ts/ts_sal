@@ -39,10 +39,9 @@ scons install declare
 * **ts_openslice** for ADLink OpenSliceDDS to generate C++, Python, Java and LabView interfaces
 * **ts_idl** for IDL generation, needed for **ts_salobj**
 
-**The following works with ts_opensplice compiled for Centos:7. Please consider
-Centos:8 once ts_opensplice is updated.**
+**The following works with ts_opensplice compiled for Centos:7.**
 
-On centos:7 docker image, the following shall by run (as root):
+On a centos:7 docker image, run the following as root:
 
 ```bash
 yum -y update
@@ -75,52 +74,76 @@ For C++ development, install gcc-c++:
 yum install -y gcc-c++
 ```
 
-To generate C++ interface for MTMount, do the following:
+To generate C++ interfaces for a SAL component (where `<component_name>` is the name of a SAL component, e.g. `MTMount`):
 
 ```bash
 cd ts_sal/test
-salgenerator MTMount validate
-salgenerator MTMount sal cpp
+salgenerator <component_name> validate
+salgenerator <component_name> sal cpp
 ```
 
 ### Java
 
+To generate Java libraries for a SAL component (where `<component_name>` is the name of a SAL component, e.g. `MTMount`):
+
 ```bash
 cd  ts_sal/test
-salgenerator MTMount validate
-salgenerator MTMount sal java
-salgenerator MTMount maven
+salgenerator <component_name> validate
+salgenerator <component_name> sal java
+salgenerator <component_name> maven
+```
+
+To run Java unit tests:
+
+```bash
+salgenerator Test validate
+salgenerator Test sal java
+salgenerator Test maven
+salgenerator Script validate
+salgenerator Script sal java
+salgenerator Script maven
+cd ts_sal/java_tests
+mvn test
 ```
 
 ### Python
 
-For Python (please note you are encouraged to use
-[ts_salobj](https://github.com/lsstts/ts_salobj)):
+Python SALPY is deprecated; please use [ts_salobj](https://github.com/lsst-ts/ts_salobj) instead.
 
-OR for the older SALPY API
+To generate IDL files for ts_salobj for a set of components (where each `<component_nameN>` is the name of a component, e.g. `MTMount`):
 
 ```bash
-cd  ts_sal/test
-salgenerator MTMount validate
-salgenerator MTMount sal cpp
-salgenerator MTMount sal python
-salgenerator MTMount lib
+make_idl_libs <component_name1> [<component_name2> ...]
+```
+
+To generate deprecated SALPY libraries:
+
+```bash
+make_salpy_libs <component_name1> [<component_name2> ...]
+```
+
+To run SALPY unit tests:
+
+```bash
+make_idl_files.py Test Script
+cd ts_sal
+pytest
 ```
 
 ### LabView
 
+To generate LabView libraries for a component (where `<component_name>` is the name of a SAL component, e.g. `MTMount`):
+
 ```bash
 cd  ts_sal/test
-salgenerator MTMount validate
-salgenerator MTMount sal cpp
-salgenerator MTMount labview
+salgenerator <component_name> validate
+salgenerator <component_name> sal cpp
+salgenerator <component_name> labview
 ```
 
 Then run the LabVIEW GUI and import the 
-$SAL_WORK_DIR/MTMount/labview/SALLV_MTMount.so shared library
+`$SAL_WORK_DIR/MTMount/labview/SALLV_<component_name>.so` shared library
 
 Then run the ts_SALLabVIEW VI to generate the .lvlib and VI's
-
-
 
 
