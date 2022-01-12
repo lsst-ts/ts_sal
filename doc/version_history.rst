@@ -9,14 +9,11 @@ Version History
 Changes for 6.1.0
 =================
 
-* Add Java unit tests for SAL.
-* Improvements to tests/test_sal.py:
+* Add C++ unit tests.
 
-  * The timeout argument was ignored in get_topic.
-  * Improved tests of AddedGenerics:
+* Add Java unit tests.
 
-    Test that ``Script`` has no ``enable`` command (instad of ``enterControl``, which is now rare).
-    Test that ``Test`` has no ``enterControl`` command.
+* Improve SALPY unit tests.
 
 Changes for 6.0.0
 =================
