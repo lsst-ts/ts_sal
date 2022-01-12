@@ -74,12 +74,28 @@ pipeline {
                 }
             }
         }
+        stage("Running cpp tests") {
+            steps {
+                script {
+                    sh "docker exec -u saluser \${container_name} sh -c \"" +
+                        "source ~/.setup.sh && " +
+                        "conda install -y catch2 && " +
+                        "export LSST_DDS_QOS=file:///home/saluser/repos/ts_ddsconfig/qos/QoS.xml && " +
+                        "cd /home/saluser/repos/ts_sal/cpp_tests && " +
+                        "salgenerator generate cpp Test && " +
+                        "salgenerator generate cpp Script && " +
+                        "export LSST_DDS_PARTITION_PREFIX=test && " +
+                        "make junit\""
+                }
+            }
+        }
     }
     post {
         always {
             // The path of xml needed by JUnit is relative to
             // the workspace.
             junit 'tests/.tests/junit.xml'
+            junit 'cpp_tests/*.xml'
 
             // Publish the HTML report
             publishHTML (target: [
