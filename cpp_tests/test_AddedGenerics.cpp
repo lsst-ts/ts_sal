@@ -28,28 +28,52 @@
 #include <SAL_Test.h>
 
 #include <algorithm>
+#include <string>
+#include <vector>
 
-TEST_CASE("No CSC") {
+bool hasattr(std::vector<std::string> list, const char *attr) {
+    return std::find(list.begin(), list.end(), attr) != list.end();
+}
+
+TEST_CASE("Events and commands in no CSC (Script component)") {
     auto csc = std::make_shared<SAL_Script>();
 
     auto commands = csc->getCommandNames();
     auto events = csc->getEventNames();
 
-    REQUIRE(std::find(commands.begin(), commands.end(), "enable") == commands.end());
-    REQUIRE(std::find(events.begin(), events.end(), "summaryState") == events.end());
+    // Topics in the csc category, which Script does not use
+    REQUIRE_FALSE(hasattr(commands, "enable"));
+    REQUIRE_FALSE(hasattr(events, "summaryState"));
 
-    REQUIRE_FALSE(std::find(commands.begin(), commands.end(), "configure") == commands.end());
-    REQUIRE_FALSE(std::find(events.begin(), events.end(), "checkpoints") == events.end());
+    // Mandatory topics
+    REQUIRE(hasattr(events, "heartbeat"));
+    REQUIRE(hasattr(events, "logMessage"));
+
+    // Component-specific topics
+    REQUIRE(hasattr(commands, "configure"));
+    REQUIRE(hasattr(events, "checkpoints"));
 }
 
-TEST_CASE("No EnterControl in generics CSC") {
+TEST_CASE("Events, telemetry and commands generics CSC (Test component)") {
     auto csc = std::make_shared<SAL_Test>();
 
+    auto telemetry = csc->getTelemetryNames();
     auto commands = csc->getCommandNames();
     auto events = csc->getEventNames();
 
-    REQUIRE_FALSE(std::find(commands.begin(), commands.end(), "enable") == commands.end());
-    REQUIRE_FALSE(std::find(events.begin(), events.end(), "summaryState") == events.end());
+    // The enterControl command is not in the csc category
+    REQUIRE_FALSE(hasattr(commands, "enterControl"));
 
-    REQUIRE(std::find(commands.begin(), commands.end(), "enterControl") == commands.end());
+    // Topics in the csc category
+    REQUIRE(hasattr(commands, "enable"));
+    REQUIRE(hasattr(events, "summaryState"));
+
+    // Mandatory topics
+    REQUIRE(hasattr(events, "heartbeat"));
+    REQUIRE(hasattr(events, "logMessage"));
+
+    // Component-specific topics
+    REQUIRE(hasattr(commands, "wait"));
+    REQUIRE(hasattr(events, "scalars"));
+    REQUIRE(hasattr(telemetry, "arrays"));
 }

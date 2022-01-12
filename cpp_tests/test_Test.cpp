@@ -101,7 +101,6 @@ void arraysEqual(array *expected, array *measured) {
 
 /**
  * Test that get newest after get oldest gets the newest value.
- * <p>
  * Uses the arrays topic. This tests DM-18491.
  */
 template <class cls>
@@ -128,6 +127,61 @@ void getNewestAfterGetOldest(std::function<int(cls *)> putMethod, std::function<
     arraysEqual<cls>(expected_data, &data);
 }
 
+/**
+ * Check event late-joiner data, using the logevent_arrays topic.
+ *
+ * @param controller
+ * @param remote
+ * @param readFunc  function to read data, e.g. getEvent_arrays
+ * @param readGetsOldest does the read function get the oldest data? Set true
+ * for getNextSample and getEvent. Set false for getSample.
+ */
+void checkEvtLateJoinerData(std::shared_ptr<SAL_Test> controller, std::shared_ptr<SAL_Test> remote,
+			    std::function<int(Test_logevent_arraysC *)> readFunc, bool readGetsOldest) {
+    controller->salEventPub((char *)"Test_logevent_arrays");
+
+    constexpr int nhist = 5;
+    constexpr int nextra = 3;
+
+    Test_logevent_arraysC dataList[nhist + nextra];
+
+    // Write late-joiner samples (no subscriber yet)
+    for (int i = 0; i < nhist; i++) {
+	Test_logevent_arraysC data;
+	fillArraysWithRandomValues<Test_logevent_arraysC>(&data);
+	dataList[i] = data;
+	REQUIRE(controller->logEvent_arrays(&data, 1) == SAL__OK);
+    }
+
+    remote->salEventSub((char *)"Test_logevent_arrays");
+
+    if (readGetsOldest) {
+	// Write new samples
+	for (int i = 0; i < nextra; i++) {
+	    Test_logevent_arraysC data;
+	    fillArraysWithRandomValues<Test_logevent_arraysC>(&data);
+	    dataList[nhist + i] = data;
+	    REQUIRE(controller->logEvent_arrays(&data, 1) == SAL__OK);
+	}
+
+	// getEvent reads the oldest message first, so we should see all historical samples, followed by new
+	// samples.
+	for (auto expected_data : dataList) {
+	    Test_logevent_arraysC data;
+	    REQUIRE(readFunc(&data) == SAL__OK);
+	    arraysEqual<Test_logevent_arraysC>(&expected_data, &data);
+	}
+    } else {
+	Test_logevent_arraysC *expected_data = dataList + (nhist - 1);
+	Test_logevent_arraysC data;
+	REQUIRE(readFunc(&data) == SAL__OK);
+	arraysEqual<Test_logevent_arraysC>(expected_data, &data);
+    }
+
+    Test_logevent_arraysC data;
+    REQUIRE(readFunc(&data) == SAL__NO_UPDATES);
+}
+
 // number of loops for looped tests
 constexpr int numLoops = 3;
 
@@ -137,9 +191,9 @@ TEST_CASE("Test SAL") {
     auto remote = std::make_shared<SAL_Test>();
     auto controller = std::make_shared<SAL_Test>();
 
-    SECTION("GetLeapSecond") { REQUIRE(remote->getLeapSeconds() >= 0); }
+    SECTION("Leap second is >= 0") { REQUIRE(remote->getLeapSeconds() >= 0); }
 
-    SECTION("GetCurrentTime") {
+    SECTION("Get current time") {
 	int leapSeconds = 0;
 	double measuredSeconds = 0.0;
 	for (int i = 0; i < 2; i++) {
@@ -159,7 +213,7 @@ TEST_CASE("Test SAL") {
 	REQUIRE(leapSeconds == Approx(measuredSeconds).margin(0.001));
     }
 
-    SECTION("GetVersions") {
+    SECTION("Get versions") {
 	auto salVersion = remote->getSALVersion();
 	REQUIRE(salVersion > "");
 
@@ -167,7 +221,7 @@ TEST_CASE("Test SAL") {
 	REQUIRE(xmlVersion > "");
     }
 
-    SECTION("EvtGetOldest") {
+    SECTION("Get oldest events") {
 	remote->salEventSub((char *)"Test_logevent_scalars");
 	controller->salEventPub((char *)"Test_logevent_scalars");
 
@@ -190,11 +244,9 @@ TEST_CASE("Test SAL") {
 	REQUIRE(remote->getNextSample_logevent_scalars(&data) == SAL__NO_UPDATES);
     }
 
-    /**
-     * Write several telemetry messages and make sure gettting the oldest returns the data in the expected
-     * order.
-     */
-    SECTION("TelGetOoldest") {
+    SECTION("Get oldest telemetry",
+	    "Write several telemetry messages and make sure gettting the oldest returns the data in the "
+	    "expected order.") {
 	remote->salTelemetrySub((char *)"Test_scalars");
 	controller->salTelemetryPub((char *)"Test_scalars");
 
@@ -217,10 +269,8 @@ TEST_CASE("Test SAL") {
 	REQUIRE(remote->getNextSample_scalars(&data) == SAL__NO_UPDATES);
     }
 
-    /**
-     * Write several messages and make sure gettting the newest returns that and flushes the queue.
-     */
-    SECTION("EvtGetNewest") {
+    SECTION("Get newest events",
+	    "Write several messages and make sure gettting the newest returns that and flushes the queue.") {
 	remote->salEventSub((char *)"Test_logevent_arrays");
 	controller->salEventPub((char *)"Test_logevent_arrays");
 
@@ -242,10 +292,8 @@ TEST_CASE("Test SAL") {
 	REQUIRE(remote->getSample_logevent_arrays(&data) == SAL__NO_UPDATES);
     }
 
-    /**
-     * Write several messages and make sure gettting the newest returns that and flushes the queue.
-     */
-    SECTION("TelGetNewest") {
+    SECTION("Get newest telemetry",
+	    "Write several messages and make sure gettting the newest returns that and flushes the queue.") {
 	remote->salTelemetrySub((char *)"Test_arrays");
 	controller->salTelemetryPub((char *)"Test_arrays");
 
@@ -267,12 +315,8 @@ TEST_CASE("Test SAL") {
 	REQUIRE(remote->getSample_arrays(&data) == SAL__NO_UPDATES);
     }
 
-    /**
-     * Test that get newest after get oldest gets the newest value.
-     * <p>
-     * This tests DM-18491.
-     */
-    SECTION("EvtGetNewestAfterGetOldest") {
+    SECTION("Get newest events after get oldest",
+	    "Test that get newest after get oldest gets the newest value. This tests DM-18491.") {
 	remote->salEventSub((char *)"Test_logevent_arrays");
 	controller->salEventPub((char *)"Test_logevent_arrays");
 
@@ -286,12 +330,8 @@ TEST_CASE("Test SAL") {
 		std::bind(&SAL_Test::getSample_logevent_arrays, remote, _1), true);
     }
 
-    /**
-     * Test that get newest after get oldest gets the newest value.
-     * <p>
-     * This tests DM-18491.
-     */
-    SECTION("TelGetNewestAfterGetOldest") {
+    SECTION("Get newest telemetry after getNextSample",
+	    "Test that get newest after getNextSample gets the newest value. This tests DM-18491.") {
 	remote->salTelemetrySub((char *)"Test_arrays");
 	controller->salTelemetryPub((char *)"Test_arrays");
 
@@ -300,21 +340,8 @@ TEST_CASE("Test SAL") {
 					      std::bind(&SAL_Test::getSample_arrays, remote, _1));
     }
 
-    SECTION("TelGetNewestAfterGetOldest") {
-	remote->salTelemetrySub((char *)"Test_arrays");
-	controller->salTelemetryPub((char *)"Test_arrays");
-
-	getNewestAfterGetOldest<Test_arraysC>(std::bind(&SAL_Test::putSample_arrays, controller, _1),
-					      std::bind(&SAL_Test::getNextSample_arrays, remote, _1),
-					      std::bind(&SAL_Test::getSample_arrays, remote, _1));
-    }
-
-    /**
-     * Test that a late joiner can can read the most recent event using getNextSample.
-     * <p>
-     * Only one value is retrievable.
-     */
-    SECTION("EvtLateJoinerOldest") {
+    SECTION("Late joiner getNextSample (oldest events)",
+	    "Check event late-joiner data, using the logevent_arrays topic.") {
 	controller->salEventPub((char *)"Test_logevent_arrays");
 
 	Test_logevent_arraysC dataList[maxLoops];
@@ -332,12 +359,9 @@ TEST_CASE("Test SAL") {
 	arraysEqual<Test_logevent_arraysC>(&data, &(dataList[0]));
     }
 
-    /**
-     * Test that a late joiner cannot see historical telemetry using getNextSample.
-     * <p>
-     * Telemetry is volatile so there should be no late joiner data.
-     */
-    SECTION("TelLateJoinerOldest") {
+    SECTION("Late joiner getNextSample (newest telemetry)",
+	    "Test that a late joiner cannot see historical telemetry using getNextSample. Telemetry is "
+	    "volatile so there should be no late joiner data.") {
 	controller->salTelemetryPub((char *)"Test_arrays");
 
 	for (int i = 0; i < maxLoops; i++) {
@@ -348,13 +372,12 @@ TEST_CASE("Test SAL") {
 
 	Test_arraysC data;
 	remote->salTelemetrySub((char *)"Test_arrays");
+
 	REQUIRE(remote->getNextSample_arrays(&data) == SAL__NO_UPDATES);
     }
 
-    /**
-     * Test that a late joiner can see an event using getEvent.
-     */
-    SECTION("EvtLateJoinerNewest") {
+    SECTION("Late joiner getEvent (newest events)",
+	    "Test that a late joiner can see an event using getEvent.") {
 	controller->salEventPub((char *)"Test_logevent_arrays");
 
 	Test_logevent_arraysC dataList[maxLoops];
@@ -366,18 +389,17 @@ TEST_CASE("Test SAL") {
 	}
 
 	remote->salEventSub((char *)"Test_logevent_arrays");
-	Test_logevent_arraysC data;
 
-	REQUIRE(remote->getSample_logevent_arrays(&data) == SAL__OK);
-	arraysEqual<Test_logevent_arraysC>(&data, &(dataList[maxLoops - 1]));
+	for (int i = 0; i < maxLoops; i++) {
+	    Test_logevent_arraysC data;
+	    REQUIRE(remote->getEvent_arrays(&data) == SAL__OK);
+	    arraysEqual<Test_logevent_arraysC>(&(dataList[i]), &data);
+	}
     }
 
-    /**
-     * Test that a late joiner cannot see historical telemetry using getSample.
-     * <p>
-     * Telemetry is volatile so there should be no late joiner data.
-     */
-    SECTION("TelLateJoinerNewest") {
+    SECTION("Late joiner getSample (newest telemetry)",
+	    "Test that a late joiner cannot see historical telemetry using getSample. Telemetry is volatile "
+	    "so there should be no late joiner data.") {
 	controller->salTelemetryPub((char *)"Test_arrays");
 
 	for (int i = 0; i < maxLoops; i++) {
@@ -389,6 +411,21 @@ TEST_CASE("Test SAL") {
 	Test_arraysC data;
 	remote->salTelemetrySub((char *)"Test_arrays");
 	REQUIRE(remote->getSample_arrays(&data) == SAL__NO_UPDATES);
+    }
+
+    SECTION("Late joiner getEvent", "Test that a late joiner can read historical events using getEvent.") {
+	checkEvtLateJoinerData(controller, remote, std::bind(&SAL_Test::getEvent_arrays, remote, _1), true);
+    }
+
+    SECTION("Late joiner getEvent",
+	    "Test that a late joiner can read historical events using getNextSample.") {
+	checkEvtLateJoinerData(controller, remote,
+			       std::bind(&SAL_Test::getNextSample_logevent_arrays, remote, _1), true);
+    }
+
+    SECTION("Late joiner getSample", "Test that a late joiner can read historical events using getSample.") {
+	checkEvtLateJoinerData(controller, remote,
+			       std::bind(&SAL_Test::getSample_logevent_arrays, remote, _1), false);
     }
 
     SECTION("Enumerations") {

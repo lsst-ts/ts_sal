@@ -32,12 +32,16 @@
 // these tests to do that, to eliminate the dependence on the default depth.
 constexpr int READ_QUEUE_DEPTH = 100;
 
+// Add this to loop writing events - to make sure more than READ_QUEUE_DEPTH
+// writes are made
+constexpr int NEXTRA = 10;
+
 TEST_CASE("Remote/controller") {
     auto remote = std::make_shared<SAL_Test>();
     auto controller = std::make_shared<SAL_Test>();
 
     SECTION("Invalid names") {
-	REQUIRE_THROWS(controller->salCommand((char*)"Test_command_nonexistent"));
+	REQUIRE_THROWS(controller->salProcessor((char*)"Test_command_nonexistent"));
 	REQUIRE_THROWS(remote->salCommand((char*)"Test_command_nonexistent"));
 
 	REQUIRE_THROWS(controller->salEventPub((char*)"Test_logevent_nonexistent"));
@@ -60,6 +64,7 @@ TEST_CASE("Remote/controller") {
 	REQUIRE_THROWS(remote->getNextSample_logevent_scalars(&data));
 	REQUIRE_THROWS(remote->getEvent_scalars(&data));
 	REQUIRE_THROWS(remote->getSample_logevent_scalars(&data));
+	REQUIRE_THROWS(remote->flushSamples_logevent_scalars(&data));
 
 	REQUIRE_THROWS(controller->logEvent_scalars(&data, 0));
     }
@@ -78,9 +83,8 @@ TEST_CASE("Remote/controller") {
 	remote->salEventSub((char*)"Test_logevent_scalars");
 	controller->salEventPub((char*)"Test_logevent_scalars");
 
-	// number of events logged after filling the queue
 	Test_logevent_scalarsC data;
-	for (int val = 0; val < READ_QUEUE_DEPTH + 10; val++) {
+	for (int val = 0; val < READ_QUEUE_DEPTH + NEXTRA; val++) {
 	    data.int0 = val;
 	    REQUIRE(controller->logEvent_scalars(&data, 1) == SAL__OK);
 	}
@@ -100,9 +104,8 @@ TEST_CASE("Remote/controller") {
 	remote->salTelemetrySub((char*)"Test_scalars");
 	controller->salTelemetryPub((char*)"Test_scalars");
 
-	// number of events logged after filling the queue
 	Test_scalarsC data;
-	for (int val = 0; val < READ_QUEUE_DEPTH + 10; val++) {
+	for (int val = 0; val < READ_QUEUE_DEPTH + NEXTRA; val++) {
 	    data.int0 = val;
 	    REQUIRE(controller->putSample_scalars(&data) == SAL__OK);
 	}
