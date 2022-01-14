@@ -267,7 +267,7 @@ public class SAL_TestTest extends BaseTestCase {
      * Telemetry is volatile so there should be no late joiner data.
      */
     @Test
-    public void testTelLateJoinerOldest() throws Exception {
+    public void testTelLateJoinerGetNextSample() throws Exception {
         final int numLoops = 5;
         controller.salTelemetryPub("Test_arrays");
 
@@ -290,7 +290,7 @@ public class SAL_TestTest extends BaseTestCase {
      * Telemetry is volatile so there should be no late joiner data.
      */
     @Test
-    public void testTelLateJoinerNewest() throws Exception {
+    public void testTelLateJoinerGetSample() throws Exception {
         final int numLoops = 5;
         controller.salTelemetryPub("Test_arrays");
 

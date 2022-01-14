@@ -89,7 +89,7 @@ class MakeIdlFile:
 
     def run(self):
         """Make the IDL file and move it to the idl directory."""
-        print(f"* Make {self.name} IDL file ***")
+        print(f"* Make {self.name} IDL file *")
 
         print(f"*** Copy {self.name} XML files ***")
         self.copy_xml_files()
