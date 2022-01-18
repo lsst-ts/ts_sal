@@ -6,6 +6,8 @@ lsstsal/scripts/code/include/sal/svcSAL*.h
 lsstsal/scripts/code/sql/*.sql
 lsstsal/scripts/include/ccpp*.h
 lsstsal/scripts/include/sal_*.h
+cpp_tests/*.cpp.d
+cpp_tests/*.cpp.o
 xml_test/.salwork
 xml_test/*.html
 xml_test/*.xml
@@ -47,3 +49,4 @@ lib/*.so
 python/*.so
 .out
 *.log
+java_tests/target

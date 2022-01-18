@@ -133,7 +133,7 @@ public class salActor {
 	this.isEventWriter = false;
 	this.isProcessor = false;
         this.historyDepth = 100;
-        this.maxSamples = 999999999;
+        this.maxSamples = DDS.LENGTH_UNLIMITED.value;
     }
 }
 

@@ -102,7 +102,7 @@ public class SAL_SALData {
                 }
              }
           }
-          return SAL__ERROR;
+          throw new RuntimeException("Unknown Topic");
         }
 
 
@@ -119,7 +119,7 @@ public class SAL_SALData {
 	  if (actorIdx > -1) {
 	     salTelemetryPub(actorIdx);
 	  } else {
-	     status = SAL__ERROR;
+             throw new RuntimeException("Unknown Topic");
 	  }
 	  return status;
 	}
@@ -137,7 +137,7 @@ public class SAL_SALData {
 	  if (actorIdx > -1) {
 	     salTelemetrySub(actorIdx);
 	  } else {
-	     status = SAL__ERROR;
+             throw new RuntimeException("Unknown Topic");
 	  }
 	  return status;
 	}
@@ -276,7 +276,7 @@ public class SAL_SALData {
                 if (pname != null) {
                    partitionPrefix = pname;
                 } else {
-                   System.out.println("=== WARNING : LSST_DDS_PARTITION_PREFIX not defined\n");
+                   throw new RuntimeException("ERROR : Cannot find envvar LSST_DDS_PARTITION_PREFIX");
                 }
                 if (hname == null) {
                    historySync = 0;
@@ -284,11 +284,18 @@ public class SAL_SALData {
                    historySync = Integer.parseInt(hname);
                 }
                 if (qname != null) {
-                  commandQos = new QosProvider(qname,"CommandProfile");
-                  eventQos = new QosProvider(qname,"EventProfile");
-                  telemetryQos = new QosProvider(qname,"TelemetryProfile");
-                  ackcmdQos = new QosProvider(qname,"AckcmdProfile");
-                }
+                  try {
+                    commandQos = new QosProvider(qname,"CommandProfile");
+                    eventQos = new QosProvider(qname,"EventProfile");
+                    telemetryQos = new QosProvider(qname,"TelemetryProfile");
+                    ackcmdQos = new QosProvider(qname,"AckcmdProfile");
+                  }
+                  catch (NullPointerException e) {
+                    throw new RuntimeException("ERROR : Cannot find file with LSST_DDS_QOS");
+                  }
+                } else {
+                   throw new RuntimeException("ERROR : Cannot find envvar LSST_DDS_QOS profiles");
+		}
                 authListEnabled = false;
                 if (aname != null) {
                   if (Integer.valueOf(aname) == 1) {
@@ -302,7 +309,7 @@ public class SAL_SALData {
 		hasEventReader = false;
 		hasEventWriter = false;
 		hasProcessor = false;
-		subsystemID = 0;
+		subsystemID = aKey;
 		debugLevel = 0;
                 System.loadLibrary("salUtils");
                 initSalActors();
@@ -441,7 +448,9 @@ public class SAL_SALData {
 	{
 		int status = SAL__ERROR;
                 int actorIdx = getActorIndex(topicName);
-                if ( actorIdx < 0) {return SAL__ERROR;}
+                if ( actorIdx < 0) {
+                  throw new RuntimeException("Unknown Topic");
+		}
 		status = salTelemetrySub(actorIdx);
                 sal[actorIdx].isEventReader = true;
 		return status;
@@ -455,7 +464,9 @@ public class SAL_SALData {
 	{
 		int status = SAL__ERROR;
                 int actorIdx = getActorIndex(topicName);
-                if ( actorIdx < 0) {return SAL__ERROR;}
+                if ( actorIdx < 0) {
+                  throw new RuntimeException("Unknown Topic");
+		}
 		status = salTelemetryPub(actorIdx);
                 sal[actorIdx].isEventWriter = true;
 		return status;
@@ -922,10 +933,7 @@ public class SAL_SALData {
 	 */
 	public static void checkStatus(int status, String info) {
 		if (status != RETCODE_OK.value && status != RETCODE_NO_DATA.value) {
-			System.out
-					.println("Error in " + info + ": " + getErrorName
-(status));
-			System.exit(-1);
+                  throw new RuntimeException(getErrorName(status));
 		}
 	}
 
@@ -934,9 +942,7 @@ public class SAL_SALData {
 	 */
 	public static void checkHandle(Object handle, String info) {
 		if (handle == null) {
-			System.out.println("Error in " + info
-					+ ": Creation failed: invalid handle");
-			System.exit(-1);
+                  throw new RuntimeException("Creation failed: invalid handle");
 		}
 	}
 

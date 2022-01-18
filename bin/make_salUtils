@@ -4,7 +4,7 @@ mkdir -p $SAL_WORK_DIR/salUtils/org/lsst/sal
 cd $SAL_WORK_DIR/salUtils
 cp $SAL_DIR/code/templates/salUtils.java org/lsst/sal/.
 cp $SAL_DIR/code/templates/salUtils.c .
-JAVAH="-I/etc/alternatives/java_sdk_openjdk/include -I/etc/alternatives/java_sdk_openjdk/include/linux"
+JAVAH="-I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux"
 javah org.lsst.sal.salUtils
 cp org_lsst_sal_salUtils.h $SAL_WORK_DIR/include/.
 gcc -g -o libsalUtils.so salUtils.c $JAVAH -fPIC -shared

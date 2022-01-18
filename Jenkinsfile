@@ -62,7 +62,7 @@ pipeline {
                 }
             }
         }
-        stage("Running tests") {
+        stage("Running SALPY tests") {
             steps {
                 script {
                     sh "docker exec -u saluser \${container_name} sh -c \"" +
@@ -74,12 +74,47 @@ pipeline {
                 }
             }
         }
+        stage("Running cpp tests") {
+            steps {
+                script {
+                    sh "docker exec -u saluser \${container_name} sh -c \"" +
+                        "source ~/.setup.sh && " +
+                        "conda install -y catch2 && " +
+                        "export LSST_DDS_QOS=file:///home/saluser/repos/ts_ddsconfig/qos/QoS.xml && " +
+                        "cd /home/saluser/repos/ts_sal/cpp_tests && " +
+                        "salgenerator generate cpp Test && " +
+                        "salgenerator generate cpp Script && " +
+                        "export LSST_DDS_PARTITION_PREFIX=testcpp && " +
+                        "make junit\""
+                }
+            }
+        }
+        stage("Running Java tests") {
+            steps {
+                script {
+                    sh "docker exec -u saluser \${container_name} sh -c \"" +
+                        "source ~/.setup.sh && " +
+                        "export LSST_DDS_QOS=file:///home/saluser/repos/ts_ddsconfig/qos/QoS.xml && " +
+                        "export LSST_DDS_PARTITION_PREFIX=testjava && " +
+                        "salgenerator Test validate && " +
+                        "salgenerator Test sal java && " +
+                        "salgenerator Test maven && " +
+                        "salgenerator Script validate && " +
+                        "salgenerator Script sal java && " +
+                        "salgenerator Script maven && " +
+                        "cd /home/saluser/repos/ts_sal/java_tests && " +
+                        "mvn test\""
+                }
+            }
+        }
     }
     post {
         always {
             // The path of xml needed by JUnit is relative to
             // the workspace.
             junit 'tests/.tests/junit.xml'
+            junit 'cpp_tests/*.xml'
+            junit 'java_tests/target/surefire-reports/*.xml'
 
             // Publish the HTML report
             publishHTML (target: [

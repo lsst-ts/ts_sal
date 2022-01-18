@@ -43,6 +43,13 @@ if { [file exists $SAL_WORK_DIR] == 0 } {
    errorexit "Working directory $SAL_WORK_DIR does not exist"
 }
 
+if { [file exists $env(TS_XML_DIR)] } {
+   cd $env(TS_XML_DIR)
+   set XMLVERSION [string trim [exec git describe --tags --dirty] "v"]
+ } else {
+   errorexit "Please adjust setup.env so that TS_XML_DIR is correct"
+}
+
 cd $SAL_WORK_DIR
 puts stdout "SAL_WORK_DIR=$SAL_WORK_DIR"
 
@@ -78,7 +85,7 @@ foreach i $argv {
 ******************** ERROR - Subsystem not defined ****************************
 *******************************************************************************
 
-	$env(SAL_WORK_DIR)/SALSubsystems.xml does not include
+	$env(TS_XML_DIR)/sal_interfaces/SALSubsystems.xml does not include
 
  	the $i subsystem, please check spelling, or add it
 
@@ -88,14 +95,14 @@ foreach i $argv {
       exit 3
     }
     set xml ""
-    catch { set xml [glob [set i]_*.xml] }
+    catch { set xml [glob $env(TS_XML_DIR)/sal_interfaces/$i/[set i]_*.xml] }
     if { $xml == "" } {
       puts stdout "
 *******************************************************************************
 *********************** WARNING - Generics only *******************************
 *******************************************************************************
 
-	$env(SAL_WORK_DIR) has no XML definition files for
+	$env(TS_XML_DIR)/sal_interfaces has no XML definition files for
 
  	the $i subsystem. Including generics only.
 
@@ -118,7 +125,7 @@ foreach subsys $TSUBSYSTEMS {
 ****************** WARNING - Subsystem not defined ****************************
 *******************************************************************************
 
-	$env(SAL_WORK_DIR)/SALSubsystems.xml does not include
+	$env(TS_XML_DIR)/sal_interfaces/SALSubsystems.xml does not include
 
  	the $subsys subsystem, please check spelling, or add it
 
@@ -151,19 +158,13 @@ if { $OPTIONS(generate) } {
   exit 0
 }
 
-if { [file exists $env(TS_XML_DIR)/VERSION] } {
-   exec cp  $env(TS_XML_DIR)/VERSION $SAL_WORK_DIR/VERSION
- } else {
-   errorexit "Please adjust setup.env so that TS_XML_DIR is correct"
-}
 
-set XMLVERSION [exec cat $env(TS_XML_DIR)/VERSION]
 puts stdout "XMLVERSION = $XMLVERSION"
 
 if { $RELVERSION != "" } {
-  set SALRELEASE "[set XMLVERSION]-[exec cat $env(TS_SAL_DIR)/VERSION].$RELVERSION"
+  set SALRELEASE "[set XMLVERSION]-[set SALVERSION].$RELVERSION"
 } else {
-  set SALRELEASE "[set XMLVERSION]-[exec cat $env(TS_SAL_DIR)/VERSION]"
+  set SALRELEASE "[set XMLVERSION]-[set SALVERSION]"
 }
 
 set OSPL_RELEASE $env(OSPL_RELEASE)
@@ -179,72 +180,31 @@ if { $OPTIONS(validate) || $OPTIONS(idl) } {
   stdlog "Processing $all"
   foreach i $all {
     set IDXENUMDONE($i) 0
-    if { [file exists $SAL_WORK_DIR/SALGenerics.xml] } {
+    if { [file exists $env(TS_XML_DIR)/sal_interfaces/SALGenerics.xml] } {
       set x none
       puts stdout "Add Generic Commands and Events"
       set SALSubsys $i
       source $SAL_DIR/processgenerics.tcl
       generategenerics $i
     }
-    set xml ""
-    catch { set xml [glob [set i]_*.xml] }
-    if { $xml == "" } {
-      puts stdout "
-*******************************************************************************
-******************** ERROR - Subsystem not defined ****************************
-*******************************************************************************
-
-	$env(SAL_WORK_DIR) has no XML definition files for
-
- 	the $i subsystem, please check spelling, or add the files
-
-
-*******************************************************************************
-*******************************************************************************"
-      exit 5
-    }
-    set xml ""
-    catch { set xml [glob [set i]_*.xml] }
-    if { $xml == "" } {
-      puts stdout "
-*******************************************************************************
-******************** ERROR - Subsystem not defined ****************************
-*******************************************************************************
-
-	$env(SAL_WORK_DIR) has no XML definition files for
-
- 	the $i subsystem, please check spelling, or add the files
-
-
-*******************************************************************************
-*******************************************************************************"
-      exit 5
-    }
     gentopicdefsql $i
-    foreach t "Telemetry Commands Events Generics" {
-      if { [file exists [set i]_[set t].xml] } {
-        if { [file size [set i]_[set t].xml] > 0 } {
-          foreach d "idl-templates idl-templates/validated" {
-            set old ""
-            switch $t {
-              Telemetry { catch {set old [glob $SAL_WORK_DIR/$d/[set i]_*.idl]}
-                          foreach o $old { set v [lindex [split $o _] 1]
-                                          if { $v != "command" && $v != "logevent" } { exec rm $o }
-                                        }
-                        }
-              Commands  { catch {set old [glob $SAL_WORK_DIR/$d/[set i]_command_*.idl]}
-                          foreach o $old { exec rm $o }
-                        }
-              Events    { catch {set old [glob $SAL_WORK_DIR/$d/[set i]_logevent_*.idl]}
-                          foreach o $old { exec rm $o }
-                        }
-            }
-          }
-          parseXMLtoidl [set i]_[set t].xml
+    foreach d "idl-templates idl-templates/validated" {
+      set old ""
+      catch {set old [glob $SAL_WORK_DIR/$d/[set i]_*.idl]}
+      foreach o $old {
+        exec rm $o
+      }
+    }
+    foreach t "Telemetry Commands Events" {
+      if { [file exists $env(TS_XML_DIR)/sal_interfaces/$i/[set i]_[set t].xml] } {
+        if { [file size $env(TS_XML_DIR)/sal_interfaces/$i/[set i]_[set t].xml] > 0 } {
+          parseXMLtoidl $env(TS_XML_DIR)/sal_interfaces/$i/[set i]_[set t].xml
           stdlog "Imported $i $t interface definitions"
         }
       }
     }
+    parseXMLtoidl $SAL_WORK_DIR/[set i]_Generics.xml
+    stdlog "Imported $i Generic interface definitions"
     stdlog "Validating $i interface IDL format definitions"
     catch {
       set hascmd [glob $SAL_WORK_DIR/idl-templates/[set i]_command_*.idl]
@@ -290,7 +250,7 @@ if { $OPTIONS(maven) } {
   source $SAL_DIR/gencommandtestsjava.tcl
   source $SAL_DIR/mavenize.tcl
   source $SAL_DIR/gensalcodes.tcl
-  set mvnrelease [set XMLVERSION]_[exec cat $env(TS_SAL_DIR)/VERSION][set RELVERSION]
+  set mvnrelease [set XMLVERSION]_[set SALVERSION][set RELVERSION]
   foreach subsys $TSUBSYSTEMS {
     checkTopicTypes $subsys
     set result ""
@@ -403,7 +363,10 @@ if { $OPTIONS(lib) } {
 
 
 if { $OPTIONS(rpm) } {
+  cd $SAL_WORK_DIR
   source $SAL_DIR/gensalrpms.tcl
+  set SALVERSION [join [lrange [split $SALVERSION ".-_"] 0 2] "."]
+  set XMLVERSION [join [lrange [split $XMLVERSION ".-_"] 0 2] "."]
   foreach s $TSUBSYSTEMS {
     if { $s != "rpm" } {
       stdlog "Building runtime RPM for $s subsystem"

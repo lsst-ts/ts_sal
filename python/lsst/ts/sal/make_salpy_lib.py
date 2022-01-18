@@ -101,7 +101,7 @@ class MakeSalpyLib:
             shutil.rmtree(os.path.join(self.sal_work_dir, subdir), ignore_errors=True)
 
         if not keep_most:
-            print(f'{"Removing demos"}')
+            print(f'{"Remove demos"}')
             sal_name_dirs = glob.glob(
                 os.path.join(self.sal_work_dir, f"{self.sal_name}*")
             )
@@ -133,8 +133,8 @@ class MakeSalpyLib:
         finally:
             os.environ[self.ld_lib_path_name] = self.initial_ld_lib_path
 
-    def move_libraries(self):
-        """Move the SALPY libraries to their final destination."""
+    def copy_libraries(self):
+        """Copy the SALPY libraries to their final destination."""
         for path in self.src_lib_paths.values():
             if not os.path.isfile(path):
                 raise RuntimeError(f"{path} not generated")
@@ -143,6 +143,7 @@ class MakeSalpyLib:
             dest_path = self.dest_lib_paths[name]
             if os.path.exists(dest_path):
                 os.remove(dest_path)
+            print(f"Copy {src_path} to {dest_path}")
             shutil.copy(src_path, dest_path)
 
     def run(self, demo=False):
@@ -154,7 +155,7 @@ class MakeSalpyLib:
             If True build and keep a demo reader and writer for each topic.
             This also keeps most of the generated files.
         """
-        print(f"* Make SALPY_{self.sal_name} libraries ***")
+        print(f"* Make SALPY_{self.sal_name} libraries *")
 
         print(f"*** Cleanup old {self.sal_name} files ***")
         self.delete_files()
@@ -165,8 +166,8 @@ class MakeSalpyLib:
         print(f"*** Validate and generate {self.sal_name} libraries ***")
         self.make_libraries(demo=demo)
 
-        print(f"*** Move {self.sal_name} libraries into place ***")
-        self.move_libraries()
+        print(f"*** Copy {self.sal_name} libraries into place ***")
+        self.copy_libraries()
 
         print(f'{"*** Final cleanup ***"}')
         self.delete_files(keep_most=demo)

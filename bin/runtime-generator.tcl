@@ -3,15 +3,13 @@
 set OPTIONS(verbose) 0
 set SAL_DIR $env(SAL_DIR)
 set SAL_WORK_DIR $env(SAL_WORK_DIR)
-puts stdout "Updating XML"
-exec updateXML
 
 source $env(SAL_DIR)/add_system_dictionary.tcl
 
 set EVERYTHING [lsort $SYSDIC(systems)]
 foreach subsys $EVERYTHING {
    catch {
-      set x [glob $subsys*.xml]
+      set x [glob $env(TS_XML_DIR)/sal_interfaces/$subsys/$subsys*.xml]
       set DO($subsys) 1
    } else {
      puts stdout "No definitions for $subsys"
