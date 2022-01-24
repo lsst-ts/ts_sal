@@ -6,6 +6,11 @@
 Version History
 ###############
 
+Changes for 6.1.1
+=================
+
+* LSST_DDS_PARTITION_PREFIX is now set to a random value at the start of each Java unit test.
+
 Changes for 6.1.0
 =================
 
