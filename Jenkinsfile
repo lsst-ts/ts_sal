@@ -62,18 +62,6 @@ pipeline {
                 }
             }
         }
-        stage("Running SALPY tests") {
-            steps {
-                script {
-                    sh "docker exec -u saluser \${container_name} sh -c \"" +
-                        "source ~/.setup.sh && " +
-                        "export LSST_DDS_QOS=file:///home/saluser/repos/ts_ddsconfig/qos/QoS.xml && " +
-                        "cd /home/saluser/repos/ts_sal && " +
-                        "make_salpy_libs.py Test Script && " +
-                        "pytest --junitxml=tests/.tests/junit.xml\""
-                }
-            }
-        }
         stage("Running cpp tests") {
             steps {
                 script {

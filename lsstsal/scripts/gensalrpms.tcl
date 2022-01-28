@@ -119,11 +119,6 @@ global SAL_WORK_DIR XMLVERSION SAL_DIR SYSDIC SALVERSION env
       copyasset $SAL_WORK_DIR/lib/libSAL_[set subsys].a [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/lib/.
       copyasset $SAL_WORK_DIR/lib/libsacpp_[set subsys]_types.so [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/lib/.
     }
-    if { [info exists SYSDIC([set subsys],salpy)] } {
-      copyasset $SAL_WORK_DIR/lib/SALPY_[set subsys].so [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/lib/.
-      copyasset $SAL_WORK_DIR/lib/libSAL_[set subsys].a [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/lib/.
-      copyasset $SAL_WORK_DIR/lib/libsacpp_[set subsys]_types.so [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/lib/.
-    }
     copyasset $SAL_WORK_DIR/idl-templates/validated/[set subsys]_revCodes.tcl [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/scripts/.
     copyasset $SAL_WORK_DIR/idl-templates/validated/sal/sal_revCoded_[set subsys].idl [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/idl/.
     if { [info exists SYSDIC([set subsys],cpp)] } {
@@ -528,76 +523,6 @@ rm -fr \$RPM_BUILD_ROOT
 #  eval $ctar
 }
 
-
-###
-### sudo mv /usr/local /usr/local.save
-### sudo mkdir /usr/local
-### ./configure --prefix=/usr/local ; make ; sudo make install ; cd /usr/local ; sudo sh
-### rm ./lib/python3.7/site-packages/setuptools/script\ \(dev\).tmpl
-### rm ./lib/python3.7/site-packages/setuptools/command/launcher\ manifest.xml
-### tar cvzf /tmp/py3runtime.tgz bin include lib share
-### cd $SAL_WORK_DIR/rpmbuild/BUILDROOT/python-3.7.3-1.el7.centos.x86_64
-### rm -fr * ; mkdir -p usr/local ; cd usr/local
-### tar xvzf /tmp/py3runtime.tgz
-### cd $SAL_WORK_DIR
-### rpmbuild --nodeps --short-circuit -bb -bl -v ./rpmbuild/SPECS/ts_python.spec
-### rm -fr /usr/local
-### mv /usr/local.save /usr/local
-###
-
-
-#
-## Documented proc \c generatePythonspec .
-#
-#  Generate the SPEC file for a standalone Python RPM
-#
-proc generatePythonspec { } {
-global SAL_WORK_DIR SALVERSION RPMFILES OSPL_VERSION env
-  set fout [open $SAL_WORK_DIR/rpmbuild/SPECS/ts_python.spec w]
-  puts $fout "Name: python
-Version: 3.7.3
-Release: 1%\{?dist\}
-Summary: Python runtime for LSST TS
-Vendor: LSST
-License: PSF
-URL: http://project.lsst.org/ts
-Group: Telescope and Site SAL
-AutoReqProv: no
-Source0: Python3.7.3.tar.xz
-BuildRoot: $SAL_WORK_DIR/rpmbuild/%\{name\}-%\{version\}
-Packager: dmills@lsst.org
-
-%global __os_install_post %{nil}
-%define debug_package %{nil}
-
-%description
-This is a Python runtime and environment for the LSST Telescope and Site subsystems.
-
-%prep
-
-%setup
- 
-%build
-#source /opt/lsst/ts_sal/setup.env
-
-%install
-cp -fr * %{buildroot}/.
-
-%files"
-set fin [open /home/dmills/python37/Python-3.7.3/lslr r]
-while { [gets $fin rec] > -1 } {
-   puts $fout $rec
-}
-close $fin
-puts $fout "
-%clean
-
-%post
-%postun
-%changelog
-"
-  close $fout
-}
 
 #
 ## Documented proc \c generateUtilsrpm .
