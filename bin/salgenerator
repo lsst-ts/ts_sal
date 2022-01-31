@@ -13,8 +13,8 @@ proc print_help {} {
 
 		generate - all steps to generate SAL wrappers for specified language
 		validate - check the XML Telemetry/Command/LogEvent definitions
-                sal      - generate SAL wrappers for specified language : cpp, idl, java, python, pydds
-                apidoc   - generate interface documentation for the specified language : cpp, java, python
+                sal      - generate SAL wrappers for specified language : cpp, idl, java
+                apidoc   - generate interface documentation for the specified language : cpp, java
                 lib      - generate shared library
 		labview  - generate LabVIEW low-level interface
 		maven    - generate a maven project
@@ -30,7 +30,7 @@ if { $argc < 2 } { print_help }
 
 set SAL_DIR $env(SAL_DIR)
 set OSPL_HOME $env(OSPL_HOME)
-set COMMANDS "validate efd writers compile cpp idl isocpp java jni lib link maven tcl db icd labview python pydds html apidoc rpm sal shmem sim simd verbose fastest generate upload" 
+set COMMANDS "validate efd writers compile cpp idl isocpp java jni lib link maven tcl db icd labview html apidoc rpm sal shmem sim simd verbose fastest generate upload" 
 foreach o $COMMANDS {
   set OPTIONS($o) 0
   if { [lsearch [string tolower $argv] $o] > -1 } {
@@ -142,10 +142,6 @@ if { $OPTIONS(generate) } {
   set result [exec salgenerator $TSUBSYSTEMS validate] ; puts stdout $result
   catch { set result [exec salgenerator $TSUBSYSTEMS html] } ok ; puts stdout $ok
   if { $OPTIONS(cpp) } { set result [exec salgenerator $TSUBSYSTEMS sal cpp] ; puts stdout $result }
-  if { $OPTIONS(python) } { 
-     set result [exec salgenerator $TSUBSYSTEMS sal cpp] ; puts stdout $result
-     set result [exec salgenerator $TSUBSYSTEMS sal python] ; puts stdout $result
-  }
   if { $OPTIONS(java) } { 
      set result [exec salgenerator $TSUBSYSTEMS sal java] ; puts stdout $result
      set result [exec salgenerator $TSUBSYSTEMS maven] ; puts stdout $result
@@ -302,10 +298,9 @@ if { $OPTIONS(lib) == 0 || $OPTIONS(generate) == 1 } {
 if { $OPTIONS(sal) } {
   set DONE_CMDEVT 0
   set ONEDDSGEN 0
-  set ONEPYTHON 0
-  if { [expr $OPTIONS(cpp) + $OPTIONS(isocpp) + $OPTIONS(java) + $OPTIONS(python) + $OPTIONS(pydds) + $OPTIONS(idl)] == 0 } {
+  if { [expr $OPTIONS(cpp) + $OPTIONS(isocpp) + $OPTIONS(java) + $OPTIONS(idl)] == 0 } {
     stdlog "=========================================================================="
-    stdlog "ERROR :  sal option requires a language choice , cpp/idl/java/python/pydds"
+    stdlog "ERROR :  sal option requires a language choice , cpp/idl/java"
     stdlog "=========================================================================="
     exit 6
   }
@@ -326,14 +321,6 @@ if { $OPTIONS(sal) } {
     genGenericCodes $base
     genTelemetryCodes $idlfile $TARGETS
     genSingleProcessTests $base
-    if { $OPTIONS(pydds) } {
-      exec mkdir -p $SAL_WORK_DIR/python
-      set spl [lindex [file rootname [split [lindex $TARGETS 0] _]] 0]
-      stdlog "Building native DDS python support for $spl subsystem"
-      set result none
-      catch { set result [exec $SAL_DIR/genddspython.tcl $spl] } bad
-      if { $OPTIONS(verbose) } {stdlog $result}
-    }
   } else {
     exec cp $SAL_WORK_DIR/idl-templates/validated/sal/sal_revCoded_[set base].idl $SAL_WORK_DIR/[set base]/.
   }
@@ -348,9 +335,6 @@ if { $OPTIONS(lib) } {
       if { $OPTIONS(verbose) } {stdlog "Calling $env(TS_SAL_DIR)/bin/buildsharedlib $s"}
       catch { set result [exec $env(TS_SAL_DIR)/bin/buildsharedlib $s] } bad
       if { $OPTIONS(verbose) } {stdlog $result}
-    }
-    if { [file exists $SAL_WORK_DIR/[set s]/cpp/src/SALPY_[set s].so] } {
-      exec cp $SAL_WORK_DIR/[set s]/cpp/src/SALPY_[set s].so $SAL_WORK_DIR/lib/.
     }
     if { [file exists $SAL_WORK_DIR/[set s]/labview/SALLV_[set s].so] } {
       exec cp $SAL_WORK_DIR/[set s]/labview/SALLV_[set s].so $SAL_WORK_DIR/lib/.

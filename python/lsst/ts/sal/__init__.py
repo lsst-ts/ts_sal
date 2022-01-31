@@ -19,7 +19,6 @@
 # You should have received a copy of the GNU General Public License
 
 from .make_idl_file import *
-from .make_salpy_lib import *
 from .utils import *
 from . import testutils
 

@@ -32,28 +32,7 @@ foreach subsys $SYSDIC(systems) {
          exec mkdir -p  $DEST/$subsys/cpp
          exec cp -vr $SAL_WORK_DIR/$subsys/cpp/src $DEST/$subsys/cpp/.
       }
-      if { [file isdirectory $subsys/python] } {
-         puts stdout "Processing $subsys/python"
-         exec mkdir -p  $DEST/$subsys/python
-         exec cp -vr $SAL_WORK_DIR/$subsys/python $DEST/$subsys/.
-      }
 }
-
-exec mkdir -p $DEST/sql
-puts stdout "Updating sql"
-foreach subsys $SYSDIC(systems) {
-  exec cp -r sql/[set subsys].sqldef $DEST/sql/.
-  exec cp -r sql/[set subsys]_items.sql $DEST/sql/.
-}
-
-exec mkdir -p $DEST/html
-puts stdout "Updating html"
-foreach subsys $SYSDIC(systems) {
-  if { [file isdirectory html/$subsys] } {
-    exec cp -r html/[set subsys] $DEST/html/.
-  }
-}
-
 
 exec mkdir -p $DEST/jar
 puts stdout "Updating Java"

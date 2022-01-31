@@ -6,6 +6,11 @@
 Version History
 ###############
 
+Changes for 6.2.0
+=================
+
+* Remove deprecated python (boost and pybind11) API generation
+
 Changes for 6.1.0
 =================
 

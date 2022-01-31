@@ -1,6 +1,6 @@
 # Service Abstraction Layer package
 
-Provides tools to turn ts_xml interface description into C++, Python, Java and
+Provides tools to turn ts_xml interface description into C++, Java and
 LabView interfaces. Turns XMLs with the interface description into Data
 Distribution Service (DDS) schemas and language bindings. Without going into
 details, it can be said binding for the following primitives are generated:
@@ -36,7 +36,7 @@ scons install declare
 
 ## Dependencies
 
-* **ts_openslice** for ADLink OpenSliceDDS to generate C++, Python, Java and LabView interfaces
+* **ts_openslice** for ADLink OpenSliceDDS to generate C++, Java and LabView interfaces
 * **ts_idl** for IDL generation, needed for **ts_salobj**
 
 **The following works with ts_opensplice compiled for Centos:7.**
@@ -106,29 +106,6 @@ cd ts_sal/java_tests
 mvn test
 ```
 
-### Python
-
-Python SALPY is deprecated; please use [ts_salobj](https://github.com/lsst-ts/ts_salobj) instead.
-
-To generate IDL files for ts_salobj for a set of components (where each `<component_nameN>` is the name of a component, e.g. `MTMount`):
-
-```bash
-make_idl_libs <component_name1> [<component_name2> ...]
-```
-
-To generate deprecated SALPY libraries:
-
-```bash
-make_salpy_libs <component_name1> [<component_name2> ...]
-```
-
-To run SALPY unit tests:
-
-```bash
-make_idl_files.py Test Script
-cd ts_sal
-pytest
-```
 
 ### LabView
 
