@@ -208,7 +208,6 @@ using namespace std;
       set fcod13 [open $SAL_WORK_DIR/include/SAL_[set subsys]_[set name]monin.tmp w]
       puts $fcod13 "
              [set subsys]_memIO->client\[LVClient\].shmemIncoming_[set subsys]_[set name].private_rcvStamp = Incoming_[set subsys]_[set name]->private_rcvStamp;"
-###      set fcod14 [open $SAL_WORK_DIR/include/SAL_[set subsys]_[set name]Jsub.tmp w]
       puts $fout "	struct $name \{"
       puts $fhdr "struct [set subsys]_[set name]C
 \{
@@ -267,8 +266,6 @@ using namespace std;
                 set cnst [lindex [split $$e :] 1]
                 foreach id [split $cnst ,] {
                    set sid [string trim $id]
-###                   puts $fcod3 "    if (SALInstance.[set vname] == [set subsys]::[set ename]_[set sid]) cout << \"    $vname : [set sid]\" << endl;"
-###                   puts $fcod14 "                if (event.[set vname] == [set subsys].[set ename]_[set sid].value) System.out.println(\"    $vname : [set sid]\");"
                 }
               }
               set enumdone($ename) 1
@@ -291,7 +288,6 @@ using namespace std;
       close $fcod11
       close $fcod12
       close $fcod13
-###      close $fcod14
     }
    }
    if { [info exists CMD_ALIASES($subsys)] } {
@@ -301,7 +297,6 @@ using namespace std;
         gennonkeyedidl $fout
      }
      genackcmdincl $subsys $fhdr $fhlv
-###     puts $fpyb2 "  .def(\"flushSamples_ackcmd\" ,  &SAL_[set subsys]::flushSamples_ackcmd )"
    }
    puts $fout "\};
 "
