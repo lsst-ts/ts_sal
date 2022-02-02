@@ -55,17 +55,6 @@ class MakeIdlFile:
         )
         self.idl_file_to_path = idl.get_idl_dir() / idl_file_name
 
-    def copy_xml_files(self):
-        interfaces_dir = os.path.join(self.xml_dir, "sal_interfaces")
-        std_xml_paths = [
-            os.path.join(interfaces_dir, f"{n}.xml")
-            for n in ("SALGenerics", "SALSubsystems")
-        ]
-        sal_xml_paths = glob.glob(os.path.join(interfaces_dir, self.name, "*.xml"))
-
-        for xmlpath in std_xml_paths + sal_xml_paths:
-            shutil.copy(xmlpath, self.sal_work_dir)
-
     def delete_files(self):
         """Delete unwanted files for this SAL component."""
         xmlfiles = glob.glob(os.path.join(self.sal_work_dir, "*.xml"))
@@ -90,9 +79,6 @@ class MakeIdlFile:
     def run(self):
         """Make the IDL file and move it to the idl directory."""
         print(f"* Make {self.name} IDL file *")
-
-        print(f"*** Copy {self.name} XML files ***")
-        self.copy_xml_files()
 
         print(f"*** Validate and generate {self.name} libraries ***")
         self.make_idl_file()

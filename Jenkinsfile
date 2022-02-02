@@ -62,12 +62,23 @@ pipeline {
                 }
             }
         }
+        stage("Running python tests") {
+            steps {
+                script {
+                    sh "docker exec -u saluser \${container_name} sh -c \"" +
+                        "source ~/.setup.sh && " +
+                        "export LSST_DDS_QOS=file:///home/saluser/repos/ts_ddsconfig/qos/QoS.xml && " +
+                        "cd /home/saluser/repos/ts_sal/ && " +
+                        "pytest\""
+                }
+            }
+        }
         stage("Running cpp tests") {
             steps {
                 script {
                     sh "docker exec -u saluser \${container_name} sh -c \"" +
                         "source ~/.setup.sh && " +
-                        "conda install -y catch2 && " +
+                        "mamba install -y catch2 && " +
                         "export LSST_DDS_QOS=file:///home/saluser/repos/ts_ddsconfig/qos/QoS.xml && " +
                         "cd /home/saluser/repos/ts_sal/cpp_tests && " +
                         "salgenerator generate cpp Test && " +

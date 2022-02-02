@@ -20,7 +20,6 @@
 
 from .make_idl_file import *
 from .utils import *
-from . import testutils
 
 try:
     from .version import *
