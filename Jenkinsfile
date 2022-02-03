@@ -111,19 +111,9 @@ pipeline {
         always {
             // The path of xml needed by JUnit is relative to
             // the workspace.
-            junit 'tests/.tests/junit.xml'
             junit 'cpp_tests/*.xml'
             junit 'java_tests/target/surefire-reports/*.xml'
 
-            // Publish the HTML report
-            publishHTML (target: [
-                allowMissing: false,
-                alwaysLinkToLastBuild: false,
-                keepAll: true,
-                reportDir: 'tests/.tests/',
-                reportFiles: 'index.html',
-                reportName: "Coverage Report"
-              ])
               sh "docker exec -u saluser \${container_name} sh -c \"" +
                   "source ~/.setup.sh && " +
                   "cd /home/saluser/repos/ts_sal && " +
