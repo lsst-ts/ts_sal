@@ -78,6 +78,9 @@ puts stdout "SAL generator - [set SALVERSION]"
 set TSUBSYSTEMS ""
 foreach i $argv {
   puts stdout "checking $i"
+  if { $i == "python" } {
+    errorexit "python API generation no longer supported  - use ts_salobj"
+  }
   if { [lsearch $COMMANDS $i] < 0 } {
     if { [lsearch $SYSDIC(systems) $i] < 0 } {
       puts stdout "

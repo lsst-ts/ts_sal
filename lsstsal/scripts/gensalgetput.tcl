@@ -311,10 +311,9 @@ proc addActorIndexesCPP { idlfile base fout } {
 global SAL_WORK_DIR
    set ptypes [lsort [split [exec grep pragma $idlfile] \n]]
    set idx 0
-   set fact [open $SAL_WORK_DIR/[set base]/cpp/src/SAL_actors.h w]
+   set fact [open $SAL_WORK_DIR/[set base]/cpp/src/SAL_[set base]_actors.h w]
    foreach j $ptypes {
       set name [lindex $j 2]
-      puts $fout "#define SAL__[set base]_[set name]_ACTOR    $idx"
       puts $fact "#define SAL__[set base]_[set name]_ACTOR    $idx"
       incr idx 1
    }

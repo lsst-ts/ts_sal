@@ -57,7 +57,6 @@ proc getItemName { rec } {
 #
 #  These consist of :
 #    revCodes - idl-templates/validated/sal/sal_revCoded_SUBSYSTEM.idl
-#    units - include/SAL_[set subsys]_salpy_units.pyb3
 #
 proc activeRevCodes { subsys } {
 global SAL_WORK_DIR REVCODE OPTIONS SALVERSION METADATA XMLVERSION

@@ -128,7 +128,7 @@ global SAL_WORK_DIR SYSDIC SALCLIENTS
    foreach s $SALCLIENTS($id,subsystems) {
        puts $fout "
 #include \"SAL_[set s].h\"
-#include \"SAL_actors.h\"
+#include \"SAL_[set s]_actors.h\"
 #include \"ccpp_sal_[set s].h\"
 using namespace [set s];
 "
