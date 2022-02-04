@@ -126,11 +126,11 @@ pipeline {
             // The path of xml needed by JUnit is relative to
             // the workspace.
             echo "C++ unit-test results"
-            junit 'cpp_tests/*.xml'
+            junit testResults: 'cpp_tests/*.xml', skipPublishingChecks: true
             echo "Java unit-test results"
-            junit 'java_tests/target/surefire-reports/*.xml'
+            junit testResults: 'java_tests/target/surefire-reports/*.xml', skipPublishingChecks: true
             echo "Camera unit-test results"
-            junit '/camera-tests/target/surefire-reports/TEST*.xml'
+            junit testResults: 'camera-tests/target/surefire-reports/TEST*.xml', skipPublishingChecks: true
 
             echo "Build documents"
             sh "docker exec -u saluser \${container_name} sh -c \"" +
