@@ -266,7 +266,7 @@ if { $OPTIONS(maven) } {
     puts stdout "Running maven install"
     set result ""
     set bad ""
-    catch { set result [exec mvn -Dmaven.javadoc.skip=true -DskipTests install] } bad
+    catch { set result [exec mvn --no-transfer-progress -Dmaven.javadoc.skip=true -DskipTests install] } bad
     puts stdout "$result"
     puts stderr "$bad"
     set result none
@@ -274,7 +274,7 @@ if { $OPTIONS(maven) } {
     stdlog "$result"
     if { $result == "none" } {stdlog $bad ; errorexit "failure in genauthlisttestsjava" }
 #     puts stdout "Updating local repository"
-#     catch { set result [exec mvn install -DperformRelease=true -DcreateChecksum=true] } bad
+#     catch { set result [exec mvn --no-transfer-progress install -DperformRelease=true -DcreateChecksum=true] } bad
 #     puts stdout "$result"
 #     puts stderr "$bad"
   }

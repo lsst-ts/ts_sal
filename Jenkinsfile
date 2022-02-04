@@ -102,7 +102,7 @@ pipeline {
                         "salgenerator Script sal java && " +
                         "salgenerator Script maven && " +
                         "cd /home/saluser/repos/ts_sal/java_tests && " +
-                        "mvn test\""
+                        "mvn --no-transfer-progress test\""
                 }
             }
         }
