@@ -106,32 +106,51 @@ pipeline {
                 }
             }
         }
+        stage("Running Camera java tests") {
+            steps {
+                script {
+                    sh "docker exec -u saluser \${container_name} sh -c \"" +
+                        "source ~/.setup.sh && " +
+                        "mamba install -y catch2 && " +
+                        "export LSST_DDS_QOS=file:///home/saluser/repos/ts_ddsconfig/qos/QoS.xml && " +
+                        "export LSST_DDS_PARTITION_PREFIX=testcpp && " +
+                        "cd /home/saluser/repos/ts_sal/camera-tests && " +
+                        "mvn test -DXms2g -DXmx4g --no-transfer-progress\""
+                    
+                }
+            }
+        }//CameraTests
     }
     post {
         always {
             // The path of xml needed by JUnit is relative to
             // the workspace.
-            junit 'cpp_tests/*.xml'
-            junit 'java_tests/target/surefire-reports/*.xml'
+            echo "C++ unit-test results"
+            junit testResults: 'cpp_tests/*.xml', skipPublishingChecks: true
+            echo "Java unit-test results"
+            junit testResults: 'java_tests/target/surefire-reports/*.xml', skipPublishingChecks: true
+            echo "Camera unit-test results"
+            junit testResults: 'camera-tests/target/surefire-reports/TEST*.xml', skipPublishingChecks: true
 
-              sh "docker exec -u saluser \${container_name} sh -c \"" +
-                  "source ~/.setup.sh && " +
-                  "cd /home/saluser/repos/ts_sal && " +
-                  "setup ts_sal -t saluser && " +
-                  "package-docs build\""
+            echo "Build documents"
+            sh "docker exec -u saluser \${container_name} sh -c \"" +
+                "source ~/.setup.sh && " +
+                "cd /home/saluser/repos/ts_sal && " +
+                "setup ts_sal -t saluser && " +
+                "package-docs build\""
 
-              script {
+            echo "Publish documents"
+            script {
+                def RESULT = sh returnStatus: true, script: "docker exec -u saluser \${container_name} sh -c \"" +
+                    "source ~/.setup.sh && " +
+                    "cd /home/saluser/repos/ts_sal && " +
+                    "setup ts_sal -t saluser && " +
+                    "ltd upload --product ts-sal --git-ref \${GIT_BRANCH} --dir doc/_build/html\""
 
-                  def RESULT = sh returnStatus: true, script: "docker exec -u saluser \${container_name} sh -c \"" +
-                      "source ~/.setup.sh && " +
-                      "cd /home/saluser/repos/ts_sal && " +
-                      "setup ts_sal -t saluser && " +
-                      "ltd upload --product ts-sal --git-ref \${GIT_BRANCH} --dir doc/_build/html\""
-
-                  if ( RESULT != 0 ) {
-                      unstable("Failed to push documentation.")
-                  }
-               }
+                if ( RESULT != 0 ) {
+                    unstable("Failed to push documentation.")
+                }
+            }
         }
         cleanup {
             sh """
