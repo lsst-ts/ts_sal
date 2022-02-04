@@ -106,6 +106,20 @@ pipeline {
                 }
             }
         }
+        stage("Running Camera java tests") {
+            steps {
+                script {
+                    sh "docker exec -u saluser \${container_name} sh -c \"" +
+                        "source ~/.setup.sh && " +
+                        "mamba install -y catch2 && " +
+                        "export LSST_DDS_QOS=file:///home/saluser/repos/ts_ddsconfig/qos/QoS.xml && " +
+                        "export LSST_DDS_PARTITION_PREFIX=testcpp && " +
+                        "cd /home/saluser/repos/ts_sal/camera-tests && " +
+                        "mvn test -DXms2g -DXmx4g --no-transfer-progress\""
+                    
+                }
+            }
+        }//CameraTests
     }
     post {
         always {
@@ -113,6 +127,7 @@ pipeline {
             // the workspace.
             junit 'cpp_tests/*.xml'
             junit 'java_tests/target/surefire-reports/*.xml'
+            junit '/camera-tests/target/surefire-reports/TEST*.xml'
 
               sh "docker exec -u saluser \${container_name} sh -c \"" +
                   "source ~/.setup.sh && " +
