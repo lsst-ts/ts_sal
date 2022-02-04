@@ -125,28 +125,32 @@ pipeline {
         always {
             // The path of xml needed by JUnit is relative to
             // the workspace.
+            echo "C++ unit-test results"
             junit 'cpp_tests/*.xml'
+            echo "Java unit-test results"
             junit 'java_tests/target/surefire-reports/*.xml'
+            echo "Camera unit-test results"
             junit '/camera-tests/target/surefire-reports/TEST*.xml'
 
-              sh "docker exec -u saluser \${container_name} sh -c \"" +
-                  "source ~/.setup.sh && " +
-                  "cd /home/saluser/repos/ts_sal && " +
-                  "setup ts_sal -t saluser && " +
-                  "package-docs build\""
+            echo "Build documents"
+            sh "docker exec -u saluser \${container_name} sh -c \"" +
+                "source ~/.setup.sh && " +
+                "cd /home/saluser/repos/ts_sal && " +
+                "setup ts_sal -t saluser && " +
+                "package-docs build\""
 
-              script {
+            echo "Publish documents"
+            script {
+                def RESULT = sh returnStatus: true, script: "docker exec -u saluser \${container_name} sh -c \"" +
+                    "source ~/.setup.sh && " +
+                    "cd /home/saluser/repos/ts_sal && " +
+                    "setup ts_sal -t saluser && " +
+                    "ltd upload --product ts-sal --git-ref \${GIT_BRANCH} --dir doc/_build/html\""
 
-                  def RESULT = sh returnStatus: true, script: "docker exec -u saluser \${container_name} sh -c \"" +
-                      "source ~/.setup.sh && " +
-                      "cd /home/saluser/repos/ts_sal && " +
-                      "setup ts_sal -t saluser && " +
-                      "ltd upload --product ts-sal --git-ref \${GIT_BRANCH} --dir doc/_build/html\""
-
-                  if ( RESULT != 0 ) {
-                      unstable("Failed to push documentation.")
-                  }
-               }
+                if ( RESULT != 0 ) {
+                    unstable("Failed to push documentation.")
+                }
+            }
         }
         cleanup {
             sh """
