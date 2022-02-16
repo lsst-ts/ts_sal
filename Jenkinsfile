@@ -73,6 +73,27 @@ pipeline {
                 }
             }
         }
+        stage("Build SAL runtime assets") {
+            steps {
+                script {
+                    sh "docker exec -u saluser \${container_name} sh -c \"" +
+                        "source ~/.setup.sh && " +
+                        "mamba install -y catch2 && " +
+                        "export LSST_DDS_QOS=file:///home/saluser/repos/ts_ddsconfig/qos/QoS.xml && " +
+                        "cd /home/saluser/repos/ts_sal/cpp_tests && " +
+                        "salgenerator validate Test && " +
+                        "salgenerator validate Script && " +
+                        "salgenerator sal cpp Test && " +
+                        "salgenerator sal cpp Script && " +
+                        "salgenerator sal java Test && " +
+                        "salgenerator sal java Script && " +
+                        "salgenerator lib Test && " +
+                        "salgenerator lib Script && " +
+                        "salgenerator maven Test && " +
+                        "salgenerator maven Script && "
+                }
+            }
+        }
         stage("Running cpp tests") {
             steps {
                 script {
@@ -81,8 +102,6 @@ pipeline {
                         "mamba install -y catch2 && " +
                         "export LSST_DDS_QOS=file:///home/saluser/repos/ts_ddsconfig/qos/QoS.xml && " +
                         "cd /home/saluser/repos/ts_sal/cpp_tests && " +
-                        "salgenerator generate cpp Test && " +
-                        "salgenerator generate cpp Script && " +
                         "export LSST_DDS_PARTITION_PREFIX=testcpp && " +
                         "make junit\""
                 }
@@ -95,12 +114,6 @@ pipeline {
                         "source ~/.setup.sh && " +
                         "export LSST_DDS_QOS=file:///home/saluser/repos/ts_ddsconfig/qos/QoS.xml && " +
                         "export LSST_DDS_PARTITION_PREFIX=testjava && " +
-                        "salgenerator Test validate && " +
-                        "salgenerator Test sal java && " +
-                        "salgenerator Test maven && " +
-                        "salgenerator Script validate && " +
-                        "salgenerator Script sal java && " +
-                        "salgenerator Script maven && " +
                         "cd /home/saluser/repos/ts_sal/java_tests && " +
                         "mvn --no-transfer-progress test\""
                 }
