@@ -90,7 +90,7 @@ pipeline {
                         "salgenerator lib Test && " +
                         "salgenerator lib Script && " +
                         "salgenerator maven Test && " +
-                        "salgenerator maven Script && "
+                        "salgenerator maven Script\""
                 }
             }
         }
