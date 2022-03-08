@@ -284,6 +284,8 @@ int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
     ackdata.identity = Instances\[j\].private_identity;
     ackdata.origin = Instances\[j\].private_origin;
     ackdata.private_seqNum = Instances\[j\].private_seqNum;
+    ackdata.private_revCode = DDS::string_dup(\"[string trim $ACKREVCODE _]\");
+    ackdata.private_sndStamp = getCurrentTime();
     ackdata.cmdtype = actorIdx;
     ackdata.error = 0;
     ackdata.result = DDS::string_dup(\"SAL ACK\");
