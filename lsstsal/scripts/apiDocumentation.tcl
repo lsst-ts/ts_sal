@@ -124,23 +124,6 @@ perl -pi -w -e 's/SALDocument/SAL_[set csc]/g;' CMakeLists.txt
 "
 close $fout
 
-if { [info exists SYSDIC($csc,salpy)] } {
-  puts $fprogress "SAL apidoc - Preparing SALPY"
-  exec cp $SAL_WORK_DIR/[set csc]/cpp/src/SALPY_[set csc].cpp SAL_[set csc]/.
-  set result none
-  catch {set result [exec sphinx-autogen SAL_Test/SALPY_Test.cpp >& /dev/null] } bad
-  if { $result == "none" } {puts stdout $bad}
-  set fpy [open SAL_[set csc]/SALPY_[set csc].rst w]
-  puts $fpy "
-===================
-SALPY_[set csc] API
-===================
-
-.. automodule:: SALPY_[set csc]
-"
-  close $fpy
-}
-
 
 exec chmod 755 /tmp/sreplace_[set csc]
 exec /tmp/sreplace_[set csc]
@@ -163,7 +146,6 @@ if  { [info exists SYSDIC($csc,java)] } {
 
 puts $fout "
 .. toctree::
-.. include :: SALPY_Test.rst
    :maxdepth: 2
    :caption: Contents:
 
@@ -183,11 +165,6 @@ if { [info exists SYSDIC($csc,cpp)] } {
    :members:"
   }
   puts $fout ".. doxygenstruct:: salActor
-   :members:"
-}
-
-if { [info exists SYSDIC($csc,salpy)] } {
-  puts $fout ".. doxygenclass:: SALPY_Test
    :members:"
 }
 

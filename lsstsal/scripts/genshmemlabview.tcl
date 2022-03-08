@@ -43,7 +43,7 @@ global SAL_DIR SAL_WORK_DIR
   gentelemetrylabviewtests $base
   cd $SAL_WORK_DIR/[set subsys]/labview
   exec ln -sf ../cpp/src/SAL_[set subsys].cpp .
-  exec ln -sf ../cpp/src/SAL_actors.h .
+  exec ln -sf ../cpp/src/SAL_[set subsys]_actors.h .
   exec ln -sf ../../../lsstsal/include/SAL_defines.h .
   exec rm -fr lib
   set bad [catch {exec make -f Makefile.sacpp_[set subsys]_labview} result]
@@ -362,7 +362,7 @@ global SAL_DIR SAL_WORK_DIR SYSDIC LVSTRINGS REVCODE CMD_ALIASES SALVERSION XMLV
 #include \"SAL_[set base].h\"
 #define BUILD_FOR_LV
 #include \"SAL_[set base]_shmem.h\"
-#include \"SAL_actors.h\"
+#include \"SAL_[set base]_actors.h\"
 using namespace [set base];
 "
   puts $fout "
@@ -468,7 +468,7 @@ extern \"C\" \{
 #include \"SAL_defines.h\"
 #define BUILD_FOR_LV
 #include \"SAL_[set base]_shmem.h\"
-#include \"SAL_actors.h\"
+#include \"SAL_[set base]_actors.h\"
 #define ReturnCode_t int
 
 "

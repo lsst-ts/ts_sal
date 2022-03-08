@@ -24,7 +24,6 @@
 proc makesaldirs { base name } {
 global SAL_WORK_DIR OPTIONS
    if { $OPTIONS(verbose) } {stdlog "###TRACE>>> makesaldirs $base $name"}
-   exec mkdir -p $SAL_WORK_DIR/[set base]_[set name]/python
    exec mkdir -p $SAL_WORK_DIR/[set base]_[set name]/cpp/src
    exec mkdir -p $SAL_WORK_DIR/[set base]_[set name]/cpp/standalone
    exec mkdir -p $SAL_WORK_DIR/[set base]_[set name]/isocpp
@@ -182,10 +181,6 @@ global SAL_DIR SAL_WORK_DIR SYSDIC VPROPS EVENT_ENUM OPTIONS CMD_ALIASES
 
 using namespace std;
 "
-   set fbst [open $SAL_WORK_DIR/include/SAL_[set subsys]C.bp w]
-   set fbst2 [open $SAL_WORK_DIR/include/SAL_[set subsys]C.bp2 w]
-   set fpyb [open $SAL_WORK_DIR/include/SAL_[set subsys]C.pyb w]
-   set fpyb2 [open $SAL_WORK_DIR/include/SAL_[set subsys]C.pyb2 w]
    puts $fout "module $subsys \{"
    foreach i $all {
      stdlog "Adding $i to sal_$subsys.idl"
@@ -213,38 +208,12 @@ using namespace std;
       set fcod13 [open $SAL_WORK_DIR/include/SAL_[set subsys]_[set name]monin.tmp w]
       puts $fcod13 "
              [set subsys]_memIO->client\[LVClient\].shmemIncoming_[set subsys]_[set name].private_rcvStamp = Incoming_[set subsys]_[set name]->private_rcvStamp;"
-###      set fcod14 [open $SAL_WORK_DIR/include/SAL_[set subsys]_[set name]Jsub.tmp w]
       puts $fout "	struct $name \{"
       puts $fhdr "struct [set subsys]_[set name]C
 \{
 	double  private_rcvStamp;
 "
       puts $fhlv "typedef struct [set subsys]_[set name]LV \{"
-      puts $fbst "   bp::class_<[set subsys]_[set name]C>(\"[set subsys]_[set name]C\")"
-      puts $fpyb "   py::class_<[set subsys]_[set name]C>(m,\"[set subsys]_[set name]C\" ,R\"pbdoc(Data strucuture for [set name] as defined in the XML)pbdoc\" )
-      .def(py::init<>())"
-      if {[string range $name 0 7] != "command_" && [string range $name 0 8] != "logevent_"}  {
-        puts $fbst2 "
-  .def(\"getSample_[set name]\" ,  &::SAL_[set subsys]::getSample_[set name] )
-  .def(\"getNextSample_[set name]\" ,  &::SAL_[set subsys]::getNextSample_[set name] )
-  .def(\"flushSamples_[set name]\" ,  &::SAL_[set subsys]::flushSamples_[set name] )
-  .def(\"putSample_[set name]\" ,  &::SAL_[set subsys]::putSample_[set name] )"
-        puts $fpyb2 "
-  .def(\"getSample_[set name]\" ,  &SAL_[set subsys]::getSample_[set name] )
-  .def(\"getNextSample_[set name]\" ,  &SAL_[set subsys]::getNextSample_[set name] )
-  .def(\"getLastSample_[set name]\" ,  &SAL_[set subsys]::getLastSample_[set name] )
-  .def(\"flushSamples_[set name]\" ,  &SAL_[set subsys]::flushSamples_[set name] )
-  .def(\"putSample_[set name]\" ,  &SAL_[set subsys]::putSample_[set name] )"
-      }
-      if {[string range $name 0 8] == "logevent_"}  {
-        puts $fbst2 "
-  .def(\"flushSamples_[set name]\" ,  &::SAL_[set subsys]::flushSamples_[set name] )"
-        puts $fpyb2 "
-  .def(\"flushSamples_[set name]\" ,  &SAL_[set subsys]::flushSamples_[set name] )
-  .def(\"getSample_[set name]\" ,  &SAL_[set subsys]::getSample_[set name] )
-  .def(\"getLastSample_[set name]\" ,  &SAL_[set subsys]::getLastSample_[set name] )
-  .def(\"getNextSample_[set name]\" ,  &SAL_[set subsys]::getNextSample_[set name] )"
-      }
       if { [info exists SYSDIC($subsys,keyedID)] } {
           puts $fout "	  long	[set subsys]ID;	//private"
       }
@@ -265,8 +234,6 @@ using namespace std;
 \};
 "
            puts $fhlv "\} [set subsys]_[set name]_Ctl;"
-           puts $fbst "      ;"
-           puts $fpyb "      ;"
          } else {
             puts $fout "	$rec"
             if { [lindex $rec 0] != "const" } {
@@ -285,13 +252,6 @@ using namespace std;
                updatecfragments $fcod1 $fcod1b $fcod2 $fcod2b $fcod3 $fcod4 $fcod5 $fcod6 $fcod7 $fcod8 $fcod10 $fcod11 $fcod12 $fcod13
                set vname $VPROPS(name)
                if { $VPROPS(array) } {
-                  puts $fbst "      .add_property(\"$vname\", make_array(&[set subsys]_[set name]C::$vname))"
-                  puts $fpyb "      .def_property_readonly(\"$vname\", make_array(&[set subsys]_[set name]C::$vname))"
-               } else {
-                  puts $fbst "      .def_readwrite(\"$vname\", &[set subsys]_[set name]C::$vname)"
-                  puts $fpyb "      .def_readwrite(\"$vname\", &[set subsys]_[set name]C::$vname)"
-               }
-               if { $VPROPS(array) } {
                  incr argidx $VPROPS(dim)
                } else {
                  incr argidx 1
@@ -299,7 +259,6 @@ using namespace std;
              }
             } else {
              set v [split [lindex $rec 2] =]
-             puts $fpyb "	m.attr(\"[lindex $v 0]\") = [lindex $v 1]"
              set ename [string range $name 9 end]
              if { [info exists EVENT_ENUM($ename)] && [info exists enumdone($ename)] == 0 } {
               foreach e $EVENT_ENUM($ename) {
@@ -307,8 +266,6 @@ using namespace std;
                 set cnst [lindex [split $$e :] 1]
                 foreach id [split $cnst ,] {
                    set sid [string trim $id]
-###                   puts $fcod3 "    if (SALInstance.[set vname] == [set subsys]::[set ename]_[set sid]) cout << \"    $vname : [set sid]\" << endl;"
-###                   puts $fcod14 "                if (event.[set vname] == [set subsys].[set ename]_[set sid].value) System.out.println(\"    $vname : [set sid]\");"
                 }
               }
               set enumdone($ename) 1
@@ -331,7 +288,6 @@ using namespace std;
       close $fcod11
       close $fcod12
       close $fcod13
-###      close $fcod14
     }
    }
    if { [info exists CMD_ALIASES($subsys)] } {
@@ -341,7 +297,6 @@ using namespace std;
         gennonkeyedidl $fout
      }
      genackcmdincl $subsys $fhdr $fhlv
-###     puts $fpyb2 "  .def(\"flushSamples_ackcmd\" ,  &SAL_[set subsys]::flushSamples_ackcmd )"
    }
    puts $fout "\};
 "
@@ -351,10 +306,6 @@ using namespace std;
    close $fout
    close $fhdr
    close $fhlv
-   close $fbst
-   close $fbst2
-   close $fpyb
-   close $fpyb2
    updateRevCodes $subsys
    activeRevCodes $subsys
    if { $OPTIONS(verbose) } {stdlog "###TRACE<<< makesalidl $subsys"}
@@ -659,7 +610,7 @@ typedef struct [set subsys]_waitCompleteLV \{
 #  Generate code to support the Command and Event Topics
 #
 proc makesalcmdevt { base lang } {
-global SAL_DIR SAL_WORK_DIR SYSDIC ONEPYTHON DONE_CMDEVT OPTIONS
+global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS
       if { $OPTIONS(verbose) } {stdlog "###TRACE>>> makesalcmdevt $base $lang "}
       stdlog "Processing $base Types, Commands, and Events in $SAL_WORK_DIR"
       cd $SAL_WORK_DIR
@@ -707,46 +658,8 @@ global SAL_DIR SAL_WORK_DIR SYSDIC ONEPYTHON DONE_CMDEVT OPTIONS
       exec chmod 755 /tmp/sreplace4_[set base][set lang].sal
       catch { set result [exec /tmp/sreplace4_[set base][set lang].sal] } bad
       if { $bad != "" } {stdlog $bad}
-      if { $lang == "python" } {
-         makepythoncmdevt $base
-      }
       if { $OPTIONS(verbose) } {stdlog "###TRACE<<< makesalcmdevt $base $lang "}
 }
-
-#
-## Documented proc \c makepythoncmdevt .
-# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
-#
-#   Generate the pybind11 code to support Command and Event Topics
-#
-proc makepythoncmdevt { base } {
-global SAL_DIR SAL_WORK_DIR SYSDIC ONEPYTHON DONE_CMDEVT OPTIONS
-   if { $OPTIONS(verbose) } {stdlog "###TRACE>>> makepythoncmdevt $base"}
-   set bad "" ; set result "none"
-   stdlog "Generating Python bindings"
-   catch { set result [genpythonbinding $base] } bad
-   if { $result == "none" } {stdlog $bad}
-   if { $OPTIONS(verbose) } {stdlog $result}
-   set bad "" ; set result "none"
-   stdlog "Generating python shared library"
-   catch { set result [salpythonshlibgen $base] } bad
-   if { $result == "none" } {stdlog $bad}
-   if { $OPTIONS(verbose) } {stdlog $result}
-   stdlog "Generating python command tests"
-   catch { set result [gencommandtestspython $base] } bad
-   if { $result == "none" } {stdlog $bad}
-   if { $OPTIONS(verbose) } {stdlog $result}
-   stdlog "Generating python event tests"
-   catch { set result [geneventtestspython $base] } bad
-   if { $result == "none" } {stdlog $bad}
-   if { $OPTIONS(verbose) } {stdlog $result}
-   stdlog "Generating python telemetry tests"
-   catch { set result [gentelemetrytestspython $base] } bad
-   if { $result == "none" } {stdlog $bad}
-   if { $OPTIONS(verbose) } {stdlog $result}
-   if { $OPTIONS(verbose) } {stdlog "###TRACE<<< makepythoncmdevt $base"}
-}
-
 
 
 #
@@ -759,7 +672,7 @@ global SAL_DIR SAL_WORK_DIR SYSDIC ONEPYTHON DONE_CMDEVT OPTIONS
 #   Generate the base SAL API code
 #
 proc makesalcode { idlfile base name lang } {
-global SAL_DIR SAL_WORK_DIR SYSDIC ONEPYTHON DONE_CMDEVT OPTIONS CMD_ALIASES
+global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS CMD_ALIASES
       if { $OPTIONS(verbose) } {stdlog "###TRACE>>> makesalcode $idlfile $base $name $lang"}
       stdlog "Processing $base $name in $SAL_WORK_DIR"
       cd $SAL_WORK_DIR
@@ -874,19 +787,6 @@ global SAL_DIR SAL_WORK_DIR SYSDIC ONEPYTHON DONE_CMDEVT OPTIONS CMD_ALIASES
         puts $frep "  -e 's/_SAL_/_[set id]_/g' \\"
         puts $frep "$SAL_DIR/code/templates/runsample.template > [set id]/java/standalone/[set id].run"
       }
-      if { $lang == "PyDDS" } {
-        puts $frep "sed \\"
-        puts $frep "  -e 's/SALData/$base/g' \\"
-        puts $frep "  -e 's/SALTopic/$name/g' \\"
-        puts $frep "  -e 's/SALDATA.idl/[file tail $idlfile]/g' \\"
-        puts $frep "$SAL_DIR/code/templates/SALTopicPublisher.py.template > [set id]/python/[set id]Publisher.py"
-
-        puts $frep "sed \\"
-        puts $frep "  -e 's/SALData/$base/g' \\"
-        puts $frep "  -e 's/SALTopic/$name/g' \\"
-        puts $frep "  -e 's/SALDATA.idl/[file tail $idlfile]/g' \\"
-        puts $frep "$SAL_DIR/code/templates/SALTopicSubscriber.py.template > [set id]/python/[set id]Subscriber.py"
-      }
       close $frep
       exec chmod 755 /tmp/sreplace_[set base][set lang].sal
       catch { set result [exec /tmp/sreplace_[set base][set lang].sal] } bad
@@ -966,7 +866,6 @@ global SAL_WORK_DIR OPTIONS
       salidlgen java
       makesalcode $idlfile $base $name isocpp
       salidlgen isocpp
-      makesalcode $idlfile $base $name python
     }
   }
 }
@@ -981,8 +880,7 @@ global SAL_WORK_DIR OPTIONS
 proc salidlgen { base lang } {
 global SAL_WORK_DIR OPTIONS ONEDDSGEN
    if { $OPTIONS(verbose) } {stdlog "###TRACE>>> salidlgen $base $lang"}
-   if { $lang != "python" } {
-     if { $ONEDDSGEN == 0 } {
+   if { $ONEDDSGEN == 0 } {
        cd $SAL_WORK_DIR/$base/$lang
        stdlog "Generating $lang type support for $base"
        if { $lang == "cpp" } {
@@ -999,31 +897,10 @@ global SAL_WORK_DIR OPTIONS ONEDDSGEN
        stdlog "idl : $result"
        cd $SAL_WORK_DIR
        set ONEDDSGEN 1
-     }
    }
    if { $OPTIONS(verbose) } {stdlog "###TRACE<<< salidlgen $base $lang"}
 }
 
-
-
-#
-## Documented proc \c salpythonshlibgen .
-# \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
-#
-#  Generate Python shared library file for a Subsystem/CSC
-#
-proc salpythonshlibgen { base } {
-global SAL_WORK_DIR OPTIONS
-   if { $OPTIONS(verbose) } {stdlog "###TRACE>>> salpythonshlibgen $base"}
-   cd $SAL_WORK_DIR/$base/cpp/src
-   stdlog "Generating Python SAL support for $base"
-   exec touch .depend.Makefile.sacpp_[set base]_python
-   set result none
-   catch { set result [exec make -f Makefile.sacpp_[set base]_python] } bad
-   if { $result == "none" } {stdlog $bad ; errorexit "Failed to generate SALPY_[set base].so" }
-   stdlog "python : Done SALPY_[set base].so"
-   if { $OPTIONS(verbose) } {stdlog "###TRACE<<< salpythonshlibgen $base"}
-}
 
 
 #
@@ -1103,16 +980,6 @@ global SAL_WORK_DIR SAL_DIR OPTIONS DONE_CMDEVT
 
 source $SAL_DIR/add_system_dictionary.tcl
 source $SAL_DIR/gensalgetput.tcl
-if { [info exists env(PYTHON_BUILD_VERSION)] } {
-  if { [lindex [split $env(PYTHON_BUILD_VERSION) .] 0] == 2} {
-    stdlog "Enabling Boost::Python bindings for python 2.x"
-    source $env(SAL_DIR)/gensimplepython.tcl
-  } else {
-    stdlog "Enabling pybind11 bindings for python 3+"
-    source $env(SAL_DIR)/gensimplepybind11.tcl
-  }
-}
-
 source $SAL_DIR/managetypes.tcl
 source $SAL_DIR/activaterevcodes.tcl
 source $SAL_DIR/add_private_idl.tcl
