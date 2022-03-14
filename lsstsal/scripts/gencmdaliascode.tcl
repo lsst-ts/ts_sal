@@ -82,7 +82,7 @@ global CMD_ALIASES CMDS DONE_CMDEVT ACKREVCODE REVCODE SAL_WORK_DIR OPTIONS
   */
       int issueCommand_[set i]( SALData_command_[set i]C *data );
 
-/** Accept the [set i] command. The SAL will automatically generate an ackCmd message with an ack = SAL__CMD_ACK
+/** Accept the [set i] command. The
   * unless commanding is currently blocked by the authList setting (in which case the command will be ack = SAL__CMD_NOPERM
   * and no cmdId will be returned to the caller (=0)
   * @param data is the command payload $turl
@@ -327,10 +327,13 @@ int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
     \}
 "
      }
-     puts $fout "    istatus = SALWriter->write(ackdata, ackHandle);"
-     puts $fout "    checkStatus(istatus, \"SALData::ackcmd[set ACKREVCODE]DataWriter::write\");"
+     puts $fout "    
+    if ( ackdata.ack != SAL__CMD_ACK ) \{
+       istatus = SALWriter->write(ackdata, ackHandle);
+       checkStatus(istatus, \"SALData::ackcmd[set ACKREVCODE]DataWriter::write\");
+    \}
+"
    puts $fout "
-//    SALWriter->unregister_instance(ackdata, ackHandle);
      \} else \{
         if (debugLevel > 8) \{
           cout << \"    Old command ignored : \" << status << \":\" << int(rcvdTime) << endl;
@@ -657,7 +660,7 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
 	\}
 "
       puts $fout "
-/** Accept the [set i] command. The SAL will automatically generate an ackCmd message with an ack = SAL__CMD_ACK
+/** Accept the [set i] command.
     unless commanding is currently blocked by the authList setting, in which case the command will be ack = SAL__CMD_NOPERM
     and no cmdId will be returned to the caller (=0)
   * @param data is the command payload $turl
@@ -724,6 +727,8 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
                        \}
 "
            }
+      puts $fout "
+                 if ( ackdata.ack != SAL__CMD_ACK ) \{"
       if { [info exists SYSDIC($subsys,keyedID)] } {
          puts $fout "		      ackdata.SALDataID = subsystemID;
 		      ackHandle = SALWriter.register_instance(ackdata);"
@@ -735,6 +740,7 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
     		     if (debugLevel > 8) \{
       			System.out.println(  \"    Old command ignored :   \" + dTime );
                      \}
+                    \}
                    \}
 		 \}
                 \} else \{
