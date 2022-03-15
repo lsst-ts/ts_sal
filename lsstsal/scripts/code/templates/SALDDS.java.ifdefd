@@ -206,19 +206,7 @@ public class SAL_SALData {
    		SampleInfoSeqHolder info;
    		int status = 0;
    		int istatus =  -1;
-   		SALData.ackcmd ackdata;
-   		long ackHandle = HANDLE_NIL;
 
-  		// create DataWriter :
-  		// If autodispose_unregistered_instances is set to true (default value),
-  		// you will have to start the subscriber before the publisher
-  		boolean autodispose_unregistered_instances = false;
-  		if (!hasWriter) {
-     			createWriter2(autodispose_unregistered_instances);
-     			hasWriter = true;
-  		}
-  		DataWriter dwriter = getWriter2();
-  		ackcmdDataWriter SALWriter = ackcmdDataWriterHelper.narrow(dwriter);
   		DataReader dreader = getReader();
   		commandDataReader SALReader = commandDataReaderHelper.narrow(dreader);
   		istatus = SALReader.take(data, info, LENGTH_UNLIMITED.value,ANY_SAMPLE_STATE.value, ANY_VIEW_STATE.value, ANY_INSTANCE_STATE.value);
@@ -233,21 +221,10 @@ public class SAL_SALData {
       			System.out.println(  "    value    : " << data.value[0].value);
       			System.out.println(  "    modifiers: " << data.value[0].modifiers);
     		    }
-	            ackdata.SALDataID = subsystemID;
-		    ackdata.private_origin = data.value[0].private_origin;
-		    ackdata.private_seqNum = data.value[0].private_seqNum;
-		    ackdata.error = 0;
-		    ackdata.result = "SAL ACK";
 		    status = data.value[0].private_seqNum;
 		    rcvSeqNum = status;
 		    rcvOrigin = data.value[0].private_origin;
-		    ackdata.ack = SAL__CMD_ACK;
 		    SALReader.return_loan(data, info);
-		    ackHandle = SALWriter.register_instance(ackdata);
-		    ackdata.SALDataID = subsystemID;
-		    istatus = SALWriter.write(ackdata, ackHandle);
-           	    SALWriter.dispose(ackdata, ackHandle);
-		    SALWriter.unregister_instance(ackdata, ackHandle);
 		 }
 	     } else {
 	        status = 0;
