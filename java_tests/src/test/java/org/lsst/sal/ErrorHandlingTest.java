@@ -225,28 +225,6 @@ public class ErrorHandlingTest extends BaseTestCase {
         }
     }
 
-    /**
-     * Check that sending too long a string causes an error.
-     */
-    @Test
-    public void testTooLongStrings() {
-        remote.salTelemetrySub("Test_scalars");
-        controller.salTelemetryPub("Test_scalars");
-
-        // from the XML file;
-        // unfortunately there is no way to ask SAL
-        String too_long_data = "0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789";
-        Assert.assertEquals(too_long_data.length(), 100);
-        scalars data = new scalars();
-        // string0 has a limit of 20 characters
-        data.string0 = too_long_data;
-        try {
-            controller.putSample(data);
-            Assert.fail("An exception should have been thrown.");
-        } catch (Exception e) {
-            Assert.assertNotNull(e);
-        }
-    }
 
     /**
      * Test getting and putting command topics where a raise is expected,

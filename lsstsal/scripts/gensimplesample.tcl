@@ -524,7 +524,7 @@ global OPTIONS
      add_private_idl $fout
      puts $fout "	  long	ack;
 	  long	error;
-	  string<256>	result;
+	  string	result;
 	  string	identity;
 	  long	origin;
 	  long	cmdtype;
@@ -550,7 +550,7 @@ global SAL_WORK_DIR OPTIONS
      puts $fout "	  long	[set base]ID;
 	  long	ack;
 	  long	error;
-	  string<256>	result;
+	  string	result;
 	  string	identity;
 	  long	origin;
 	  long	cmdtype;
@@ -590,7 +590,7 @@ typedef struct [set subsys]_ackcmdLV \{
       int       cmdSeqNum;
       int 	ack;
       int 	error;
-      StrHdl	result; /* 256 */
+      StrHdl	result;
 \} [set subsys]_ackcmd_Ctl;
 typedef struct [set subsys]_waitCompleteLV \{
       int       cmdSeqNum;
