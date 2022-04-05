@@ -443,7 +443,7 @@ global SAL_WORK_DIR OPTIONS
 #   }
    puts $fack "	  long	ack;
 	  long	error;
-	  string<256>	result;
+	  string	result;
 	  string	identity;
 	  long	origin;
 	  long	cmdtype;

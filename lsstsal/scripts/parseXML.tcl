@@ -228,7 +228,6 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
          if { $type == "long long" } {set type "longlong"}
          if { $type == "unsigned long long" } {set type "unsigned longlong"}
       }
-      if { $tag == "IDL_Size"}        {set sdim $value}
       if { $tag == "Description"}     {
          if { [lindex [split $rec "/"] end] != "Description>" } {
            set desc [getTopicURL $subsys $tname]
