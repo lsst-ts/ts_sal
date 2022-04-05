@@ -9,6 +9,8 @@ Version History
 Changes for 6.2.0
 =================
 
+* Add support for setting Enumeration data types
+
 * Remove deprecated python (boost and pybind11) API generation
 
 * Rename SAL_actors.h to SAL_,CSC._actors.h and add to RPMs

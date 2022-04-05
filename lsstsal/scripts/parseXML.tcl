@@ -25,6 +25,7 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
    set fin [open $fname r]
    set fout ""
    set ctype ""
+   set alias shared
    set explanation ""
    set checkGenerics 0
    set subsys [lindex [split [file tail $fname] _] 0]
@@ -63,10 +64,14 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
       }
       set tag   [lindex [split $rec "<>"] 1]
       set value [lindex [split $rec "<>"] 2]
-      if { $tag == "Enumeration" } {
-        if { [lindex [split $rec "<>"] 3] != "/[set tag]" } {
+      if { [string range $tag 0 10] == "Enumeration" } {
+        set etype "long"
+        if { [llength [split $tag "="]] > 1 } {
+          set etype [string trim [lindex [split $tag =] 1] "\">"]
+        }
+        if { [lindex [split $rec "<>"] 3] != "/Enumeration" } {
            gets $fin rec
-           while { [lindex [split $rec <>] 1] != "/[set tag]" } {
+           while { [lindex [split $rec <>] 1] != "/Enumeration" } {
              set value "$value $rec"
              gets $fin rec
            }
@@ -75,7 +80,6 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
       if { $tag == "SALTelemetry" }    {set ctype "telemetry" ; set intopic 1 ; set explanation ""}
       if { $tag == "SALCommand" }      {
           set ctype "command" ; set intopic 1 ; set alias "" ; set explanation ""
-          set device ""; set property ""; set action "" ; set vvalue ""
       }
       if { $tag == "SALEvent" }        {set ctype "event" ; set intopic 1; set alias "" ; set explanation ""}
       if { $tag == "SALTelemetrySet" } {set ctype "telemetry"}
@@ -91,14 +95,12 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
              exit -1
           }
       }
-      if { $tag == "Device" }          {set device $value}
-      if { $tag == "Property" }        {set property $value}
-      if { $tag == "Action" }          {set action $value}
-      if { $tag == "Value" }           {set vvalue $value}
+
       if { $tag == "Subsystem" }       {set subsys $value}
       if { $tag == "Explanation" }     {set explanation $value}
-      if { $tag == "Enumeration" }     {
+      if { [string range $tag 0 10] == "Enumeration" }     {
          validateEnumeration $value
+         set EVENT_ENUM($alias,datatype) $etype
          if { $intopic } {
            lappend EVENT_ENUM($alias) "$item:$value"
            set EVENT_ENUMS($alias,$item) "$value"
@@ -445,8 +447,10 @@ global EVENT_ENUM EDONE
                  set i [string trim [lindex [split $id "="] 1]]
                  set id [string trim [lindex [split $id "="] 0]]
               }
-              puts $fout " const long [set alias]_[string trim $id " "]=$i;"
               incr i 1
+          }
+          if { [info exists EVENT_ENUM($alias,datatype)] } {
+            puts $fout " const $EVENT_ENUM($alias,datatype) [set alias]_[string trim $id " "]=$i;"
           }
       }
       set EDONE($alias) 1 
@@ -461,8 +465,10 @@ global EVENT_ENUM EDONE
                  set i [string trim [lindex [split $id "="] 1]]
                  set id [string trim [lindex [split $id "="] 0]]
               }
-              puts $fout " const long [set subsys]_shared_[string trim $id " "]=$i;"
               incr i 1
+          }
+          if { [info exists EVENT_ENUM(shared,datatype)] } {
+            puts $fout " const $EVENT_ENUM(shared,datatype) [set alias]_[string trim $id " "]=$i;"
           }
       }
       set EDONE([set subsys]_shared) 1
