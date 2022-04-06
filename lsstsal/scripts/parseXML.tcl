@@ -466,7 +466,7 @@ global EVENT_ENUM EDONE
                  set id [string trim [lindex [split $id "="] 0]]
               }
               if { [info exists EVENT_ENUM(shared,datatype)] } {
-                puts $fout " const $EVENT_ENUM(shared,datatype) [set alias]_[string trim $id " "]=$i;"
+                puts $fout " const $EVENT_ENUM(shared,datatype) [set subsys]_[set alias]_[string trim $id " "]=$i;"
               }
               incr i 1
           }
