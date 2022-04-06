@@ -81,6 +81,7 @@ if { [info exists SYSDIC($csc,cpp)] } {
   exec cp $SAL_DIR/code/templates/SAL_defines.h SAL_[set csc]/.
   exec cp $SAL_WORK_DIR/[set csc]/cpp/src/SAL_[set csc].cpp SAL_[set csc]/.
   exec cp $SAL_WORK_DIR/[set csc]/cpp/src/SAL_[set csc].h SAL_[set csc]/.
+  exec cp $SAL_WORK_DIR/[set csc]/cpp/src/SAL_[set csc]_actors.h SAL_[set csc]/.
   exec cp $SAL_WORK_DIR/[set csc]/cpp/src/SAL_[set csc]C.h SAL_[set csc]/.
   set src [glob $SAL_WORK_DIR/[set csc]/cpp/*.cpp]
   foreach f $src {exec cp $f SAL_[set csc]/.}
