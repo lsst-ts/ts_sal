@@ -250,13 +250,13 @@
 
 /** Sets up the DDS Publisher support for the named DDS type
   @param topicName is the name of the DDS topic
-  @throws "Unknown Topic" if the topic is not defined
+  @throws std::runtime_error if the topic is not defined
  */    
       salReturn salTelemetryPub(char *topicName);
 
 /** Sets up the DDS Subscriber support for the named DDS type
   @param topicName is the name of the DDS topic
-  @throws "Unknown Topic" if the topic is not defined
+  @throws std::runtime_error if the topic is not defined
  */    
       salReturn salTelemetrySub(char *topicName);
 
@@ -317,7 +317,7 @@
 
 /** Sets up the DDS data type low level support for the named DDS type
   @param topicName is the name of the DDS topic
-  @throws "Unknown Topic" if the topic is not defined
+  @throws std::runtime_error if the topic is not defined
  */    
       salReturn salTypeSupport(char *topicName);
 

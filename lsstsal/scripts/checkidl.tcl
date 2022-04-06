@@ -234,7 +234,7 @@ global XMLTOPICS XMLTLM IDLRESERVED XMLITEMS
            puts $fout "\};"
            puts $fout "#pragma keylist $topicid"
            catch {
-              set addc [exec grep "const long " $SAL_WORK_DIR/idl-templates/$f]
+              set addc [exec grep "const " $SAL_WORK_DIR/idl-templates/$f]
               puts $fout $addc
            }
            close $fout
@@ -443,7 +443,7 @@ global SAL_WORK_DIR OPTIONS
 #   }
    puts $fack "	  long	ack;
 	  long	error;
-	  string	result;
+	  string<256>	result;
 	  string	identity;
 	  long	origin;
 	  long	cmdtype;
