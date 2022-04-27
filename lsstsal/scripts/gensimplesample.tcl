@@ -447,7 +447,7 @@ global VPROPS TYPEFORMAT
            if (iverbose > 1) \{
              cout << \"Outgoing $VPROPS(topic) $VPROPS(name) =  \" << Outgoing_[set VPROPS(topic)]->$VPROPS(name) << endl;
            \}"
-         puts $fcod13 "             strncpy([set VPROPS(base)]_memIO->client\[LVClient\].[set VPROPS(topic)]LV_[set VPROPS(name)]_bufferIn,Incoming_[set VPROPS(topic)]->[set VPROPS(name)].c_str(),$VPROPS(dim));
+         puts $fcod13 "             strncpy([set VPROPS(base)]_memIO->client\[LVClient\].[set VPROPS(topic)]LV_[set VPROPS(name)]_bufferIn,Incoming_[set VPROPS(topic)]->[set VPROPS(name)].c_str(),1000);
            if (iverbose > 1) \{
              cout << \"Incoming $VPROPS(topic) $VPROPS(name) =  \" << Incoming_[set VPROPS(topic)]->$VPROPS(name) << endl;
            \}"
