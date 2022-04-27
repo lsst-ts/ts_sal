@@ -108,7 +108,7 @@ public class SAL_SALData {
 
 /** Sets up the DDS Publisher support for the named DDS type
   @param topicName is the name of the DDS topic
-  @throws "Unknown Topic" if the topic is not defined
+  @throws RuntimeException if the topic is not defined
  */    
 	public int salTelemetryPub(String topicName)
 	{
@@ -126,7 +126,7 @@ public class SAL_SALData {
 
 /** Sets up the DDS Subscriber support for the named DDS type
   @param topicName is the name of the DDS topic
-  @throws "Unknown Topic" if the topic is not defined
+  @throws RuntimeException if the topic is not defined
  */    
 	public int salTelemetrySub(String topicName)
 	{
@@ -145,7 +145,6 @@ public class SAL_SALData {
 
 /** Sets up the DDS Publisher support for the indexed SAL Actor
   @param actorIdx is the index of the DDS topic's salActor
-  @throws "Unknown Topic" if the topic is not defined
  */    
         public int salTelemetryPub(int actorIdx)
 	{
@@ -174,7 +173,6 @@ public class SAL_SALData {
 
 /** Sets up the DDS Subscriber support for the indexed SAL Actor
   @param actorIdx is the index of the DDS topic's salActor
-  @throws "Unknown Topic" if the topic is not defined
  */    
         public int salTelemetrySub(int actorIdx)
 	{
@@ -442,7 +440,7 @@ public class SAL_SALData {
 
 /** Sets up the DDS Subscriber support for the named DDS event topic
   @param topicName is the name of the DDS topic
-  @throws "Unknown Topic" if the topic is not defined
+  @throws RuntimeException if the topic is not defined
  */    
 	public int salEventSub(String topicName)
 	{
@@ -458,7 +456,7 @@ public class SAL_SALData {
 
 /** Sets up the DDS Publisher support for the named DDS event topic
   @param topicName is the name of the DDS topic
-  @throws "Unknown Topic" if the topic is not defined
+  @throws RuntimeException if the topic is not defined
  */    
 	public int salEventPub(String topicName)
 	{

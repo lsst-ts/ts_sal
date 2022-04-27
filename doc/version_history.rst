@@ -6,6 +6,19 @@
 Version History
 ###############
 
+Changes for 6.2.0
+=================
+
+* Implement data types for Enumerations
+
+* Remove deprecated python (boost and pybind11) API generation
+
+* Rename SAL_actors.h to SAL_,CSC._actors.h and add to RPMs
+
+* Remove deprecated IDL_Type tag processing, default is no-limit for strings
+
+* Remove deprecated use of SAL__CMD_ACK as an automatic ack
+
 Changes for 6.1.0
 =================
 

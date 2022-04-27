@@ -2,7 +2,7 @@
 ## \file gencmdaliascode.tcl
 # \brief This contains procedures to create the SAL API code
 #  to manager the Command Topics. It generates code and tests
-#  for C++, Python (pybind11), and Java APIs
+#  for C++, and Java APIs
 #
 # This Source Code Form is subject to the terms of the GNU Public\n
 # License, V3 
@@ -17,7 +17,6 @@ source $SAL_DIR/gencommandtests.tcl
 source $SAL_DIR/gencommandtestssinglefile.tcl 
 source $SAL_DIR/gencommandtestsjava.tcl
 source $SAL_DIR/gencommandtestssinglefilejava.tcl
-source $SAL_DIR/gentestspython.tcl 
 source $SAL_DIR/activaterevcodes.tcl 
 
 #
@@ -28,7 +27,7 @@ source $SAL_DIR/activaterevcodes.tcl
 #
 #  Copy the generic DDS code to manage command Topics
 #  using the template in code/templates/SALDDS.lang.template
-#  where lang = cpp,python,java
+#  where lang = cpp,java
 #
 proc addgenericcmdcode { fout lang subsys } {
 global OPTIONS SAL_DIR
@@ -83,7 +82,7 @@ global CMD_ALIASES CMDS DONE_CMDEVT ACKREVCODE REVCODE SAL_WORK_DIR OPTIONS
   */
       int issueCommand_[set i]( SALData_command_[set i]C *data );
 
-/** Accept the [set i] command. The SAL will automatically generate an ackCmd message with an ack = SAL__CMD_ACK
+/** Accept the [set i] command. The
   * unless commanding is currently blocked by the authList setting (in which case the command will be ack = SAL__CMD_NOPERM
   * and no cmdId will be returned to the caller (=0)
   * @param data is the command payload $turl
@@ -148,17 +147,6 @@ global CMD_ALIASES CMDS DONE_CMDEVT ACKREVCODE REVCODE SAL_WORK_DIR OPTIONS
        catch { set result [gencommandtestsjava $subsys] } bad
        stdlog "$result"
        if { $result == "none" } {stdlog $bad ; errorexit "failure in gencommandtestsjava" }
-     }
-  }
-  if { $lang == "python" } {
-     set result none
-     catch { set result [gencmdaliaspython $subsys $fout] } bad
-     if { $result == "none" } {stdlog $bad ; errorexit "failure in gencmdaliaspython" }
-     stdlog "$result"
-     if { $DONE_CMDEVT == 0} {
-       catch { set result [gencommandtestspython $subsys] } bad
-       if { $result == "none" } {stdlog $bad ; errorexit "failure in gencommandtestspython" }
-       stdlog "$result"
      }
   }
   if { $lang == "isocpp" } {
@@ -339,10 +327,13 @@ int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
     \}
 "
      }
-     puts $fout "    istatus = SALWriter->write(ackdata, ackHandle);"
-     puts $fout "    checkStatus(istatus, \"SALData::ackcmd[set ACKREVCODE]DataWriter::write\");"
+     puts $fout "    
+    if ( ackdata.ack != SAL__CMD_ACK ) \{
+       istatus = SALWriter->write(ackdata, ackHandle);
+       checkStatus(istatus, \"SALData::ackcmd[set ACKREVCODE]DataWriter::write\");
+    \}
+"
    puts $fout "
-//    SALWriter->unregister_instance(ackdata, ackHandle);
      \} else \{
         if (debugLevel > 8) \{
           cout << \"    Old command ignored : \" << status << \":\" << int(rcvdTime) << endl;
@@ -669,7 +660,7 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
 	\}
 "
       puts $fout "
-/** Accept the [set i] command. The SAL will automatically generate an ackCmd message with an ack = SAL__CMD_ACK
+/** Accept the [set i] command.
     unless commanding is currently blocked by the authList setting, in which case the command will be ack = SAL__CMD_NOPERM
     and no cmdId will be returned to the caller (=0)
   * @param data is the command payload $turl
@@ -736,6 +727,8 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
                        \}
 "
            }
+      puts $fout "
+                 if ( ackdata.ack != SAL__CMD_ACK ) \{"
       if { [info exists SYSDIC($subsys,keyedID)] } {
          puts $fout "		      ackdata.SALDataID = subsystemID;
 		      ackHandle = SALWriter.register_instance(ackdata);"
@@ -747,6 +740,7 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
     		     if (debugLevel > 8) \{
       			System.out.println(  \"    Old command ignored :   \" + dTime );
                      \}
+                    \}
                    \}
 		 \}
                 \} else \{
@@ -938,46 +932,6 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
 }
 
 
-
-#
-## Documented proc \c gencmdaliaspython .
-# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
-# \param[in] fout File handle of output file
-#
-#  Generates the Command handling code for a Subsystem/CSC.
-#  Code is generated for issueCommand,acceptCommand,waitForCompletion,ackCommand,getResponse
-#  per-command Topic type. This routine generates C++/pybind11 wrapper code.
-#
-proc gencmdaliaspython { subsys fout } {
-global CMD_ALIASES CMDS
-  if { [info exists CMD_ALIASES($subsys)] } {
-   puts $fout "
-        .def( 
-            \"salCommand\"
-            , (::salReturn ( ::SAL_SALData::* )( char * ) )( &::SAL_SALData::salCommand )
-            , ( py::arg(\"topicName\") ) )    
-        .def( 
-            \"salProcessor\"
-            , (::salReturn ( ::SAL_SALData::* )( char * ) )( &::SAL_SALData::salProcessor )
-            , ( py::arg(\"topicName\") ) )    
-"
-   foreach i $CMD_ALIASES($subsys) {
-    if { [info exists CMDS($subsys,$i,param)] } {
-      stdlog "	: alias = $i"
-      puts $fout "
-        .def( \"issueCommand_[set i]\",       &SAL_SALData::issueCommand_[set i] )
-        .def( \"acceptCommand_[set i]\",      &SAL_SALData::acceptCommand_[set i] )
-        .def( \"ackCommand_[set i]\",         &SAL_SALData::ackCommand_[set i] )
-        .def( \"ackCommand_[set i]C\",         &SAL_SALData::ackCommand_[set i]C )
-        .def( \"waitForCompletion_[set i]\",  &SAL_SALData::waitForCompletion_[set i] )
-        .def( \"getResponse_[set i]\",        &SAL_SALData::getResponse_[set i]C )
-      "
-    } else {
-      stdlog "Alias $i has no parameters - uses standard [set subsys]_command"
-    }
-   }
-  }
-}
 
 
 
