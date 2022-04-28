@@ -384,8 +384,8 @@ global SYSDIC IDXENUMDONE
 proc add_private_metadata { topic } {
 global METADATA
   set METADATA([set topic],private_revCode,units) "unitless"
-  set METADATA([set topic],private_sndStamp,units) "seconds"
-  set METADATA([set topic],private_rcvStamp,units) "seconds"
+  set METADATA([set topic],private_sndStamp,units) "second"
+  set METADATA([set topic],private_rcvStamp,units) "second"
   set METADATA([set topic],private_seqNum,units) "unitless"
   set METADATA([set topic],private_identity,units) "unitless"
   set METADATA([set topic],private_origin,units) "unitless"
@@ -411,15 +411,15 @@ proc add_ackcmd_metadata { subsys } {
 global METADATA
   add_private_metadata [set subsys]_ackcmd
   set METADATA([set subsys]_ackcmd,ack,units) "unitless"
-  set METADATA([set subsys]_ackcmd,error,units) "seconds"
-  set METADATA([set subsys]_ackcmd,result,units) "seconds"
+  set METADATA([set subsys]_ackcmd,error,units) "second"
+  set METADATA([set subsys]_ackcmd,result,units) "second"
   set METADATA([set subsys]_ackcmd,identity,units) "unitless"
   set METADATA([set subsys]_ackcmd,origin,units) "unitless"
   set METADATA([set subsys]_ackcmd,cmdtype,units) "unitless"
   set METADATA([set subsys]_ackcmd,timeout,units) "unitless"
   set METADATA([set subsys]_ackcmd,ack,description) "unitless"
-  set METADATA([set subsys]_ackcmd,error,description) "seconds"
-  set METADATA([set subsys]_ackcmd,result,description) "seconds"
+  set METADATA([set subsys]_ackcmd,error,description) "second"
+  set METADATA([set subsys]_ackcmd,result,description) "second"
   set METADATA([set subsys]_ackcmd,identity,description) "unitless"
   set METADATA([set subsys]_ackcmd,origin,description) "unitless"
   set METADATA([set subsys]_ackcmd,cmdtype,description) "unitless"
