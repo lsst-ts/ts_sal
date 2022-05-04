@@ -428,6 +428,7 @@ TEST_CASE("Test SAL") {
 			       std::bind(&SAL_Test::getSample_logevent_arrays, remote, _1), false);
     }
 
+/*
     SECTION("Enumerations") {
 	// Shared enum with default values
 	REQUIRE(Test::Test_shared_Enum_One == 1);
@@ -448,7 +449,7 @@ TEST_CASE("Test SAL") {
 	REQUIRE(Test::arrays_Int0ValueEnum_Four == 4);
 	REQUIRE(Test::arrays_Int0ValueEnum_Five == 5);
     }
-
+ */
     remote->salShutdown();
     controller->salShutdown();
 }
