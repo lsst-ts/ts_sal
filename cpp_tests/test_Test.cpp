@@ -448,7 +448,6 @@ TEST_CASE("Test SAL") {
 	REQUIRE(Test::arrays_Int0ValueEnum_Four == 4);
 	REQUIRE(Test::arrays_Int0ValueEnum_Five == 5);
     }
-
     remote->salShutdown();
     controller->salShutdown();
 }

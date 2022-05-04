@@ -64,11 +64,7 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
       }
       set tag   [lindex [split $rec "<>"] 1]
       set value [lindex [split $rec "<>"] 2]
-      if { [string range $tag 0 10] == "Enumeration" } {
-        set etype "long"
-        if { [llength [split $tag "="]] > 1 } {
-          set etype [string trim [lindex [split $tag =] 1] "\">"]
-        }
+      if { $tag == "Enumeration" } {
         if { [lindex [split $rec "<>"] 3] != "/Enumeration" } {
            gets $fin rec
            while { [lindex [split $rec <>] 1] != "/Enumeration" } {
@@ -98,9 +94,8 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
 
       if { $tag == "Subsystem" }       {set subsys $value}
       if { $tag == "Explanation" }     {set explanation $value}
-      if { [string range $tag 0 10] == "Enumeration" }     {
+      if { $tag == "Enumeration" }     {
          validateEnumeration $value
-         set EVENT_ENUM($alias,datatype) $etype
          if { $intopic } {
            lappend EVENT_ENUM($alias) "$item:$value"
            set EVENT_ENUMS($alias,$item) "$value"
@@ -369,7 +364,7 @@ global SYSDIC IDXENUMDONE
          set enum [string trim $e "\{\}"]
          set id [lindex [split $enum :] 0]
          set i  [lindex [split $enum :] 1]
-         puts $fout " const long indexEnumeration_[set i]=$id;"
+         puts $fout " const long long indexEnumeration_[set i]=$id;"
       }
       set IDXENUMDONE($subsys) 1
    }
@@ -447,9 +442,7 @@ global EVENT_ENUM EDONE
                  set i [string trim [lindex [split $id "="] 1]]
                  set id [string trim [lindex [split $id "="] 0]]
               }
-              if { [info exists EVENT_ENUM($alias,datatype)] } {
-                puts $fout " const $EVENT_ENUM($alias,datatype) [set alias]_[string trim $id " "]=$i;"
-              }
+              puts $fout " const long long [set alias]_[string trim $id " "]=$i;"
               incr i 1
           }
       }
@@ -465,9 +458,7 @@ global EVENT_ENUM EDONE
                  set i [string trim [lindex [split $id "="] 1]]
                  set id [string trim [lindex [split $id "="] 0]]
               }
-              if { [info exists EVENT_ENUM(shared,datatype)] } {
-                puts $fout " const $EVENT_ENUM(shared,datatype) [set subsys]_shared_[string trim $id " "]=$i;"
-              }
+              puts $fout " const long long [set subsys]_shared_[string trim $id " "]=$i;"
               incr i 1
           }
       }
