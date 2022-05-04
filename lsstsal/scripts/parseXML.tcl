@@ -442,9 +442,7 @@ global EVENT_ENUM EDONE
                  set i [string trim [lindex [split $id "="] 1]]
                  set id [string trim [lindex [split $id "="] 0]]
               }
-              if { [info exists EVENT_ENUM($alias,datatype)] } {
-                puts $fout " const long long [set alias]_[string trim $id " "]=$i;"
-              }
+              puts $fout " const long long [set alias]_[string trim $id " "]=$i;"
               incr i 1
           }
       }
@@ -460,9 +458,7 @@ global EVENT_ENUM EDONE
                  set i [string trim [lindex [split $id "="] 1]]
                  set id [string trim [lindex [split $id "="] 0]]
               }
-              if { [info exists EVENT_ENUM(shared,datatype)] } {
-                puts $fout " const long long [set subsys]_shared_[string trim $id " "]=$i;"
-              }
+              puts $fout " const long long [set subsys]_shared_[string trim $id " "]=$i;"
               incr i 1
           }
       }
