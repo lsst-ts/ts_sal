@@ -49,11 +49,11 @@ using namespace [set subsys];
 
 int main (int argc, char *argv\[\])
 \{ 
-  int priority = SAL__EVENT_INFO;
+  int 
+priority = 0;
   [set subsys]_logevent_[set alias]C myData;
   if (argc <  [expr [llength $EVTS([set subsys],[set alias],plist)] +1]) \{
      printf(\"Usage :  input parameters...\\n\");
-     printf(\"      int priority\\n\");
 "
    set fidl [open $SAL_WORK_DIR/idl-templates/validated/[set subsys]_logevent_[set alias].idl r]
    skipPrivate $fidl
@@ -68,8 +68,8 @@ int main (int argc, char *argv\[\])
 
    SAL_[set subsys]_shmem mgr = SAL_[set subsys]_shmem();
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
-  int [set subsys]ID = 1;
-  mgr.salShmConnect([set subsys]ID);
+  int salIndex = 1;
+  mgr.salShmConnect(salIndex);
 #else
   mgr.salShmConnect();
 #endif
@@ -81,7 +81,6 @@ int main (int argc, char *argv\[\])
   close $fin
   puts $fevt "
   // generate event
-  priority = myData.priority;
   mgr.logEvent_[set alias](&myData, priority);
   cout << \"=== Event $alias generated = \" << endl;
   sleep(1);
@@ -121,8 +120,8 @@ int main (int argc, char *argv\[\])
   [set subsys]_logevent_[set alias]C SALInstance;
    SAL_[set subsys]_shmem mgr = SAL_[set subsys]_shmem();
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
-  int [set subsys]ID = 1;
-  mgr.salShmConnect([set subsys]ID);
+  int salIndex = 1;
+  mgr.salShmConnect(salIndex);
 #else
   mgr.salShmConnect();
 #endif

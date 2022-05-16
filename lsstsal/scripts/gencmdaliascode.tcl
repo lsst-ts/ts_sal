@@ -200,7 +200,7 @@ int SAL_SALData::issueCommand_[set i]( SALData_command_[set i]C *data )
   SALData::command_[set i][set revcode]DataWriter_var SALWriter = SALData::command_[set i][set revcode]DataWriter::_narrow(dwriter.in());
 
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
-  Instance.SALDataID = subsystemID;
+  Instance.salIndex = subsystemID;
   cmdHandle = SALWriter->register_instance(Instance);
 #endif
 
@@ -279,7 +279,7 @@ int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
       cout << \"    instance-state : \" << info\[j\].instance_state << endl;
     \}
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
-    ackdata.SALDataID = subsystemID;
+    ackdata.salIndex = subsystemID;
 #endif
     ackdata.identity = Instances\[j\].private_identity;
     ackdata.origin = Instances\[j\].private_origin;
@@ -311,7 +311,7 @@ int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
         puts $fout "
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
     ackHandle = SALWriter->register_instance(ackdata);
-    ackdata.SALDataID = subsystemID;
+    ackdata.salIndex = subsystemID;
 #endif
     ackdata.private_sndStamp = getCurrentTime();
 "
@@ -526,7 +526,7 @@ salReturn SAL_SALData::ackCommand_[set i]( int cmdId, salLONG ack, salLONG error
    ackdata.identity = DDS::string_dup(sal\[actorIdxCmd\].activeidentity.c_str());
    ackdata.cmdtype = actorIdxCmd;
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
-   ackdata.SALDataID = subsystemID;
+   ackdata.salIndex = subsystemID;
 #endif
    if (debugLevel > 0) \{
       cout << \"=== \[ackCommand_[set i]\] acknowledging a command with :\" << endl;
@@ -539,7 +539,7 @@ salReturn SAL_SALData::ackCommand_[set i]( int cmdId, salLONG ack, salLONG error
    \}
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
    ackHandle = SALWriter->register_instance(ackdata);
-   ackdata.SALDataID = subsystemID;
+   ackdata.salIndex = subsystemID;
 #endif
    ackdata.private_revCode = DDS::string_dup(\"[string trim $ACKREVCODE _]\");
    ackdata.private_sndStamp = getCurrentTime();
@@ -574,7 +574,7 @@ salReturn SAL_SALData::ackCommand_[set i]C(SALData_ackcmdC *response )
    ackdata.identity = DDS::string_dup(sal\[actorIdxCmd\].activeidentity.c_str());
    ackdata.cmdtype = actorIdxCmd;
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
-   ackdata.SALDataID = subsystemID;
+   ackdata.salIndex = subsystemID;
 #endif
    if (debugLevel > 0) \{
       cout << \"=== \[ackCommand_[set i]\] acknowledging a command with :\" << endl;
@@ -587,7 +587,7 @@ salReturn SAL_SALData::ackCommand_[set i]C(SALData_ackcmdC *response )
    \}
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
    ackHandle = SALWriter->register_instance(ackdata);
-   ackdata.SALDataID = subsystemID;
+   ackdata.salIndex = subsystemID;
 #endif
    ackdata.private_revCode = DDS::string_dup(\"[string trim $ACKREVCODE _]\");
    ackdata.private_sndStamp = getCurrentTime();
@@ -644,7 +644,7 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
           SALInstance.private_origin = origin;
           SALInstance.private_sndStamp = getCurrentTime();"
       if { [info exists SYSDIC($subsys,keyedID)] } {
-        puts $fout "	  SALInstance.SALDataID = subsystemID;
+        puts $fout "	  SALInstance.salIndex = subsystemID;
 	  cmdHandle = SALWriter.register_instance(SALInstance);"
       } else {
         puts $fout "	  SALWriter.register_instance(SALInstance);"
@@ -698,7 +698,7 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
                       sal\[actorIdx\].activecmdid = SALInstance.value\[0\].private_seqNum;
                       ackdata = new SALData.ackcmd[set ACKREVCODE]();"
       if { [info exists SYSDIC($subsys,keyedID)] } {
-         puts $fout "	              ackdata.SALDataID = subsystemID;"
+         puts $fout "	              ackdata.salIndex = subsystemID;"
       }
       puts $fout "		      ackdata.private_identity = SALInstance.value\[0\].private_identity;
 		      ackdata.private_origin = SALInstance.value\[0\].private_origin;
@@ -730,7 +730,7 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
       puts $fout "
                  if ( ackdata.ack != SAL__CMD_ACK ) \{"
       if { [info exists SYSDIC($subsys,keyedID)] } {
-         puts $fout "		      ackdata.SALDataID = subsystemID;
+         puts $fout "		      ackdata.salIndex = subsystemID;
 		      ackHandle = SALWriter.register_instance(ackdata);"
       }
       puts $fout "
@@ -903,7 +903,7 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
                 ackdata.private_sndStamp = getCurrentTime();
    		ackdata.result = result;"
       if { [info exists SYSDIC($subsys,keyedID)] } {
-         puts $fout "   		ackdata.SALDataID = subsystemID;"
+         puts $fout "   		ackdata.salIndex = subsystemID;"
       }
       puts $fout "
    		if (debugLevel > 0) \{
@@ -916,7 +916,7 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
       			System.out.println(  \"    result   : \" + ackdata.result );
    		\}"
       if { [info exists SYSDIC($subsys,keyedID)] } {
-         puts $fout "   		ackdata.SALDataID = subsystemID;
+         puts $fout "   		ackdata.salIndex = subsystemID;
    		ackHandle = SALWriter.register_instance(ackdata);"
       }
       puts $fout "   		istatus = SALWriter.write(ackdata, ackHandle);"
@@ -1005,7 +1005,7 @@ global SYSDIC
       puts $fout "
   	    // Filter expr
             String expr\[\] = new String\[0\];
-            String sFilter = \"SALDataID = \" + subsystemID;
+            String sFilter = \"salIndex = \" + subsystemID;
     	    createContentFilteredTopic2(SAL__SALData_ackcmd_ACTOR,\"filteredResponse\", sFilter, expr);
 
 	    // create DataReader
@@ -1046,7 +1046,7 @@ global SYSDIC
       puts $fout "
   	  // Filter expr
           String expr\[\] = new String\[0\];
-          String sFilter = \"SALDataID = \" + subsystemID;
+          String sFilter = \"salIndex = \" + subsystemID;
           String fCmd = \"filteredCmd_\" + sal\[actorIdx\].topicHandle;
     	  createContentFilteredTopic(actorIdx,fCmd, sFilter, expr);
  	  createReader(actorIdx,false);

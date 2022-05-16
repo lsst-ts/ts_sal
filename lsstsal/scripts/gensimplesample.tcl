@@ -215,14 +215,14 @@ using namespace std;
 "
       puts $fhlv "typedef struct [set subsys]_[set name]LV \{"
       if { [info exists SYSDIC($subsys,keyedID)] } {
-          puts $fout "	  long	[set subsys]ID;	//private"
+          puts $fout "	  long	salIndex;	//private"
       }
       set argidx 1
       while { [gets $fin rec] > -1 } {
          if { $OPTIONS(verbose) } { stdlog "### processing $i : $rec" }
          if { [lindex $rec 0] == "#pragma" } {
             if { [info exists SYSDIC($subsys,keyedID)] } {
-               puts $fout "	#pragma keylist $name [set subsys]ID"
+               puts $fout "	#pragma keylist $name salIndex"
             } else {
                puts $fout "	#pragma keylist $name"
             }
@@ -547,7 +547,7 @@ global SAL_WORK_DIR OPTIONS
      if { $OPTIONS(verbose) } {stdlog "###TRACE>>> genkeyedidl $fout $base"}
      puts $fout "	struct ackcmd \{"
      add_private_idl $fout
-     puts $fout "	  long	[set base]ID;
+     puts $fout "	  long	salIndex;
 	  long	ack;
 	  long	error;
 	  string	result;
@@ -556,7 +556,7 @@ global SAL_WORK_DIR OPTIONS
 	  long	cmdtype;
 	  double	timeout;
 	\};
-	#pragma keylist ackcmd [set base]ID"
+	#pragma keylist ackcmd salIndex"
      if { $OPTIONS(verbose) } {stdlog "###TRACE<<< genkeyedidl $fout $base"}
 }
 

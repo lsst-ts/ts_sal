@@ -90,7 +90,7 @@ global SAL_WORK_DIR REVCODE OPTIONS SALVERSION METADATA XMLVERSION
           set annot ""
             if { [lindex [lindex $rec 0] 0] != "const" } {
               set item [getItemName $rec]
-              if { $item == "[set subsys]ID" } {
+              if { $item == "salIndex" } {
                 set annot " // @Metadata=(Units=\"unitless\",Description=\"Index number for CSC with multiple instances\")"
                 set mu "unitless"
               } else {

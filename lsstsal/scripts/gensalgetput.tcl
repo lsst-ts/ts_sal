@@ -71,7 +71,7 @@ salReturn SAL_[set base]::putSample_[set name]([set base]_[set name]C *data)
     cout << \"    revCode  : \" << Instance.private_revCode << endl;
   \}
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
-   Instance.[set base]ID = subsystemID;
+   Instance.salIndex = subsystemID;
    InstanceHandle_t dataHandle = SALWriter->register_instance(Instance);
 #else
    InstanceHandle_t dataHandle = HANDLE_NIL;
@@ -731,7 +731,7 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS
         copytojavasample $fout $base $name
         if { [info exists SYSDIC($base,keyedID)] } {
           puts $fout "
-           SALInstance.[set base]ID = subsystemID;
+           SALInstance.salIndex = subsystemID;
            long dataHandle = SALWriter.register_instance(SALInstance);
      status = SALWriter.write(SALInstance, dataHandle);
      checkStatus(status, \"[set name][set revcode]DataWriter.write\");
@@ -763,7 +763,7 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS
         if { [info exists SYSDIC($base,keyedID)] } {
           puts $fout "      // Filter expr
                 String expr\[\] = new String\[0\];
-                String sFilter = \"[set base]ID = \" + subsystemID;
+                String sFilter = \"salIndex = \" + subsystemID;
         createContentFilteredTopic(actorIdx,\"filteredtopic\", sFilter, expr);
     // create DataReader
     createReader(actorIdx,true);"
@@ -939,7 +939,7 @@ salReturn SAL_[set base]::putSample([set base]::[set name][set revcode] data)
     cout << \"    revCode  : \" << data.private_revCode << endl;
   \}
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
-   data.[set base]ID = subsystemID;
+   data.salIndex = subsystemID;
    InstanceHandle_t dataHandle = SALWriter->register_instance(data);
 #else
    InstanceHandle_t dataHandle = HANDLE_NIL;

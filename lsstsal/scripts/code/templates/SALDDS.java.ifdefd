@@ -113,7 +113,7 @@ public class SAL_SALData {
 		// create DataReader
   		// Filter expr
                 String expr = new String[0];
-                String sFilter = "SALDataID = " + subsystemID;
+                String sFilter = "salIndex = " + subsystemID;
     		createContentFilteredTopic("filteredtopic", sFilter, expr);
 
 		// create DataReader
@@ -159,7 +159,7 @@ public class SAL_SALData {
 	  commandDataWriter SALWriter = commandDataWriterHelper.narrow(dwriter);
 	  data.private_revCode = "LSST TEST COMMAND";
 	  data.private_seqNum = sndSeqNum;
-	  data.SALDataID = subsystemID;
+	  data.salIndex = subsystemID;
 	  cmdHandle = SALWriter.register_instance(data);
 	  if (debugLevel > 0) {
 	    System.out.println( "=== [issueCommand] writing a command containing :");
@@ -184,7 +184,7 @@ public class SAL_SALData {
    		ackdata.error = error;
    		ackdata.ack = ack;
    		ackdata.result = result;
-   		ackdata.SALDataID = subsystemID;
+   		ackdata.salIndex = subsystemID;
    		if (debugLevel > 0) {
       			System.out.println(  "=== [ackCommand] acknowledging a command with :" )
       			System.out.println(  "    seqNum   : " + ackdata.private_seqNum )
@@ -193,7 +193,7 @@ public class SAL_SALData {
       			System.out.println(  "    result   : " + ackdata.result )
    		}
    		ackHandle = SALWriter.register_instance(ackdata);
-   		ackdata.SALDataID = subsystemID;
+   		ackdata.salIndex = subsystemID;
    		istatus = SALWriter->write(ackdata, ackHandle);
     		SALWriter.unregister_instance(ackdata, ackHandle);
    		return SAL__OK;
@@ -397,7 +397,7 @@ public class SAL_SALData {
 	  //create a reader for responses
   	  // Filter expr
           String expr = new String[0];
-          String sFilter = "SALDataID = " + subsystemID;
+          String sFilter = "salIndex = " + subsystemID;
     	  createContentFilteredTopic("filteredResponse", sFilter, expr);
 
 	  // create DataReader
@@ -433,7 +433,7 @@ public class SAL_SALData {
 	  //create a reader for commands
   	  // Filter expr
           String expr = new String[0];
-          String sFilter = "SALDataID = " + subsystemID;
+          String sFilter = "salIndex = " + subsystemID;
     	  createContentFilteredTopic("filteredCommand", sFilter, expr);
  	  createReader(true);
 	  bool autodispose_unregistered_instances = false;

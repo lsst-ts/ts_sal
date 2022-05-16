@@ -168,11 +168,11 @@ int test_[set base]_telemetry reader()
 \{ "
   if { [info exists SYSDIC($base,keyedID)] } {
     puts $fout "
-  int [set base]ID = 1;
+  int salIndex = 1;
   if (getenv(\"LSST_[string toupper [set base]]_ID\") != NULL) \{
-     sscanf(getenv(\"LSST_[string toupper [set base]]_ID\"),\"%d\",&[set base]ID);
+     sscanf(getenv(\"LSST_[string toupper [set base]]_ID\"),\"%d\",&salIndex);
   \}
-  SAL_[set base] mgr = SAL_[set base]([set base]ID);"
+  SAL_[set base] mgr = SAL_[set base](salIndex);"
   } else {
     puts $fout "  SAL_[set base] mgr = SAL_[set base]();"
   }
@@ -255,11 +255,11 @@ int test_[set base]_event_reader()
 \{ "
   if { [info exists SYSDIC($base,keyedID)] } {
     puts $fout "
-  int [set base]ID = 1;
+  int salIndex = 1;
   if (getenv(\"LSST_[string toupper [set base]]_ID\") != NULL) \{
-     sscanf(getenv(\"LSST_[string toupper [set base]]_ID\"),\"%d\",&[set base]ID);
+     sscanf(getenv(\"LSST_[string toupper [set base]]_ID\"),\"%d\",&salIndex);
   \}
-  SAL_[set base] mgr = SAL_[set base]([set base]ID);"
+  SAL_[set base] mgr = SAL_[set base](salIndex);"
   } else {
     puts $fout "  SAL_[set base] mgr = SAL_[set base]();"
   }
@@ -343,11 +343,11 @@ int test_[set base]_command_reader()
 \{ "
   if { [info exists SYSDIC($base,keyedID)] } {
     puts $fout "
-  int [set base]ID = 1;
+  int salIndex = 1;
   if (getenv(\"LSST_[string toupper [set base]]_ID\") != NULL) \{
-     sscanf(getenv(\"LSST_[string toupper [set base]]_ID\"),\"%d\",&[set base]ID);
+     sscanf(getenv(\"LSST_[string toupper [set base]]_ID\"),\"%d\",&salIndex);
   \}
-  SAL_[set base] mgr = SAL_[set base]([set base]ID);"
+  SAL_[set base] mgr = SAL_[set base](salIndex);"
   } else {
     puts $fout "  SAL_[set base] mgr = SAL_[set base]();"
   }

@@ -108,23 +108,7 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
          set intopic 0
          set EVTS($subsys,$alias) $alias
          set EVENT_ALIASES($subsys) [lappend EVENT_ALIASES($subsys) $alias]
-         if { [info exists EVTS($subsys,$alias,plist)] } {
-          if { [lsearch $EVTS($subsys,$alias,plist) priority] < 0 } {
-            lappend EVTS($subsys,$alias,param) "long	priority"
-            lappend EVTS($subsys,$alias,plist) priority
-            puts $fout "	  long	priority;"
-            incr itemid 1
-            puts $fsql "INSERT INTO [set subsys]_items VALUES (\"[set tname]\",$itemid,\"priority\",\"int\",1,\"unitless\",1,\"\",\"\",\"Priority code\");"
-          }
-         } else {
-          lappend EVTS($subsys,$alias,param) "long	priority"
-          lappend EVTS($subsys,$alias,plist) priority
-          puts $fout "	  long	priority;"
-          incr itemid 1
-          puts $fsql "INSERT INTO [set subsys]_items VALUES (\"[set tname]\",$itemid,\"priority\",\"int\",1,\"unitless\",1,\"\",\"\",\"Priority code\");"
-         }
          if { $explanation != "" } {set EVTS($subsys,$alias,help) $explanation}
-         set DESC($subsys,$alias,priority) "Priority code"
       }
       if { $tag == "/SALCommand" } {
          set intopic 0
@@ -183,7 +167,7 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
         puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",6,\"private_origin\",\"int\",1,\"unitless\",1,\"\",\"\",\"PID code of sender\");"
         set itemid 6
         if { [info exists SYSDIC($subsys,keyedID)] } {
-           puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",8,\"[set subsys]ID\",\"int\",1,\"unitless\",1,\"\",\"\",\"Index of $subsys instance\");"
+           puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",8,\"salIndex\",\"int\",1,\"unitless\",1,\"\",\"\",\"Index of $subsys instance\");"
            set itemid 7
         }
         set tdesc 1
@@ -390,10 +374,6 @@ global METADATA
   set METADATA([set topic],private_seqNum,description) "Sequence number"
   set METADATA([set topic],private_identity,description) "Identity of publisher"
   set METADATA([set topic],private_origin,description) "PID of publisher"
-  if { [lindex [split $topic "_"] 1] == "logevent" } {
-     set METADATA([set topic],priority,description) "Priority level"
-     set METADATA([set topic],priority,units) "unitless"
-  }
 }
 
 #

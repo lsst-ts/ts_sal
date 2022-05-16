@@ -115,7 +115,7 @@ proc ignoreforlabview { rec subsys } {
         return 1
      }
   }
-  if { [lindex $crec 1] == "[set subsys]ID;" } { return 1 }
+  if { [lindex $crec 1] == "salIndex;" } { return 1 }
   return 0
 }
 
@@ -163,7 +163,7 @@ proc genlabviewincl { base ptypes } {
 global SAL_DIR SAL_WORK_DIR SYSDIC TELEMETRY_ALIASES LVSTRINGS CMD_ALIASES
   set idarg ""
   if { [info exists SYSDIC($base,keyedID)] } {
-     set idarg "unsigned int [set base]ID"
+     set idarg "unsigned int salIndex"
   }
   set fout [open $SAL_WORK_DIR/[set base]/labview/SAL_[set base]_shmem.h w]
   set fhlv [open $SAL_WORK_DIR/[set base]/cpp/src/SAL_[set base]LV.h r]
@@ -349,11 +349,11 @@ global SAL_DIR SAL_WORK_DIR SYSDIC LVSTRINGS REVCODE CMD_ALIASES SALVERSION XMLV
   set xmldist $XMLVERSION
   set idarg ""
   set idarg2 ""
-  set idarg3 "     unsigned int [set base]ID = 0;"
-  set idoff "[set base]ID"
+  set idarg3 "     unsigned int salIndex = 0;"
+  set idoff "salIndex"
   if { [info exists SYSDIC($base,keyedID)] } {
-     set idarg "unsigned int [set base]ID"
-     set idarg2 "[set base]ID"
+     set idarg "unsigned int salIndex"
+     set idarg2 "salIndex"
   }
   set fout [open $SAL_WORK_DIR/[set base]/labview/SAL_[set base]_salShmMonitor.cpp w]
   puts $fout "
@@ -368,7 +368,6 @@ using namespace [set base];
   puts $fout "
     int main (int argc, char *argv\[\]) \{
       int status = 0;
-      int lpriority = 0;
       int [set idoff] = 0;
       int ipollusecs = 100;
       int LVClient = 0;
@@ -1353,8 +1352,7 @@ global SAL_DIR SAL_WORK_DIR
              [set base]_memIO->client\[LVClient\].hasWriter_[set base]_[set name] = true;
           \}
        \}
-       if ( [set base]_memIO->client\[LVClient\].hasOutgoing_[set base]_[set name] ) \{
-          lpriority = [set base]_memIO->client\[LVClient\].shmemOutgoing_[set base]_[set name].priority;"
+       if ( [set base]_memIO->client\[LVClient\].hasOutgoing_[set base]_[set name] ) \{"
    set frag [open $SAL_WORK_DIR/include/SAL_[set base]_[set name]monout.tmp r]
    while { [gets $frag rec] > -1} {puts $fout $rec}
    close $frag
@@ -1362,7 +1360,6 @@ global SAL_DIR SAL_WORK_DIR
          if (iverbose) \{
             cout << \"Client \" << LVClient << \" publish an event [set name]\" << endl;
          \}
-         status = mgr\[LVClient\].logEvent_[set n2](Outgoing_[set base]_[set name],lpriority);
           [set base]_memIO->client\[LVClient\].hasOutgoing_[set base]_[set name] = false;
        \}
 "

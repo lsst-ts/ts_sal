@@ -78,11 +78,11 @@ proc insertSenders { subsys file_writer } {
     puts $file_writer "\{"
  
     if { [info exists SYSDIC($subsys,keyedID)] } {
-        puts $file_writer "  int [set subsys]ID = 1;"
+        puts $file_writer "  int salIndex = 1;"
         puts $file_writer "  if (getenv(\"LSST_[string toupper [set subsys]]_ID\") != NULL) \{"
-        puts $file_writer "    sscanf(getenv(\"LSST_[string toupper [set subsys]]_ID\"),\"%d\",&[set subsys]ID);"
+        puts $file_writer "    sscanf(getenv(\"LSST_[string toupper [set subsys]]_ID\"),\"%d\",&salIndex);"
         puts $file_writer "  \}"
-        puts $file_writer "  SAL_[set subsys] mgr = SAL_[set subsys]([set subsys]ID);\n"
+        puts $file_writer "  SAL_[set subsys] mgr = SAL_[set subsys](salIndex);\n"
     } else {
         puts $file_writer "  SAL_[set subsys] mgr = SAL_[set subsys]();"
     }
@@ -93,7 +93,7 @@ proc insertSenders { subsys file_writer } {
 
     foreach alias $EVENT_ALIASES($subsys) {
         puts $file_writer "\{" 
-        puts $file_writer "  int priority = SAL__EVENT_INFO;"
+        puts $file_writer "  int priority = 0;"
         puts $file_writer "  int iseq;"
         puts $file_writer "  iseq = 0;"
         puts $file_writer "  [set subsys]_logevent_[set alias]C myData;"
@@ -104,7 +104,6 @@ proc insertSenders { subsys file_writer } {
             puts $file_writer [string range $line 2 1000]
         }
         
-        puts $file_writer "  priority = myData.priority;"
         puts $file_writer "  mgr.logEvent_[set alias](&myData, priority);"
         puts $file_writer "  cout << \"=== Event $alias generated = \" << endl;"
         puts $file_writer "  sleep(1);\n\}"
@@ -130,11 +129,11 @@ proc insertLoggers { subsys file_writer } {
     puts $file_writer "\{"
 
     if { [info exists SYSDIC($subsys,keyedID)] } {
-        puts $file_writer "  int [set subsys]ID = 1;"
+        puts $file_writer "  int salIndex = 1;"
         puts $file_writer "  if (getenv(\"LSST_[string toupper [set subsys]]_ID\") != NULL) \{"
-        puts $file_writer " sscanf(getenv(\"LSST_[string toupper [set subsys]]_ID\"),\"%d\",&[set subsys]ID);"
+        puts $file_writer " sscanf(getenv(\"LSST_[string toupper [set subsys]]_ID\"),\"%d\",&salIndex);"
         puts $file_writer "\}"
-        puts $file_writer "SAL_[set subsys] mgr = SAL_[set subsys]([set subsys]ID);\n"
+        puts $file_writer "SAL_[set subsys] mgr = SAL_[set subsys](salIndex);\n"
     } else {
         puts $file_writer "  SAL_[set subsys] mgr = SAL_[set subsys]();\n"
     }

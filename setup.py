@@ -10,7 +10,7 @@ setup(
     setup_requires=["setuptools_scm"],
     package_dir={"": "python"},
     packages=find_namespace_packages(where="python"),
-    scripts=["bin/make_idl_files.py", "bin/make_salpy_libs.py"],
+    scripts=["bin/make_idl_files.py"],
     # tests_require=tests_require,
     extras_require={"dev": dev_requires},
     license="GPL",
