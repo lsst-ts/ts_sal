@@ -9,7 +9,11 @@ Version History
 Changes for 6.2.0
 =================
 
-* Implement data types for Enumerations
+* Remove priority field from Events
+
+* Replace [subsys]ID with salIndex for multiple instance CSC's
+
+* Use "second" as private_sndStamp and private_rcvStamp units
 
 * Remove deprecated python (boost and pybind11) API generation
 

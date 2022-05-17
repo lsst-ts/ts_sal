@@ -439,7 +439,7 @@ global SAL_WORK_DIR OPTIONS
    puts $fack "struct [set base]_ackcmd \{"
    add_private_idl $fack
 #   if { $keyid } {
-#      puts $fack "      long	[set base]ID;"
+#      puts $fack "      long	salIndex;"
 #   }
    puts $fack "	  long	ack;
 	  long	error;

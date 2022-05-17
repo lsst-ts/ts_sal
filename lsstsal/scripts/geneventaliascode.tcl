@@ -41,7 +41,7 @@ global EVENT_ALIASES EVTS DONE_CMDEVT
          puts $fout "
 /** Publish a [set i] logevent message
   * @param data is the logevent payload $turl
-  * @priority is a user configurable priority, larger is higher priority
+  * @priority is deprecated
   */
       salReturn logEvent_[set i]( SALData_logevent_[set i]C *data, int priority );      
 
@@ -121,7 +121,6 @@ salReturn SAL_SALData::logEvent_[set i]( SALData_logevent_[set i]C *data, int pr
   if ( data == NULL ) \{
      throw std::runtime_error(\"NULL pointer for logEvent_[set i]\");
   \}
-  data->priority=priority;
   status = putSample_logevent_[set i](data);
   return status;
 \}
@@ -172,13 +171,12 @@ global EVENT_ALIASES EVTS
 
 /** Publish a [set i] logevent message
   * @param data is the logevent payload $turl
-  * @priority is a user configurable priority, larger is higher priority
+  * @priority is deprecated
   */
 	public int logEvent_[set i]( SALData.logevent_[set i] event, int priority )
 	\{
 	   int status = 0;
            int actorIdx = SAL__SALData_logevent_[set i]_ACTOR;
-           event.priority=priority;
            if (sal\[actorIdx\].publisher == null) \{
               createPublisher(actorIdx);
               boolean autodispose_unregistered_instances = true;

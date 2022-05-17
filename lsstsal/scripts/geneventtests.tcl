@@ -69,11 +69,11 @@ int main (int argc, char *argv\[\])
   \}
 
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
-  int [set subsys]ID = 1;
+  int salIndex = 1;
   if (getenv(\"LSST_[string toupper [set subsys]]_ID\") != NULL) \{
-     sscanf(getenv(\"LSST_[string toupper [set subsys]]_ID\"),\"%d\",&[set subsys]ID);
+     sscanf(getenv(\"LSST_[string toupper [set subsys]]_ID\"),\"%d\",&salIndex);
   \} 
-  SAL_[set subsys] mgr = SAL_[set subsys]([set subsys]ID);
+  SAL_[set subsys] mgr = SAL_[set subsys](salIndex);
 #else
   SAL_[set subsys] mgr = SAL_[set subsys]();
 #endif
@@ -86,7 +86,7 @@ int main (int argc, char *argv\[\])
   close $fin
   puts $fevt "
   // generate event
-  priority = myData.priority;
+  priority = 0;
   mgr.logEvent_[set alias](&myData, priority);
   cout << \"=== Event $alias generated = \" << endl;
   sleep(1);
@@ -135,11 +135,11 @@ int test_[set subsys]_[set alias]_Log()
 
   [set subsys]_logevent_[set alias]C SALInstance;
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
-  int [set subsys]ID = 1;
+  int salIndex = 1;
   if (getenv(\"LSST_[string toupper [set subsys]]_ID\") != NULL) \{
-     sscanf(getenv(\"LSST_[string toupper [set subsys]]_ID\"),\"%d\",&[set subsys]ID);
+     sscanf(getenv(\"LSST_[string toupper [set subsys]]_ID\"),\"%d\",&salIndex);
   \} 
-  SAL_[set subsys] mgr = SAL_[set subsys]([set subsys]ID);
+  SAL_[set subsys] mgr = SAL_[set subsys](salIndex);
 #else
   SAL_[set subsys] mgr = SAL_[set subsys]();
 #endif

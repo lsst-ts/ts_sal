@@ -30,7 +30,7 @@ salReturn SAL_SALData::salCommand(char *cmdAlias)
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
      // Filter expr
      char buf[64];
-     sprintf(buf, "SALDataID = %d", subsystemID);
+     sprintf(buf, "salIndex = %d", subsystemID);
      DDS::String_var sFilter = DDS::string_dup(buf);
      // Filter expr
      StringSeq sSeqExpr;
@@ -78,7 +78,7 @@ salReturn SAL_SALData::salProcessor(char *cmdAlias)
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
   // Filter expr
    char buf[64],buf2[200];
-   sprintf(buf, "SALDataID = %d", subsystemID);
+   sprintf(buf, "salIndex = %d", subsystemID);
    DDS::String_var sFilter = DDS::string_dup(buf);
    // Filter expr
   StringSeq sSeqExpr;

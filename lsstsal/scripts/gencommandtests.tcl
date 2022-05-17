@@ -70,18 +70,18 @@ int main (int argc, char *argv\[\])
   \}"
    if { [info exists SYSDIC($subsys,keyedID)] } {
       puts $fcmd "
-  int [set subsys]ID = 1;
+  int salIndex = 1;
   char *identity = (char *)malloc(128);
   if (getenv(\"LSST_[string toupper [set subsys]]_ID\") != NULL) \{
-     sscanf(getenv(\"LSST_[string toupper [set subsys]]_ID\"),\"%d\",&[set subsys]ID);
+     sscanf(getenv(\"LSST_[string toupper [set subsys]]_ID\"),\"%d\",&salIndex);
   \} 
   if (getenv(\"LSST_IDENTITY\") != NULL) \{
      char *auth = getenv(\"LSST_IDENTITY\");
      sprintf(identity,\"%s\",auth);
   \} else \{
-    sprintf(identity,\"[set subsys]:%d\",[set subsys]ID);
+    sprintf(identity,\"[set subsys]:%d\",salIndex);
   \}
-  SAL_[set subsys] *mgr = new SAL_[set subsys]([set subsys]ID,identity);
+  SAL_[set subsys] *mgr = new SAL_[set subsys](salIndex,identity);
 "
    } else {
       puts $fcmd "
@@ -152,11 +152,11 @@ int test_[set subsys]_[set alias]_controller()
   [set subsys]_command_[set alias]C SALInstance;"
    if { [info exists SYSDIC($subsys,keyedID)] } {
       puts $fcmd "
-  int [set subsys]ID = 1;
+  int salIndex = 1;
   if (getenv(\"LSST_[string toupper [set subsys]]_ID\") != NULL) \{
-     sscanf(getenv(\"LSST_[string toupper [set subsys]]_ID\"),\"%d\",&[set subsys]ID);
+     sscanf(getenv(\"LSST_[string toupper [set subsys]]_ID\"),\"%d\",&salIndex);
   \} 
-  SAL_[set subsys] mgr = SAL_[set subsys]([set subsys]ID);"
+  SAL_[set subsys] mgr = SAL_[set subsys](salIndex);"
    } else {
       puts $fcmd "  SAL_[set subsys] mgr = SAL_[set subsys]();"
    }

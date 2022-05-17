@@ -194,7 +194,7 @@ public class SAL_SALData {
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
   		// Filter expr
                 String expr[] = new String[0];
-                String sFilter = "SALDataID = " + subsystemID;
+                String sFilter = "salIndex = " + subsystemID;
                 String ftopicName = "filtered_" + sal[actorIdx].topicHandle;
    		createContentFilteredTopic(actorIdx,ftopicName, sFilter, expr);
 

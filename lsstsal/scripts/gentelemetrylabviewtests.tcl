@@ -65,8 +65,8 @@ int main (int argc, char *argv\[\])
 
    SAL_[set subsys]_shmem mgr = SAL_[set subsys]_shmem();
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
-  int [set subsys]ID = 1;
-  mgr.salShmConnect([set subsys]ID);
+  int salIndex = 1;
+  mgr.salShmConnect(salIndex);
 #else
   mgr.salShmConnect();
 #endif
@@ -117,8 +117,8 @@ int main (int argc, char *argv\[\])
   [set subsys]_[set alias]C SALInstance;
    SAL_[set subsys]_shmem mgr = SAL_[set subsys]_shmem();
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
-  int [set subsys]ID = 1;
-  mgr.salShmConnect([set subsys]ID);
+  int salIndex = 1;
+  mgr.salShmConnect(salIndex);
 #else
   mgr.salShmConnect();
 #endif
