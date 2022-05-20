@@ -523,11 +523,11 @@ global OPTIONS
      puts $fout "	struct ackcmd \{"
      add_private_idl $fout
      puts $fout "	  long	ack;
-	  long	error;
+	  long		error;
 	  string	result;
 	  string	identity;
-	  long	origin;
-	  long	cmdtype;
+	  long		origin;
+	  long		cmdtype;
 	  double	timeout;
 	\};
 	#pragma keylist ackcmd"
@@ -548,12 +548,12 @@ global SAL_WORK_DIR OPTIONS
      puts $fout "	struct ackcmd \{"
      add_private_idl $fout
      puts $fout "	  long	salIndex;
-	  long	ack;
-	  long	error;
+	  long		ack;
+	  long		error;
 	  string	result;
 	  string	identity;
-	  long	origin;
-	  long	cmdtype;
+	  long		origin;
+	  long		cmdtype;
 	  double	timeout;
 	\};
 	#pragma keylist ackcmd salIndex"

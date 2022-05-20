@@ -180,6 +180,8 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
         }
         if { $ctype == "event" } {
            set EVTS($subsys,$alias) $alias
+           set EVTS($subsys,$alias,plist) ""
+           set EVTS($subsys,$alias,param) ""
         }
         set DESC($subsys,$alias,help) ""
       }
