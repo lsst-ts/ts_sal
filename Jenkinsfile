@@ -62,7 +62,18 @@ pipeline {
                 }
             }
         }
-        stage("Running python tests") {
+        stage("Checkout DDSConfig") {
+            steps {
+                script {
+                    sh "docker exec -u saluser \${container_name} sh -c \"" +
+                        "source ~/.setup.sh && " +
+                        "source /home/saluser/.bashrc && " +
+                        "cd /home/saluser/repos/ts_ddsconfig && " +
+                        "/home/saluser/.checkout_repo.sh \${work_branches} && " +
+                        "git pull\""
+                }
+            }
+        }        stage("Running python tests") {
             steps {
                 script {
                     sh "docker exec -u saluser \${container_name} sh -c \"" +
