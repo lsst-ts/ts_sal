@@ -73,7 +73,8 @@ pipeline {
                         "git pull\""
                 }
             }
-        }        stage("Running python tests") {
+        }
+        stage("Running python tests") {
             steps {
                 script {
                     sh "docker exec -u saluser \${container_name} sh -c \"" +
