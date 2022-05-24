@@ -21,10 +21,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#define CATCH_CONFIG_MAIN
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 
 #include <SAL_Test.h>
+
+#include <memory>
 
 // Depth of DDS read queues (which is also the depth of the write queues).
 // This must be at least as long as the actual depth for some tests to pass.
