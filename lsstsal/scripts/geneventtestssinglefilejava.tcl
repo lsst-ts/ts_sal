@@ -98,8 +98,8 @@ proc insertSendersJava { subsys file_writer } {
         puts $file_writer "            event.private_revCode = \"[string trim $revcode _]\";"
 
         set narg 1
-
-        foreach p $EVTS($subsys,$alias,param) {
+        if { [info exists EVTS($subsys,$alias,param] } {
+          foreach p $EVTS($subsys,$alias,param) {
             set pname [lindex $p 1]
             set ptype [lindex $p 0]
             if { [llength [split $pname "()"]] > 1 } {
@@ -123,6 +123,7 @@ proc insertSendersJava { subsys file_writer } {
                 }
             }
             incr narg 1
+          }
         }
         puts $file_writer "            status = mgr.logEvent_[set alias](event,priority);"
         puts $file_writer "            System.out.println(\"=== [set subsys]_[set alias] end of topic ===\");"
