@@ -6,8 +6,10 @@
 Version History
 ###############
 
-Changes for 6.2.0
+Changes for 7.0.0
 =================
+
+* Check authList even when no command is in the queue
 
 * Remove priority field from Events
 

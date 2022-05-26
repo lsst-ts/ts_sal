@@ -259,6 +259,7 @@ int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
   if (sal\[actorIdx\].isProcessor == false) \{
       throw std::runtime_error(\"No controller for acceptCommand_[set i]\");
   \}
+  checkAuthList(sal\[actorIdx\].activeidentity);
   DataWriter_var dwriter = getWriter2(SAL__SALData_ackcmd_ACTOR);
   SALData::ackcmd[set ACKREVCODE]DataWriter_var SALWriter = SALData::ackcmd[set ACKREVCODE]DataWriter::_narrow(dwriter.in());
   DataReader_var dreader = getReader(actorIdx);
@@ -676,6 +677,7 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
    		long ackHandle = HANDLE_NIL.value;
                 int actorIdx = SAL__SALData_command_[set i]_ACTOR;
 
+                checkAuthList(sal\[actorIdx\].activeidentity);
   		// create DataWriter :
   		DataWriter dwriter = getWriter2(SAL__SALData_ackcmd_ACTOR);
   		ackcmd[set ACKREVCODE]DataWriter SALWriter = ackcmd[set ACKREVCODE]DataWriterHelper.narrow(dwriter);
@@ -1075,7 +1077,7 @@ global SYSDIC
 "
    if { $subsys == "LOVE" } {
       puts $fout "
-	public int checkAuthList(String private_identity)
+	public int checkAuthList(String private_identity);
 	\{
              return SAL__OK;
         \}
