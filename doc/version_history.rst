@@ -23,6 +23,8 @@ Changes for 6.2.0
 
 * Remove deprecated use of SAL__CMD_ACK as an automatic ack
 
+* LSST_DDS_PARTITION_PREFIX is now set to a random value at the start of each Java unit test.
+
 Changes for 6.1.0
 =================
 
