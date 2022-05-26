@@ -101,8 +101,8 @@ proc insertCommandersJava { subsys file_writer } {
         puts $file_writer "            command.private_revCode = \"[string trim $revcode _]\";"
 
         set narg 1
-
-        foreach p $CMDS($subsys,$alias,param) {
+        if { [info exists CMDS($subsys,$alias,param] } {
+          foreach p $CMDS($subsys,$alias,param) {
             set pname [lindex $p 1]
             set ptype [lindex $p 0]
             if { [llength [split $pname "()"]] > 1 } {
@@ -126,8 +126,8 @@ proc insertCommandersJava { subsys file_writer } {
                 }
             }
             incr narg 1
+          }
         }
-
         puts $file_writer "            cmdId = mgr.issueCommand_[set alias](command);"
         puts $file_writer "            status = mgr.waitForCompletion_[set alias](cmdId, timeout);"
         puts $file_writer "            System.out.println(\"=== [set subsys]_[set alias] end of topic ===\");"

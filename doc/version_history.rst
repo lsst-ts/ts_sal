@@ -6,8 +6,22 @@
 Version History
 ###############
 
-Changes for 6.1.1
+Changes for 6.2.0
 =================
+
+* Remove priority field from Events
+
+* Replace [subsys]ID with salIndex for multiple instance CSC's
+
+* Use "second" as private_sndStamp and private_rcvStamp units
+
+* Remove deprecated python (boost and pybind11) API generation
+
+* Rename SAL_actors.h to SAL_,CSC._actors.h and add to RPMs
+
+* Remove deprecated IDL_Type tag processing, default is no-limit for strings
+
+* Remove deprecated use of SAL__CMD_ACK as an automatic ack
 
 * LSST_DDS_PARTITION_PREFIX is now set to a random value at the start of each Java unit test.
 

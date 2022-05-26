@@ -2,7 +2,7 @@
 ## \file geneventaliascode.tcl
 # \brief This contains procedures to create the SAL API code
 #  to manager the Event Topics. It generates code and tests
-#  for C++, Python (pybind11), and Java APIs
+#  for C++ and Java APIs
 #
 # This Source Code Form is subject to the terms of the GNU Public\n
 # License, V3 
@@ -19,7 +19,6 @@ source $SAL_DIR/geneventtests.tcl
 source $SAL_DIR/geneventtestssinglefile.tcl
 source $SAL_DIR/geneventtestsjava.tcl 
 source $SAL_DIR/geneventtestssinglefilejava.tcl
-source $SAL_DIR/gentestspython.tcl 
 
 ## Documented proc \c geneventaliascode .
 # \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
@@ -42,7 +41,7 @@ global EVENT_ALIASES EVTS DONE_CMDEVT
          puts $fout "
 /** Publish a [set i] logevent message
   * @param data is the logevent payload $turl
-  * @priority is a user configurable priority, larger is higher priority
+  * @priority is deprecated
   */
       salReturn logEvent_[set i]( SALData_logevent_[set i]C *data, int priority );      
 
@@ -75,18 +74,6 @@ global EVENT_ALIASES EVTS DONE_CMDEVT
        set result none
        catch { set result [geneventtestsjava $subsys] } bad
        if { $result == "none" } {stdlog $bad ; errorexit "failure in geneventtestsjava" }
-       stdlog "$result"
-     }
-  }
-  if { $lang == "python" } {
-     set result none
-     catch { set result [geneventaliaspython $subsys $fout] } bad
-     if { $result == "none" } {stdlog $bad ; errorexit "failure in geneventaliaspython" }
-     stdlog "$result"
-     if { $DONE_CMDEVT == 0} {
-       set result none
-       catch { set result [geneventtestspython $subsys] } bad
-       if { $result == "none" } {stdlog $bad ; errorexit "failure in geneventtestspython" }
        stdlog "$result"
      }
   }
@@ -134,7 +121,6 @@ salReturn SAL_SALData::logEvent_[set i]( SALData_logevent_[set i]C *data, int pr
   if ( data == NULL ) \{
      throw std::runtime_error(\"NULL pointer for logEvent_[set i]\");
   \}
-  data->priority=priority;
   status = putSample_logevent_[set i](data);
   return status;
 \}
@@ -185,13 +171,12 @@ global EVENT_ALIASES EVTS
 
 /** Publish a [set i] logevent message
   * @param data is the logevent payload $turl
-  * @priority is a user configurable priority, larger is higher priority
+  * @priority is deprecated
   */
 	public int logEvent_[set i]( SALData.logevent_[set i] event, int priority )
 	\{
 	   int status = 0;
            int actorIdx = SAL__SALData_logevent_[set i]_ACTOR;
-           event.priority=priority;
            if (sal\[actorIdx\].publisher == null) \{
               createPublisher(actorIdx);
               boolean autodispose_unregistered_instances = true;
@@ -202,32 +187,6 @@ global EVENT_ALIASES EVTS
            return status;
 	\}
 "
-    } else {
-#      stdlog "Alias $i has no parameters - uses standard [set subsys]_logevent"
-    }
-   }
-}
-
-
-
-#
-## Documented proc \c geneventaliaspython .
-# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
-# \param[in] fout File handle of output file
-#
-#  Generates the Command handling code for a Subsystem/CSC.
-#  Code is generated for getEvent,putEvent
-#  per Event Topic type. This routine generates C++/pybind11 wrapper code.
-#
-proc geneventaliaspython { subsys fout } {
-global EVENT_ALIASES EVTS
-   foreach i $EVENT_ALIASES($subsys) {
-    if { [info exists EVTS($subsys,$i,param)] } {
-      stdlog "	: alias = $i"
-      puts $fout "
-        .def( \"getEvent_[set i]\",  &SAL_SALData::getEvent_[set i] )
-        .def( \"logEvent_[set i]\",  &SAL_SALData::logEvent_[set i] )
-      "
     } else {
 #      stdlog "Alias $i has no parameters - uses standard [set subsys]_logevent"
     }

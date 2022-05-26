@@ -225,8 +225,8 @@ Invocation with no arguments will result in display of the on-line help.
 
             generate - all steps to generate SAL wrappers for specified language
             validate - check the XML Telemetry/Command/LogEvent definitions
-                    sal      - generate SAL wrappers for specified language : cpp, idl, java, python, pydds
-                    apidoc   - generate interface documentation for the specified language : cpp, java, python
+                    sal      - generate SAL wrappers for specified language : cpp, idl, java
+                    apidoc   - generate interface documentation for the specified language : cpp, java
                     lib      - generate shared library
             labview  - generate LabVIEW low-level interface
             maven    - generate a maven project

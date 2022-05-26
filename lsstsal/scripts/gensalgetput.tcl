@@ -50,9 +50,6 @@ salReturn SAL_[set base]::putSample_[set name]([set base]_[set name]C *data)
   while { [gets $frag rec] > -1} {puts $fout $rec}
   close $frag
   puts $fout "
-#ifdef SAL_BUILD_FOR_PYTHON
-  Py_BEGIN_ALLOW_THREADS
-#endif
   [set base]::[set name][set revcode]DataWriter_var SALWriter = [set base]::[set name][set revcode]DataWriter::_narrow(dwriter.in());
   [set base]::[set name][set revcode] Instance;
 
@@ -74,7 +71,7 @@ salReturn SAL_[set base]::putSample_[set name]([set base]_[set name]C *data)
     cout << \"    revCode  : \" << Instance.private_revCode << endl;
   \}
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
-   Instance.[set base]ID = subsystemID;
+   Instance.salIndex = subsystemID;
    InstanceHandle_t dataHandle = SALWriter->register_instance(Instance);
 #else
    InstanceHandle_t dataHandle = HANDLE_NIL;
@@ -82,9 +79,6 @@ salReturn SAL_[set base]::putSample_[set name]([set base]_[set name]C *data)
   Instance.private_sndStamp = getCurrentTime();
   ReturnCode_t status = SALWriter->write(Instance, dataHandle);
   checkStatus(status, \"[set base]::[set name][set revcode]DataWriter::write\");
-#ifdef SAL_BUILD_FOR_PYTHON
-  Py_END_ALLOW_THREADS
-#endif
   return status;
 \}
 
@@ -104,9 +98,6 @@ salReturn SAL_[set base]::getSample_[set name]([set base]_[set name]C *data)
   if ( dreader == NULL ) \{
      throw std::runtime_error(\"No DataReader for getSample_[set name]\");
   \}
-#ifdef SAL_BUILD_FOR_PYTHON
-  Py_BEGIN_ALLOW_THREADS
-#endif
   [set base]::[set name][set revcode]DataReader_var SALReader = [set base]::[set name][set revcode]DataReader::_narrow(dreader.in());
   checkHandle(SALReader.in(), \"[set base]::[set name][set revcode]DataReader::_narrow\");
   status = SALReader->take(Instances, info, sal\[SAL__[set base]_[set name]_ACTOR\].maxSamples , NOT_READ_SAMPLE_STATE, ANY_VIEW_STATE, ANY_INSTANCE_STATE);
@@ -141,9 +132,6 @@ salReturn SAL_[set base]::getSample_[set name]([set base]_[set name]C *data)
   \}
   status = SALReader->return_loan(Instances, info);
   checkStatus(status, \"[set base]::[set name][set revcode]DataReader::return_loan\");
-#ifdef SAL_BUILD_FOR_PYTHON
-  Py_END_ALLOW_THREADS
-#endif
   if ( numsamp == 0 ) \{
      istatus = SAL__NO_UPDATES;
      return istatus;
@@ -323,10 +311,9 @@ proc addActorIndexesCPP { idlfile base fout } {
 global SAL_WORK_DIR
    set ptypes [lsort [split [exec grep pragma $idlfile] \n]]
    set idx 0
-   set fact [open $SAL_WORK_DIR/[set base]/cpp/src/SAL_actors.h w]
+   set fact [open $SAL_WORK_DIR/[set base]/cpp/src/SAL_[set base]_actors.h w]
    foreach j $ptypes {
       set name [lindex $j 2]
-      puts $fout "#define SAL__[set base]_[set name]_ACTOR    $idx"
       puts $fact "#define SAL__[set base]_[set name]_ACTOR    $idx"
       incr idx 1
    }
@@ -636,7 +623,7 @@ global CMDS TLMS EVTS
 ## Documented proc \c addSALDDStypes .
 # \param[in] idlfile Name of input IDL definition file
 # \param[in] id Subsystem identity
-# \param[in] lang Language to generate code for (cpp,java,python)
+# \param[in] lang Language to generate code for (cpp,java)
 # \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
 #
 #  Generates code to publish and subscribe to samples of each type of 
@@ -744,7 +731,7 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS
         copytojavasample $fout $base $name
         if { [info exists SYSDIC($base,keyedID)] } {
           puts $fout "
-           SALInstance.[set base]ID = subsystemID;
+           SALInstance.salIndex = subsystemID;
            long dataHandle = SALWriter.register_instance(SALInstance);
      status = SALWriter.write(SALInstance, dataHandle);
      checkStatus(status, \"[set name][set revcode]DataWriter.write\");
@@ -776,7 +763,7 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS
         if { [info exists SYSDIC($base,keyedID)] } {
           puts $fout "      // Filter expr
                 String expr\[\] = new String\[0\];
-                String sFilter = \"[set base]ID = \" + subsystemID;
+                String sFilter = \"salIndex = \" + subsystemID;
         createContentFilteredTopic(actorIdx,\"filteredtopic\", sFilter, expr);
     // create DataReader
     createReader(actorIdx,true);"
@@ -879,9 +866,6 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS
   while { [string range $rec 0 21] != "// INSERT TYPE SUPPORT" } {
      if { [string range $rec 0 22] == "// INSERT TYPE INCLUDES" } {
        puts $fouth "  #include \"ccpp_sal_[lindex [split $id _] 0].h\"
-#ifdef SAL_BUILD_FOR_PYTHON
-#include \"Python.h\"
-#endif
 "
        gets $finh rec ; puts $fouth $rec
      } else {
@@ -955,7 +939,7 @@ salReturn SAL_[set base]::putSample([set base]::[set name][set revcode] data)
     cout << \"    revCode  : \" << data.private_revCode << endl;
   \}
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
-   data.[set base]ID = subsystemID;
+   data.salIndex = subsystemID;
    InstanceHandle_t dataHandle = SALWriter->register_instance(data);
 #else
    InstanceHandle_t dataHandle = HANDLE_NIL;

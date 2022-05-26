@@ -10,9 +10,6 @@ There are two ways for the Client to ask the Server for a command acknowledgemen
 
 Below are the list of acknowledgements you can use. In the context of DDS these values are the "ack" field of the "ackcmd" topic. To specifcy these in *ts_sal* use the code as the argument in the "ackCommand_x(ack)" function, where "x" is the command name. In ts_salobj ackcmd samples are usually created automatically, but one can create and return an ackcmd sample from a ControllerCommand callback function to override the automatically created sample.
 
-**CMD_ACK = 300**
-   Sent by the Server. The Server has accepted the command.
-
 **CMD_INPROGRESS = 301**
    Sent by the Server. The Server has accepted the command and is processing the command.
 
@@ -37,6 +34,6 @@ Below are the list of acknowledgements you can use. In the context of DDS these 
 **CMD_TIMEOUT = -304**
    Sent by the Server. This ack is returned to the Client when the Server has timed out. Useful when you have a lower level software that is not responsive and unable to perform the command.
  
-CMD_ACK, CMD_INPROGRESS, CMD_NOACK and CMD_STALLED are not final: the caller can expect further acknowledgements for the command. All other codes are final, and all of those except CMD_COMPLETE indicates failure.
+CMD_INPROGRESS, CMD_NOACK and CMD_STALLED are not final: the caller can expect further acknowledgements for the command. All other codes are final, and all of those except CMD_COMPLETE indicates failure.
 
 .. note:: in ts_salobj CMD_NOACK is only used in AckTimeoutError, the exception raised if the Client times out waiting for command acknowledgement from the Server.

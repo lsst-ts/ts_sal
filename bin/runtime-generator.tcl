@@ -53,18 +53,6 @@ if { $argv == "" || [lsearch $argv cpp] > -1 } {
  }
 }
 
-if { $argv == "" || [lsearch $argv python] > -1 } {
- puts stdout  "Generating Python"
- foreach subsys $EVERYTHING {
-  if { [info exists DO($subsys)] && [info exists SYSDIC($subsys,salpy)] } {
-   set bad ""
-   set result ""
-   catch { set results [exec salgenerator $subsys sal python ] } bad
-   puts stdout "$result $bad"
-  }
- }
-}
-
 
 if { $argv == "" || [lsearch $argv labview] > -1 } {
  puts stdout  "Generating LabVIEW"
