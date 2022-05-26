@@ -21,8 +21,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#define CATCH_CONFIG_MAIN
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_approx.hpp>
 
 #include <SAL_Test.h>
 
@@ -30,10 +30,13 @@
 #include <cmath>
 #include <cstring>
 #include <cstdlib>
+#include <functional>
+#include <memory>
 #include <thread>
 
 using namespace std::chrono_literals;
 using namespace std::placeholders;
+using Catch::Approx;
 
 constexpr auto STD_SLEEP = 1ms;
 

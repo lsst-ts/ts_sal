@@ -21,12 +21,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#define CATCH_CONFIG_MAIN
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 
 #include <SAL_Test.h>
 
 #include <cstdlib>
+#include <memory>
 #include <sys/stat.h>
 
 #define DATA_DIR "../tests/data"
