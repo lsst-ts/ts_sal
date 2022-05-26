@@ -2,6 +2,8 @@ package org.lsst.sal;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
+import org.junit.contrib.java.lang.system.EnvironmentVariables;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -20,6 +22,9 @@ public class BaseTestCase {
     // these tests to do that, to eliminate the dependence on the default depth.
     final int READ_QUEUE_DEPTH = 100;
 
+    @Rule
+    public final EnvironmentVariables environmentVariables = new EnvironmentVariables();
+
     @Before
     public void setUp() {
         Random rand = new Random(2000L);
@@ -27,6 +32,8 @@ public class BaseTestCase {
         while (index <= 0) {
             index = rand.nextInt();
         }
+        final String random_lsst_dds_partition_prefix = TestUtils.generateRandomString();
+        environmentVariables.set("LSST_DDS_PARTITION_PREFIX", random_lsst_dds_partition_prefix);
         remote = new SAL_Test(index);
         controller = new SAL_Test(index);
     }

@@ -3,7 +3,7 @@ package org.lsst.sal;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class SAL_AddedGenericsTest {
+public class SAL_AddedGenericsTest extends BaseTestCase {
 
     /**
      * Test topics for a SAL component that does not have "csc" in AddedGenerics.
