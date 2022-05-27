@@ -680,9 +680,9 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
    		long ackHandle = HANDLE_NIL.value;
                 int actorIdx = SAL__SALData_command_[set i]_ACTOR;
 "
-                if { $i != "setAuthList" } { 
-                   puts $fout "		checkAuthList(sal\[actorIdx\].activeidentity);
-                }
+      if { $i != "setAuthList" } { 
+         puts $fout "		checkAuthList(sal\[actorIdx\].activeidentity);"
+      }
       puts $fout "
   		// create DataWriter :
   		DataWriter dwriter = getWriter2(SAL__SALData_ackcmd_ACTOR);
