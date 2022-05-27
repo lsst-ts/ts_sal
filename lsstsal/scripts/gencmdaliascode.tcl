@@ -258,8 +258,11 @@ int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
   // create DataWriter :
   if (sal\[actorIdx\].isProcessor == false) \{
       throw std::runtime_error(\"No controller for acceptCommand_[set i]\");
-  \}
-  checkAuthList(sal\[actorIdx\].activeidentity);
+  \}"
+  if { $i != "setAuthList" } {
+     puts $fout "	checkAuthList(sal\[actorIdx\].activeidentity);"
+  }
+  puts $fout "
   DataWriter_var dwriter = getWriter2(SAL__SALData_ackcmd_ACTOR);
   SALData::ackcmd[set ACKREVCODE]DataWriter_var SALWriter = SALData::ackcmd[set ACKREVCODE]DataWriter::_narrow(dwriter.in());
   DataReader_var dreader = getReader(actorIdx);
@@ -676,8 +679,11 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
    		int istatus =  -1;
    		long ackHandle = HANDLE_NIL.value;
                 int actorIdx = SAL__SALData_command_[set i]_ACTOR;
-
-                checkAuthList(sal\[actorIdx\].activeidentity);
+"
+                if { $i != "setAuthList" } { 
+                   puts $fout "		checkAuthList(sal\[actorIdx\].activeidentity);
+                }
+      puts $fout "
   		// create DataWriter :
   		DataWriter dwriter = getWriter2(SAL__SALData_ackcmd_ACTOR);
   		ackcmd[set ACKREVCODE]DataWriter SALWriter = ackcmd[set ACKREVCODE]DataWriterHelper.narrow(dwriter);
