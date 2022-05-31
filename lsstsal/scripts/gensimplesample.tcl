@@ -590,7 +590,7 @@ typedef struct [set subsys]_ackcmdLV \{
       int       cmdSeqNum;
       int 	ack;
       int 	error;
-      StrHdl	result;
+      StrHdl	result; /* 1000 */
 \} [set subsys]_ackcmd_Ctl;
 typedef struct [set subsys]_waitCompleteLV \{
       int       cmdSeqNum;
