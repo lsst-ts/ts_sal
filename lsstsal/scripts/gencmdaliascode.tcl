@@ -677,11 +677,12 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
    		int status = 0;
                 int j=0;
    		int istatus =  -1;
+                String dummy=\"\";
    		long ackHandle = HANDLE_NIL.value;
                 int actorIdx = SAL__SALData_command_[set i]_ACTOR;
 "
       if { $i != "setAuthList" } { 
-         puts $fout "		checkAuthList(sal\[actorIdx\].activeidentity);"
+         puts $fout "		checkAuthList(dummy);"
       }
       puts $fout "
   		// create DataWriter :
@@ -1104,13 +1105,13 @@ global SYSDIC
           if (defaultCheck) \{
              return SAL__OK;
           \}
-          command_setAuthList SALInstance = new command_setAuthList();
-          logevent_authList myData = new logevent_authList();
 
 	  if ( sal\[SAL__SALData_command_setAuthList_ACTOR\].isProcessor == false ) \{
      	    salProcessor(\"SALData_command_setAuthList\");
      	    salEventPub(\"SALData_logevent_authList\");
   	  \}
+          command_setAuthList SALInstance = new command_setAuthList();
+          logevent_authList myData = new logevent_authList();
   	  cmdId = acceptCommand_setAuthList(SALInstance);
   	  if (cmdId > 0) \{
       	    if (debugLevel > 0) \{
