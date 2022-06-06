@@ -214,21 +214,21 @@ global RELVERSION XMLVERSION SALVERSION
       set fout [open $SAL_WORK_DIR/[set subsys]/java/src/java_[set subsys]_setLogLevel_controller w]
       puts $fout "#!/bin/sh
 cd $rdir
-mvn -q -Dtest=[set subsys]Controller_setLogLevelTest.java test
+mvn -q --no-transfer-progress -Dtest=[set subsys]Controller_setLogLevelTest.java test
 "
       close $fout
       exec chmod 755 $SAL_WORK_DIR/[set subsys]/java/src/java_[set subsys]_setLogLevel_controller
       set fout [open $SAL_WORK_DIR/[set subsys]/java/src/java_[set subsys]_setLogLevel_commander w]
       puts $fout "#!/bin/sh
 cd $rdir
-mvn -q -Dtest=[set subsys]Commander_setLogLevelTest.java test
+mvn -q --no-transfer-progress -Dtest=[set subsys]Commander_setLogLevelTest.java test
 "
       close $fout
       exec chmod 755 $SAL_WORK_DIR/[set subsys]/java/src/java_[set subsys]_setLogLevel_commander
       set fout [open $SAL_WORK_DIR/[set subsys]/java/src/java_[set subsys]_authList_commander w]
       puts $fout "#!/bin/sh
 cd $rdir
-mvn -q -Dtest=[set subsys]Commander_setAuthListTest.java test
+mvn -q --no-transfer-progress -Dtest=[set subsys]Commander_setAuthListTest.java test
 "
       close $fout
       exec chmod 755 $SAL_WORK_DIR/[set subsys]/java/src/java_[set subsys]_authList_commander

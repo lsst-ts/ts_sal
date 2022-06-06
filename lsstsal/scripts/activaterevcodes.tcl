@@ -57,14 +57,12 @@ proc getItemName { rec } {
 #
 #  These consist of :
 #    revCodes - idl-templates/validated/sal/sal_revCoded_SUBSYSTEM.idl
-#    units - include/SAL_[set subsys]_salpy_units.pyb3
 #
 proc activeRevCodes { subsys } {
 global SAL_WORK_DIR REVCODE OPTIONS SALVERSION METADATA XMLVERSION
   if { $OPTIONS(verbose) } {stdlog "###TRACE>>> activeRevCodes $subsys"}
   set fin [open $SAL_WORK_DIR/idl-templates/validated/sal/sal_[set subsys].idl r]
   set fout [open $SAL_WORK_DIR/idl-templates/validated/sal/sal_revCoded_[set subsys].idl w]
-  set fpyb [open $SAL_WORK_DIR/include/SAL_[set subsys]_salpy_units.pyb3 w]
   set xmlversion $XMLVERSION
   puts $fout "// SAL_VERSION=$SALVERSION XML_VERSION=$xmlversion"
   gets $fin rec ; puts $fout $rec
@@ -92,7 +90,7 @@ global SAL_WORK_DIR REVCODE OPTIONS SALVERSION METADATA XMLVERSION
           set annot ""
             if { [lindex [lindex $rec 0] 0] != "const" } {
               set item [getItemName $rec]
-              if { $item == "[set subsys]ID" } {
+              if { $item == "salIndex" } {
                 set annot " // @Metadata=(Units=\"unitless\",Description=\"Index number for CSC with multiple instances\")"
                 set mu "unitless"
               } else {
@@ -101,7 +99,6 @@ global SAL_WORK_DIR REVCODE OPTIONS SALVERSION METADATA XMLVERSION
                 set md $METADATA($mn,$item,description)
                 set annot " // @Metadata=(Units=\"$mu\",Description=\"$md\")"
               }
-              puts $fpyb "	m.attr(\"[set curtopic]C_[set item]_units\") = \"$mu\";"
             }
           if { [string range $annot 0 2] != " //" } { set annot "" }
           puts $fout "$rec[set annot]"
@@ -111,7 +108,6 @@ global SAL_WORK_DIR REVCODE OPTIONS SALVERSION METADATA XMLVERSION
   }
   close $fin
   close $fout
-  close $fpyb
   if { $OPTIONS(verbose) } {stdlog "###TRACE<<< activeRevCodes $subsys"}
 }
 

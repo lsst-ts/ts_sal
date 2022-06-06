@@ -62,15 +62,47 @@ pipeline {
                 }
             }
         }
-        stage("Running SALPY tests") {
+        stage("Checkout DDSConfig") {
             steps {
                 script {
                     sh "docker exec -u saluser \${container_name} sh -c \"" +
                         "source ~/.setup.sh && " +
-                        "export LSST_DDS_QOS=file:///home/saluser/repos/ts_ddsconfig/qos/QoS.xml && " +
-                        "cd /home/saluser/repos/ts_sal && " +
-                        "make_salpy_libs.py Test Script && " +
-                        "pytest --junitxml=tests/.tests/junit.xml\""
+                        "source /home/saluser/.bashrc && " +
+                        "cd /home/saluser/repos/ts_ddsconfig && " +
+                        "/home/saluser/.checkout_repo.sh \${work_branches} && " +
+                        "git pull\""
+                }
+            }
+        }
+        stage("Running python tests") {
+            steps {
+                script {
+                    sh "docker exec -u saluser \${container_name} sh -c \"" +
+                        "source ~/.setup.sh && " +
+                        "export LSST_DDS_QOS=file:///home/saluser/repos/ts_ddsconfig/python/lsst/ts/ddsconfig/data/qos/QoS.xml && " +
+                        "cd /home/saluser/repos/ts_sal/ && " +
+                        "pytest\""
+                }
+            }
+        }
+        stage("Build SAL runtime assets") {
+            steps {
+                script {
+                    sh "docker exec -u saluser \${container_name} sh -c \"" +
+                        "source ~/.setup.sh && " +
+                        "mamba install -y catch2 && " +
+                        "export LSST_DDS_QOS=file:///home/saluser/repos/ts_ddsconfig/python/lsst/ts/ddsconfig/data/qos/QoS.xml && " +
+                        "cd /home/saluser/repos/ts_sal/cpp_tests && " +
+                        "salgenerator validate Test && " +
+                        "salgenerator validate Script && " +
+                        "salgenerator sal cpp Test && " +
+                        "salgenerator sal cpp Script && " +
+                        "salgenerator sal java Test && " +
+                        "salgenerator sal java Script && " +
+                        "salgenerator lib Test && " +
+                        "salgenerator lib Script && " +
+                        "salgenerator maven Test && " +
+                        "salgenerator maven Script\""
                 }
             }
         }
@@ -79,11 +111,9 @@ pipeline {
                 script {
                     sh "docker exec -u saluser \${container_name} sh -c \"" +
                         "source ~/.setup.sh && " +
-                        "conda install -y catch2 && " +
-                        "export LSST_DDS_QOS=file:///home/saluser/repos/ts_ddsconfig/qos/QoS.xml && " +
+                        "mamba install -y catch2 && " +
+                        "export LSST_DDS_QOS=file:///home/saluser/repos/ts_ddsconfig/python/lsst/ts/ddsconfig/data/qos/QoS.xml && " +
                         "cd /home/saluser/repos/ts_sal/cpp_tests && " +
-                        "salgenerator generate cpp Test && " +
-                        "salgenerator generate cpp Script && " +
                         "export LSST_DDS_PARTITION_PREFIX=testcpp && " +
                         "make junit\""
                 }
@@ -94,55 +124,58 @@ pipeline {
                 script {
                     sh "docker exec -u saluser \${container_name} sh -c \"" +
                         "source ~/.setup.sh && " +
-                        "export LSST_DDS_QOS=file:///home/saluser/repos/ts_ddsconfig/qos/QoS.xml && " +
+                        "export LSST_DDS_QOS=file:///home/saluser/repos/ts_ddsconfig/python/lsst/ts/ddsconfig/data/qos/QoS.xml && " +
                         "export LSST_DDS_PARTITION_PREFIX=testjava && " +
-                        "salgenerator Test validate && " +
-                        "salgenerator Test sal java && " +
-                        "salgenerator Test maven && " +
-                        "salgenerator Script validate && " +
-                        "salgenerator Script sal java && " +
-                        "salgenerator Script maven && " +
                         "cd /home/saluser/repos/ts_sal/java_tests && " +
-                        "mvn test\""
+                        "mvn --no-transfer-progress test\""
                 }
             }
         }
+        stage("Running Camera java tests") {
+            steps {
+                script {
+                    sh "docker exec -u saluser \${container_name} sh -c \"" +
+                        "source ~/.setup.sh && " +
+                        "mamba install -y catch2 && " +
+                        "export LSST_DDS_QOS=file:///home/saluser/repos/ts_ddsconfig/python/lsst/ts/ddsconfig/data/qos/QoS.xml && " +
+                        "export LSST_DDS_PARTITION_PREFIX=testcpp && " +
+                        "cd /home/saluser/repos/ts_sal/camera-tests && " +
+                        "mvn test -DXms2g -DXmx4g --no-transfer-progress\""
+                    
+                }
+            }
+        }//CameraTests
     }
     post {
         always {
             // The path of xml needed by JUnit is relative to
             // the workspace.
-            junit 'tests/.tests/junit.xml'
-            junit 'cpp_tests/*.xml'
-            junit 'java_tests/target/surefire-reports/*.xml'
+            echo "C++ unit-test results"
+            junit testResults: 'cpp_tests/*.xml', skipPublishingChecks: true
+            echo "Java unit-test results"
+            junit testResults: 'java_tests/target/surefire-reports/*.xml', skipPublishingChecks: true
+            echo "Camera unit-test results"
+            junit testResults: 'camera-tests/target/surefire-reports/TEST*.xml', skipPublishingChecks: true
 
-            // Publish the HTML report
-            publishHTML (target: [
-                allowMissing: false,
-                alwaysLinkToLastBuild: false,
-                keepAll: true,
-                reportDir: 'tests/.tests/',
-                reportFiles: 'index.html',
-                reportName: "Coverage Report"
-              ])
-              sh "docker exec -u saluser \${container_name} sh -c \"" +
-                  "source ~/.setup.sh && " +
-                  "cd /home/saluser/repos/ts_sal && " +
-                  "setup ts_sal -t saluser && " +
-                  "package-docs build\""
+            echo "Build documents"
+            sh "docker exec -u saluser \${container_name} sh -c \"" +
+                "source ~/.setup.sh && " +
+                "cd /home/saluser/repos/ts_sal && " +
+                "setup ts_sal -t saluser && " +
+                "package-docs build\""
 
-              script {
+            echo "Publish documents"
+            script {
+                def RESULT = sh returnStatus: true, script: "docker exec -u saluser \${container_name} sh -c \"" +
+                    "source ~/.setup.sh && " +
+                    "cd /home/saluser/repos/ts_sal && " +
+                    "setup ts_sal -t saluser && " +
+                    "ltd upload --product ts-sal --git-ref \${GIT_BRANCH} --dir doc/_build/html\""
 
-                  def RESULT = sh returnStatus: true, script: "docker exec -u saluser \${container_name} sh -c \"" +
-                      "source ~/.setup.sh && " +
-                      "cd /home/saluser/repos/ts_sal && " +
-                      "setup ts_sal -t saluser && " +
-                      "ltd upload --product ts-sal --git-ref \${GIT_BRANCH} --dir doc/_build/html\""
-
-                  if ( RESULT != 0 ) {
-                      unstable("Failed to push documentation.")
-                  }
-               }
+                if ( RESULT != 0 ) {
+                    unstable("Failed to push documentation.")
+                }
+            }
         }
         cleanup {
             sh """

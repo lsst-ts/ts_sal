@@ -7,4 +7,4 @@ fi
 
 echo "Starting Java minimal commander"
 cd $SAL_WORK_DIR/maven/Test
-mvn -Dindex=$1 -DlogLevel=$2 -Dtest=TestWithSalobjTargetTest test
+mvn --no-transfer-progress -Dindex=$1 -DlogLevel=$2 -Dtest=TestWithSalobjTargetTest test

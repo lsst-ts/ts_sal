@@ -2,7 +2,7 @@
 ## \file gencmdaliascode.tcl
 # \brief This contains procedures to create the SAL API code
 #  to manager the Command Topics. It generates code and tests
-#  for C++, Python (pybind11), and Java APIs
+#  for C++, and Java APIs
 #
 # This Source Code Form is subject to the terms of the GNU Public\n
 # License, V3 
@@ -17,7 +17,6 @@ source $SAL_DIR/gencommandtests.tcl
 source $SAL_DIR/gencommandtestssinglefile.tcl 
 source $SAL_DIR/gencommandtestsjava.tcl
 source $SAL_DIR/gencommandtestssinglefilejava.tcl
-source $SAL_DIR/gentestspython.tcl 
 source $SAL_DIR/activaterevcodes.tcl 
 
 #
@@ -28,7 +27,7 @@ source $SAL_DIR/activaterevcodes.tcl
 #
 #  Copy the generic DDS code to manage command Topics
 #  using the template in code/templates/SALDDS.lang.template
-#  where lang = cpp,python,java
+#  where lang = cpp,java
 #
 proc addgenericcmdcode { fout lang subsys } {
 global OPTIONS SAL_DIR
@@ -83,7 +82,7 @@ global CMD_ALIASES CMDS DONE_CMDEVT ACKREVCODE REVCODE SAL_WORK_DIR OPTIONS
   */
       int issueCommand_[set i]( SALData_command_[set i]C *data );
 
-/** Accept the [set i] command. The SAL will automatically generate an ackCmd message with an ack = SAL__CMD_ACK
+/** Accept the [set i] command. The
   * unless commanding is currently blocked by the authList setting (in which case the command will be ack = SAL__CMD_NOPERM
   * and no cmdId will be returned to the caller (=0)
   * @param data is the command payload $turl
@@ -150,17 +149,6 @@ global CMD_ALIASES CMDS DONE_CMDEVT ACKREVCODE REVCODE SAL_WORK_DIR OPTIONS
        if { $result == "none" } {stdlog $bad ; errorexit "failure in gencommandtestsjava" }
      }
   }
-  if { $lang == "python" } {
-     set result none
-     catch { set result [gencmdaliaspython $subsys $fout] } bad
-     if { $result == "none" } {stdlog $bad ; errorexit "failure in gencmdaliaspython" }
-     stdlog "$result"
-     if { $DONE_CMDEVT == 0} {
-       catch { set result [gencommandtestspython $subsys] } bad
-       if { $result == "none" } {stdlog $bad ; errorexit "failure in gencommandtestspython" }
-       stdlog "$result"
-     }
-  }
   if { $lang == "isocpp" } {
      set result none
      if { $result == "none" } {stdlog $bad ; errorexit "failure in addgenericcmdcode" }
@@ -212,7 +200,7 @@ int SAL_SALData::issueCommand_[set i]( SALData_command_[set i]C *data )
   SALData::command_[set i][set revcode]DataWriter_var SALWriter = SALData::command_[set i][set revcode]DataWriter::_narrow(dwriter.in());
 
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
-  Instance.SALDataID = subsystemID;
+  Instance.salIndex = subsystemID;
   cmdHandle = SALWriter->register_instance(Instance);
 #endif
 
@@ -270,7 +258,11 @@ int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
   // create DataWriter :
   if (sal\[actorIdx\].isProcessor == false) \{
       throw std::runtime_error(\"No controller for acceptCommand_[set i]\");
-  \}
+  \}"
+  if { $i != "setAuthList" } {
+     puts $fout "	checkAuthList(sal\[actorIdx\].activeidentity);"
+  }
+  puts $fout "
   DataWriter_var dwriter = getWriter2(SAL__SALData_ackcmd_ACTOR);
   SALData::ackcmd[set ACKREVCODE]DataWriter_var SALWriter = SALData::ackcmd[set ACKREVCODE]DataWriter::_narrow(dwriter.in());
   DataReader_var dreader = getReader(actorIdx);
@@ -291,7 +283,7 @@ int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
       cout << \"    instance-state : \" << info\[j\].instance_state << endl;
     \}
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
-    ackdata.SALDataID = subsystemID;
+    ackdata.salIndex = subsystemID;
 #endif
     ackdata.identity = Instances\[j\].private_identity;
     ackdata.origin = Instances\[j\].private_origin;
@@ -323,7 +315,7 @@ int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
         puts $fout "
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
     ackHandle = SALWriter->register_instance(ackdata);
-    ackdata.SALDataID = subsystemID;
+    ackdata.salIndex = subsystemID;
 #endif
     ackdata.private_sndStamp = getCurrentTime();
 "
@@ -339,10 +331,13 @@ int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
     \}
 "
      }
-     puts $fout "    istatus = SALWriter->write(ackdata, ackHandle);"
-     puts $fout "    checkStatus(istatus, \"SALData::ackcmd[set ACKREVCODE]DataWriter::write\");"
+     puts $fout "    
+    if ( ackdata.ack != SAL__CMD_ACK ) \{
+       istatus = SALWriter->write(ackdata, ackHandle);
+       checkStatus(istatus, \"SALData::ackcmd[set ACKREVCODE]DataWriter::write\");
+    \}
+"
    puts $fout "
-//    SALWriter->unregister_instance(ackdata, ackHandle);
      \} else \{
         if (debugLevel > 8) \{
           cout << \"    Old command ignored : \" << status << \":\" << int(rcvdTime) << endl;
@@ -535,7 +530,7 @@ salReturn SAL_SALData::ackCommand_[set i]( int cmdId, salLONG ack, salLONG error
    ackdata.identity = DDS::string_dup(sal\[actorIdxCmd\].activeidentity.c_str());
    ackdata.cmdtype = actorIdxCmd;
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
-   ackdata.SALDataID = subsystemID;
+   ackdata.salIndex = subsystemID;
 #endif
    if (debugLevel > 0) \{
       cout << \"=== \[ackCommand_[set i]\] acknowledging a command with :\" << endl;
@@ -548,7 +543,7 @@ salReturn SAL_SALData::ackCommand_[set i]( int cmdId, salLONG ack, salLONG error
    \}
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
    ackHandle = SALWriter->register_instance(ackdata);
-   ackdata.SALDataID = subsystemID;
+   ackdata.salIndex = subsystemID;
 #endif
    ackdata.private_revCode = DDS::string_dup(\"[string trim $ACKREVCODE _]\");
    ackdata.private_sndStamp = getCurrentTime();
@@ -583,7 +578,7 @@ salReturn SAL_SALData::ackCommand_[set i]C(SALData_ackcmdC *response )
    ackdata.identity = DDS::string_dup(sal\[actorIdxCmd\].activeidentity.c_str());
    ackdata.cmdtype = actorIdxCmd;
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
-   ackdata.SALDataID = subsystemID;
+   ackdata.salIndex = subsystemID;
 #endif
    if (debugLevel > 0) \{
       cout << \"=== \[ackCommand_[set i]\] acknowledging a command with :\" << endl;
@@ -596,7 +591,7 @@ salReturn SAL_SALData::ackCommand_[set i]C(SALData_ackcmdC *response )
    \}
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
    ackHandle = SALWriter->register_instance(ackdata);
-   ackdata.SALDataID = subsystemID;
+   ackdata.salIndex = subsystemID;
 #endif
    ackdata.private_revCode = DDS::string_dup(\"[string trim $ACKREVCODE _]\");
    ackdata.private_sndStamp = getCurrentTime();
@@ -653,7 +648,7 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
           SALInstance.private_origin = origin;
           SALInstance.private_sndStamp = getCurrentTime();"
       if { [info exists SYSDIC($subsys,keyedID)] } {
-        puts $fout "	  SALInstance.SALDataID = subsystemID;
+        puts $fout "	  SALInstance.salIndex = subsystemID;
 	  cmdHandle = SALWriter.register_instance(SALInstance);"
       } else {
         puts $fout "	  SALWriter.register_instance(SALInstance);"
@@ -669,7 +664,7 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
 	\}
 "
       puts $fout "
-/** Accept the [set i] command. The SAL will automatically generate an ackCmd message with an ack = SAL__CMD_ACK
+/** Accept the [set i] command.
     unless commanding is currently blocked by the authList setting, in which case the command will be ack = SAL__CMD_NOPERM
     and no cmdId will be returned to the caller (=0)
   * @param data is the command payload $turl
@@ -682,9 +677,14 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
    		int status = 0;
                 int j=0;
    		int istatus =  -1;
+                String dummy=\"\";
    		long ackHandle = HANDLE_NIL.value;
                 int actorIdx = SAL__SALData_command_[set i]_ACTOR;
-
+"
+      if { $i != "setAuthList" } { 
+         puts $fout "		checkAuthList(dummy);"
+      }
+      puts $fout "
   		// create DataWriter :
   		DataWriter dwriter = getWriter2(SAL__SALData_ackcmd_ACTOR);
   		ackcmd[set ACKREVCODE]DataWriter SALWriter = ackcmd[set ACKREVCODE]DataWriterHelper.narrow(dwriter);
@@ -707,7 +707,7 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
                       sal\[actorIdx\].activecmdid = SALInstance.value\[0\].private_seqNum;
                       ackdata = new SALData.ackcmd[set ACKREVCODE]();"
       if { [info exists SYSDIC($subsys,keyedID)] } {
-         puts $fout "	              ackdata.SALDataID = subsystemID;"
+         puts $fout "	              ackdata.salIndex = subsystemID;"
       }
       puts $fout "		      ackdata.private_identity = SALInstance.value\[0\].private_identity;
 		      ackdata.private_origin = SALInstance.value\[0\].private_origin;
@@ -736,8 +736,10 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
                        \}
 "
            }
+      puts $fout "
+                 if ( ackdata.ack != SAL__CMD_ACK ) \{"
       if { [info exists SYSDIC($subsys,keyedID)] } {
-         puts $fout "		      ackdata.SALDataID = subsystemID;
+         puts $fout "		      ackdata.salIndex = subsystemID;
 		      ackHandle = SALWriter.register_instance(ackdata);"
       }
       puts $fout "
@@ -747,6 +749,7 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
     		     if (debugLevel > 8) \{
       			System.out.println(  \"    Old command ignored :   \" + dTime );
                      \}
+                    \}
                    \}
 		 \}
                 \} else \{
@@ -909,7 +912,7 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
                 ackdata.private_sndStamp = getCurrentTime();
    		ackdata.result = result;"
       if { [info exists SYSDIC($subsys,keyedID)] } {
-         puts $fout "   		ackdata.SALDataID = subsystemID;"
+         puts $fout "   		ackdata.salIndex = subsystemID;"
       }
       puts $fout "
    		if (debugLevel > 0) \{
@@ -922,7 +925,7 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
       			System.out.println(  \"    result   : \" + ackdata.result );
    		\}"
       if { [info exists SYSDIC($subsys,keyedID)] } {
-         puts $fout "   		ackdata.SALDataID = subsystemID;
+         puts $fout "   		ackdata.salIndex = subsystemID;
    		ackHandle = SALWriter.register_instance(ackdata);"
       }
       puts $fout "   		istatus = SALWriter.write(ackdata, ackHandle);"
@@ -938,46 +941,6 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
 }
 
 
-
-#
-## Documented proc \c gencmdaliaspython .
-# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
-# \param[in] fout File handle of output file
-#
-#  Generates the Command handling code for a Subsystem/CSC.
-#  Code is generated for issueCommand,acceptCommand,waitForCompletion,ackCommand,getResponse
-#  per-command Topic type. This routine generates C++/pybind11 wrapper code.
-#
-proc gencmdaliaspython { subsys fout } {
-global CMD_ALIASES CMDS
-  if { [info exists CMD_ALIASES($subsys)] } {
-   puts $fout "
-        .def( 
-            \"salCommand\"
-            , (::salReturn ( ::SAL_SALData::* )( char * ) )( &::SAL_SALData::salCommand )
-            , ( py::arg(\"topicName\") ) )    
-        .def( 
-            \"salProcessor\"
-            , (::salReturn ( ::SAL_SALData::* )( char * ) )( &::SAL_SALData::salProcessor )
-            , ( py::arg(\"topicName\") ) )    
-"
-   foreach i $CMD_ALIASES($subsys) {
-    if { [info exists CMDS($subsys,$i,param)] } {
-      stdlog "	: alias = $i"
-      puts $fout "
-        .def( \"issueCommand_[set i]\",       &SAL_SALData::issueCommand_[set i] )
-        .def( \"acceptCommand_[set i]\",      &SAL_SALData::acceptCommand_[set i] )
-        .def( \"ackCommand_[set i]\",         &SAL_SALData::ackCommand_[set i] )
-        .def( \"ackCommand_[set i]C\",         &SAL_SALData::ackCommand_[set i]C )
-        .def( \"waitForCompletion_[set i]\",  &SAL_SALData::waitForCompletion_[set i] )
-        .def( \"getResponse_[set i]\",        &SAL_SALData::getResponse_[set i]C )
-      "
-    } else {
-      stdlog "Alias $i has no parameters - uses standard [set subsys]_command"
-    }
-   }
-  }
-}
 
 
 
@@ -1051,7 +1014,7 @@ global SYSDIC
       puts $fout "
   	    // Filter expr
             String expr\[\] = new String\[0\];
-            String sFilter = \"SALDataID = \" + subsystemID;
+            String sFilter = \"salIndex = \" + subsystemID;
     	    createContentFilteredTopic2(SAL__SALData_ackcmd_ACTOR,\"filteredResponse\", sFilter, expr);
 
 	    // create DataReader
@@ -1092,7 +1055,7 @@ global SYSDIC
       puts $fout "
   	  // Filter expr
           String expr\[\] = new String\[0\];
-          String sFilter = \"SALDataID = \" + subsystemID;
+          String sFilter = \"salIndex = \" + subsystemID;
           String fCmd = \"filteredCmd_\" + sal\[actorIdx\].topicHandle;
     	  createContentFilteredTopic(actorIdx,fCmd, sFilter, expr);
  	  createReader(actorIdx,false);
@@ -1121,7 +1084,7 @@ global SYSDIC
 "
    if { $subsys == "LOVE" } {
       puts $fout "
-	public int checkAuthList(String private_identity)
+	public int checkAuthList(String private_identity);
 	\{
              return SAL__OK;
         \}
@@ -1142,13 +1105,13 @@ global SYSDIC
           if (defaultCheck) \{
              return SAL__OK;
           \}
-          command_setAuthList SALInstance = new command_setAuthList();
-          logevent_authList myData = new logevent_authList();
 
 	  if ( sal\[SAL__SALData_command_setAuthList_ACTOR\].isProcessor == false ) \{
      	    salProcessor(\"SALData_command_setAuthList\");
      	    salEventPub(\"SALData_logevent_authList\");
   	  \}
+          command_setAuthList SALInstance = new command_setAuthList();
+          logevent_authList myData = new logevent_authList();
   	  cmdId = acceptCommand_setAuthList(SALInstance);
   	  if (cmdId > 0) \{
       	    if (debugLevel > 0) \{

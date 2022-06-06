@@ -54,7 +54,7 @@ global SAL_WORK_DIR OPTIONS CMD_ALIASES EVENT_ALIASES TLM_ALIASES CMDS EVTS TLMS
 #  Generate SAL API code for a set of Subsystems/CSCs
 #
 proc genTelemetryCodes { idlfile targets } {
-global DONE_CMDEVT OPTIONS ONEPYTHON SAL_DIR
+global DONE_CMDEVT OPTIONS SAL_DIR
   if { $OPTIONS(verbose) } {stdlog "###TRACE>>> genTelemetryCodes $targets"}
   foreach subsys $targets {
      set spl [file rootname [split $subsys _]]
@@ -83,14 +83,6 @@ global DONE_CMDEVT OPTIONS ONEPYTHON SAL_DIR
          set result none
          catch { set result [makesalcode $idlfile $base $name isocpp] } bad
          if { $result == "none" } {stdlog $bad}
-         if { $OPTIONS(verbose) } {stdlog $result}
-       }
-       if { $OPTIONS(python) && $ONEPYTHON == 0 } {
-         stdlog "Generating SAL Python code for $subsys $ONEPYTHON"
-         set result none
-         catch { set result [makesalcode $idlfile $base $name python] } bad
-         if { $result == "none" } {stdlog $bad}
-         set ONEPYTHON 1
          if { $OPTIONS(verbose) } {stdlog $result}
        }
      }
@@ -128,15 +120,6 @@ global OPTIONS SAL_WORK_DIR DONE_CMDEVT
       if { $result == "none" } {stdlog $bad}
       if { $OPTIONS(verbose) } {stdlog $result}
     } 
-    if { $OPTIONS(python) } {
-      set result none
-      catch { set result [makesalcmdevt $base python] } bad
-      if { $result == "none" } {stdlog "makesalcmdevt : $bad"}
-      if { $OPTIONS(verbose) } {stdlog $result}
-#      catch { set result [makesalcode $idlfile $base "notused" python] } bad
-#      if { $result == "none" } {stdlog $bad}
-#      if { $OPTIONS(verbose) } {stdlog $result}
-    }
     exec rm -fr $SAL_WORK_DIR/[set base]_notused
     if { $OPTIONS(verbose) } {stdlog "###TRACE<<< genGenericCodes $base"}
   }

@@ -10,6 +10,7 @@ JUNIT_FILES := $(shell ls *.xml 2>/dev/null)
 CPP := g++ -std=c++14 -Wall -fmessage-length=0 -g
 
 CFLAGS := \
+	$(shell pkg-config catch2-with-main --cflags) \
 	-I${OSPL_HOME}/include                   \
 	-I${OSPL_HOME}/include/sys               \
 	-I${OSPL_HOME}/include/dcps/C++/SACPP    \
@@ -17,7 +18,7 @@ CFLAGS := \
 	-I${SAL_HOME}/include                    \
 	-I${CONDA_PREFIX}/include
 
-LIBS := -L${SAL_WORK_DIR}/lib -lSAL_Test -lSAL_Script
+LIBS := $(shell pkg-config catch2-with-main --libs) -L${SAL_WORK_DIR}/lib -lSAL_Test -lSAL_Script
 
 ifneq ($(MAKECMDGOALS),clean)
     -include $(DEPS)

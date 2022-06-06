@@ -1,33 +1,17 @@
 package org.lsst.sal;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.File;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(SAL_Test.class)
-public class LsstDdsQosTest {
+public class LsstDdsQosTest extends BaseTestCase {
 
-    String dataDir;
-
-    @Before
-    public void setUp() {
-        dataDir = "../tests/data";
-        PowerMockito.mockStatic(System.class);
-        PowerMockito.when(System.getenv(Mockito.eq("LSST_DDS_PARTITION_PREFIX")))
-                .thenReturn(TestUtils.generateRandomString());
-    }
+    final String dataDir = "../tests/data";
 
     @Test
     public void testQosNoEnvVar() {
-        PowerMockito.when(System.getenv(Mockito.eq("LSST_DDS_QOS"))).thenReturn(null);
+        environmentVariables.clear("LSST_DDS_QOS");
         try {
             new SAL_Test(1);
             Assert.fail("An exception should have been thrown.");
@@ -42,7 +26,7 @@ public class LsstDdsQosTest {
         String filepath = dataDir + "/not_a_file";
         File file = new File(filepath);
         Assert.assertFalse(file.exists());
-        PowerMockito.when(System.getenv(Mockito.eq("LSST_DDS_QOS"))).thenReturn("file://" + filepath);
+        environmentVariables.set("LSST_DDS_QOS", "file://" + filepath);
         try {
             new SAL_Test(1);
             Assert.fail("An exception should have been thrown.");
@@ -59,7 +43,7 @@ public class LsstDdsQosTest {
             String filepath = dataDir + "/QoS_no_" + profile + ".xml";
             File file = new File(filepath);
             Assert.assertTrue(file.exists());
-            PowerMockito.when(System.getenv(Mockito.eq("LSST_DDS_QOS"))).thenReturn("file://" + filepath);
+            environmentVariables.set("LSST_DDS_QOS", "file://" + filepath);
             try {
                 new SAL_Test(1);
                 Assert.fail("An exception should have been thrown.");

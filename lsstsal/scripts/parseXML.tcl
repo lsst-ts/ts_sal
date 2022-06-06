@@ -25,6 +25,7 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
    set fin [open $fname r]
    set fout ""
    set ctype ""
+   set alias shared
    set explanation ""
    set checkGenerics 0
    set subsys [lindex [split [file tail $fname] _] 0]
@@ -64,9 +65,9 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
       set tag   [lindex [split $rec "<>"] 1]
       set value [lindex [split $rec "<>"] 2]
       if { $tag == "Enumeration" } {
-        if { [lindex [split $rec "<>"] 3] != "/[set tag]" } {
+        if { [lindex [split $rec "<>"] 3] != "/Enumeration" } {
            gets $fin rec
-           while { [lindex [split $rec <>] 1] != "/[set tag]" } {
+           while { [lindex [split $rec <>] 1] != "/Enumeration" } {
              set value "$value $rec"
              gets $fin rec
            }
@@ -75,7 +76,6 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
       if { $tag == "SALTelemetry" }    {set ctype "telemetry" ; set intopic 1 ; set explanation ""}
       if { $tag == "SALCommand" }      {
           set ctype "command" ; set intopic 1 ; set alias "" ; set explanation ""
-          set device ""; set property ""; set action "" ; set vvalue ""
       }
       if { $tag == "SALEvent" }        {set ctype "event" ; set intopic 1; set alias "" ; set explanation ""}
       if { $tag == "SALTelemetrySet" } {set ctype "telemetry"}
@@ -91,10 +91,7 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
              exit -1
           }
       }
-      if { $tag == "Device" }          {set device $value}
-      if { $tag == "Property" }        {set property $value}
-      if { $tag == "Action" }          {set action $value}
-      if { $tag == "Value" }           {set vvalue $value}
+
       if { $tag == "Subsystem" }       {set subsys $value}
       if { $tag == "Explanation" }     {set explanation $value}
       if { $tag == "Enumeration" }     {
@@ -111,23 +108,7 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
          set intopic 0
          set EVTS($subsys,$alias) $alias
          set EVENT_ALIASES($subsys) [lappend EVENT_ALIASES($subsys) $alias]
-         if { [info exists EVTS($subsys,$alias,plist)] } {
-          if { [lsearch $EVTS($subsys,$alias,plist) priority] < 0 } {
-            lappend EVTS($subsys,$alias,param) "long	priority"
-            lappend EVTS($subsys,$alias,plist) priority
-            puts $fout "	  long	priority;"
-            incr itemid 1
-            puts $fsql "INSERT INTO [set subsys]_items VALUES (\"[set tname]\",$itemid,\"priority\",\"int\",1,\"unitless\",1,\"\",\"\",\"Priority code\");"
-          }
-         } else {
-          lappend EVTS($subsys,$alias,param) "long	priority"
-          lappend EVTS($subsys,$alias,plist) priority
-          puts $fout "	  long	priority;"
-          incr itemid 1
-          puts $fsql "INSERT INTO [set subsys]_items VALUES (\"[set tname]\",$itemid,\"priority\",\"int\",1,\"unitless\",1,\"\",\"\",\"Priority code\");"
-         }
          if { $explanation != "" } {set EVTS($subsys,$alias,help) $explanation}
-         set DESC($subsys,$alias,priority) "Priority code"
       }
       if { $tag == "/SALCommand" } {
          set intopic 0
@@ -186,7 +167,7 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
         puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",6,\"private_origin\",\"int\",1,\"unitless\",1,\"\",\"\",\"PID code of sender\");"
         set itemid 6
         if { [info exists SYSDIC($subsys,keyedID)] } {
-           puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",8,\"[set subsys]ID\",\"int\",1,\"unitless\",1,\"\",\"\",\"Index of $subsys instance\");"
+           puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",8,\"salIndex\",\"int\",1,\"unitless\",1,\"\",\"\",\"Index of $subsys instance\");"
            set itemid 7
         }
         set tdesc 1
@@ -199,6 +180,8 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
         }
         if { $ctype == "event" } {
            set EVTS($subsys,$alias) $alias
+           set EVTS($subsys,$alias,plist) ""
+           set EVTS($subsys,$alias,param) ""
         }
         set DESC($subsys,$alias,help) ""
       }
@@ -367,7 +350,7 @@ global SYSDIC IDXENUMDONE
          set enum [string trim $e "\{\}"]
          set id [lindex [split $enum :] 0]
          set i  [lindex [split $enum :] 1]
-         puts $fout " const long indexEnumeration_[set i]=$id;"
+         puts $fout " const long long indexEnumeration_[set i]=$id;"
       }
       set IDXENUMDONE($subsys) 1
    }
@@ -393,10 +376,6 @@ global METADATA
   set METADATA([set topic],private_seqNum,description) "Sequence number"
   set METADATA([set topic],private_identity,description) "Identity of publisher"
   set METADATA([set topic],private_origin,description) "PID of publisher"
-  if { [lindex [split $topic "_"] 1] == "logevent" } {
-     set METADATA([set topic],priority,description) "Priority level"
-     set METADATA([set topic],priority,units) "unitless"
-  }
 }
 
 #
@@ -445,7 +424,7 @@ global EVENT_ENUM EDONE
                  set i [string trim [lindex [split $id "="] 1]]
                  set id [string trim [lindex [split $id "="] 0]]
               }
-              puts $fout " const long [set alias]_[string trim $id " "]=$i;"
+              puts $fout " const long long [set alias]_[string trim $id " "]=$i;"
               incr i 1
           }
       }
@@ -461,7 +440,7 @@ global EVENT_ENUM EDONE
                  set i [string trim [lindex [split $id "="] 1]]
                  set id [string trim [lindex [split $id "="] 0]]
               }
-              puts $fout " const long [set subsys]_shared_[string trim $id " "]=$i;"
+              puts $fout " const long long [set subsys]_shared_[string trim $id " "]=$i;"
               incr i 1
           }
       }

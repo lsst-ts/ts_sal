@@ -78,11 +78,11 @@ proc insertCommanders { subsys file_writer } {
     puts $file_writer "\{"
 
     if { [info exists SYSDIC($subsys,keyedID)] } {
-        puts $file_writer "  int [set subsys]ID = 1;"
+        puts $file_writer "  int salIndex = 1;"
         puts $file_writer "  if (getenv(\"LSST_[string toupper [set subsys]]_ID\") != NULL) \{"
-        puts $file_writer "    sscanf(getenv(\"LSST_[string toupper [set subsys]]_ID\"),\"%d\",&[set subsys]ID);"
+        puts $file_writer "    sscanf(getenv(\"LSST_[string toupper [set subsys]]_ID\"),\"%d\",&salIndex);"
         puts $file_writer "  \}"
-        puts $file_writer "  SAL_[set subsys] mgr = SAL_[set subsys]([set subsys]ID);\n"
+        puts $file_writer "  SAL_[set subsys] mgr = SAL_[set subsys](salIndex);\n"
     } else {
         puts $file_writer "  SAL_[set subsys] mgr = SAL_[set subsys]();"
     }
@@ -129,11 +129,11 @@ proc insertControllers { subsys file_writer } {
     puts $file_writer "  int timeout = 1;"
 
     if { [info exists SYSDIC($subsys,keyedID)] } {
-        puts $file_writer "  int [set subsys]ID = 1;"
+        puts $file_writer "  int salIndex = 1;"
         puts $file_writer "  if (getenv(\"LSST_[string toupper [set subsys]]_ID\") != NULL) \{"
-        puts $file_writer "    sscanf(getenv(\"LSST_[string toupper [set subsys]]_ID\"),\"%d\",&[set subsys]ID);"
+        puts $file_writer "    sscanf(getenv(\"LSST_[string toupper [set subsys]]_ID\"),\"%d\",&salIndex);"
         puts $file_writer "  \}"
-        puts $file_writer "  SAL_[set subsys] mgr = SAL_[set subsys]([set subsys]ID);\n"
+        puts $file_writer "  SAL_[set subsys] mgr = SAL_[set subsys](salIndex);\n"
     } else {
         puts $file_writer "  SAL_[set subsys] mgr = SAL_[set subsys]();"
     }

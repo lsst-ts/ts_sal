@@ -234,7 +234,7 @@ global XMLTOPICS XMLTLM IDLRESERVED XMLITEMS
            puts $fout "\};"
            puts $fout "#pragma keylist $topicid"
            catch {
-              set addc [exec grep "const long " $SAL_WORK_DIR/idl-templates/$f]
+              set addc [exec grep "const " $SAL_WORK_DIR/idl-templates/$f]
               puts $fout $addc
            }
            close $fout
@@ -439,7 +439,7 @@ global SAL_WORK_DIR OPTIONS
    puts $fack "struct [set base]_ackcmd \{"
    add_private_idl $fack
 #   if { $keyid } {
-#      puts $fack "      long	[set base]ID;"
+#      puts $fack "      long	salIndex;"
 #   }
    puts $fack "	  long	ack;
 	  long	error;

@@ -6,6 +6,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include "SAL_SALData.h"
+#include "SAL_SALData_actors.h"
 #include "QosProvider.h"
 using namespace SALData;
 
@@ -317,7 +318,7 @@ salReturn SAL_SALData::salTelemetrySub(int actorIdx)
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
    // Filter expr
    char buf[64];
-   sprintf(buf, "SALDataID = %d", subsystemID);
+   sprintf(buf, "salIndex = %d", subsystemID);
    DDS::String_var sFilter = DDS::string_dup(buf);
    // Filter expr
    StringSeq sSeqExpr;
@@ -455,7 +456,7 @@ salReturn SAL_SALData::salEventSub(char *topicName)
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
    // Filter expr
    char buf[64];
-   sprintf(buf, "SALDataID = %d", subsystemID);
+   sprintf(buf, "salIndex = %d", subsystemID);
    DDS::String_var sFilter = DDS::string_dup(buf);
    // Filter expr
    StringSeq sSeqExpr;

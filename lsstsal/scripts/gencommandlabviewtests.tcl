@@ -63,8 +63,8 @@ int main (int argc, char *argv\[\])
    SAL_[set subsys]_shmem mgr = SAL_[set subsys]_shmem();"
    if { [info exists SYSDIC($subsys,keyedID)] } {
       puts $fcmd "
-  int [set subsys]ID = 1;
-  mgr.salShmConnect([set subsys]ID);"
+  int salIndex = 1;
+  mgr.salShmConnect(salIndex);"
    } else {
       puts $fcmd "  mgr.salShmConnect();"
    }
@@ -115,8 +115,8 @@ int main (int argc, char *argv\[\])
   SAL_[set subsys]_shmem mgr = SAL_[set subsys]_shmem();"
    if { [info exists SYSDIC($subsys,keyedID)] } {
       puts $fcmd "
-  int [set subsys]ID = 1;
-  mgr = salShmConnect([set subsys]ID);"
+  int salIndex = 1;
+  mgr = salShmConnect(salIndex);"
    } else {
       puts $fcmd "  mgr.salShmConnect();"
    }

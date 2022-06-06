@@ -20,8 +20,6 @@ Installation of system packages must be done using sudo (eg sudo yum install, or
 - xorg-x11-fonts-misc
 - java-1.7.0-openjdk-devel
 - maven
-- python-devel
-- swig
 - git
 - tk-devel
 
@@ -184,7 +182,7 @@ To set up a VM appropriately for this usage :
 4. From VM menu, install Guest Additions
 5. Once the OS has booted, enable the network
 6. Verify the network is ok.
-7. sudo yum install xterm xorg-x11-fonts-misc java-1.7.0-openjdk-devel boost-python boost-python-devel maven python-devel tk-devel
+7. sudo yum install xterm xorg-x11-fonts-misc java-1.7.0-openjdk-devel maven tk-devel
 8. Configure (or disable) iptables and firewalld
    
    .. prompt:: bash
@@ -402,7 +400,7 @@ e.g.
 
 would generate the c++ communications libraries to be linked with any user code which needs to interface with the **skycam** subsystem.
 
-The "sal" keyword indicates SAL code generation is the required operation, the selected wrapper is cpp (GNU G++ compatible code is generated, other options are java, isocpp and python).
+The "sal" keyword indicates SAL code generation is the required operation, the selected wrapper is cpp (GNU G++ compatible code is generated, other options are java, cpp).
 
 C++ code generation produces a shared library for type support and another for the SAL API.
 It also produces test executables to publish and subscribe to all defined Telemetry streams, and to send all defined Commands and log Events.
@@ -410,7 +408,6 @@ It also produces test executables to publish and subscribe to all defined Teleme
 Java code generation produces a .jar class library for type support and another for the SAL API.
 It also produces .jar libraries to test publishing and subscribing to all defined Telemetry streams, and to send all defined Commands and log Events.
 
-The "python" option generates an import'able library.
 Simple example scripts to perform the major functions can be found later in this document.
 
 The "labview" keyword indicates that a LabVIEW compatible shared library and Monitor task should be built (the "sal cpp" step must previously have been run).
@@ -476,7 +473,7 @@ Step 4-Code Generation
 ^^^^^^^^^^^^^^^^^^^^^^
 Run the salgenerator tool using the sal option for the appropriate subsystem.
 The sal option requires at least one target language to also be specified.
-The current target language are cpp, isocpp, java and python.
+The current target language are cpp, java.
 
 Depending upon the target language, successful completion of the code generation results in the following output directories (e.g. for mount)
 .. code::
@@ -527,7 +524,6 @@ Depending upon the target language, successful completion of the code generation
             cpp 
             isocpp
             java
-            python
 
         mount_TC/cpp:
 
@@ -618,11 +614,6 @@ will create and build a maven project and it in
 
 .. code::
 
-    salgenerator mount sal python
-        mount/cpp/src:
-            Makefile_sacpp_mount_python
-            SALPY_mount.cpp - Boost.python wrapper
-            SALPY_mount.so - import'able python library
 
 salgenerator Options
 --------------------
@@ -633,7 +624,7 @@ The salgenerator executes a variety of processes, depending upon the options sel
     validate - check the XML files, generate validated IDL
     html - generate web form interfaces and documentation
     labview - generate labVIEW interface
-    sal [lang] - generate SAL C++, Java or Python wrappers
+    sal [lang] - generate SAL C++, Java or wrappers
     lib - generate the SAL shared library for a subsystem
     icd - generate ICD document
     maven - generate a maven project (per subsystem)
@@ -643,7 +634,7 @@ SAL API examples
 ----------------
 The SAL code generation processes also generates a comprehensive set of test programs so that correct operation of the interfaces can be verified.
 
-Sample code is generated for the C++, Java and Python target languages currently.
+Sample code is generated for the C++, Java target languages currently.
 
 The sample code provides a simple command line test for
 
@@ -690,10 +681,8 @@ shoud produce
         salgenerator subsystem flag(s)
         where flag(s) may be
             validate - check the XML Telemetry/Command/LogEvent definitions
-            sal - generate SAL wrappers for cpp, java, isocpp, python
+            sal - generate SAL wrappers for cpp, java, isocpp
             lib - generate shared library
-            tcl - generate tcl interface
-            html - generate web form interface
             labview - generate LabVIEW low-level interface
             maven - generate a maven repository
             db - generate telemetry database table
@@ -882,29 +871,6 @@ Java
         public void salShutdown() - tidyup
         public void salEvent(String topicName) - create event object
 
-Python(pybind11 bindings)
--------------------------
-Each Telemetry/Command/Event datatype is wrapped like this (arrays are mapped to numpy arrays).
-
-.. code::
-
-    py::class_<atcs_command_OffsetC>(m,"atcs_command_OffsetC")
-        .def(py::init<>())
-        .def_readwrite("device", &atcs_command_OffsetC::device)
-        .def_readwrite("property", &atcs_command_OffsetC::property)
-        .def_readwrite("action", &atcs_command_OffsetC::action)
-        .def_readwrite("value", &atcs_command_OffsetC::value)
-        .def_readwrite("offsetX", &atcs_command_OffsetC::offsetX)
-        .def_readwrite("offsetY", &atcs_command_OffsetC::offsetY)
-
-Commands, Events, and Telemetry calls are wrapped like this, every C++ method has a corresponding python binding.
-
-.. code::
-    
-    .def("issueCommand_enable", &SAL_atcs::issueCommand_enable)
-    .def("acceptCommand_enable", &SAL_atcs::acceptCommand_enable)
-    .def("ackCommand_enable", &SAL_atcs::ackCommand_enable)
-    .def("waitForCompletion_enable", &SAL_atcs::waitForCompletion_enable)
 
 SAL XML Schema
 ==============
@@ -1095,7 +1061,7 @@ The LabVIEW Shared library import is used to automatically generate VI's to inte
    Another extensive period will follow where each VI is processed again (you will see them being removed and re-added to the list one-by-one).
    Finally the process completes and the main LabVIEW window will reappear.
 
-   Once the VI's has been built, you can manually test them by running them against either each other, or against the C++/Java/Python test programs.
+   Once the VI's has been built, you can manually test them by running them against either each other, or against the C++/Java test programs.
 
    Regardless of which option you choose, the LabVIEW environment must be set up first by
 
