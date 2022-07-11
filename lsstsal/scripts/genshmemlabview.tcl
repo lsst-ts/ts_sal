@@ -1354,7 +1354,7 @@ global SAL_DIR SAL_WORK_DIR
           \}
        \}
        if ( [set base]_memIO->client\[LVClient\].hasOutgoing_[set base]_[set name] ) \{
-          lpriority = [set base]_memIO->client\[LVClient\].shmemOutgoing_[set base]_[set name].priority;"
+          lpriority = 1;"
    set frag [open $SAL_WORK_DIR/include/SAL_[set base]_[set name]monout.tmp r]
    while { [gets $frag rec] > -1} {puts $fout $rec}
    close $frag
