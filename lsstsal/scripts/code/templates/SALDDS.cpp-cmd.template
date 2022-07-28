@@ -143,6 +143,11 @@ salReturn SAL_SALData::checkAuthList(std::string private_identity)
   if ( sal[SAL__SALData_command_setAuthList_ACTOR].isProcessor == false ) {
      status = salProcessor("SALData_command_setAuthList");
      status = salEventPub("SALData_logevent_authList");
+     authorizedUsers = "";
+     nonAuthorizedCSCs = "";
+     myData.authorizedUsers = SALInstance.authorizedUsers;
+     myData.nonAuthorizedCSCs = SALInstance.nonAuthorizedCSCs;
+     logEvent_authList(&myData, 1);
   }
   cmdId = acceptCommand_setAuthList(&SALInstance);
   if (cmdId > 0) {

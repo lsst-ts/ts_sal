@@ -6,6 +6,12 @@
 Version History
 ###############
 
+Changes for 7.1.0
+=================
+
+* Send logevent_authList with empty payload on startup if authList is enabled
+
+
 Changes for 7.0.0
 =================
 
