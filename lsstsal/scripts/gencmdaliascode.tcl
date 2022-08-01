@@ -1109,6 +1109,12 @@ global SYSDIC
 	  if ( sal\[SAL__SALData_command_setAuthList_ACTOR\].isProcessor == false ) \{
      	    salProcessor(\"SALData_command_setAuthList\");
      	    salEventPub(\"SALData_logevent_authList\");
+            logevent_authList myData = new logevent_authList();
+     	    authorizedUsers = \"\";
+     	    nonAuthorizedCSCs = \"\";
+     	    myData.authorizedUsers = authorizedUsers;
+     	    myData.nonAuthorizedCSCs = nonAuthorizedCSCs;
+     	    logEvent_authList(myData, 1);
   	  \}
           command_setAuthList SALInstance = new command_setAuthList();
           logevent_authList myData = new logevent_authList();
