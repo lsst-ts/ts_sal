@@ -30,6 +30,8 @@ public class salActor {
 	public String topicName;
 /// topicHandle holds the actual name of the DDS topic with an IDL versioned hash appended 
 	public String topicHandle;
+/// topicType holds the type of the topic (logevent,command,ackcmd,telemetry)
+        public String topicType;
 /// partition holds the DDS partition to which the topic is associated with
         public String partition;
 /// topic holds a pointer to the internal DDS Topic object
