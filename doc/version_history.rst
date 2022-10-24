@@ -6,11 +6,19 @@
 Version History
 ###############
 
+Chnages for 7.2.0
+=================
+
+* Rework Java QoS setup to require less code
+
+* Add salIndex to C structs so user code can see it
+
+* Fix update of user visible private_rcvStamp
+
 Changes for 7.1.0
 =================
 
 * Send logevent_authList with empty payload on startup if authList is enabled
-
 
 Changes for 7.0.0
 =================

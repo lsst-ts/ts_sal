@@ -1,0 +1,2 @@
+DO NOT RUN salgenerator with SAL_WORK_DIR pointed to this
+directory if you are developing.
