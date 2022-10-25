@@ -91,6 +91,7 @@ pipeline {
                     sh "docker exec -u saluser \${container_name} sh -c \"" +
                         "source ~/.setup.sh && " +
                         "mamba install -y catch2 && " +
+                        "source ~/.setup.sh && " +
                         "export LSST_DDS_QOS=file:///home/saluser/repos/ts_ddsconfig/python/lsst/ts/ddsconfig/data/qos/QoS.xml && " +
                         "cd /home/saluser/repos/ts_sal/cpp_tests && " +
                         "salgenerator validate Test && " +
