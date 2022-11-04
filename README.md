@@ -62,8 +62,8 @@ You will need then populate ts_sal/test directory with XML schema:
 
 ```bash
 git clone https://github.com/lsst-ts/ts_xml
-cp ts_xml/sal_interfaces/*.xml ts_sal/test
-cp ts_xml/sal_interfaces/MTMount/*.xml ts_sal/test
+cp ts_xml/python/lsst/ts/xml/data/sal_interfaces/*.xml ts_sal/test
+cp ts_xml/python/lsst/ts/xml/data/sal_interfaces/MTMount/*.xml ts_sal/test
 ```
 
 ### C++
@@ -122,5 +122,3 @@ Then run the LabVIEW GUI and import the
 `$SAL_WORK_DIR/MTMount/labview/SALLV_<component_name>.so` shared library
 
 Then run the ts_SALLabVIEW VI to generate the .lvlib and VI's
-
-
