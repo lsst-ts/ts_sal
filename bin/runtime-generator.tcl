@@ -9,7 +9,7 @@ source $env(SAL_DIR)/add_system_dictionary.tcl
 set EVERYTHING [lsort $SYSDIC(systems)]
 foreach subsys $EVERYTHING {
    catch {
-      set x [glob $env(TS_XML_DIR)/sal_interfaces/$subsys/$subsys*.xml]
+      set x [glob $env(TS_XML_DIR)/python/lsst/ts/xml/data/sal_interfaces/$subsys/$subsys*.xml]
       set DO($subsys) 1
    } else {
      puts stdout "No definitions for $subsys"
@@ -127,6 +127,3 @@ if { $argv == "" || [lsearch $argv apidoc] > -1 } {
   }
  }
 }
-
-
-
