@@ -6,7 +6,7 @@
 Version History
 ###############
 
-Chnages for 7.2.0
+Changes for 7.2.0
 =================
 
 * Rework Java QoS setup to require less code
@@ -14,6 +14,8 @@ Chnages for 7.2.0
 * Add salIndex to C structs so user code can see it
 
 * Fix update of user visible private_rcvStamp
+
+* Take change in directory structure in ts_xml into account.
 
 Changes for 7.1.0
 =================
@@ -447,4 +449,3 @@ Changes for 3.1.1
 * Added SWIG based code generation option.
 
 * Passed Continuous Integration C++ tests
-
