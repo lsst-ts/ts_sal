@@ -1,10 +1,10 @@
 #!/usr/bin/env tclsh
 ## \file mavenize.tcl
 # \brief This contains procedures to create and build a Maven
-# project for a SAL Java API 
+# project for a SAL Java API
 #
 # This Source Code Form is subject to the terms of the GNU Public\n
-# License, V3 
+# License, V3
 #\n
 # Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
 #\n
@@ -26,10 +26,10 @@ global env SAL_WORK_DIR SAL_DIR OSPL_VERSION XMLVERSION RELVERSION SALVERSION TS
   exec mkdir -p $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/test/java
   exec mkdir -p $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/resources/xml
   catch {
-    set all [glob $env(TS_XML_DIR)/sal_interfaces/$subsys/[set subsys]_*.xml]
+    set all [glob $env(TS_XML_DIR)/python/lsst/ts/xml/data/sal_interfaces/$subsys/[set subsys]_*.xml]
     foreach xml $all { exec cp $xml $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/resources/xml/. }
-  }  
-  exec cp $SAL_WORK_DIR/[set subsys]_Generics.xml  $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/resources/xml/. 
+  }
+  exec cp $SAL_WORK_DIR/[set subsys]_Generics.xml  $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/resources/xml/.
   exec ln -sf $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease] $SAL_WORK_DIR/maven/[set subsys]
   set fout [open $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/pom.xml w]
   puts $fout "
@@ -72,25 +72,25 @@ global env SAL_WORK_DIR SAL_DIR OSPL_VERSION XMLVERSION RELVERSION SALVERSION TS
   <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
-    <reporting>                                                                              
-        <plugins>                                                                            
-            <plugin>                                                                         
-                <groupId>org.apache.maven.plugins</groupId>                                  
-                <artifactId>maven-javadoc-plugin</artifactId>                                
-                <version>2.9</version>                                                       
-                <configuration>                                                              
-                    <doclet>org.umlgraph.doclet.UmlGraphDoc</doclet>                         
-                    <docletArtifact>                                                         
-                        <groupId>org.umlgraph</groupId>                                      
-                        <artifactId>umlgraph</artifactId>                                    
-                        <version>5.6</version>                                               
-                    </docletArtifact>                                                        
-                    <additionalparam>-views -all</additionalparam>                           
-                    <useStandardDocletOptions>true</useStandardDocletOptions>                
-                </configuration>                                                             
-            </plugin>                                                                        
-        </plugins>                                                                           
-    </reporting>     
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9</version>
+                <configuration>
+                    <doclet>org.umlgraph.doclet.UmlGraphDoc</doclet>
+                    <docletArtifact>
+                        <groupId>org.umlgraph</groupId>
+                        <artifactId>umlgraph</artifactId>
+                        <version>5.6</version>
+                    </docletArtifact>
+                    <additionalparam>-views -all</additionalparam>
+                    <useStandardDocletOptions>true</useStandardDocletOptions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
 
     <dependencies>
         <dependency>
@@ -167,7 +167,7 @@ global env SAL_WORK_DIR SAL_DIR OSPL_VERSION XMLVERSION RELVERSION SALVERSION TS
 #  Create the Java unit tests for a Subsystem/CSC
 #
 proc mavenunittests { subsys } {
-global env SAL_WORK_DIR SAL_DIR CMD_ALIASES CMDS SYSDIC XMLVERSION SALVERSION RELVERSION TS_SAL_DIR 
+global env SAL_WORK_DIR SAL_DIR CMD_ALIASES CMDS SYSDIC XMLVERSION SALVERSION RELVERSION TS_SAL_DIR
    set mvnrelease [set XMLVERSION]_[set SALVERSION][set RELVERSION]
    if { [info exists SYSDIC($subsys,keyedID)] } {
        set initializer "( (short) 1)"
@@ -183,7 +183,7 @@ import [set subsys].*;
 import org.lsst.sal.SAL_[set subsys];
 
 public class [set subsys]CommanderTest extends TestCase \{
-  
+
    public [set subsys]CommanderTest(String name) \{
       super(name);
    \}
@@ -243,7 +243,7 @@ import [set subsys].*;
 import org.lsst.sal.SAL_[set subsys];
 
 public class [set subsys]ControllerTest extends TestCase \{
-  
+
    public [set subsys]ControllerTest(String name) \{
       super(name);
    \}
@@ -279,7 +279,7 @@ public class [set subsys]Controller_[set alias]Test extends TestCase \{
 	       if (timeout > 0) \{
 	          cmd.ackCommand_[set alias](cmdId, SAL_[set subsys].SAL__CMD_INPROGRESS, 0, \"Ack : OK\");
  	          try \{Thread.sleep(timeout);\} catch (InterruptedException e)  \{ e.printStackTrace(); \}
-	       \}       
+	       \}
 	       cmd.ackCommand_[set alias](cmdId, SAL_[set subsys].SAL__CMD_COMPLETE, 0, \"Done : OK\");
 	     \}
              timeout = timeout-1;
@@ -302,5 +302,3 @@ public class [set subsys]Controller_[set alias]Test extends TestCase \{
 
 source $env(SAL_DIR)/activaterevcodes.tcl
 source $env(SAL_DIR)/ospl_version.tcl
-
-

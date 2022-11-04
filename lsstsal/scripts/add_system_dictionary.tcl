@@ -3,10 +3,10 @@
 # \brief This contains procedures to calculate MD5 revision codes
 # used to uniqely identify versioned DDS Topic names, and to update the
 # System dictionary (SYSDIC) array which stores the per-subsystem
-# properties. 
+# properties.
 #
 # This Source Code Form is subject to the terms of the GNU Public\n
-# License, V3 
+# License, V3
 #\n
 # Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
 #\n
@@ -29,25 +29,21 @@ proc calcshmid { subsys } {
   return $id
 }
 
-if { [file exists $env(TS_XML_DIR)/sal_interfaces/SALSubsystems.xml] } {
+if { [file exists $env(TS_XML_DIR)/python/lsst/ts/xml/data/sal_interfaces/SALSubsystems.xml] } {
    source $env(SAL_DIR)/update_ts_xml_dictionary.tcl
    parseSystemDictionary
 } else {
    puts stdout "
-*******************************************************************************
-****************** WARNING - missing dictionary *******************************
-*******************************************************************************
+*************************************************************************************************
+****************** WARNING - missing dictionary *************************************************
+*************************************************************************************************
 
-	$env(TS_XML_DIR)/sal_interfaces/SALSubsystems.xml not found
+	$env(TS_XML_DIR)/python/lsst/ts/xml/data/sal_interfaces/SALSubsystems.xml not found
 
-*******************************************************************************
-*******************************************************************************"
+*************************************************************************************************
+*************************************************************************************************"
 
   exit 7
 }
 
 set SYSDIC(datatypes) "byte short int long float string int64 double ubyte ushort uint ulong"
-
-
-
-
