@@ -25,7 +25,7 @@ prep()
 	echo $java_ld_preload_line >> "$PKGROOT/ups/ts_sal.table"
 	echo $java_ld_preload_line_mac >> "$PKGROOT/ups/ts_sal.table"
 	echo $java_path_line >> "$PKGROOT/ups/ts_sal.table"
-	
+
         default_prep
 }
 
@@ -38,7 +38,7 @@ config()
 	fi
 	mkdir "${SAL_WORK_DIR}"
 
-        cp ${TS_XML_DIR}/sal_interfaces/*/*.xml "${SAL_WORK_DIR}"/.
+        cp ${TS_XML_DIR}/python/lsst/ts/xml/data/sal_interfaces/*/*.xml "${SAL_WORK_DIR}"/.
 
 }
 
@@ -47,15 +47,15 @@ build()
         # Build the libraries for each topic.
         (
 	    cd "${SAL_WORK_DIR}"
-	    
+
 	    if [ -z "$SUBSYSTEMS" ]
-		then 
-		# export SUBSYSTEMS="archiver camera catchuparchiver dome domeADB domeAPS domeLouvers 
+		then
+		# export SUBSYSTEMS="archiver camera catchuparchiver dome domeADB domeAPS domeLouvers
                 #     domeLWS domeMONCS domeTHCS hexapod m1m3 m2ms MTMount ocs processingcluster
                 #     rotator scheduler tcs"
 		# Remove catchuparchiver and processingcluster from list of topics for now: don't build correctly.
-		export SUBSYSTEMS="archiver camera dome domeADB domeAPS domeLouvers 
-                     domeLWS domeMONCS domeTHCS hexapod m1m3 m2ms MTMount ocs 
+		export SUBSYSTEMS="archiver camera dome domeADB domeAPS domeLouvers
+                     domeLWS domeMONCS domeTHCS hexapod m1m3 m2ms MTMount ocs
                      rotator scheduler Test tcs"
 		echo "Set SUBSYSTEMS to "$SUBSYSTEMS
 	    fi
@@ -80,7 +80,7 @@ build()
 	    echo "LSST middleware toolset environment v"$sal_version" libraries have been built."
 
 	)
-	
+
 	default_build
 
 }
