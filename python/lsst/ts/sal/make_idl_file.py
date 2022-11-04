@@ -27,7 +27,6 @@ import shutil
 import subprocess
 
 from lsst.ts import idl
-import lsst.ts.xml
 from . import utils
 
 
@@ -45,7 +44,6 @@ class MakeIdlFile:
     def __init__(self, name, keep_all):
         self.name = name
         self.keep_all = keep_all
-        self.xml_dir = lsst.ts.xml.get_data_dir()
         self.sal_work_dir = utils.get_env_dir(
             "SAL_WORK_DIR", "$SAL_WORK_DIR must be defined"
         )
