@@ -35,7 +35,7 @@ A comprehensive description of the SAL can be found in doc/LSE74-html, navigate 
 eg.
 
 .. prompt:: bash
-    
+
     firefox file:///**path-to-installation**/doc/LSE74-html/index.html
 
 
@@ -51,7 +51,7 @@ The default OpenSplice congfiguration requires that certain firewall rules are a
 for iptables :this can be done(as root) with the following command
 
 .. prompt:: bash
-    
+
     sudo /etc/init.d/iptables stop
 
 
@@ -61,15 +61,15 @@ firewalld : this can be done (as root) with the following commands
 
 First, run the following command to find the default zone:
 
-.. prompt:: bash 
-    
+.. prompt:: bash
+
     firewall-cmd --get-default-zone
 
 
 Next, issue the following commands:
 
 .. prompt:: bash
-    
+
     firewall-cmd  --zone=public --add-port=250-251/udp --permanent
     firewall-cmd --zone=public --add-port==7400-7413/udp --permanent
     firewall-cmd --reload
@@ -86,7 +86,7 @@ The tar archive format release includes a compatible version of OpenSplice as we
 Unpack the SAL tar archive in a location of choice (/opt is recommended), e.g. in a terminal, replacing x.y.z with the appropriate version index
 
 .. prompt:: bash
-    
+
     cd /opt
     tar xzf [location-of-sdk-archive]/salSDK-x.y.z_x86_64.tgz
 
@@ -94,7 +94,7 @@ Unpack the SAL tar archive in a location of choice (/opt is recommended), e.g. i
 and then add the SDK setup command.
 
 .. prompt:: bash
-    
+
     source /opt/setup.env
 
 
@@ -111,7 +111,7 @@ Use a git client of your preference to check out the required branch of the foll
 and then add the SDK setup command.
 
 .. prompt:: bash
-    
+
     source  /opt/setup.env
 
 
@@ -122,7 +122,7 @@ Install location customization
 If you chose to install the SDK in a location other than /opt, then you will need to edit the first line of the setup.env script to reflect the actual location. e.g.
 
 .. code::
-    
+
     LSST_SDK_INSTALL=/home/saltester
 
 
@@ -141,14 +141,14 @@ Also retrieve ts_xml and copy the appropriate subsystem definitions to your work
 
 .. prompt:: bash
 
-    cp ts_xml-master/sal_interfaces/mysubsystem/*.xml test/.
+    cp ts_xml-master/python/lsst/ts/xml/data/sal_interfaces/mysubsystem/*.xml test/.
 
 Where test is the working directory specified by the SAL_WORK_DIR environment variable.
 
 Add the invocation of setup.env to your bash login profile
 
 .. code::
-    
+
     source /sal-install-directory/setup.env
 
 
@@ -158,9 +158,9 @@ The most common SDK usage consists of simple steps :
    For details of the SAL VM interface, please refer to Document-xxxxx.
 
    The current prototypes for each subsystem can be used as a baseline, eg for the dome subsystem
-   
+
    .. prompt:: bash
-        
+
         cd $SAL_WORK_DIR
         cp $SAL_HOME/scripts/xml-templates/dome/*.xml
 
@@ -184,9 +184,9 @@ To set up a VM appropriately for this usage :
 6. Verify the network is ok.
 7. sudo yum install xterm xorg-x11-fonts-misc java-1.7.0-openjdk-devel maven tk-devel
 8. Configure (or disable) iptables and firewalld
-   
+
    .. prompt:: bash
-        
+
         systemctl disable iptables
         systemctl disable firewalld
         system stop iptables
@@ -306,7 +306,7 @@ e.g.
     </SALCommand>
 
 
-.. note:: 
+.. note::
     The generic lifecycle commands should NOT be included, they are automatically generated during the salgenerator validation and/or UML to XML processing.
     The current generic command set is {**start, stop, enable,disable,abort,enterControl,exitControl,standby,SetValue**}
 
@@ -357,7 +357,7 @@ e.g.
     </SALEvent>
 
 
-.. note:: 
+.. note::
     The generic lifecycle events should NOT be included, they are automatically generated during the salgenerator validation and/or UML to XML processing.
     The current generic event set is *SettingVersions, SummaryState, DetailedState, ErrorCode, AppliedSettingsMatchStart*.
 
@@ -382,7 +382,7 @@ Using the SDK
 Before using the SDK, make sure that all the directories in the SAL_WORK_DIR and The SAL installation directory are owned by you
 e.g.
 .. prompt:: bash
-    
+
     cd $SAL_WORK_DIR
     chown -R <username>:<username> *
 
@@ -393,7 +393,7 @@ e.g. for **skycam**, interface code and usage samples can be generated using the
 e.g.
 
 .. prompt:: bash
-    
+
     **salgenerator skycam validate**
     **salgenerator skycam sal cpp**
 
@@ -437,7 +437,7 @@ Step 2 - Validation
 Run the salgenerator tool validate option for the appropriate subsystem.
 
 .. prompt:: bash
-    
+
     salgenerator mount validate
 
 
@@ -454,7 +454,7 @@ Step 3 - Update Structure and documentation
 Run the salgenerator html option for the appropriate subsystem.
 
 .. prompt:: bash
-    
+
     salgenerator mount html
 
 
@@ -486,7 +486,7 @@ Depending upon the target language, successful completion of the code generation
             cpp
             isocpp
             java
-        
+
         mount/cpp:
             ccpp_sal_mount.h -main include file
             libsacpp_mount_types.so - dds type support library
@@ -521,7 +521,7 @@ Depending upon the target language, successful completion of the code generation
 
         mount_TC: - specific to particular telemetry stream
 
-            cpp 
+            cpp
             isocpp
             java
 
@@ -603,10 +603,10 @@ Once the java has been generated it is also possible to create a Maven project f
 Use the command e.g.
 
 .. prompt:: bash
-    
+
     salgenerator mount maven
 
-will create and build a maven project and it in 
+will create and build a maven project and it in
 
 .. code::
 
@@ -656,7 +656,7 @@ Environment
 To check that the OpenSplice environment has been correctly initialized; in a terminal, type
 
 .. prompt:: bash
-    
+
     idlpp
 
 should produce
@@ -708,7 +708,7 @@ Once the salgenerator has been used to validate the definition files and generat
 In all cases, log and diagnostic output from OpenSplice will be written to the files
 
 .. code::
-    
+
     ospl-info.log and ospl-error.log
 
 in the directory where the test is run.
@@ -737,11 +737,11 @@ The following locations assume code has been built for mount subsystemsupport
         start the controller first, wait for it to print Ready, then run the commander
     For java
         mount/java/src/mount_cmdctl.run - starts command processor
-    
+
 In addition a gui can be used to send all supported subsystem commands (with an associated processor to demonstrate reception of same).
 To start the gui e.g. for hexapod subsystem
 .. code::
-    
+
     For C++
         command_test_gui hexapod
 
@@ -801,7 +801,7 @@ C++
         #include "example_main.h"
         using namespace DDS;
         using namespace <subsystem>; // substitute the actual subsystem name here
-    
+
     Public:
         int putSample(<subsystem::telemetryType> data); - publish telemetry sample
         int getSample(<subsystem::telemetryTypeSeq> data); - read next telemetry sample
@@ -928,7 +928,7 @@ For subsequent linking with the SAL and DDS middleware.
 Subsystems with duplicate instantiations (e.g. Hexapods) also require
 
 .. code::
-    
+
     -DSAL_SUBSYSTEM_IS_KEYED
 
 and the following include paths will be required
@@ -1070,4 +1070,3 @@ The LabVIEW Shared library import is used to automatically generate VI's to inte
    2. Run the [subsystem]_shm_connect VI and leave it open
    3. Depending upon the required function, an initialization VI should be run i.e. for command receivers, run [subsystem]_shm_salProcessor_[name], for event receivers, run [subsystem]_shm_salEvent_[name], and for Telemetry receivers, run [subsystem]_shm_salTelemetrySub.
    4. After an application has completed all it's SAL mediated communications, it is essential to call the [subsystem]_shm_release VI to clean it up.
-

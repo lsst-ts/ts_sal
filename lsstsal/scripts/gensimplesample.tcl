@@ -211,8 +211,11 @@ using namespace std;
       puts $fout "	struct $name \{"
       puts $fhdr "struct [set subsys]_[set name]C
 \{
-	double  private_rcvStamp;
+  double  private_rcvStamp;
 "
+      if { [info exists SYSDIC($subsys,keyedID)] } {
+         puts $fhdr "  long  salIndex;"
+      }
       puts $fhlv "typedef struct [set subsys]_[set name]LV \{"
       if { [info exists SYSDIC($subsys,keyedID)] } {
           puts $fout "	  long	salIndex;	//private"

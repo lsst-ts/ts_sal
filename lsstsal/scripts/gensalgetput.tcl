@@ -116,6 +116,10 @@ salReturn SAL_[set base]::getSample_[set name]([set base]_[set name]C *data)
       cout << \"    identity  : \" << Instances\[j\].private_identity << endl;
     \}
     if ( (rcvdTime - Instances\[j\].private_sndStamp) < sal\[actorIdx\].sampleAge && Instances\[j\].private_origin != 0 ) \{
+#ifdef SAL_SUBSYSTEM_ID_IS_KEYED
+    data->salIndex = Instances\[j\].salIndex;
+    data->private_rcvStamp = rcvdTime;
+#endif
 "
   set frag [open $SAL_WORK_DIR/include/SAL_[set base]_[set name]Cget.tmp r]
   while { [gets $frag rec] > -1} {puts $fout $rec}
@@ -410,6 +414,7 @@ proc addActorIndexesJava { idlfile base fout } {
    set idx 0
    foreach j $ptypes {
       set name [lindex $j 2]
+      set type [lindex [split $name _] 0]
       puts $fout "  public static final int SAL__[set base]_[set name]_ACTOR = $idx;"
       incr idx 1
    }
@@ -419,6 +424,7 @@ proc addActorIndexesJava { idlfile base fout } {
   \{
      String pname;
      int status=-1;
+     int idx;
 "
    set idx 0
    foreach j $ptypes {
@@ -428,56 +434,58 @@ proc addActorIndexesJava { idlfile base fout } {
       puts $fout "    sal\[$idx\]=new salActor();" 
       puts $fout "    sal\[$idx\].topicHandle=\"[set base]_[set name][set revcode]\";"
       puts $fout "    sal\[$idx\].topicName=\"[set base]_[set name]\";"
-      if { $type == "logevent" } {
-        puts $fout "    status = eventQos.get_topic_qos(sal\[$idx\].topicQos, null);"
-        puts $fout "    if ( status != 0 ) {throw new RuntimeException(\"ERROR : Cannot find EventProfile in QoS\"); }"
-        puts $fout "    status = eventQos.get_datareader_qos(sal\[$idx\].RQosH, null);"
-        puts $fout "    status = eventQos.get_datawriter_qos(sal\[$idx\].WQosH, null);"
-        puts $fout "    status = eventQos.get_publisher_qos(sal\[$idx\].pubQos, null);"
-        puts $fout "    status = eventQos.get_subscriber_qos(sal\[$idx\].subQos, null);"
+      if { $type == "logevent" || $type == "command" || $type == "ackcmd" } {
+        puts $fout "    sal\[$idx\].topicType=\"[set type]\";"
       } else {
-        if { $type == "command" } {
-          puts $fout "    status = commandQos.get_topic_qos(sal\[$idx\].topicQos, null);"
-          puts $fout "    if ( status != 0 ) {throw new RuntimeException(\"ERROR : Cannot find CommandProfile in QoS\"); }"
-          puts $fout "    status = commandQos.get_datareader_qos(sal\[$idx\].RQosH, null);"
-          puts $fout "    status = commandQos.get_datawriter_qos(sal\[$idx\].WQosH, null);"
-          puts $fout "    status = commandQos.get_publisher_qos(sal\[$idx\].pubQos, null);"
-          puts $fout "    status = commandQos.get_subscriber_qos(sal\[$idx\].subQos, null);"
-          puts $fout "    status = commandQos.get_topic_qos(sal\[$idx\].topicQos2, null);"
-        } else {
-          if { $type == "ackcmd" } {
-            puts $fout "    status = ackcmdQos.get_topic_qos(sal\[$idx\].topicQos, null);"
-            puts $fout "    if ( status != 0 ) {throw new RuntimeException(\"ERROR : Cannot find AckcmdProfile in QoS\"); }"
-            puts $fout "    status = ackcmdQos.get_datareader_qos(sal\[$idx\].RQosH, null);"
-            puts $fout "    status = ackcmdQos.get_datawriter_qos(sal\[$idx\].WQosH, null);"
-            puts $fout "    status = ackcmdQos.get_publisher_qos(sal\[$idx\].pubQos, null);"
-            puts $fout "    status = ackcmdQos.get_subscriber_qos(sal\[$idx\].subQos, null);"
-            puts $fout "    status = ackcmdQos.get_topic_qos(sal\[$idx\].topicQos2, null);"
-          } else {
-            puts $fout "    status = telemetryQos.get_topic_qos(sal\[$idx\].topicQos, null);"
-            puts $fout "    if ( status != 0 ) {throw new RuntimeException(\"ERROR : Cannot find TelemetryProfile in QoS\"); }"
-            puts $fout "    status = telemetryQos.get_datareader_qos(sal\[$idx\].RQosH, null);"
-            puts $fout "    status = telemetryQos.get_datawriter_qos(sal\[$idx\].WQosH, null);"
-            puts $fout "    status = telemetryQos.get_publisher_qos(sal\[$idx\].pubQos, null);"
-            puts $fout "    status = telemetryQos.get_subscriber_qos(sal\[$idx\].subQos, null);"
-          }
-        }
-      }
-      if { $type == "command" } {
-         puts $fout "
-      pname = partitionPrefix + \".[set base].cmd\";
-      sal\[$idx\].partition = pname;
-"
-      } else {
-         puts $fout "
-      pname = partitionPrefix + \".[set base].data\";
-      sal\[$idx\].partition = pname;
-"
+        puts $fout "    sal\[$idx\].topicType=\"telemetry\";"
       }
       incr idx 1
    }
-  puts $fout "
-  \}"
+   puts $fout "    for (idx=0; idx<SAL__ACTORS_MAXCOUNT; idx++) \{"
+   puts $fout "      if (sal\[idx\].topicType.equals(\"logevent\")) \{"
+   puts $fout "        status = eventQos.get_topic_qos(sal\[idx\].topicQos, null);"
+   puts $fout "        if ( status != 0 ) {throw new RuntimeException(\"ERROR : Cannot find EventProfile in QoS\"); }"
+   puts $fout "        status = eventQos.get_datareader_qos(sal\[idx\].RQosH, null);"
+   puts $fout "        status = eventQos.get_datawriter_qos(sal\[idx\].WQosH, null);"
+   puts $fout "        status = eventQos.get_publisher_qos(sal\[idx\].pubQos, null);"
+   puts $fout "        status = eventQos.get_subscriber_qos(sal\[idx\].subQos, null);"
+   puts $fout "        pname = partitionPrefix + \".[set base].data\";"
+   puts $fout "        sal\[idx\].partition = pname;"
+   puts $fout "     \}"
+   puts $fout "      if (sal\[idx\].topicType.equals(\"command\")) \{"
+   puts $fout "        status = commandQos.get_topic_qos(sal\[idx\].topicQos, null);"
+   puts $fout "        if ( status != 0 ) {throw new RuntimeException(\"ERROR : Cannot find CommandProfile in QoS\"); }"
+   puts $fout "        status = commandQos.get_datareader_qos(sal\[idx\].RQosH, null);"
+   puts $fout "        status = commandQos.get_datawriter_qos(sal\[idx\].WQosH, null);"
+   puts $fout "        status = commandQos.get_publisher_qos(sal\[idx\].pubQos, null);"
+   puts $fout "        status = commandQos.get_subscriber_qos(sal\[idx\].subQos, null);"
+   puts $fout "        status = commandQos.get_topic_qos(sal\[idx\].topicQos2, null);"
+   puts $fout "        pname = partitionPrefix + \".[set base].cmd\";"
+   puts $fout "        sal\[idx\].partition = pname;"
+   puts $fout "      \}"
+   puts $fout "       if (sal\[idx\].topicType.equals(\"ackcmd\")) \{"
+   puts $fout "         status = ackcmdQos.get_topic_qos(sal\[idx\].topicQos, null);"
+   puts $fout "         if ( status != 0 ) {throw new RuntimeException(\"ERROR : Cannot find AckcmdProfile in QoS\"); }"
+   puts $fout "         status = ackcmdQos.get_datareader_qos(sal\[idx\].RQosH, null);"
+   puts $fout "         status = ackcmdQos.get_datawriter_qos(sal\[idx\].WQosH, null);"
+   puts $fout "         status = ackcmdQos.get_publisher_qos(sal\[idx\].pubQos, null);"
+   puts $fout "         status = ackcmdQos.get_subscriber_qos(sal\[idx\].subQos, null);"
+   puts $fout "         status = ackcmdQos.get_topic_qos(sal\[idx\].topicQos2, null);"
+   puts $fout "         pname = partitionPrefix + \".[set base].data\";"
+   puts $fout "         sal\[idx\].partition = pname;"
+   puts $fout "      \}"
+   puts $fout "      if (sal\[idx\].topicType.equals(\"telemetry\")) \{"  
+   puts $fout "         status = telemetryQos.get_topic_qos(sal\[idx\].topicQos, null);"
+   puts $fout "         if ( status != 0 ) {throw new RuntimeException(\"ERROR : Cannot find TelemetryProfile in QoS\"); }"
+   puts $fout "         status = telemetryQos.get_datareader_qos(sal\[idx\].RQosH, null);"
+   puts $fout "         status = telemetryQos.get_datawriter_qos(sal\[idx\].WQosH, null);"
+   puts $fout "         status = telemetryQos.get_publisher_qos(sal\[idx\].pubQos, null);"
+   puts $fout "         status = telemetryQos.get_subscriber_qos(sal\[idx\].subQos, null);"
+   puts $fout "         pname = partitionPrefix + \".[set base].data\";"
+   puts $fout "         sal\[idx\].partition = pname;"
+   puts $fout "      \}"
+   puts $fout "     \}"
+   puts $fout "  \}"
 }
 
 #

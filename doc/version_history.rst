@@ -6,6 +6,22 @@
 Version History
 ###############
 
+Changes for 7.2.0
+=================
+
+* Rework Java QoS setup to require less code
+
+* Add salIndex to C structs so user code can see it
+
+* Fix update of user visible private_rcvStamp
+
+* Take change in directory structure in ts_xml into account.
+
+Changes for 7.1.0
+=================
+
+* Send logevent_authList with empty payload on startup if authList is enabled
+
 Changes for 7.0.0
 =================
 
@@ -433,4 +449,3 @@ Changes for 3.1.1
 * Added SWIG based code generation option.
 
 * Passed Continuous Integration C++ tests
-

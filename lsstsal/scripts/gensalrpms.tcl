@@ -4,7 +4,7 @@
 # for SAL APIs
 #
 # This Source Code Form is subject to the terms of the GNU Public\n
-# License, V3 
+# License, V3
 #\n
 # Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
 #\n
@@ -113,7 +113,7 @@ global SAL_WORK_DIR XMLVERSION SAL_DIR SYSDIC SALVERSION env
       copyasset $SAL_WORK_DIR/lib/saj_[set subsys]_types.jar [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/jar/.
       copyasset $SAL_WORK_DIR/maven/[set rpmname]-[set XMLVERSION]_$SALVERSION/target/sal_[set subsys]-[set XMLVERSION]_$SALVERSION.jar [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/jar/.
     }
-    exec mkdir -p [set rpmname]-$XMLVERSION/opt/lsst/ts_xml/sal_interfaces/[set subsys]
+    exec mkdir -p [set rpmname]-$XMLVERSION/opt/lsst/ts_xml/python/lsst/ts/xml/data/sal_interfaces/[set subsys]
     if { [info exists SYSDIC([set subsys],cpp)] } {
       copyasset $SAL_WORK_DIR/lib/libSAL_[set subsys].so [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/lib/.
       copyasset $SAL_WORK_DIR/lib/libSAL_[set subsys].a [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/lib/.
@@ -133,14 +133,14 @@ global SAL_WORK_DIR XMLVERSION SAL_DIR SYSDIC SALVERSION env
       copyasset $SAL_DIR/code/templates/SAL_defines.h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
     }
     foreach dtype "Commands Events Telemetry" {
-      if { [file exists $env(TS_XML_DIR)/sal_interfaces/$subsys/[set subsys]_[set dtype].xml] } {
-        exec cp $env(TS_XML_DIR)/sal_interfaces/$subsys/[set subsys]_[set dtype].xml [set rpmname]-$XMLVERSION/opt/lsst/ts_xml/sal_interfaces/[set subsys]/.
+      if { [file exists $env(TS_XML_DIR)/python/lsst/ts/xml/data/sal_interfaces/$subsys/[set subsys]_[set dtype].xml] } {
+        exec cp $env(TS_XML_DIR)/python/lsst/ts/xml/data/sal_interfaces/$subsys/[set subsys]_[set dtype].xml [set rpmname]-$XMLVERSION/opt/lsst/ts_xml/python/lsst/ts/xml/data/sal_interfaces/[set subsys]/.
       }
     }
-    exec cp $SAL_WORK_DIR/[set subsys]_Generics.xml [set rpmname]-$XMLVERSION/opt/lsst/ts_xml/sal_interfaces/[set subsys]/.
+    exec cp $SAL_WORK_DIR/[set subsys]_Generics.xml [set rpmname]-$XMLVERSION/opt/lsst/ts_xml/python/lsst/ts/xml/data/sal_interfaces/[set subsys]/.
     foreach dtype "Commands Events Telemetry" {
       if { [file exists $SAL_WORK_DIR/html/[set subsys]/[set subsys]_[set dtype].html] } {
-        exec cp $SAL_WORK_DIR/html/[set subsys]/[set subsys]_[set dtype].html [set rpmname]-$XMLVERSION/opt/lsst/ts_xml/sal_interfaces/[set subsys]/.
+        exec cp $SAL_WORK_DIR/html/[set subsys]/[set subsys]_[set dtype].html [set rpmname]-$XMLVERSION/opt/lsst/ts_xml/python/lsst/ts/xml/data/sal_interfaces/[set subsys]/.
       }
     }
   }
@@ -194,7 +194,7 @@ global SAL_WORK_DIR XMLVERSION SALVERSION
      switch $name  {
         ts_sal_utils     { generateUtilsrpm }
         ts_sal_runtime   { generatemetarpm }
-        ts_sal_ATruntime { generateATmetarpm } 
+        ts_sal_ATruntime { generateATmetarpm }
      }
   }
 }
@@ -223,7 +223,7 @@ global XMLVERSION env RPMFILES SAL_WORK_DIR
    set RPMFILES ""
    cd $SAL_WORK_DIR/rpmbuild/BUILD/[set rpmname]-$XMLVERSION
    set fl [split [exec find . -type f  -print] \n]
-   foreach f $fl { 
+   foreach f $fl {
        if { [string range $f 0 4] == "./opt" } {
           lappend RPMFILES [string range $f 1 end]
        }
@@ -424,7 +424,7 @@ for the middleware interface.
 %prep
 
 %setup
- 
+
 %build
 
 %install
@@ -498,7 +498,7 @@ It includes precompiled test programs for each message type.
 %prep
 
 %setup
- 
+
 %build
 
 %install
@@ -665,5 +665,3 @@ systemctl start ts_sal_settai
   close $fout
 
 }
-
-
