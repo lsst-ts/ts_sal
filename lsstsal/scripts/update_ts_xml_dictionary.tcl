@@ -3,7 +3,7 @@
 # \brief This contains procedures to work woth SALSubsystems.xml
 #
 # This Source Code Form is subject to the terms of the GNU Public\n
-# License, V3 
+# License, V3
 #\n
 # Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
 #\n
@@ -13,12 +13,12 @@
 
 #
 ## Documented proc \c createSystemDictionary .
-# 
+#
 #  Create a default basic SALSubsystems.xml
 #
 proc createSystemDictionary { } {
 global env SAL_WORK_DIR
-  set fout [open $env(TS_XML_DIR)/sal_interfaces/SALSubsystems.xml w]
+  set fout [open $env(TS_XML_DIR)/python/lsst/ts/xml/data/sal_interfaces/SALSubsystems.xml w]
   puts $fout "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
   puts $fout "<?xml-stylesheet type=\"text/xsl\" href=\"http://github.com/lsst-ts/ts_xml/tree/master/schema/SALSubsystemSet.xsl\"?>"
   puts $fout "<SALSubsystemSet xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"
@@ -48,7 +48,7 @@ global env SAL_WORK_DIR
 
 #
 ## Documented proc \c parseSystemDictionary .
-# 
+#
 #  Parse the SALSubsystems.tcl and create a SYSDIC array object
 #  for use by salgenerator
 #
@@ -58,7 +58,7 @@ global env SYSDIC SAL_WORK_DIR OPTIONS
   set SYSDIC(systems) ""
   getValidGenerics
   buildGenericCategories
-  set fin [open $env(TS_XML_DIR)/sal_interfaces/SALSubsystems.xml r]
+  set fin [open $env(TS_XML_DIR)/python/lsst/ts/xml/data/sal_interfaces/SALSubsystems.xml r]
   while { [gets $fin rec] > -1 } {
       set tag   [lindex [split $rec "<>"] 1]
       set value [lindex [split $rec "<>"] 2]
@@ -85,7 +85,7 @@ global env SYSDIC SAL_WORK_DIR OPTIONS
            set SYSDIC($name,keyedID) 1
            set SYSDIC($name,IndexEnumeration) ""
            set idx 1
-           foreach i $ids { 
+           foreach i $ids {
               if { [llength [split $i "="]] > 1 } {
                 set idx  [string trim [lindex [split $i "="] 1]]
                 set eval [string trim [lindex [split $i "="] 0]]
@@ -108,7 +108,7 @@ global env SYSDIC SAL_WORK_DIR OPTIONS
          }
          if { [info exists SYSDIC($name,labview)] } {set SYSDIC($name,cpp) 1}
       }
-  } 
+  }
   close $fin
   set SYSDIC(systems) [lsort $SYSDIC(systems)]
   if { $OPTIONS(verbose) } {puts stdout "###TRACE<<< parseSystemDictionary"}
@@ -121,7 +121,7 @@ global env SYSDIC SAL_WORK_DIR OPTIONS
 #
 proc getValidGenerics { } {
 global SAL_WORK_DIR SYSDIC env
-  set all [split [exec grep EFDB_Topic $env(TS_XML_DIR)/sal_interfaces/SALGenerics.xml] \n]
+  set all [split [exec grep EFDB_Topic $env(TS_XML_DIR)/python/lsst/ts/xml/data/sal_interfaces/SALGenerics.xml] \n]
   foreach g $all {
     set gid [string range [lindex [split $g "<>"]  2] 11 end]
     set SYSDIC(validGeneric,$gid) 1
@@ -173,7 +173,7 @@ global SYSDIC
 proc buildGenericCategories { } {
 global SYSDIC SAL_WORK_DIR env
   set SYSDIC(GenericCategories) ""
-  set fcat [open $env(TS_XML_DIR)/sal_interfaces/SALGenerics.xml r]
+  set fcat [open $env(TS_XML_DIR)/python/lsst/ts/xml/data/sal_interfaces/SALGenerics.xml r]
   while { [gets $fcat rec] > -1 } {
     set tag   [lindex [split $rec "<>"] 1]
     set value [lindex [split $rec "<>"] 2]
@@ -192,6 +192,3 @@ global SYSDIC SAL_WORK_DIR env
     set SYSDIC(Category,$c) [join $SYSDIC(Category,$c) ","]
   }
 }
-
-
-

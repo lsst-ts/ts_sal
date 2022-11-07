@@ -30,7 +30,7 @@ if { $argc < 2 } { print_help }
 
 set SAL_DIR $env(SAL_DIR)
 set OSPL_HOME $env(OSPL_HOME)
-set COMMANDS "validate efd writers compile cpp idl isocpp java jni lib link maven tcl db icd labview html apidoc rpm sal shmem sim simd verbose fastest generate upload" 
+set COMMANDS "validate efd writers compile cpp idl isocpp java jni lib link maven tcl db icd labview html apidoc rpm sal shmem sim simd verbose fastest generate upload"
 foreach o $COMMANDS {
   set OPTIONS($o) 0
   if { [lsearch [string tolower $argv] $o] > -1 } {
@@ -88,7 +88,7 @@ foreach i $argv {
 ******************** ERROR - Subsystem not defined ****************************
 *******************************************************************************
 
-	$env(TS_XML_DIR)/sal_interfaces/SALSubsystems.xml does not include
+	$env(TS_XML_DIR)/python/lsst/ts/xml/data/sal_interfaces/SALSubsystems.xml does not include
 
  	the $i subsystem, please check spelling, or add it
 
@@ -98,14 +98,14 @@ foreach i $argv {
       exit 3
     }
     set xml ""
-    catch { set xml [glob $env(TS_XML_DIR)/sal_interfaces/$i/[set i]_*.xml] }
+    catch { set xml [glob $env(TS_XML_DIR)/python/lsst/ts/xml/data/sal_interfaces/$i/[set i]_*.xml] }
     if { $xml == "" } {
       puts stdout "
 *******************************************************************************
 *********************** WARNING - Generics only *******************************
 *******************************************************************************
 
-	$env(TS_XML_DIR)/sal_interfaces has no XML definition files for
+	$env(TS_XML_DIR)/python/lsst/ts/xml/data/sal_interfaces has no XML definition files for
 
  	the $i subsystem. Including generics only.
 
@@ -128,7 +128,7 @@ foreach subsys $TSUBSYSTEMS {
 ****************** WARNING - Subsystem not defined ****************************
 *******************************************************************************
 
-	$env(TS_XML_DIR)/sal_interfaces/SALSubsystems.xml does not include
+	$env(TS_XML_DIR)/python/lsst/ts/xml/data/sal_interfaces/SALSubsystems.xml does not include
 
  	the $subsys subsystem, please check spelling, or add it
 
@@ -145,7 +145,7 @@ if { $OPTIONS(generate) } {
   set result [exec salgenerator $TSUBSYSTEMS validate] ; puts stdout $result
   catch { set result [exec salgenerator $TSUBSYSTEMS html] } ok ; puts stdout $ok
   if { $OPTIONS(cpp) } { set result [exec salgenerator $TSUBSYSTEMS sal cpp] ; puts stdout $result }
-  if { $OPTIONS(java) } { 
+  if { $OPTIONS(java) } {
      set result [exec salgenerator $TSUBSYSTEMS sal java] ; puts stdout $result
      set result [exec salgenerator $TSUBSYSTEMS maven] ; puts stdout $result
   }
@@ -179,7 +179,7 @@ if { $OPTIONS(validate) || $OPTIONS(idl) } {
   stdlog "Processing $all"
   foreach i $all {
     set IDXENUMDONE($i) 0
-    if { [file exists $env(TS_XML_DIR)/sal_interfaces/SALGenerics.xml] } {
+    if { [file exists $env(TS_XML_DIR)/python/lsst/ts/xml/data/sal_interfaces/SALGenerics.xml] } {
       set x none
       puts stdout "Add Generic Commands and Events"
       set SALSubsys $i
@@ -195,9 +195,9 @@ if { $OPTIONS(validate) || $OPTIONS(idl) } {
       }
     }
     foreach t "Telemetry Commands Events" {
-      if { [file exists $env(TS_XML_DIR)/sal_interfaces/$i/[set i]_[set t].xml] } {
-        if { [file size $env(TS_XML_DIR)/sal_interfaces/$i/[set i]_[set t].xml] > 0 } {
-          parseXMLtoidl $env(TS_XML_DIR)/sal_interfaces/$i/[set i]_[set t].xml
+      if { [file exists $env(TS_XML_DIR)/python/lsst/ts/xml/data/sal_interfaces/$i/[set i]_[set t].xml] } {
+        if { [file size $env(TS_XML_DIR)/python/lsst/ts/xml/data/sal_interfaces/$i/[set i]_[set t].xml] > 0 } {
+          parseXMLtoidl $env(TS_XML_DIR)/python/lsst/ts/xml/data/sal_interfaces/$i/[set i]_[set t].xml
           stdlog "Imported $i $t interface definitions"
         }
       }
@@ -207,7 +207,7 @@ if { $OPTIONS(validate) || $OPTIONS(idl) } {
     stdlog "Validating $i interface IDL format definitions"
     catch {
       set hascmd [glob $SAL_WORK_DIR/idl-templates/[set i]_command_*.idl]
-      createackcmdidl $i [info exists SYSDIC($i,keyedID)] 
+      createackcmdidl $i [info exists SYSDIC($i,keyedID)]
     }
     set new [lsort [glob $SAL_WORK_DIR/idl-templates/[set i]_*.idl]]
     foreach n $new {
@@ -262,7 +262,7 @@ if { $OPTIONS(maven) } {
 #     catch { set result [mavenunittests $subsys] } bad
 #     puts stdout "$result"
 #     puts stderr "$bad"
-    cd maven/[set subsys]-[set mvnrelease]  
+    cd maven/[set subsys]-[set mvnrelease]
     puts stdout "Running maven install"
     set result ""
     set bad ""
@@ -421,4 +421,3 @@ puts stdout "XMLVERSION = $XMLVERSION"
 puts stdout "SAL_WORK_DIR = $SAL_WORK_DIR"
 puts stdout "OSPL_HOME = $OSPL_HOME"
 puts stdout "OSPL_RELEASE = $OSPL_RELEASE"
-

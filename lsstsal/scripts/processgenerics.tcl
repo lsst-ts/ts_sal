@@ -3,7 +3,7 @@
 # \brief This contains procedures to create CSC specific Generics.xml
 #
 # This Source Code Form is subject to the terms of the GNU Public\n
-# License, V3 
+# License, V3
 #\n
 # Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
 #\n
@@ -11,7 +11,7 @@
 #
 #\code
 
-source $env(SAL_DIR)/sal_version.tcl 
+source $env(SAL_DIR)/sal_version.tcl
 
 #
 ## Documented proc \c generategenerics .
@@ -32,7 +32,7 @@ global SALVERSION SAL_WORK_DIR
 
 proc filtergenerics { subsys } {
 global SALVERSION SYSDIC SAL_WORK_DIR env
-  set fin [open $env(TS_XML_DIR)/sal_interfaces/SALGenerics.xml r]
+  set fin [open $env(TS_XML_DIR)/python/lsst/ts/xml/data/sal_interfaces/SALGenerics.xml r]
   set fout [open $SAL_WORK_DIR/[set subsys]_Generics.xml w]
   gets $fin rec ; puts $fout $rec
   gets $fin rec ; puts $fout $rec
@@ -50,7 +50,7 @@ global SALVERSION SYSDIC SAL_WORK_DIR env
          set value [lindex [split $rec "<>"] 2]
 	 lappend command $rec
 	 if { $tag == "EFDB_Topic" } {
-	   set generic [join [lrange [split $value "_"] 1 end] "_"] 
+	   set generic [join [lrange [split $value "_"] 1 end] "_"]
 	   set copyit [lsearch [split $SYSDIC($subsys,genericsUsed) ","] $generic]
 	 }
        }
@@ -58,8 +58,8 @@ global SALVERSION SYSDIC SAL_WORK_DIR env
           puts stdout "Enabling $generic"
 	  puts $fout "    <SALCommand>"
 	  foreach l $command {puts $fout $l}
-       }      
-    } 
+       }
+    }
     if { $tag == "SALEvent" } {
        set event ""
        while { $tag != "/SALEvent" } {
@@ -68,7 +68,7 @@ global SALVERSION SYSDIC SAL_WORK_DIR env
          set value [lindex [split $rec "<>"] 2]
 	 lappend event $rec
 	 if { $tag == "EFDB_Topic" } {
-	   set generic [join [lrange [split $value "_"] 1 end] "_"] 
+	   set generic [join [lrange [split $value "_"] 1 end] "_"]
 	   set copyit [lsearch [split $SYSDIC($subsys,genericsUsed) ","] $generic]
 	 }
        }
@@ -76,10 +76,9 @@ global SALVERSION SYSDIC SAL_WORK_DIR env
           puts stdout "Enabling $generic"
 	  puts $fout "    <SALEvent>"
 	  foreach l $event {puts $fout $l}
-       }      
-    } 
+       }
+    }
   }
   close $fin
   close $fout
 }
-

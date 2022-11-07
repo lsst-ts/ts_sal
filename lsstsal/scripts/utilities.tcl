@@ -3,7 +3,7 @@
 # \brief Generic utility procedures used in SAL suite of programs
 #
 # This Source Code Form is subject to the terms of the GNU Public\n
-# License, V3 
+# License, V3
 #\n
 # Copyright 2012-2021 Association of Universities for Research in Astronomy, Inc. (AURA)
 #\n
@@ -176,7 +176,7 @@ proc skipPrivate { fidl } {
 
 #
 ## Documented proc \c safeString .
-#  \param[input] 
+#  \param[input]
 #
 #  Make an input string safe from tcl parsing
 #
@@ -220,7 +220,7 @@ global SAL_WORK_DIR
 proc getTopicURL  { base topic } {
   set anchor [string tolower [lindex [split $topic _] end]]
   set linktext [set base]_[join [lrange [split $topic _] 0 end] _]
-  set url "<A HREF=https://ts-xml.lsst.io/sal_interfaces/[set base].html#[set anchor]>$linktext</A>" 
+  set url "<A HREF=https://ts-xml.lsst.io/python/lsst/ts/xml/data/sal_interfaces/[set base].html#[set anchor]>$linktext</A>"
 }
 
 
@@ -271,15 +271,10 @@ proc doxygenateIDL { cscidl dcscidl } {
      if { [llength [split $rec "@"]] > 1 && [string range $rec 0 5] != "struct"} {
        set spl [lindex [split $rec ";"] 0]
        set desc [string trim [lindex [split $rec "="] end] "\");"]
-       puts $fout "/// [getItemName $spl] - $desc"  
+       puts $fout "/// [getItemName $spl] - $desc"
      }
      puts $fout $rec
   }
   close $fin
   close $fout
 }
-
-
-
-
-
