@@ -249,6 +249,8 @@ if { $OPTIONS(maven) } {
   source $SAL_DIR/gencommandtestsjava.tcl
   source $SAL_DIR/mavenize.tcl
   source $SAL_DIR/gensalcodes.tcl
+  set SALVERSION [lindex [split $SALVERSION "-"] 0]
+  set XMLVERSION [lindex [split $XMLVERSION "-"] 0]
   set mvnrelease [set XMLVERSION]_[set SALVERSION][set RELVERSION]
   foreach subsys $TSUBSYSTEMS {
     checkTopicTypes $subsys
