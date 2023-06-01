@@ -73,6 +73,11 @@ pipeline {
                 }
             }
         }
+        stage('Checkout simple-sal') {
+            steps {
+                checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: 'develop']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'simple_sal']], userRemoteConfigs: [[credentialsId: '14e4c262-1fb1-4b73-b395-5fe617420c85', url: 'https://github.com/lsst-camera-ccs/org-lsst-camera-simple-sal.git']]]     
+            }
+        }
         stage("Running python tests") {
             steps {
                 script {
@@ -136,11 +141,10 @@ pipeline {
                 script {
                     sh "docker exec -u saluser \${container_name} sh -c \"" +
                         "source ~/.setup.sh && " +
-                        "mamba install -y catch2 && " +
                         "export LSST_DDS_QOS=file:///home/saluser/repos/ts_ddsconfig/python/lsst/ts/ddsconfig/data/qos/QoS.xml && " +
                         "export LSST_DDS_PARTITION_PREFIX=testcpp && " +
-                        "cd /home/saluser/repos/ts_sal/camera-tests && " +
-                        "mvn test -DXms2g -DXmx4g --no-transfer-progress\""
+                        "cd /home/saluser/repos/ts_sal/simple_sal && " +
+                        "mvn --no-transfer-progress -B clean install \""
                     
                 }
             }
@@ -153,9 +157,9 @@ pipeline {
             echo "C++ unit-test results"
             junit testResults: 'cpp_tests/*.xml', skipPublishingChecks: true
             echo "Java unit-test results"
-            junit testResults: 'java_tests/target/surefire-reports/*.xml', skipPublishingChecks: true
-            echo "Camera unit-test results"
-            junit testResults: 'camera-tests/target/surefire-reports/TEST*.xml', skipPublishingChecks: true
+            junit testResults: 'java_tests/target/surefire-reports/TEST*.xml', skipPublishingChecks: true
+            echo "Java unit-test results"
+            junit testResults: 'simple_sal/**/target/surefire-reports/TEST*.xml', skipPublishingChecks: true
 
             echo "Build documents"
             sh "docker exec -u saluser \${container_name} sh -c \"" +
