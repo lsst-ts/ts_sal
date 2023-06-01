@@ -6,6 +6,11 @@
 Version History
 ###############
 
+Changes for 7.3.0
+=================
+
+* Remove git tag from jar naming and respect VERSION= specifier
+
 Changes for 7.2.0
 =================
 
