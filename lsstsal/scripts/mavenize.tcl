@@ -72,7 +72,8 @@ global env SAL_WORK_DIR SAL_DIR OSPL_VERSION XMLVERSION RELVERSION SALVERSION TS
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source> 
-    <maven.compiler.target>1.8</maven.compiler.target>  </properties>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
     <reporting>
         <plugins>
             <plugin>
