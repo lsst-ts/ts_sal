@@ -1,16 +1,13 @@
 
 This dvd/repository contains a release of the LSST SAL SDK.
 
-This communications middleware is based on the industry standard
-Data Distribution Services package. We are using the OpenSplice (V6)
-implementation from ADLINK.
+This communications middleware is based on the popular Kafka
+publish/subscribe package.
 
 The SDK provides the ability to generate interface code for subsystem
 to subsystem communications. Primary support is for C++ and Java.
 
-Python bindings are also included which wrap the SAL API using pybind11.
-
-The recommended development platform is CentOS 7.4 (x86_64 64-bit)
+The recommended development platform is AmlaLinux 8.x (x86_64 64-bit)
 
 To get started, unpack the salSDK archive in the /opt directory
 of your system disk and read the User Guide from the /opt/doc dirfectory.

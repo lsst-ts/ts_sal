@@ -1,0 +1,70 @@
+
+/*
+ * This file contains the implementation for the 'SALNAMESTRINGSubscriber' executable.
+ *
+ ***/
+
+
+#include <string>
+#include <sstream>
+#include <iostream>
+#include "SAL_SALData.h"
+#include <stdlib.h>
+#include <time.h>
+
+using namespace SALData;
+
+/* entry point exported and demangled so symbol can be found in shared library */
+extern "C"
+{
+  OS_API_EXPORT
+  int SALTelemetrySubscriber(int argc, char *argv[]);
+}
+
+
+int SALTelemetrySubscriber(char *topic_name)
+{
+  struct timespec delay_10ms;
+  delay_1s.tv_sec = 0;
+  delay_1s.tv_nsec = 10000000;
+  SALNAMESTRINGC SALInstance;
+
+
+#ifdef SAL_SUBSYSTEM_ID_IS_KEYED
+  int SALDataID = 1;
+  if (getenv("LSST_SALData_ID") != NULL) {
+     sscanf(getenv("LSST_SALData_ID"),"%d",&SALDataID);
+  } 
+  SAL_SALData mgr = SAL_SALData(SALDataID);
+#else
+  SAL_SALData mgr = SAL_SALData();
+#endif
+
+  mgr.salTelemetrySub(topic_name);
+
+  cout << "=== [Subscriber] Ready ..." << endl;
+
+  ReturnCode_t status =  - 1;
+  int count = 0;
+  while (1)
+  {
+    status = mgr.getNextSample_SALTopic(&SALInstance);
+    if (status == SAL__OK) {
+// INSERT_SAL_SUBC
+    }
+   nanoleep(&delay_10ms,NULL);
+   ++count;
+  }
+
+  //cleanup
+  mgr.salShutdown();
+
+  return 0;
+}
+
+int main(int argc, char *argv[])
+{
+  return SALTelemetrySubscriber("SALNAMESTRING");
+}
+
+

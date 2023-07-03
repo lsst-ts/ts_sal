@@ -1,9 +1,8 @@
 # Service Abstraction Layer package
 
 Provides tools to turn ts_xml interface description into C++, Java and
-LabView interfaces. Turns XMLs with the interface description into Data
-Distribution Service (DDS) schemas and language bindings. Without going into
-details, it can be said binding for the following primitives are generated:
+LabView interfaces. Turns XMLs with the interface description into Avro schemas and language bindings.
+Without going into details, it can be said binding for the following primitives are generated:
 
 
 * **Telemetry** messages that a SAL component writes at regular intervals, e.g.
@@ -36,12 +35,22 @@ scons install declare
 
 ## Dependencies
 
-* **ts_openslice** for ADLink OpenSliceDDS to generate C++, Java and LabView interfaces
-* **ts_idl** for IDL generation, needed for **ts_salobj**
+* **avro-src-1.11.1** for Avro to generate C++, Java and LabView interfaces
+* **libcurl4-openssl-devel
+* **libavro-devel
+* **libjansson-devel
+* **cmake
+* **g++
+* **maven-3.9.2
+* **libboost-devel
+* **libboost-filesystem-devel
+* **libboost-iostreams-devel
+* **libboost-program-options-devel
+* **libboost-system-devel
 
-**The following works with ts_opensplice compiled for Centos:7.**
+**The following works with Kafka compiled for AlmaLinux:8.**
 
-On a centos:7 docker image, run the following as root:
+On a almaLinux:8 docker image, run the following as root:
 
 ```bash
 yum -y update
@@ -53,7 +62,6 @@ yum -y install git python3 which make java-1.8.0-openjdk-devel
 To get needed github projects and setup environment variables, do:
 
 ```bash
-git clone https://github.com/lsst-ts/ts_opensplice
 git clone https://github.com/lsst-ts/ts_sal
 source ts_sal/setup.env
 ```
