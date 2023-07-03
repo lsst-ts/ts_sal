@@ -1,0 +1,173 @@
+
+
+salReturn SAL_SALData::salCommand(char *cmdAlias)
+{
+  time_t sTime;
+  int actorIdx = getActorIndex(cmdAlias);
+  if (actorIdx < 0) {return SAL__ERROR;}
+  string stopic1="keyedCommand";
+  string stopic2="keyedResponse";
+  string response="SALData_ackcmd";
+
+  // create domain participant
+  createParticipant(domainName);
+
+  //create Publisher
+  createPublisher(actorIdx);
+  salTypeSupport(actorIdx);
+  createSubscriber(SAL__SALData_ackcmd_ACTOR);
+  createTopic(actorIdx,cmdAlias);
+
+  if (sal[SAL__SALData_ackcmd_ACTOR].isReader == false) {
+     //create types
+     SALResponseTypeSupport_var mtr = new SALResponseTypeSupport();
+     registerType2(SAL__SALData_ackcmd_ACTOR,mtr.in());
+
+     //create Topics
+     createTopic2(SAL__SALData_ackcmd_ACTOR,const_cast<char*>(response.c_str()));
+
+     //create a reader for responses
+    sal[SAL__SALData_ackcmd_ACTOR].sampleAge = 1.0e20;
+    sal[SAL__SALData_ackcmd_ACTOR].isReader = true;
+  }
+
+  createWriter(actorIdx,true);
+  sal[actorIdx].isCommand = true;
+  sal[actorIdx].isWriter = true;
+  sal[actorIdx].sndSeqNum = time(&sTime) + 32768*actorIdx;
+  return SAL__OK;
+}
+
+
+salReturn SAL_SALData::salProcessor(char *cmdAlias)
+{
+  int actorIdx = getActorIndex(cmdAlias);
+  if (actorIdx < 0) {return SAL__ERROR;}
+  string stopic1="keyedCommand";
+  string stopic2="keyedResponse";
+  string response="SALData_ackcmd";
+
+  // create domain participant
+  createParticipant(domainName);
+
+  createSubscriber(actorIdx);
+
+  //create types
+  salTypeSupport(actorIdx);
+  createTopic(actorIdx,cmdAlias);
+
+
+  //create Topics
+
+  //create a reader for commands
+  sal[actorIdx].isProcessor = true;
+  sal[actorIdx].isReader = true;
+  sal[actorIdx].sampleAge = 1.0e20;
+
+
+  if ( sal[SAL__SALData_ackcmd_ACTOR].isWriter == false) {
+    //create Publisher
+    createPublisher(SAL__SALData_ackcmd_ACTOR);
+    SALResponseTypeSupport_var mtr = new SALResponseTypeSupport();
+    registerType2(SAL__SALData_ackcmd_ACTOR,mtr.in());
+    createTopic2(SAL__SALData_ackcmd_ACTOR,const_cast<char*>(response.c_str()));
+    bool autodispose_unregistered_instances = true;
+    createWriter2(SAL__SALData_ackcmd_ACTOR,autodispose_unregistered_instances);
+    sal[SAL__SALData_ackcmd_ACTOR].isWriter = true;
+  }
+
+  return SAL__OK;
+}
+
+// NOT FOR LOVE CSC
+
+std::string SAL_SALData::removeSpaces(std::string word) {
+    std::string newWord;
+    for (unsigned int i = 0; i < word.length(); i++) {
+        if (word[i] != ' ') {
+            newWord += word[i];
+        }
+    }
+
+    return newWord;
+}
+
+
+salReturn SAL_SALData::checkAuthList(std::string private_identity) 
+{
+  int status = 0;
+  int cmdId = -1;
+  int iat = 0;
+  char delimiter = ',';
+  char delimiter2 = ':';
+  char delimiter3 = '@';
+  std::string token;
+  std::string token2;
+  std::string my_identity = CSC_identity;
+  SALData_command_setAuthListC SALInstance;
+  SALData_logevent_authListC myData;
+
+  if ( !authListEnabled ) return SAL__OK;
+
+  if ( sal[SAL__SALData_command_setAuthList_ACTOR].isProcessor == false ) {
+     status = salProcessor("SALData_command_setAuthList");
+     status = salEventPub("SALData_logevent_authList");
+     authorizedUsers = "";
+     nonAuthorizedCSCs = "";
+     myData.authorizedUsers = SALInstance.authorizedUsers;
+     myData.nonAuthorizedCSCs = SALInstance.nonAuthorizedCSCs;
+     logEvent_authList(&myData, 1);
+  }
+  cmdId = acceptCommand_setAuthList(&SALInstance);
+  if (cmdId > 0) {
+     if (debugLevel > 0) {
+        cout << "=== command setAuthList received = " << endl;
+        cout << "    authorizedUsers : " << SALInstance.authorizedUsers << endl;
+        cout << "    nonAuthorizedCSCs : " << SALInstance.nonAuthorizedCSCs << endl;
+     }
+     authorizedUsers = removeSpaces(SALInstance.authorizedUsers);
+     nonAuthorizedCSCs = removeSpaces(SALInstance.nonAuthorizedCSCs);
+     myData.authorizedUsers = SALInstance.authorizedUsers;
+     myData.nonAuthorizedCSCs = SALInstance.nonAuthorizedCSCs;
+     logEvent_authList(&myData, 1);
+     ackCommand_setAuthList( cmdId, SAL__CMD_COMPLETE, 0, "OK" );
+  }
+  if ( private_identity.compare("") != 0 ) {
+   std::stringstream ssUsers(authorizedUsers);
+   std::stringstream ssCSCs(nonAuthorizedCSCs);
+   std::stringstream ssid(private_identity);
+   while(getline(ssCSCs, token, delimiter)) {
+     if ( token.compare(my_identity) == 0 ) {
+        return SAL__OK;
+     } else {
+       std::stringstream ssIdentity(private_identity);
+       while(getline(ssIdentity, token2, delimiter2)) {
+         if (debugLevel > 1) { std::cout << "authList check : " << "split - " << token2 << std::endl; }
+         if ( token2.compare(token) == 0 ) {
+           if (debugLevel > 1) { std::cout << "authList check : " << token << " == " << private_identity << " : Forbidden" << std::endl; }
+           return SAL__CMD_NOPERM;
+         }
+       }
+       if ( token.compare(private_identity) == 0 ) {
+          if (debugLevel > 1) { std::cout << "authList check : " << token << " : Forbidden" << std::endl; }
+          return SAL__CMD_NOPERM;
+       }
+     }
+   }
+   while(getline(ssUsers, token, delimiter)) {
+     if (debugLevel > 1) { std::cout << "authList check : " << token << std::endl; }
+     if ( token.compare(private_identity) == 0 ) {
+        return SAL__OK;
+     }
+   }
+   while(getline(ssid, token, delimiter3)) {
+     iat++;
+     if (iat > 1) { return SAL__CMD_NOPERM; }
+   }
+  }
+  status = SAL__OK;
+  return status;  
+}
+
+
+

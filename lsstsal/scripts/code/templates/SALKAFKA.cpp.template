@@ -1,0 +1,552 @@
+
+//#include <chrono>
+#include <sys/time.h>
+#include <stdexcept>
+#include <time.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include "SAL_SALData.h"
+#include "SAL_SALData_actors.h"
+
+using namespace SALData;
+
+SAL_SALData::SAL_SALData()
+{
+   strncpy(CSC_identity, "SALData", 128);
+   initSalEnvironment(0);
+}
+
+SAL_SALData::SAL_SALData(int aKey, char *identity)
+{
+   char *id = (char *)malloc(128);
+   if (identity == NULL) {
+     sprintf(id,"SALData:%d",aKey);
+   } else {
+     sprintf(id,"%s",identity);
+   }
+   strncpy(CSC_identity, id, 128);
+   initSalEnvironment(aKey);
+}
+
+SAL_SALData::SAL_SALData(int aKey)
+{
+   char *id = (char *)malloc(128);
+   sprintf(id,"SALData:%d",aKey);
+   strncpy(CSC_identity, id, 128);
+   initSalEnvironment(aKey);
+}
+
+SAL_SALData::SAL_SALData(char *identity)
+{
+   if (identity == NULL) {
+     strncpy(CSC_identity, "SALData", 128);
+   } else {
+     strncpy(CSC_identity, identity, 128);
+   }
+   initSalEnvironment(0);
+}
+
+
+void SAL_SALData::initSalEnvironment(int aKey)
+{
+  int aenable;
+  std::string errstr;
+
+  char *pname = getenv("LSST_KAFKA_PREFIX");
+  char *kport = getenv("LSST_KAFKA_BROKER_PORT");
+  char *khost = getenv("LSST_KAFKA_HOST");
+  char *sname = getenv("LSST_KAFKA_HISTORYSYNC");
+  char *aname = getenv("LSST_KAFKA_ENABLE_AUTHLIST");
+  char *securityProtocol = getenv("LSST_KAFKA_SECURITY_PROTOCOL");
+  char *securityMechanism = getenv("LSST_KAFKA_SECURITY_MECHANISM");
+  char *securityUserName = getenv("LSST_KAFKA_SECURITY_USERNAME");
+  char *securityPassword = getenv("LSST_KAFKA_SECURITY_PASSWORD");
+
+  std::string server = khost + ":" + kport;
+  RdKafka::Conf *configuration = RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL);
+  configuration->set("bootstrap.servers",server, errstr);
+  configuration->set("kafka.security.protocol",securityProtocol, errstr);
+  configuration->set("kafka.sasl.mechanism",securityMechanism, errstr);
+  configuration->set("kafka.sasl.username",securityUserName, errstr);
+  configuration->set("kafka.sasl.password",securityPassword, errstr);   
+ 
+  
+  if ( pname != NULL ) {
+      strncpy(partitionPrefix, pname, 128);
+   } else {
+      throw std::runtime_error("ERROR : Cannot find envvar LSST_KAFKA_PREFIX");
+   }
+    if ( sname != NULL ) {
+      sscanf(sname,"%d",&historySync);
+   } else {
+      historySync = 0;
+   }
+   authListEnabled = false;
+   if ( aname != NULL ) {
+      sscanf(aname,"%d",&aenable);
+      if (aenable == 1) {
+        authListEnabled = true;
+      }
+   }
+   hasReader = false;
+   hasWriter = false;
+   hasCommand = false;
+   hasEventReader = false;
+   hasEventWriter = false;
+   hasProcessor = false;
+   subsystemID = aKey;
+   debugLevel = 1;
+   initSalActors();
+}
+
+/**
+ * Returns the name of an error code.
+ **/
+string SAL_SALData::getErrorName(RfKafka::Error status)
+{
+  return status.name;
+}
+
+/**
+ * Check the return status for errors. If there is an error, then terminate.
+ **/
+void SAL_SALData::checkStatus(RfKafka::Error status, const char *info)
+{
+
+
+  if (status != 0)
+  {
+    cerr << "Error in " << info << ": " << status.name << endl;
+    throw std::runtime_error(status.name.c_str());
+  }
+}
+
+
+double SAL_SALData::getCurrentTime()
+{
+   struct timex tx;
+   struct timespec now;
+   double taiTime;
+
+   memset(&tx, 0, sizeof(tx));
+   adjtimex(&tx);
+   clock_gettime(CLOCK_TAI,&now);
+   taiTime = (double)now.tv_sec + (double)now.tv_nsec/1000000000.;
+   return taiTime;
+}
+
+int SAL_SALData::getLeapSeconds()
+{
+   struct timex tx;
+
+   memset(&tx, 0, sizeof(tx));
+   adjtimex(&tx);
+   return tx.tai;
+}
+
+
+double SAL_SALData::getRcvdTime(char *topicName)
+{
+    int actorIdx;
+    actorIdx = getActorIndex(topicName);
+    return sal[actorIdx].rcvStamp;
+}
+
+double SAL_SALData::getSentTime(char *topicName)
+{
+    int actorIdx;
+    actorIdx = getActorIndex(topicName);
+    return sal[actorIdx].sndStamp;
+}
+
+
+int SAL_SALData::getActorIndex (char *topicName)
+{
+  string topicError = "Unknown topic : ";
+  for (int i=0; i<SAL__ACTORS_MAXCOUNT;i++) {
+     if ( strlen(topicName) == strlen(sal[i].topicName) )  {
+       if ( strcmp(topicName,sal[i].topicName) == 0 )  {
+          return i;
+       }
+     }
+  }
+  throw std::runtime_error(string(topicError + topicName));
+  return SAL__ERROR;
+}
+
+bool SAL_SALData::actorActive(int actorIdx) {
+  if ( sal[actorIdx].isActive ) {
+     return true;
+  }
+  return false;
+}
+
+bool SAL_SALData::actorReader(int actorIdx) {
+  if ( sal[actorIdx].isReader ) {
+     return true;
+  }
+  return false;
+}
+
+bool SAL_SALData::actorWriter(int actorIdx) {
+  if ( sal[actorIdx].isWriter ) {
+     return true;
+  }
+  return false;
+}
+
+bool SAL_SALData::actorCommand(int actorIdx) {
+  if ( sal[actorIdx].isCommand ) {
+     return true;
+  }
+  return false;
+}
+
+bool SAL_SALData::actorEventReader(int actorIdx) {
+  if ( sal[actorIdx].isEventReader ) {
+     return true;
+  }
+  return false;
+}
+
+bool SAL_SALData::actorEventWriter(int actorIdx) {
+  if ( sal[actorIdx].isEventWriter ) {
+     return true;
+  }
+  return false;
+}
+
+bool SAL_SALData::actorProcessor(int actorIdx) {
+  if ( sal[actorIdx].isProcessor ) {
+     return true;
+  }
+  return false;
+}
+
+
+int SAL_SALData::getIntProperty(int actorIdx,salCHAR *property)
+{
+  if (strcmp("ack", property) == 0) {return sal[actorIdx].ack;}
+  if (strcmp("error", property) == 0) {return sal[actorIdx].error;}
+  if (strcmp("rcvSeqNum", property) == 0) {return sal[actorIdx].rcvSeqNum;}
+  return SAL__OK;
+}
+
+
+
+
+// INSERT TYPE SUPPORT      
+
+salReturn SAL_SALData::salTelemetryPub(char *topicName)
+{
+  string topicError = "Unknown topic : ";
+  int actorIdx = -1;
+  int status = 0;
+
+  actorIdx = getActorIndex(topicName);
+  if (actorIdx > -1) {
+     status = salTelemetryPub(actorIdx);
+  } else {
+     status = SAL__ERROR;
+     throw std::runtime_error(string(topicError + topicName));
+  }
+  return status;
+}
+
+salReturn SAL_SALData::salTelemetrySub(char *topicName)
+{
+  string topicError = "Unknown topic : ";
+  int actorIdx = -1;
+  int status = 0;
+
+  actorIdx = getActorIndex(topicName);
+  if (actorIdx > -1) {
+     status = salTelemetrySub(actorIdx);
+  } else {
+     status = SAL__ERROR;
+     throw std::runtime_error(string(topicError + topicName));
+  }
+  return status;
+}
+ 
+
+salReturn SAL_SALData::salTelemetryPub(int actorIdx)
+{
+  // create domain participant
+  createParticipant(domainName);
+
+  //create type
+  salTypeSupport(actorIdx);
+
+  //create Topic
+  createTopic(actorIdx);
+
+  //create Publisher
+  createPublisher(actorIdx);
+
+  sal[actorIdx].isWriter = true;
+  return SAL__OK;
+}
+
+
+
+       
+salReturn SAL_SALData::salTelemetrySub(int actorIdx)
+{
+   // create domain participant
+   createParticipant(domainName);
+
+   //create type
+   salTypeSupport(actorIdx);
+
+   //create Topic
+   createTopic(actorIdx);
+
+   //create Subscriber
+   createSubscriber(actorIdx);
+
+   sal[actorIdx].isReader = true;
+   return SAL__OK;
+}
+
+
+
+void SAL_SALData::logError(salReturn status) 
+{
+   cerr << "=== ERROR return value = " << status << endl; 
+}
+
+/*
+using Clock = std::chrono::high_resolution_clock;
+using Time_point = Clock::time_point;
+using std::chrono::milliseconds;
+using std::chrono::duration_cast;
+
+salTIME SAL_SALData::currentTime()
+{
+    Time_point tp = Clock::now();   
+    return (salTIME duration_cast<milliseconds>tp.count());
+}
+*/
+
+
+// INSERT CMDALIAS SUPPORT  for issueCommandC and acceptCommandC, acceptAnyCommand   
+
+
+salReturn SAL_SALData::setDebugLevel( int level )
+{
+   debugLevel = level;
+   salReturn status = SAL__OK;
+   if (status != SAL__OK) {
+      if (debugLevel >= SAL__LOG_ROUTINES) {
+          logError(status);
+      }
+   }
+   return status;
+}
+
+int SAL_SALData::getDebugLevel( int level )
+{
+   return debugLevel;
+}
+
+int SAL_SALData::getOrigin()
+{
+   salReturn status = SAL__OK;
+   if (status != SAL__OK) {
+      if (debugLevel >= SAL__LOG_ROUTINES) {
+          logError(status);
+      }
+   }
+   return status;
+}
+      
+void SAL_SALData::setMaxSamples(int actorIdx, int n)
+{
+    if ( n < 0 ) {
+       sal[actorIdx].maxSamples = 500;
+    } else {
+       sal[actorIdx].maxSamples = n;
+    }
+}
+
+
+
+// INSERT EVENTALIAS SUPPORT
+
+
+salReturn SAL_SALData::salEventPub(char *topicName)
+{
+  int actorIdx = getActorIndex(topicName);
+
+  if ( actorIdx < 0) {return SAL__ERROR;}
+  salTelemetryPub(actorIdx);
+  sal[actorIdx].isEventWriter = true;
+  return SAL__OK;
+}
+
+
+salReturn SAL_SALData::salEventSub(char *topicName)
+{
+  int actorIdx = getActorIndex(topicName);
+
+  if ( actorIdx < 0) {return SAL__ERROR;}
+
+  // create domain participant
+  createParticipant(domainName);
+
+  //create type
+  salTypeSupport(actorIdx);
+
+  //create Topic
+  createTopic(actorIdx);
+  createSubscriber(actorIdx);
+
+   sal[actorIdx].isEventReader = true;
+   return SAL__OK;
+}
+
+
+void SAL_SALData::salShutdown()
+{
+  if (participant != NULL) {
+    participant->delete_contained_entities();
+    deleteParticipant();
+    participant = NULL;
+  }
+}
+
+void SAL_SALData::createParticipant(const char *partitiontName)
+{
+  
+  if (participant == NULL) {
+    partition = partitionName;
+    configuration = rd_kafka_conf_kafka_new();
+    sleep(1);
+  }
+}
+
+void SAL_SALData::deleteParticipant()
+{
+   delete participant;
+}
+
+
+void SAL_SALData::createTopic(int actorIdx)
+{
+  sal[actorIdx].topicConf = rd_kafka_topic_conf_new();
+  if (sal[actorIdx].topicConf == NULL) 
+  {
+     err = rd_kafka_last_error();
+     estr = rs_kafka_err2str(err);
+     throw std::runtime_error(string(estr + sal[actorIdx].topicName));
+  } else {
+     sal[actorIdx].topic = rd_kafka_topic_new(sal[actorIdx].typeName,sal[actodIdx.topicConf]);
+  }
+ }
+
+void SAL_SALData::createTopic2(int actorIdx)
+{
+  sal[actorIdx].topicConf2 = rd_kafka_topic_conf_new();
+  if (sal[actorIdx].topicConf2 == NULL) 
+  {
+     err = rd_kafka_last_error();
+     estr = rs_kafka_err2str(err);
+     throw std::runtime_error(string(estr + sal[actorIdx].topicName2));
+  } else {
+     sal[actorIdx].topic = rd_kafka_topic_new(sal[actorIdx].typeName2,sal[actodIdx.topicConf2]);
+  }
+ }
+
+void SAL_SALData::createTopic(int actorIdx, char *topicName)
+{
+  sal[actorIdx].topicConf = rd_kafka_topic_conf_new();
+  if (sal[actorIdx].topicConf == NULL) 
+  {
+     err = rd_kafka_last_error();
+     estr = rs_kafka_err2str(err);
+     throw std::runtime_error(string(estr + sal[actorIdx].topicName));
+  } else {
+     sal[actorIdx].topic = rd_kafka_topic_new(sal[actorIdx].typeName,sal[actodIdx.topicConf]);
+  }
+}
+
+void SAL_SALData::createTopic2(int actorIdx, char *topicName)
+{
+  sal[actorIdx].topicConf2 = rd_kafka_topic_conf_new();
+  if (sal[actorIdx].topicConf2 == NULL) 
+  {
+     err = rd_kafka_last_error();
+     estr = rs_kafka_err2str(err);
+     throw std::runtime_error(string(estr + sal[actorIdx].topicName2));
+  } else {
+     sal[actorIdx].topic = rd_kafka_topic_new(sal[actorIdx].typeName2,sal[actodIdx.topicConf2]);
+  }
+}
+
+
+
+void SAL_SALData::deleteTopics()
+{
+  for (int i=0; i<SAL__ACTORS_MAXCOUNT;i++) {
+    if ( sal[i].topic != NULL) {
+      delete sal[i].topic;
+      delete sal[i].topicConf;
+    }
+    if ( sal[i].topic2 != NULL) {
+      delete sal[i].topic2;
+      delete sal[i].topicConf2;
+    }
+  }  
+}
+
+
+void SAL_SALData::createPublisher(int actorIdx)
+{
+  sal[actorIdx].publisher = rd_kafka_new(RD_KAFKA_PRODUCER, configuration, errstr, sizoeof(errstr));
+  if (sal[actorIdx].publisher == NULL) {
+     throw std::runtime_error("Failed to create a Kafka producder");
+  }
+}
+
+
+void SAL_SALData::deletePublisher()
+{
+  if (publisher != NULL) { delete publisher; }
+    for (int i=0; i<SAL__ACTORS_MAXCOUNT;i++) {
+        if ( sal[i].publisher != NULL ) {
+          if (debugLevel > 0) {
+            cout << "    deletePublisher : " << i << endl;
+          }
+          delete  sal[i].publisher;
+        }
+    }
+}
+
+
+void SAL_SALData::createSubscriber(int actorIdx)
+{
+  sal[actorIdx].publisher = rd_kafka_new(RD_KAFKA_CONSUMER, configuration, errstr, sizoeof(errstr));
+  if (sal[actorIdx].publisher == NULL) {
+     throw std::runtime_error("Failed to create a Kafka subscriber");
+  }
+}
+
+
+void SAL_SALData::deleteSubscriber()
+{
+  if (subscriber != NULL) { delete subscriber; }
+  for (int i=0; i<SAL__ACTORS_MAXCOUNT;i++) {
+    if (sal[i].subscriber != NULL) {
+      delete sal[i].subscriber;
+    }
+  }
+}
+
+SAL_SALData::~SAL_SALData(){
+    salShutdown();
+}
+
+
+
+

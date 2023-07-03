@@ -64,9 +64,6 @@ proc insertEventHeader { subsys file_writer } {
     puts $file_writer "#include <iostream>"
     puts $file_writer "#include <stdlib.h>"
     puts $file_writer "#include \"SAL_[set subsys].h\""
-    puts $file_writer "#include \"ccpp_sal_[set subsys].h\""
-    puts $file_writer "#include \"os.h\""
-    puts $file_writer "using namespace DDS;"
     puts $file_writer "using namespace [set subsys];"
 }
 
@@ -121,7 +118,6 @@ proc insertLoggers { subsys file_writer } {
     puts $file_writer "/* entry point exported and demangled so symbol can be found in shared library */"
     puts $file_writer "extern \"C\""
     puts $file_writer "\{"
-    puts $file_writer "  OS_API_EXPORT"
     puts $file_writer "  int test_[set subsys]_all_logger();"
     puts $file_writer "\}"
 

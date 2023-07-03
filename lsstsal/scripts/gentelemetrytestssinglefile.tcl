@@ -61,12 +61,10 @@ proc insertTelemetryHeader { subsys file_writer } {
 
     puts $file_writer "#include <string>"
     puts $file_writer "#include <sstream>"
-    puts $file_writer "#include <iostream>"
+    puts $file_writer "#include <string>"
+    puts $file_writer "#include <time.h>"
     puts $file_writer "#include <stdlib.h>"
     puts $file_writer "#include \"SAL_[set subsys].h\""
-    puts $file_writer "#include \"ccpp_sal_[set subsys].h\""
-    puts $file_writer "#include \"os.h\""
-    puts $file_writer "using namespace DDS;"
     puts $file_writer "using namespace [set subsys];"
 }
 
@@ -96,7 +94,7 @@ proc insertPublishers { subsys file_writer } {
         puts $file_writer "\n  \{"
         puts $file_writer "    cout << \"=== [set subsys]_[set alias] start of topic ===\" << endl;"
         puts $file_writer "    int iseq = 0;"
-        puts $file_writer "    os_time delay_1s = { 1, 0 };"
+        puts $file_writer "    timespec os_time delay_1s = { 1, 0 };"
         puts $file_writer "    [set subsys]_[set alias]C myData;"
         puts $file_writer "    while (iseq < 10) \{"
 
@@ -125,7 +123,6 @@ proc insertSubscribers { subsys file_writer } {
     puts $file_writer "\n/* entry point exported and demangled so symbol can be found in shared library */"
     puts $file_writer "extern \"C\""
     puts $file_writer "\{"
-    puts $file_writer "  OS_API_EXPORT"
     puts $file_writer "  int test_[set subsys]_all_telemetry();"
     puts $file_writer "\}"
 
@@ -154,7 +151,9 @@ proc insertSubscribers { subsys file_writer } {
         puts $file_writer "    [set subsys]_[set alias]C SALInstance;"
         puts $file_writer "    ReturnCode_t status = -1;"
         puts $file_writer "    int count = 0;"
-        puts $file_writer "    os_time delay_10ms = \{ 0, 10000000 \};"
+        puts $file_writer "  struct timespec delay_10ms;"
+        puts $file_writer "  delay_10ms.tv_sec = 0;"
+        puts $file_writer "  delay_10ms.tv_nsec = 10000000;"
 
         puts $file_writer "    while (count < 10) \{"
         puts $file_writer "      status = mgr.getNextSample_[set alias](&SALInstance);"
@@ -165,7 +164,7 @@ proc insertSubscribers { subsys file_writer } {
             puts $file_writer "        [string trim $line ]"
         }
         close $fragment_reader
-        puts $file_writer "        os_nanoSleep(delay_10ms);"
+        puts $file_writer "        nanosleep(&delay_10ms,NULL);"
         puts $file_writer "        ++count;"
 
         puts $file_writer "      \}"

@@ -62,11 +62,9 @@ proc insertCommandHeader { subsys file_writer } {
     puts $file_writer "#include <string>"
     puts $file_writer "#include <sstream>"
     puts $file_writer "#include <iostream>"
+    puts $file_writer "#include <time.h>"
     puts $file_writer "#include <stdlib.h>"
     puts $file_writer "#include \"SAL_[set subsys].h\""
-    puts $file_writer "#include \"ccpp_sal_[set subsys].h\""
-    puts $file_writer "#include \"os.h\""
-    puts $file_writer "using namespace DDS;"
     puts $file_writer "using namespace [set subsys];"
 }
 
@@ -118,15 +116,16 @@ proc insertControllers { subsys file_writer } {
     puts $file_writer "/* entry point exported and demangled so symbol can be found in shared library */"
     puts $file_writer "extern \"C\""
     puts $file_writer "\{"
-    puts $file_writer "  OS_API_EXPORT"
     puts $file_writer "  int test_[set subsys]_all_controller();"
     puts $file_writer "\}"
 
     puts $file_writer "int test_[set subsys]_all_controller()"
     puts $file_writer "\{"
-    puts $file_writer "  os_time delay_10ms = \{ 0, 10000000 \};"
     puts $file_writer "  int cmdId = -1;"
     puts $file_writer "  int timeout = 1;"
+    puts $file_writer "  struct timespec delay_10ms;"
+    puts $file_writer "  delay_10ms.tv_sec = 0;"
+    puts $file_writer "  delay_10ms.tv_nsec = 10000000;"
 
     if { [info exists SYSDIC($subsys,keyedID)] } {
         puts $file_writer "  int salIndex = 1;"
@@ -164,7 +163,7 @@ proc insertControllers { subsys file_writer } {
         puts $file_writer "      mgr.ackCommand_[set alias](cmdId, SAL__CMD_COMPLETE, 0, \"Done : OK\");"
         puts $file_writer "      break;"
         puts $file_writer "    \}"
-        puts $file_writer "    os_nanoSleep(delay_10ms);"
+        puts $file_writer "    nanosleep(&delay_10ms,NULL);"
         puts $file_writer "  \}"
         puts $file_writer "  cout << \"=== [set subsys]_[set alias] end of topic ===\" << endl;"
     }
