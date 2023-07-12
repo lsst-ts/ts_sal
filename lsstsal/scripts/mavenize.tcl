@@ -93,7 +93,19 @@ global env SAL_WORK_DIR SAL_DIR OSPL_VERSION XMLVERSION RELVERSION SALVERSION TS
             </plugin>
         </plugins>
     </reporting>
-
+    <build>
+     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-plugin</artifactId>
+        <version>1.11.1</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+     </plugins>
+    </build>
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
