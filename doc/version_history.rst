@@ -6,6 +6,11 @@
 Version History
 ###############
 
+Changes for 7.4.0
+=================
+
+* Fix mavenize scripts to use https
+
 Changes for 7.3.0
 =================
 
