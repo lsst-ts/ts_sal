@@ -33,8 +33,8 @@ global env SAL_WORK_DIR SAL_DIR OSPL_VERSION XMLVERSION RELVERSION SALVERSION TS
   exec ln -sf $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease] $SAL_WORK_DIR/maven/[set subsys]
   set fout [open $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/pom.xml w]
   puts $fout "
-<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"
-  xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">
+<project xmlns=\"https://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"https://www.w3.org/2001/XMLSchema-instance\"
+  xsi:schemaLocation=\"https://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd\">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.lsst.lsst-tsvm</groupId>
@@ -43,25 +43,25 @@ global env SAL_WORK_DIR SAL_DIR OSPL_VERSION XMLVERSION RELVERSION SALVERSION TS
   <name>sal_[set subsys]</name>
   <version>$mvnrelease</version>
 
-  <url>http://lsst-tsvm.lsst.org</url>
+  <url>https://lsst-tsvm.lsst.org</url>
   <licenses>
    <license>
     <name>LSST GPL</name>
-    <url>http://lsst-tsvm.lsst.org/LICENSE/</url>
+    <url>https://lsst-tsvm.lsst.org/LICENSE/</url>
     <distribution>repo</distribution>
     <comments>A business-friendly OSS license</comments>
    </license>
   </licenses>
   <organization>
       <name>LSST</name>
-         <url>http://lsst-tsvm.lsst.org</url>
+         <url>https://lsst-tsvm.lsst.org</url>
   </organization>
   <developers>
    <developer>
     <id>dmills</id>
     <name>Dave Mills</name>
     <email>dmills@lsst.org</email>
-    <url>http://www.lsstcorp.org</url>
+    <url>https://www.lsstcorp.org</url>
     <organization>LSST</organization>
     <roles>
       <role>developer</role>
@@ -123,24 +123,24 @@ global env SAL_WORK_DIR SAL_DIR OSPL_VERSION XMLVERSION RELVERSION SALVERSION TS
         <repository>
             <id>ocs-maven2-public</id>
             <name>OCS Maven 2 central repository</name>
-            <url>http://repo-nexus.lsst.org/nexus/content/groups/ocs-maven2/</url>
+            <url>https://repo-nexus.lsst.org/nexus/content/groups/ocs-maven2/</url>
         </repository>
     </repositories>
     <distributionManagement>
         <repository>
             <id>ocs-maven2</id>
             <name>OCS Maven2 Release repository</name>
-            <url>http://repo-nexus.lsst.org/nexus/content/repositories/ocs-maven2/</url>
+            <url>https://repo-nexus.lsst.org/nexus/content/repositories/ocs-maven2/</url>
         </repository>
         <snapshotRepository>
             <id>ocs-maven2-snapshots</id>
             <name>OCS Maven2 SNAPSHOTS repository</name>
-            <url>http://repo-nexus.lsst.org/nexus/content/repositories/ocs-maven2-snapshots/</url>
+            <url>https://repo-nexus.lsst.org/nexus/content/repositories/ocs-maven2-snapshots/</url>
         </snapshotRepository>
         <site>
             <id>ocs-maven2-site</id>
             <name>OCS Maven2 site repository</name>
-            <url>dav:http://repo-nexus.lsst.org/nexus/content/sites/ocs-site/</url>
+            <url>dav:https://repo-nexus.lsst.org/nexus/content/sites/ocs-site/</url>
         </site>
     </distributionManagement>
   </project>

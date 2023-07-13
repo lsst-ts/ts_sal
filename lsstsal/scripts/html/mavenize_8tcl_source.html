@@ -1,5 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
@@ -138,8 +138,8 @@ $(document).ready(function(){initNavTree('mavenize_8tcl_source.html','');});
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="comment"></span>  <span class="keyword">exec</span> mkdir -p $SAL_WORK_DIR/maven/[<span class="keyword">set</span> subsys]-[<span class="keyword">set</span> mvnrelease]/src/main/resources<span class="comment"></span></div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="comment"></span>  <span class="keyword">set</span> fout [open $SAL_WORK_DIR/maven/[<span class="keyword">set</span> subsys]-[<span class="keyword">set</span> mvnrelease]/pom.xml w]<span class="comment"></span></div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="comment"></span>  <span class="keyword">puts</span> $fout &quot;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;&lt;project xmlns=\&quot;http://maven.apache.org/POM/4.0.0\&quot; xmlns:xsi=\&quot;http://www.w3.org/2001/XMLSchema-instance\&quot;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;  xsi:schemaLocation=\&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\&quot;&gt;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;&lt;project xmlns=\&quot;https://maven.apache.org/POM/4.0.0\&quot; xmlns:xsi=\&quot;https://www.w3.org/2001/XMLSchema-instance\&quot;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;  xsi:schemaLocation=\&quot;https://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd\&quot;&gt;</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;  &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;  &lt;groupId&gt;org.lsst.lsst-tsvm&lt;/groupId&gt;</div>
@@ -148,25 +148,25 @@ $(document).ready(function(){initNavTree('mavenize_8tcl_source.html','');});
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;  &lt;name&gt;sal_[<span class="keyword">set</span> subsys]&lt;/name&gt;</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;  &lt;version&gt;$mvnrelease&lt;/version&gt;</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;  &lt;url&gt;http://lsst-tsvm.lsst.org&lt;/url&gt;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;  &lt;url&gt;https://lsst-tsvm.lsst.org&lt;/url&gt;</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;  &lt;licenses&gt;</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;   &lt;license&gt;</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    &lt;name&gt;LSST GPL&lt;/name&gt;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    &lt;url&gt;http://lsst-tsvm.lsst.org/LICENSE/&lt;/url&gt;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    &lt;url&gt;https://lsst-tsvm.lsst.org/LICENSE/&lt;/url&gt;</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    &lt;distribution&gt;repo&lt;/distribution&gt;</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    &lt;comments&gt;A business-friendly OSS license&lt;/comments&gt;</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;   &lt;/license&gt;</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;  &lt;/licenses&gt;</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;  &lt;organization&gt;</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;      &lt;name&gt;LSST&lt;/name&gt;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;         &lt;url&gt;http://lsst-tsvm.lsst.org&lt;/url&gt;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;         &lt;url&gt;https://lsst-tsvm.lsst.org&lt;/url&gt;</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;  &lt;/organization&gt;</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;  &lt;developers&gt;</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;   &lt;developer&gt;</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    &lt;id&gt;dmills&lt;/id&gt;</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    &lt;name&gt;Dave Mills&lt;/name&gt;</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    &lt;email&gt;dmills@lsst.org&lt;/email&gt;</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    &lt;url&gt;http://www.lsstcorp.org&lt;/url&gt;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    &lt;url&gt;https://www.lsstcorp.org&lt;/url&gt;</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    &lt;organization&gt;LSST&lt;/organization&gt;</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    &lt;roles&gt;</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;      &lt;role&gt;developer&lt;/role&gt;</div>
@@ -214,24 +214,24 @@ $(document).ready(function(){initNavTree('mavenize_8tcl_source.html','');});
 <div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;        &lt;repository&gt;</div>
 <div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;            &lt;id&gt;ocs-maven2-public&lt;/id&gt;</div>
 <div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;            &lt;name&gt;OCS Maven 2 central repository&lt;/name&gt;</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;            &lt;url&gt;http://repo-nexus.lsst.org/nexus/content/groups/ocs-maven2/&lt;/url&gt;</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;            &lt;url&gt;https://repo-nexus.lsst.org/nexus/content/groups/ocs-maven2/&lt;/url&gt;</div>
 <div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;        &lt;/repository&gt;</div>
 <div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    &lt;/repositories&gt;</div>
 <div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    &lt;distributionManagement&gt;</div>
 <div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;        &lt;repository&gt;</div>
 <div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;            &lt;id&gt;ocs-maven2&lt;/id&gt;</div>
 <div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;            &lt;name&gt;OCS Maven2 Release repository&lt;/name&gt;</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;            &lt;url&gt;http://repo-nexus.lsst.org/nexus/content/repositories/ocs-maven2/&lt;/url&gt;</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;            &lt;url&gt;https://repo-nexus.lsst.org/nexus/content/repositories/ocs-maven2/&lt;/url&gt;</div>
 <div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;        &lt;/repository&gt;</div>
 <div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;        &lt;snapshotRepository&gt;</div>
 <div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;            &lt;id&gt;ocs-maven2-snapshots&lt;/id&gt;</div>
 <div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;            &lt;name&gt;OCS Maven2 SNAPSHOTS repository&lt;/name&gt;</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;            &lt;url&gt;http://repo-nexus.lsst.org/nexus/content/repositories/ocs-maven2-snapshots/&lt;/url&gt;</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;            &lt;url&gt;https://repo-nexus.lsst.org/nexus/content/repositories/ocs-maven2-snapshots/&lt;/url&gt;</div>
 <div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;        &lt;/snapshotRepository&gt;</div>
 <div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;        &lt;site&gt;</div>
 <div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;            &lt;id&gt;ocs-maven2-site&lt;/id&gt;</div>
 <div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;            &lt;name&gt;OCS Maven2 site repository&lt;/name&gt;</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;            &lt;url&gt;dav:http://repo-nexus.lsst.org/nexus/content/sites/ocs-site/&lt;/url&gt;</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;            &lt;url&gt;dav:https://repo-nexus.lsst.org/nexus/content/sites/ocs-site/&lt;/url&gt;</div>
 <div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;        &lt;/site&gt;</div>
 <div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    &lt;/distributionManagement&gt;</div>
 <div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;  &lt;/project&gt;</div>
@@ -403,7 +403,7 @@ $(document).ready(function(){initNavTree('mavenize_8tcl_source.html','');});
   <ul>
     <li class="navelem"><a class="el" href="mavenize_8tcl.html">mavenize.tcl</a></li>
     <li class="footer">Generated on Mon Jun 21 2021 11:25:21 for Rubin Observatory - SAL by
-    <a href="http://www.doxygen.org/index.html">
+    <a href="https://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>
   </ul>
 </div>
