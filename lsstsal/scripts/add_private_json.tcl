@@ -18,14 +18,15 @@
 
 ## Documented proc \c add_private_json .
 # \param[in] fjson File handle of an open Json file
-# \param[in] spc Optional string of spaces to prefix the output
+# \param[in] trail Optional string of spaces to prefix the output
 #
-proc add_private_json { fson {spc "  "} } {
+proc add_private_json { fson trail } {
+global TRAILINGITEMS
   puts $fson "   \{\"name\": \"private_sndStamp\", \"type\": \"double\", \"default\": 0.0, \"description\": \"Time of instance publication\", \"units\": \"second\"\},
    \{\"name\": \"private_rcvStamp\", \"type\": \"double\", \"default\": 0.0, \"description\": \"Time of instance reception\", \"units\": \"second\"\},
    \{\"name\": \"private_seqNum\", \"type\": \"long\", \"default\": 0, \"description\": \"Sequence number\", \"units\": \"unitless\"\},
    \{\"name\": \"private_identity\", \"type\": \"string\", \"default\": \"\", \"description\": \"Identity of publisher: SAL component name for a CSC or user@host for a user\", \"units\": \"unitless\"\},
-   \{\"name\": \"private_origin\", \"type\": \"long\", \"default\": 0, \"description\": \"Process ID of publisher\", \"units\": \"unitless\"\},
+   \{\"name\": \"private_origin\", \"type\": \"long\", \"default\": 0, \"description\": \"Process ID of publisher\", \"units\": \"unitless\"\}[set trail]
   "
 }
 

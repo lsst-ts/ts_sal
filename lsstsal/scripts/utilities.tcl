@@ -232,9 +232,9 @@ proc getTopicURL  { base topic } {
 #
 proc updateMetaData { subsys } {
 global METADATA SAL_WORK_DIR
-  set fmeta [open $SAL_WORK_DIR/idl-templates/validated/[set subsys]_metadata.dat w]
+  set fmeta [open $SAL_WORK_DIR/avro-templates/[set subsys]_metadata.tcl w]
   foreach i [lsort [array names METADATA]] {
-     puts $fmeta "$i $METADATA($i)"
+     puts $fmeta "set METADATA($i) $METADATA($i)"
   }
   close $fmeta
 }
@@ -247,12 +247,7 @@ global METADATA SAL_WORK_DIR
 #
 proc readMetaData { subsys } {
 global METADATA SAL_WORK_DIR
-  set fmeta [open $SAL_WORK_DIR/idl-templates/validated/[set subsys]_metadata.dat r]
-  while { [gets $fmeta rec] > -1 } {
-    set id [lindex [split $rec " "] 0]
-    set METADATA($id) [join [safeString [lrange [split $rec " "] 1 end]] " "]
-  }
-  close $fmeta
+  source $SAL_WORK_DIR/avro-templates/[set subsys]_metadata.tcl
 }
 
 

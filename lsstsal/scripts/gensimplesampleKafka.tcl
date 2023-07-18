@@ -154,11 +154,10 @@ typedef StrArray** StrArrayHdl;
 #  definitions
 #
 proc makesalincl { subsys } {
-global SAL_DIR SAL_WORK_DIR SYSDIC VPROPS EVENT_ENUM OPTIONS CMD_ALIASES
+global SAL_DIR SAL_WORK_DIR SYSDIC VPROPS EVENT_ENUM OPTIONS CMD_ALIASES METADATA
    if { $OPTIONS(verbose) } {stdlog "###TRACE>>> makesalincl $subsys"}
    set all [lsort [glob $SAL_WORK_DIR/avro-templates/[set subsys]_*.json]]
    exec mkdir -p $SAL_WORK_DIR/avro-templates/sal
-   set fout [open $SAL_WORK_DIR/avro-templates/sal/sal_[set subsys].json w]
    exec mkdir -p $SAL_WORK_DIR/[set subsys]/cpp/src
    catch {
      set prev [glob $SAL_WORK_DIR/include/SAL_[set subsys]*]
@@ -197,11 +196,10 @@ global SAL_DIR SAL_WORK_DIR SYSDIC VPROPS EVENT_ENUM OPTIONS CMD_ALIASES
       set fcod13 [open $SAL_WORK_DIR/include/SAL_[set subsys]_[set name]monin.tmp w]
       puts $fcod13 "
              [set subsys]_memIO->client\[LVClient\].shmemIncoming_[set subsys]_[set name].private_rcvStamp = Incoming_[set subsys]_[set name]->private_rcvStamp;"
- #     puts $fout "	struct $name \{"
-      puts $fhdr "struct [set subsys]_[set name]C \{
+      puts $fhdr "struct [set subsys]_[set name]C \{"
       puts $fhdr "  double  private_rcvStamp;"
       if { [info exists SYSDIC($subsys,keyedID)] } {
-         get $fin rec
+         gets $fin rec
          puts $fhdr "  long  salIndex;"
       }
       puts $fhlv "typedef struct [set subsys]_[set name]LV \{"
@@ -216,15 +214,8 @@ global SAL_DIR SAL_WORK_DIR SYSDIC VPROPS EVENT_ENUM OPTIONS CMD_ALIASES
             puts $fhdr "\};"
             puts $fhlv "\} [set subsys]_[set name]_Ctl;"
          } else {
-             if { [string range [lindex $rec 1] 0 7] != "private_" && [llength $rec] > 1 } {
                puts $fhdr [typejsontoc $rec]
-               if { $VPROPS(iscommand) } {
-                  if { [lsearch "device property action itemValue" $VPROPS(name)] < 0 } {
-                     puts $fhlv [typejsontolv $rec]
-                  }
-               } else {
-                  puts $fhlv [typejsontolv $rec]
-               }
+               puts $fhlv [typejsontoc $rec]
                set VPROPS(idx) $argidx
                set VPROPS(base) $subsys
                set VPROPS(topic) "[set subsys]_[set name]"
@@ -235,7 +226,6 @@ global SAL_DIR SAL_WORK_DIR SYSDIC VPROPS EVENT_ENUM OPTIONS CMD_ALIASES
                } else {
                  incr argidx 1
                }
-             }
          }
       }
       close $fin
@@ -255,9 +245,7 @@ global SAL_DIR SAL_WORK_DIR SYSDIC VPROPS EVENT_ENUM OPTIONS CMD_ALIASES
       close $fcod13
     }
    }
-   puts $fout "\};"
    puts $fhdr "#endif"
-   close $fout
    close $fhdr
    close $fhlv
    updateRevCodes $subsys
@@ -683,21 +671,25 @@ global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS CMD_ALIASES
 #  Generate Avro files for a Subsystem/CSC
 #
 proc salavrogen { base lang } {
-global SAL_WORK_DIR OPTIONS ONEDONEGEN
+global SAL_WORK_DIR OPTIONS ONEDONEGEN SAL_DIR
    if { $OPTIONS(verbose) } {stdlog "###TRACE>>> salavrogen $base $lang"}
    if { $ONEDONEGEN == 0 } {
        cd $SAL_WORK_DIR/$base/$lang
        stdlog "Generating $lang type support for $base"
        if { $lang == "cpp" } {
-         set result none
-         catch { set result [exec make -f Makefile.sacpp_[set base]_types] } bad;
-         if { $result == "none" } {stdlog $bad ; errorexit "Failed to generate CPP Avro types" }
+          set all [glob $SAL_WORK_DIR/avro-templates/[set base]_*.json]
+          foreach i $all {
+             puts stdout "Processing $i"
+             exec avrogencpp -i $i -o $SAL_WORK_DIR/[set base]/cpp/src/[file rootname [file tail $i]].hh
+          }
        }
        if { $lang == "java"} {
-         set result none
-         catch { set result [exec make -f Makefile.saj_[set base]_types] } bad
-         if { $result == "none" } {stdlog $bad ; errorexit "Failed to generate Java Avro types" }
-       }
+          set all [glob $SAL_WORK_DIR/avro-templates/[set base]_*.json]
+          foreach i $all {
+             puts stdout "Processing $i"
+             exec java -jar $SAL_DIR/../lib/avro-tools-1.11.1.jar compile schema  $SAL_WORK_DIR/[set base]/java/src/
+          }
+      }
        stdlog "Avro : $result"
        cd $SAL_WORK_DIR
        set ONEDONEGEN 1
