@@ -18,7 +18,6 @@ proc print_help {} {
                 lib      - generate shared library
 		labview  - generate LabVIEW low-level interface
 		maven    - generate a maven project
-		link     - link a SAL program
                 rpm	 - generate runtime RPM
 		verbose  - be more verbose ;-)
 "
@@ -58,11 +57,20 @@ if { [file exists saltemptest] == 0 } {
 }
 exec mkdir -p $SAL_WORK_DIR/include
 exec mkdir -p $SAL_WORK_DIR/lib
-
+set LSST_KAFKA_IP $env(LSST_KAFKA_IP)
+set LSST_KAFKA_SCHEMA_REGISTRY $env(LSST_KAFKA_SCHEMA_REGISTRY)
+set LSST_KAFKA_SECURITY_PROTOCOL $env(LSST_KAFKA_SECURITY_PROTOCOL)
+set LSST_KAFKA_SECURITY_MECHANISM $env(LSST_KAFKA_SECURITY_MECHANISM)
+set LSST_KAFKA_SECURITY_USERNAME $env(LSST_KAFKA_SECURITY_USERNAME)
+set LSST_KAFKA_SECURITY_PASSWORD $env(LSST_KAFKA_SECURITY_PASSWORD)
+set LSST_KAFKA_HOST $env(LSST_KAFKA_HOST)
+set LSST_KAFKA_BROKER_PORT $env(LSST_KAFKA_BROKER_PORT)
+set LSST_KAFKA_PREFIX $env(LSST_KAFKA_PREFIX)
+set AVRO_RELEASE $env(AVRO_RELEASE)
 
 source $SAL_DIR/versioning.tcl
 source $SAL_DIR/utilities.tcl
-source $SAL_DIR/activaterevcodes.tcl
+source $SAL_DIR/activaterevcodesKafka.tcl
 source $SAL_DIR/add_system_dictionary.tcl
 
 puts stdout "argv = $argv"
@@ -173,7 +181,7 @@ if { $OPTIONS(idl) && $OPTIONS(sal) == 0 } {
 
 if { $OPTIONS(validate) || $OPTIONS(idl) } {
   exec mkdir -p $SAL_WORK_DIR/avro-templates
-  source $SAL_DIR/parseXML.tcl
+  source $SAL_DIR/parseXMLKafka.tcl
   set all $TSUBSYSTEMS
   stdlog "Processing $all"
   foreach i $all {
@@ -186,9 +194,9 @@ if { $OPTIONS(validate) || $OPTIONS(idl) } {
       generategenerics $i
     }
     gentopicdefsql $i
-    foreach d "avro-templates avro-templates" {
+    foreach d "avro-templates" {
       set old ""
-      catch {set old [glob $SAL_WORK_DIR/$d/[set i]_*.idl]}
+      catch {set old [glob $SAL_WORK_DIR/$d/[set i]_*.json]}
       foreach o $old {
         exec rm $o
       }
@@ -203,7 +211,7 @@ if { $OPTIONS(validate) || $OPTIONS(idl) } {
     }
     parseXMLtoJson $SAL_WORK_DIR/[set i]_Generics.xml
     stdlog "Imported $i Generic interface definitions"
-    stdlog "Validating $i interface IDL format definitions"
+    stdlog "Validating $i interface Json format definitions"
     catch {
       set hascmd [glob $SAL_WORK_DIR/avro-templates/[set i]_command_*.json]
       createackcmdjson $i [info exists SYSDIC($i,keyedID)]
@@ -284,7 +292,7 @@ exec mkdir -p .salwork
 set TARGETS ""
 if { $OPTIONS(lib) == 0 || $OPTIONS(generate) == 1 } {
   set matches $TSUBSYSTEMS
-  foreach f [glob $SAL_WORK_DIR/avro-templates/[set matches]_*.idl] {
+  foreach f [glob $SAL_WORK_DIR/avro-templates/[set matches]_*.json] {
     set TARGETS "$TARGETS [file tail $f]"
   }
   if { $TARGETS == "" } {
@@ -298,7 +306,7 @@ if { $OPTIONS(lib) == 0 || $OPTIONS(generate) == 1 } {
 if { $OPTIONS(sal) } {
   set DONE_CMDEVT 0
   set ONEDDSGEN 0
-  if { [expr $OPTIONS(cpp) + $OPTIONS(isocpp) + $OPTIONS(java) + $OPTIONS(idl)] == 0 } {
+  if { [expr $OPTIONS(cpp) + $OPTIONS(java) + $OPTIONS(idl)] == 0 } {
     stdlog "=========================================================================="
     stdlog "ERROR :  sal option requires a language choice , cpp/idl/java"
     stdlog "=========================================================================="
@@ -311,7 +319,7 @@ if { $OPTIONS(sal) } {
   source $SAL_DIR/gensalcodesKafka.tcl
   checkTopicTypes $base
   source $SAL_WORK_DIR/avro-templates/[set base]_revCodes.tcl
-  readMetaData $base
+  source $SAL_WORK_DIR/avro-templates/[set base]_metadata.tcl
   catch { set inclfile [makesalincl $base] } bad
   puts stdout $bad
   puts stdout $inclfile
@@ -322,7 +330,7 @@ if { $OPTIONS(sal) } {
     genTelemetryCodes $inclfile $TARGETS
     genSingleProcessTests $base
   } else {
-    exec cp $SAL_WORK_DIR/avro-templates/sal/sal_revCoded_[set base].idl $SAL_WORK_DIR/[set base]/.
+    exec cp $SAL_WORK_DIR/avro-templates/sal/sal_revCoded_[set base].avro $SAL_WORK_DIR/[set base]/.
   }
   checkAssets $base
 }
@@ -390,31 +398,8 @@ if { $OPTIONS(labview) } {
 }
 
 
-### TSUBSYSTEMS is svcSAL_topicname
-if { $OPTIONS(compile) } {
-  set topic [string range [file rootname $TSUBSYSTEMS] 7 end]
-  set result none
-  catch {set result [exec g++  -g -I. -I/opt/lsstsal/scripts/code/include/sal -I$OSPL_HOME/include/dcps/C++/SACPP -I$OSPL_HOME/include -I$OSPL_HOME/include/sys -I/opt/simd/include -I../include -pipe -Wall  -c -std=c++0x -I../shmem-[set topic] $TSUBSYSTEMS.cpp] } bad
-  if { $result == "none" } {stdlog $bad}
-  if { $bad != "" } {puts stdout $bad}
-  exit
-}
-
-
-### usage is topicname program-name (no .cpp) link
-if { $OPTIONS(link) } {
-  set program lindex $argv 2]
-  set topic [lindex $argv 1]
-  set result none
-  catch { set result [exec g++ -g -I. -I/opt/lsstsal/scripts/code/include/sal -I$OSPL_HOME/include/dcps/C++/SACPP -I$OSPL_HOME/include -I$OSPL_HOME/include/sys -I/opt/simd/include -I../include -pipe -Wall -std=c++0x -I../shmem-[set topic] svcSAL_$topic.o $program.cpp -o $program -L$OSPL_HOME/lib -ldcpsgapi -ldcpssacpp -lddsdatabase -lddsos -lboost_thread -lboost_program_options -lboost_system -lddsutil -lddsserialization -lddsserialization -lddskernel -lddsconf -lddsconfparser -lddsuser -L/opt/simd/lib -lSimD libdatamodel.a]} bad
-  if { $result == "none" } {stdlog $bad}
-  if { $bad != "" } {puts stdout $bad}
-  exit
-}
-
-
 puts stdout "SALVERSION = $SALVERSION"
 puts stdout "XMLVERSION = $XMLVERSION"
 puts stdout "SAL_WORK_DIR = $SAL_WORK_DIR"
-puts stdout "OSPL_HOME = $OSPL_HOME"
+puts stdout "LSST_LAFKA_PREFIX = $LSST_KAFKA_PREFIX"
 puts stdout "OSPL_RELEASE = $OSPL_RELEASE"

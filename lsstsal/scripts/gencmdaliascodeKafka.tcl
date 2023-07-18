@@ -150,14 +150,6 @@ global CMD_ALIASES CMDS DONE_CMDEVT ACKREVCODE REVCODE SAL_WORK_DIR OPTIONS
        if { $result == "none" } {stdlog $bad ; errorexit "failure in gencommandtestsjava" }
      }
   }
-  if { $lang == "isocpp" } {
-     set result none
-     if { $result == "none" } {stdlog $bad ; errorexit "failure in addgenericcmdcode" }
-     addgenericcmdcode $fout $lang $subsys
-     catch { set result [gencmdaliasisocpp $subsys $fout] } bad
-     if { $result == "none" } {stdlog $bad ; errorexit "failure in gencmdaliasisocpp" }
-     stdlog "$result"
-  }
  }
  if { $OPTIONS(verbose) } {stdlog "###TRACE<<< gencmdaliascode $subsys $lang $fout"}
 }
@@ -853,31 +845,6 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
 }
 
 
-
-
-
-#
-## Documented proc \c gencmdaliasisocpp .
-# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
-# \param[in] fout File handle of output file
-#
-#  Generates the Command handling code for a Subsystem/CSC.
-#  Code is generated for issueCommand,acceptCommand,waitForCompletion,ackCommand,getResponse
-#  per-command Topic type. This routine generates ISO C++ wrapper code.
-#  NOT YET IMPLEMENTED
-#
-proc gencmdaliasisocpp { subsys fout } {
-global CMD_ALIASES CMDS
-  if { [info exists CMD_ALIASES($subsys)] } {
-   foreach i $CMD_ALIASES($subsys) { 
-    if { [info exists CMDS($subsys,$i,param)] } {
-      stdlog "	: alias = $i"
-    } else {
-      stdlog "Alias $i has no parameters - uses standard [set subsys]_command"
-    }
-   }
-  }
-}
 
 
 #

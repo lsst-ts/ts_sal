@@ -220,7 +220,7 @@ global SYSDIC
 #  getSALVersion,getXMLVersion,getKAFKAVersion
 #
 proc addSWVersionsCPP { fout } {
-global SALVERSION XMLVERSION AVROVERSION env
+global SALVERSION XMLVERSION AVRO_RELEASE OSPL_RELEASE env
   puts $fout "
 string SAL_SALData::getSALVersion()
 \{
@@ -243,9 +243,14 @@ string SAL_SALData::getKAFKAVersion()
      return kafkaversion;
 \}
 
+string SAL_SALData::getOSPLVersion()
+\{
+    return \"$OSPL_RELEASE\";
+\}
+
 string SAL_SALData::getAVROVersion()
 \{
-    return \"$AVROVERSION\";
+    return \"$AVRO_RELEASE\";
 \}
 "
 }
@@ -258,7 +263,7 @@ string SAL_SALData::getAVROVersion()
 #  getSALVersion,getXMLVersion,getKAFKAVersion
 #
 proc addSWVersionsJava { fout } {
-global SALVERSION XMLVERSION AVROVERSION env
+global SALVERSION XMLVERSION AVRO_RELEASE OSPL_RELEASE env
   puts $fout "
 /// Returns the current SAL version e.g. \"4.1.0\"
 public String getSALVersion()
@@ -280,12 +285,19 @@ public String getKAFKAVersion()
       System.out.println(\"Error in getKafkaVersion: KAFKA_RELEASE environment not setup\");
       System.exit(-1);
     \}
-    return kafkarelease;\}
-"
+    return kafkarelease;
+\}
+
+public String getOSPLVersion()
+\{
+    return \"$OSPL_RELEASE\";
+\}
+
 public String getAVROVersion()
 \{
-    return \"$AVROVERSION\";
+    return \"$AVRO_RELEASE\";
 \}
+"
 }
 
 
@@ -563,7 +575,6 @@ global CMDS TLMS EVTS
 proc addSALKAFKAtypes { jsonfile id lang base } {
 global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS
  if { $OPTIONS(verbose) } {stdlog "###TRACE>>>  addSALKAFKAtypes $jsonfile $id $lang $base "}
- set atypes $jsonfile
  if { $lang == "java" } {
   exec cp $SAL_DIR/code/templates/salActorKafka.java [set id]/java/src/org/lsst/sal/salActor.java
   exec cp $SAL_DIR/code/templates/salActorKafka.java [set base]/java/src/org/lsst/sal/salActor.java
@@ -588,25 +599,22 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS
   */
         public int salTypeSupport(String topicName) \{
     String\[\] parts = topicName.split(\"_\");"
-        foreach i $atypes {
-           puts $fout "                if (\"[set base]\".equals(parts\[0\]) ) \{"
-           foreach name $ACTIVETOPICS {
-               set revcode [getRevCode [set base]_[set name] short]
-               puts $fout "
+         puts $fout "                if (\"[set base]\".equals(parts\[0\]) ) \{"
+         foreach name $ACTIVETOPICS {
+             set revcode [getRevCode [set base]_[set name] short]
+             puts $fout "
                     if ( \"[set base]_$name\".equals(topicName) ) \{
       [set name][set revcode]TypeSupport [set name][set revcode]TS = new [set name][set revcode]TypeSupport();
 #      registerType([set name][set revcode]TS);
                         return SAL__OK;
         \}"
-           }
            puts $fout "  \}"
         }
         puts $fout "
   return SAL__ERR;
 \}"
         puts $fout "        public int salTypeSupport(int actorIdx) \{"
-        foreach i $atypes {
-           foreach name $ACTIVETOPICS {
+        foreach name $ACTIVETOPICS {
                set revcode [getRevCode [set base]_[set name] short]
                puts stdout "  for $base $name"
                puts $fout "
@@ -615,17 +623,15 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS
 #      registerType(actorIdx,[set name][set revcode]TS);
                         return SAL__OK;
         \}"
-           }
         }
         puts $fout "
   return SAL__ERR;
 \}"
-        foreach i $atypes {
-            foreach name $ACTIVETOPICS {
-               set revcode [getRevCode [set base]_[set name] short]
-               set alias [string range $name 9 end]
-               set turl [getTopicURL $base $name]
-               puts $fout "
+         foreach name $ACTIVETOPICS {
+            set revcode [getRevCode [set base]_[set name] short]
+            set alias [string range $name 9 end]
+            set turl [getTopicURL $base $name]
+            puts $fout "
 /** Publish a sample of the $turl Kafka topic. A publisher must already have been set up
   * @param data The payload of the sample as defined in the XML for SALData
   */
@@ -740,7 +746,6 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS
           return SAL__OK;
   \}
 "
-           }
         }
         gencmdaliascode $base java $fout
         geneventaliascode $base java $fout
@@ -757,7 +762,7 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS
  }
  if { $lang == "cpp" } {
   set finh [open $SAL_DIR/code/templates/SALKAFKA.h.template r]
-  set fouth [open [set base]/cpp/src/SAL_[set base].h w]
+  set fouth [open $SAL_WORK_DIR/[set base]/cpp/src/SAL_[set base].h w]
   set rec ""
   while { [string range $rec 0 21] != "// INSERT TYPE SUPPORT" } {
      if { [string range $rec 0 22] == "// INSERT TYPE INCLUDES" } {
@@ -771,14 +776,14 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS
   }
   set fin [open $SAL_DIR/code/templates/SALKAFKA.cpp.template r]
   puts stdout "Configuring [set id]/cpp/src/SAL_[set base].cpp"
-  set fout [open [set base]/cpp/src/SAL_[set base].cpp w]
+  set fout [open $SAL_WORK_DIR/[set base]/cpp/src/SAL_[set base].cpp w]
   while { [gets $fin rec] > -1 } {
      if { [string range $rec 0 21] == "// INSERT TYPE SUPPORT" } {
         addActorIndexesCPP $jsonfile $base $fout
         addSWVersionsCPP $fout
         puts $fout " salReturn SAL_[set base]::salTypeSupport(char *topicName)
 \{"
-        foreach i $atypes {
+        foreach name $ACTIVETOPICS {
            puts $fout "    if (strncmp(\"$base\",topicName,[string length $base]) == 0) \{"
            foreach name $ACTIVETOPICS {
                if { $OPTIONS(verbose) } {stdlog "###TRACE--- Processing topic $j"}
@@ -796,8 +801,7 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS
 \}"
         puts $fout " salReturn SAL_[set base]::salTypeSupport(int actorIdx)
 \{"
-        foreach i $atypes {
-            foreach name $ACTIVETOPICS {
+        foreach name $ACTIVETOPICS {
                 set revcode [getRevCode [set base]_[set name] short]
                 puts $fout "
        if ( actorIdx == SAL__[set base]_[set name]_ACTOR ) \{
@@ -805,7 +809,6 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS
     registerType(actorIdx,mt.in());
           return SAL__OK;
        \}"
-           }
         }
         puts $fout "  return SAL__ERR;
 \}"

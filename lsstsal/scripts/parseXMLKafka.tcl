@@ -21,7 +21,10 @@
 proc parseXMLtoJson { fname } { 
 global AVRORESERVED SAL_WORK_DIR SAL_DIR CMDS CMD_ALIASES EVTS EVENT_ALIASES AVROTYPES
 global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIONS METADATA
+global TRAILINGITEMS
    if { $OPTIONS(verbose) } {stdlog "###TRACE>>> parseXMLtoJson $fname"}
+   puts stdout "finding trails"
+   findTrailingItems $fname
    set fin [open $fname r]
    set fout ""
    set ctype ""
@@ -114,8 +117,8 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
          set intopic 0
          set CMD_ALIASES($subsys) [lappend CMD_ALIASES($subsys) $alias]
          if { $explanation != "" } {set CMDS($subsys,$alias,help) $explanation}
-         set METADATA([set subsys]_ackcmd,description) "Command ack replies"
-         set METADATA([set subsys]_ackcmd,description) "unitless"
+         set METADATA([set subsys]_ackcmd,description) "\"Command ack replies\""
+         set METADATA([set subsys]_ackcmd,units) "\"unitless\""
          add_ackcmd_metadata $subsys
       }
       if { $tag == "/SALTelemetry" } {
@@ -139,7 +142,7 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
       }
       if { $tag == "EFDB_Topic" } {
         if { $fout != "" } {
-           puts $fout "\], \\"description\": \"[set METADATA($tname,description)]\"
+           puts $fout "\], \"description\": \"[set METADATA($tname,description)]\"
 \}
 "
            close $fout
@@ -159,7 +162,11 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
         set fout [open $SAL_WORK_DIR/avro-templates/[set tname].json w]
         puts $fout "\{
 \"type\": \"record\", \"name\": \"[set tname]\", \"namespace\": \"lsst.sal.kafka_[set subsys]\", \"fields\": \["
-        add_private_json $fout
+        if { $TRAILINGITEMS($tname) == "private_origin" } {
+          add_private_json $fout ""
+        } else {
+          add_private_json $fout ","
+        }
         add_private_metadata [set tname]
         puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",1,\"private_revCode\",\"char\",32,\"unitless\",1,\"\",\"\",\"Revision code of topic\");"
         puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",2,\"private_sndStamp\",\"double\",1,\"second\",1,\"\",\"\",\"TAI at sender\");"
@@ -173,7 +180,7 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
            set itemid 7
         }
         set tdesc 1
-        set METADATA($tname,description) "No description provided" 
+        set METADATA($tname,description) "\"No description provided\"" 
         set alias [getAlias $tname]
         if { $ctype == "command" } {
            set CMDS($subsys,$alias) $alias
@@ -208,23 +215,36 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
       if { $tag == "IsJavaArray" } { set isjarray 1 }
       if { $tag == "IDL_Type"} {
          set type $value 
-         if { $type == "long long" } {set type "longlong"}
-         if { $type == "unsigned long long" } {set type "unsigned longlong"}
+         if { $type == "long long" } {set type "long"}
+         if { $type == "unsigned long long" } {set type "long"}
+         if { $type == "byte" } {set type "int"}
+         if { $type == "short" } {set type "int"}
+         if { $type == "unsigned short" } {set type "int"}
+         if { $type == "unsigned long" } {set type "long"}
+         if { $type == "unsigned int" } {set type "int"}
       }
-      if { $tag == "IDL_Size"}        {set sdim $value}
+      if { $tag == "IDL_Size"}  {
+         set sdim $value
+         set METADATA($tname,$item,size) $value
+      }
       if { $tag == "Description"}     {
          if { [lindex [split $rec "/"] end] != "Description>" } {
            set desc [getTopicURL $subsys $tname]
          } else {
-           set desc $value
+           set desc [string map { \" '} $value]
          }
          if { $tdesc } { set DESC($subsys,$alias,help) "$desc"}
-         if { $tdesc } { set METADATA($tname,description) "$desc" ; set tdesc 0}
+         if { $tdesc } { set METADATA($tname,description) "\"$desc\"" ; set tdesc 0}
       }
       if { $tag == "Frequency"}       {set freq $value}
       if { $tag == "Range"}           {set range $value}
       if { $tag == "Sensor_location"} {set location $value}
-      if { $tag == "Count"}           {set idim $value}
+      if { $tag == "Count"}           {
+         set idim $value
+         if { [info exists METADATA($tname,$item,size)] == 0 } {
+            set METADATA($tname,$item,size) $value
+         }
+     }
       if { $tag == "Units"}           {
          set unit [string trim $value]
       }
@@ -241,6 +261,7 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
            exit -1
          }
          set vdefault 0
+         if { $type == "boolean" } { set vdefault "false"}
          if { $type == "string" || $type == "char" } {
             if { $sdim > 1 } {
                set declare "   string<[set sdim]> $item;"
@@ -278,14 +299,18 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
          if { $unit != "" } {
             set UNITS($subsys,$alias,$item) $unit
          }
-         puts $fout "       \{\"name\": \"[set item]\", \"type\": \"[set type]\", \"default\": [set vdefault], \"description\": \"[set desc]\", \"units\": \"[set unit]\"\}"
-         set METADATA($tname,$item,description) $desc
-         set METADATA($tname,$item,units) $unit
+         if { $item == $TRAILINGITEMS($tname) } {
+            puts $fout "       \{\"name\": \"[set item]\", \"type\": \"[set type]\", \"default\": [set vdefault], \"description\": \"[set desc]\", \"units\": \"[set unit]\"\}"
+         } else {
+            puts $fout "       \{\"name\": \"[set item]\", \"type\": \"[set type]\", \"default\": [set vdefault], \"description\": \"[set desc]\", \"units\": \"[set unit]\"\},"
+         }
+         set METADATA($tname,$item,description) "\"$desc\""
+         set METADATA($tname,$item,units) "\"$unit\""
          puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",$itemid,\"$item\",\"$type\",$idim,\"$unit\",$freq,\"$range\",\"$location\",\"$desc\");"
       }
    }
    if { $fout != "" } {
-      puts $fout "\], \\"description\": \"[set METADATA($tname,description)]\"
+      puts $fout "\], \"description\": \"[set METADATA($tname,description)]\"
 \}
 "
       enumsToCPP $subsys $alias
@@ -338,6 +363,7 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
     genhtmltelemetrytable $subsys
    }
    close $fsql
+   updateMetaData $subsys
    if { $OPTIONS(verbose) } {stdlog "###TRACE<<< parseXMLtoJson $fname"}
 }
 
@@ -393,18 +419,18 @@ global SYSDIC IDXENUMDONE SAL_WORK_DIR
 #
 proc add_private_metadata { topic } {
 global METADATA
-  set METADATA([set topic],private_revCode,units) "unitless"
-  set METADATA([set topic],private_sndStamp,units) "second"
-  set METADATA([set topic],private_rcvStamp,units) "second"
-  set METADATA([set topic],private_seqNum,units) "unitless"
-  set METADATA([set topic],private_identity,units) "unitless"
-  set METADATA([set topic],private_origin,units) "unitless"
-  set METADATA([set topic],private_revCode,description) "Revision hashcode"
-  set METADATA([set topic],private_sndStamp,description) "Time of instance publication"
-  set METADATA([set topic],private_rcvStamp,description) "Time of instance reception"
-  set METADATA([set topic],private_seqNum,description) "Sequence number"
-  set METADATA([set topic],private_identity,description) "Identity of publisher"
-  set METADATA([set topic],private_origin,description) "PID of publisher"
+  set METADATA([set topic],private_revCode,units) "\"unitless\""
+  set METADATA([set topic],private_sndStamp,units) "\"second\""
+  set METADATA([set topic],private_rcvStamp,units) "\"second\""
+  set METADATA([set topic],private_seqNum,units) "\"unitless\""
+  set METADATA([set topic],private_identity,units) "\"unitless\""
+  set METADATA([set topic],private_origin,units) "\"unitless\""
+  set METADATA([set topic],private_revCode,description) "\"Revision hashcode\""
+  set METADATA([set topic],private_sndStamp,description) "\"Time of instance publication\""
+  set METADATA([set topic],private_rcvStamp,description) "\"Time of instance reception\""
+  set METADATA([set topic],private_seqNum,description) "\"Sequence number\""
+  set METADATA([set topic],private_identity,description) "\"Identity of publisher\""
+  set METADATA([set topic],private_origin,description) "\"PID of publisher\""
 }
 
 #
@@ -416,20 +442,20 @@ global METADATA
 proc add_ackcmd_metadata { subsys } {
 global METADATA
   add_private_metadata [set subsys]_ackcmd
-  set METADATA([set subsys]_ackcmd,ack,units) "unitless"
-  set METADATA([set subsys]_ackcmd,error,units) "second"
-  set METADATA([set subsys]_ackcmd,result,units) "second"
-  set METADATA([set subsys]_ackcmd,identity,units) "unitless"
-  set METADATA([set subsys]_ackcmd,origin,units) "unitless"
-  set METADATA([set subsys]_ackcmd,cmdtype,units) "unitless"
-  set METADATA([set subsys]_ackcmd,timeout,units) "unitless"
-  set METADATA([set subsys]_ackcmd,ack,description) "unitless"
-  set METADATA([set subsys]_ackcmd,error,description) "second"
-  set METADATA([set subsys]_ackcmd,result,description) "second"
-  set METADATA([set subsys]_ackcmd,identity,description) "unitless"
-  set METADATA([set subsys]_ackcmd,origin,description) "unitless"
-  set METADATA([set subsys]_ackcmd,cmdtype,description) "unitless"
-  set METADATA([set subsys]_ackcmd,timeout,description) "unitless"
+  set METADATA([set subsys]_ackcmd,ack,units) "\"unitless\""
+  set METADATA([set subsys]_ackcmd,error,units) "\"second\""
+  set METADATA([set subsys]_ackcmd,result,units) "\"second\""
+  set METADATA([set subsys]_ackcmd,identity,units) "\"unitless\""
+  set METADATA([set subsys]_ackcmd,origin,units) "\"unitless\""
+  set METADATA([set subsys]_ackcmd,cmdtype,units) "\"unitless\""
+  set METADATA([set subsys]_ackcmd,timeout,units) "\"unitless\""
+  set METADATA([set subsys]_ackcmd,ack,description) "\"unitless\""
+  set METADATA([set subsys]_ackcmd,error,description) "\"second\""
+  set METADATA([set subsys]_ackcmd,result,description) "\"second\""
+  set METADATA([set subsys]_ackcmd,identity,description) "\"unitless\""
+  set METADATA([set subsys]_ackcmd,origin,description) "\"unitless\""
+  set METADATA([set subsys]_ackcmd,cmdtype,description) "\"unitless\""
+  set METADATA([set subsys]_ackcmd,timeout,description) "\"unitless\""
 }
 
 
@@ -442,7 +468,7 @@ global METADATA
 #  Generate an json const definition for a SAL Event XML enumeration
 #
 proc enumsToCPP { subsys alias } {
-global EVENT_ENUM EDONE
+global EVENT_ENUM EDONE SAL_WORK_DIR
    if { [info exists EVENT_ENUM($alias)] && [info exists EDONE($alias)] == 0} {
       set fenum [open $SAL_WORK_DIR/[set subsys]_enums.h a]
       foreach e $EVENT_ENUM($alias) {
@@ -472,7 +498,7 @@ global EVENT_ENUM EDONE
                  set i [string trim [lindex [split $id "="] 1]]
                  set id [string trim [lindex [split $id "="] 0]]
               }
-              puts $fout " const long long [set subsys]_shared_[string trim $id " "]=$i;"
+              puts $fenum " const long long [set subsys]_shared_[string trim $id " "]=$i;"
               incr i 1
           }
       }
@@ -611,10 +637,48 @@ global AVRORESERVED SAL_WORK_DIR SAL_DIR TLMS TLM_ALIASES UNITS DESC
         puts $fout "n/a"
       }
   }
-  puts $fout "</TABLE></UL><P>"
+  puts $fout "</TABLE><EFDB_Topic/UL><P>"
   close $fout
 }
 
+proc findTrailingItems { fname } {
+global TRAILINGITEMS
+  set ftrail [open $fname r]
+  set topic "NONE"
+  set item "private_origin"
+  while { [gets $ftrail rec] >  -1 } {
+      set st [string trim $rec]
+      if { [string range $st 0 3] == "<!--" } {
+         if { [string range [string reverse $st] 0 2] != ">--" } {
+            set skip 1
+            while { $skip } {
+               gets $ftrail rec
+               set st [string trim $rec]
+               if { [string range [string reverse $st] 0 2] == ">--" } {
+                  set skip 0
+                  gets $ftrail rec
+                  set st [string trim $rec]
+                  if { [string range $st 0 3] == "<!--" } {set skip 1}
+               }
+            }
+         }
+      }
+      set tag   [lindex [split $rec "<>"] 1]
+      set value [lindex [split $rec "<>"] 2]
+      if { $tag == "EFDB_Topic" } {
+         set TRAILINGITEMS($topic) $item
+         puts stdout "Last item in $topic is $item"
+         set topic $value
+         set item "private_origin"
+      }
+      if { $tag == "EFDB_Name" } {
+         set item $value
+      }
+   }
+   set TRAILINGITEMS($topic) $item
+   puts stdout "Last item in $topic is $item"
+   close $ftrail
+}
 
 
 set AVRORESERVED "abstract any attribute boolean case char component const consumes context custom dec default double emits enum eventtype exception exit factory false finder fixed float getraises home import in inout interface limit local long module multiple native object octet oneway out primarykey private provides public publishes raises readonly sequence setraises short string struct supports switch true truncatable typedef typeid typeprefix union unsigned uses valuebase valuetype void wchar wstring"

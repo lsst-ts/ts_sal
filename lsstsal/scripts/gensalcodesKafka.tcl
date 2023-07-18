@@ -92,13 +92,6 @@ global DONE_CMDEVT OPTIONS SAL_DIR
          if { $result == "none" } {puts stderr $bad}
          if { $OPTIONS(verbose) } {stdlog $result}
        }
-       if { $OPTIONS(isocpp) } {
-         stdlog "Generating SAL ISOCPP code for $subsys"
-         set result none
-         catch { set result [makesalcode $jsonfile $base $name isocpp] } bad
-         if { $result == "none" } {stdlog $bad}
-         if { $OPTIONS(verbose) } {stdlog $result}
-       }
      }
   }
   if { $OPTIONS(verbose) } {stdlog "###TRACE<<< genTelemetryCodes $targets"}
