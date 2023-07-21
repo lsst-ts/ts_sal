@@ -39,6 +39,7 @@ global SAL_WORK_DIR OPTIONS
 salReturn SAL_[set base]::putSample_[set name]([set base]_[set name]C *data)
 \{
   int actorIdx = SAL__[set base]_[set name]_ACTOR;
+  [set base]::[set base]_[set name] Instance;
   if ( data == NULL ) \{
      throw std::runtime_error(\"NULL pointer for putSample_[set name]\");
   \}"
@@ -46,8 +47,6 @@ salReturn SAL_[set base]::putSample_[set name]([set base]_[set name]C *data)
   while { [gets $frag rec] > -1} {puts $fout $rec}
   close $frag
   puts $fout "
-  [set base]::[set name][set revcode] Instance;
-
   Instance.private_revCode = \"[string trim $revcode _]\";
   Instance.private_sndStamp = getCurrentTime();
   sal\[actorIdx\].sndStamp = Instance.private_sndStamp;
@@ -62,20 +61,19 @@ salReturn SAL_[set base]::putSample_[set name]([set base]_[set name]C *data)
   puts $fout "
 
   if (debugLevel > 0) \{
-    cout << \"=== \[putSample\] [set base]::[set name][set revcode] writing a message containing :\" << endl;
+    cout << \"=== \[putSample\] [set base]_[set name] writing a message containing :\" << endl;
     cout << \"    revCode  : \" << Instance.private_revCode << endl;
   \}
-  Instance.private_sndStamp = getCurrentTime();
- ### ReturnCode_t status = SALWriter->write(Instance, dataHandle);
+  Instance.private_sndStamp = getCurrentTime();"
+      writerFragment $fout $base [set base]_[set name]
+      puts $fout "
   return status;
 \}
 
 salReturn SAL_[set base]::getSample_[set name]([set base]_[set name]C *data)
 \{
-  c::[set name] Instances_[set name];
-  ReturnCode_t status = -1;
   salReturn istatus = -1;
-  unsigned int numSamples = 0;
+  [set base]::[set base]_[set name] Instance;
 
   if ( data == NULL ) \{
      throw std::runtime_error(\"NULL pointer for getSample_[set name]\");
@@ -87,17 +85,17 @@ salReturn SAL_[set base]::getSample_[set name]([set base]_[set name]C *data)
   \{
     rcvdTime = getCurrentTime();
     sal\[actorIdx\].rcvStamp = rcvdTime;
-    sal\[actorIdx\].sndStamp = Instance_[set name].private_sndStamp;
+    sal\[actorIdx\].sndStamp = Instance.private_sndStamp;
     if (debugLevel > 8) \{
       cout << \"=== \[GetSample\] message received :\" << numSamples << endl;
-      cout << \"    revCode  : \" << Instance_[set name].private_revCode << endl;
-      cout << \"    sndStamp  : \" << Instance_[set name].private_sndStamp << endl;
-      cout << \"    origin  : \" << Instance_[set name].private_origin << endl;
-      cout << \"    identity  : \" << Instance_[set name].private_identity << endl;
+      cout << \"    revCode  : \" << Instance.private_revCode << endl;
+      cout << \"    sndStamp  : \" << Instance.private_sndStamp << endl;
+      cout << \"    origin  : \" << Instance.private_origin << endl;
+      cout << \"    identity  : \" << Instance.private_identity << endl;
     \}
-    if ( (rcvdTime - Instance_[set name].private_sndStamp) < sal\[actorIdx\].sampleAge && Instance_[set name].private_origin != 0 ) \{
+    if ( (rcvdTime - Instance.private_sndStamp) < sal\[actorIdx\].sampleAge && Instance.private_origin != 0 ) \{
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
-    data->salIndex = Instance_[set name].salIndex;
+    data->salIndex = Instance.salIndex;
     data->private_rcvStamp = rcvdTime;
 #endif
 "
@@ -105,7 +103,7 @@ salReturn SAL_[set base]::getSample_[set name]([set base]_[set name]C *data)
   while { [gets $frag rec] > -1} {puts $fout $rec}
   close $frag
   if { [lindex [split $name _] 0] == "command" } {
-    puts $fout "     istatus = Instance_[set name].private_seqNum;"
+    puts $fout "     istatus = Instance.private_seqNum;"
   } else {
     puts $fout "     istatus = SAL__OK;"
   }
@@ -148,7 +146,7 @@ salReturn SAL_[set base]::getLastSample_[set name]([set base]_[set name]C *data)
 salReturn SAL_[set base]::flushSamples_[set name]([set base]_[set name]C *data)
 \{
     salReturn istatus;
-    sal\[SAL__[set base]_[set name]_ACTOR\].maxSamples = LENGTH_UNLIMITED;
+    sal\[SAL__[set base]_[set name]_ACTOR\].maxSamples = 1000;
     sal\[SAL__[set base]_[set name]_ACTOR\].sampleAge = -1.0;
     istatus = getSample_[set name](data);
     if (debugLevel > 8) \{
@@ -322,7 +320,6 @@ global SAL_WORK_DIR ACTIVETOPICS
    puts $fout "
 void SAL_SALData::initSalActors ()
 \{
-    char *pname = (char *)malloc(128);
     for (int i=0; i<SAL__ACTORS_MAXCOUNT;i++) \{
       sal\[i\].isReader = false;
       sal\[i\].isWriter = false;
@@ -332,9 +329,9 @@ void SAL_SALData::initSalActors ()
       sal\[i\].isEventReader = false;
       sal\[i\].isEventWriter = false;
       sal\[i\].isActive = false;
-      sal\[i\].maxSamples = LENGTH_UNLIMITED;
+      sal\[i\].maxSamples = 1000;
       sal\[i\].sampleAge = 1.0e20;
-      sal\[i\].historyDepth = 100;
+      sal\[i\].historyDepth = 100;     
     \}
 "
    set idx 0
@@ -343,19 +340,6 @@ void SAL_SALData::initSalActors ()
       set revcode [getRevCode [set base]_[set name] short]
       puts $fout "    strcpy(sal\[$idx\].topicHandle,\"[set base]_[set name][set revcode]\");"
       puts $fout "    strcpy(sal\[$idx\].topicName,\"[set base]_[set name]\");"
-      if { $type == "command" } {
-         puts $fout "
-      sprintf(pname,\"%s.[set base].cmd\",partitionPrefix);
-      sal\[$idx\].partition = pname;
-      if (debugLevel > 2) \{ cout << \"[set base]_[set name] partition is \" << pname << endl;\}
-"
-      } else {
-         puts $fout "
-      sprintf(pname,\"%s.[set base].data\",partitionPrefix);
-      sal\[$idx\].partition = pname;
-      if (debugLevel > 2) \{ cout << \"[set base]_[set name] partition is \" << pname << endl;\}
-"
-      }
       incr idx 1
    }
   puts $fout "
@@ -382,8 +366,7 @@ global ACTIVETOPICS
    puts $fout "
   public void initSalActors ()
   \{
-     String pname;
-     int status=-1;
+      int status=-1;
      int idx;
 "
    set idx 0
@@ -400,25 +383,6 @@ global ACTIVETOPICS
       }
       incr idx 1
    }
-   puts $fout "    for (idx=0; idx<SAL__ACTORS_MAXCOUNT; idx++) \{"
-   puts $fout "      if (sal\[idx\].topicType.equals(\"logevent\")) \{"
-   puts $fout "        status = eventQos.get_topic_qos(sal\[idx\].topicQos, null);"
-   puts $fout "        pname = partitionPrefix + \".[set base].data\";"
-   puts $fout "        sal\[idx\].partition = pname;"
-   puts $fout "     \}"
-   puts $fout "      if (sal\[idx\].topicType.equals(\"command\")) \{"
-   puts $fout "        pname = partitionPrefix + \".[set base].cmd\";"
-   puts $fout "        sal\[idx\].partition = pname;"
-   puts $fout "      \}"
-   puts $fout "       if (sal\[idx\].topicType.equals(\"ackcmd\")) \{"
-   puts $fout "         pname = partitionPrefix + \".[set base].data\";"
-   puts $fout "         sal\[idx\].partition = pname;"
-   puts $fout "      \}"
-   puts $fout "      if (sal\[idx\].topicType.equals(\"telemetry\")) \{"  
-   puts $fout "         pname = partitionPrefix + \".[set base].data\";"
-   puts $fout "         sal\[idx\].partition = pname;"
-   puts $fout "      \}"
-   puts $fout "     \}"
    puts $fout "  \}"
 }
 
@@ -605,7 +569,7 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS
              puts $fout "
                     if ( \"[set base]_$name\".equals(topicName) ) \{
       [set name][set revcode]TypeSupport [set name][set revcode]TS = new [set name][set revcode]TypeSupport();
-#      registerType([set name][set revcode]TS);
+//      registerType([set name][set revcode]TS);
                         return SAL__OK;
         \}"
            puts $fout "  \}"
@@ -620,7 +584,7 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS
                puts $fout "
                     if ( actorIdx == SAL__[set base]_[set name]_ACTOR ) \{
       [set name][set revcode]TypeSupport [set name][set revcode]TS = new [set name][set revcode]TypeSupport();
-#      registerType(actorIdx,[set name][set revcode]TS);
+//      registerType(actorIdx,[set name][set revcode]TS);
                         return SAL__OK;
         \}"
         }
@@ -638,7 +602,7 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS
   public int putSample([set base].[set name] data)
   \{
           int status = SAL__OK;
-          c::[set name] SALInstance = new c::[set name]();
+          [set base]_[set name] SALInstance = new [set base]_[set name]();
     int actorIdx = SAL__[set base]_[set name]_ACTOR;
     if ( sal\[actorIdx\].isWriter == false ) \{
       createWriter(actorIdx,false);
@@ -660,10 +624,10 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS
         if { [info exists SYSDIC($base,keyedID)] } {
           puts $fout "
            SALInstance.salIndex = subsystemID;
-###           status = SALWriter.write(SALInstance, dataHandle);
+//           status = SALWriter.write(SALInstance, dataHandle);
         } else {
           puts $fout "
-###           status = SALWriter.write(SALInstance, dataHandle);"
+//           status = SALWriter.write(SALInstance, dataHandle);"
          }
         puts $fout "
     return status;
@@ -680,7 +644,7 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS
     int status =  -1;
           int last = SAL__NO_UPDATES;
           int numsamp;
-          c::[set name] SALInstance = new c::[set name];
+          [set base]_[set name] SALInstance = new [set base]_[set name];
     int actorIdx = SAL__[set base]_[set name]_ACTOR;
     if ( sal\[actorIdx\].isReader == false ) \{"
         puts $fout "
@@ -766,9 +730,11 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS
   set rec ""
   while { [string range $rec 0 21] != "// INSERT TYPE SUPPORT" } {
      if { [string range $rec 0 22] == "// INSERT TYPE INCLUDES" } {
-       puts $fouth "  #include \"ccpp_sal_[lindex [split $id _] 0].h\"
-"
        gets $finh rec ; puts $fouth $rec
+###       puts $fouth "using namespace avro"
+       foreach name $ACTIVETOPICS {
+          puts $fouth "#include \"[set base]_[set name].hh\""
+       }
      } else {
        gets $finh rec
        puts $fouth $rec
@@ -781,128 +747,83 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS
      if { [string range $rec 0 21] == "// INSERT TYPE SUPPORT" } {
         addActorIndexesCPP $jsonfile $base $fout
         addSWVersionsCPP $fout
-        puts $fout " salReturn SAL_[set base]::salTypeSupport(char *topicName)
-\{"
+        puts $fout " salReturn SAL_[set base]::salTypeSupport(char *topicName)"
+        puts $fout " \{"
         foreach name $ACTIVETOPICS {
            puts $fout "    if (strncmp(\"$base\",topicName,[string length $base]) == 0) \{"
-           foreach name $ACTIVETOPICS {
-               if { $OPTIONS(verbose) } {stdlog "###TRACE--- Processing topic $j"}
-               set revcode [getRevCode [set base]_[set name] short]
-                 puts $fout "
-       if ( strcmp(\"[set base]_[set name]\",topicName) == 0) \{
-    [set base]::[set name][set revcode]TypeSupport_var mt = new [set base]::[set name][set revcode]TypeSupport();
-    registerType(mt.in());
-          return SAL__OK;
-       \}"
-           }
+           if { $OPTIONS(verbose) } {stdlog "###TRACE--- Processing topic $name"}
+           set revcode [getRevCode [set base]_[set name] short]
+           puts $fout ""
+           puts $fout "       if ( strcmp(\"[set base]_[set name]\",topicName) == 0) \{"
+           puts $fout "//    registerType(mt.in());"
+           puts $fout "          return SAL__OK;"
+           puts $fout "       \}"
            puts $fout "  \}"
         }
-        puts $fout "  return SAL__ERR;
-\}"
-        puts $fout " salReturn SAL_[set base]::salTypeSupport(int actorIdx)
-\{"
+        puts $fout "  return SAL__ERR;"
+        puts $fout "\}"
+        puts $fout " salReturn SAL_[set base]::salTypeSupport(int actorIdx)"
+        puts $fout "\{"
         foreach name $ACTIVETOPICS {
-                set revcode [getRevCode [set base]_[set name] short]
-                puts $fout "
-       if ( actorIdx == SAL__[set base]_[set name]_ACTOR ) \{
-    [set base]::[set name][set revcode]TypeSupport_var mt = new [set base]::[set name][set revcode]TypeSupport();
-    registerType(actorIdx,mt.in());
-          return SAL__OK;
-       \}"
+           set revcode [getRevCode [set base]_[set name] short]
+           puts $fout ""
+           puts $fout "       if ( actorIdx == SAL__[set base]_[set name]_ACTOR ) \{"
+           puts $fout "//   registerType(actorIdx,mt.in());"
+           puts $fout "         return SAL__OK;"
+           puts $fout "       \}"
         }
-        puts $fout "  return SAL__ERR;
-\}"
+        puts $fout "  return SAL__ERR;"
+        puts $fout "\}"
         generatetypelists $base $fout
         foreach name $ACTIVETOPICS {
-           foreach name $ACTIVETOPICS {
-              if { $OPTIONS(verbose) } {stdlog "###TRACE------ Processing topic $j"}
-              set revcode [getRevCode [set base]_[set name] short]
-              set turl [getTopicURL $base $name]
-puts $fout "
-salReturn SAL_[set base]::putSample([set base]::[set name][set revcode] data)
-\{
-  data.private_revCode = \"[string trim $revcode _]\";
-  if (debugLevel > 0) \{
-    cout << \"=== \[putSample\] [set base]::[set name][set revcode] writing a message containing :\" << endl;
-    cout << \"    revCode  : \" << data.private_revCode << endl;
-  \}
-#ifdef SAL_SUBSYSTEM_ID_IS_KEYED
-   data.salIndex = subsystemID;
-#endif
-  data.private_sndStamp = getCurrentTime();
-###  ReturnCode_t status = SALWriter->write(data, dataHandle);
-  return status;
-\}
-
-salReturn SAL_[set base]::getSample(c::[set name] Instance_[set name])
-\{
-  ReturnCode_t status =  - 1;
-  unsigned int numSamples = 0;"
-               readerFragment $fout $base $name
-               puts $fout "
-  for (int j = 0; j < numSamples; j++)
-  \{
-    rcvdTime = getCurrentTime();
-      cout << \"=== \[GetSample\] message received :\" << endl;
-      cout << \"    revCode  : \" << Instance_[set name.private_revCode << endl;
-  \}
-  if (numSamples == 0) \{
-     status = SAL__NO_UPDATES;
-  \}
-  return status;
-\}"
-               puts $fouth "
-      salReturn putSample([set base]::[set name][set revcode] data);
-      salReturn getSample([set base]::[set name][set revcode]Seq data);
-
-/** Publish a sample of the $turl Kafka topic. A publisher must already have been set up
-  * @param data The payload of the sample as defined in the XML for SALData
-  */
-      salReturn putSample_[set name]([set base]_[set name]C *data);
-
-
-/** Receive the latest sample of the $turl Kafka topic. A subscriber must already have been set up.
-  * If there are no samples available then SAL__NO_UPDATES is returned, otherwise SAL__OK is returned.
-  * If there are multiple samples in the history cache, they are skipped over and only the most recent is supplied.
-  * @param data The payload of the sample as defined in the XML for SALData
-  */
-      salReturn getSample_[set name]([set base]_[set name]C *data);
-
-
-/** Receive the next sample of the $turl Kafka topic from the history cache. A subscriber must already have been set up
-  * If there are no samples available then SAL__NO_UPDATES is returned, otherwise SAL__OK is returned.
-  * If there are multiple samples in the history cache, they are iterated over by consecutive calls to getNextSample_[set name]
-  * @param data The payload of the sample as defined in the XML for SALData
-  */
-      salReturn getNextSample_[set name]([set base]_[set name]C *data);
-
-/** Empty the history cache of samples. After this only newly published samples will be available to getSample_[set name] or 
-  * getNextSample_[set name]
-  */
-      salReturn flushSamples_[set name]([set base]_[set name]C *data);
-
-/** Provides the data from the most recently received $turl sample. This may be a new sample that has not been read before
-  * by the caller, or it may be a copy of the last received sample if no new data has since arrived.
-  * If there are no samples available then SAL__NO_UPDATES is returned, otherwise SAL__OK is returned.
-  * @param data The payload of the sample as defined in the XML for SALData
-  */
-      salReturn getLastSample_[set name]([set base]_[set name]C *data);
-      [set base]_[set name]C lastSample_[set base]_[set name];
-"
-               insertcfragments $fout $base $name
-           }
+           if { $OPTIONS(verbose) } {stdlog "###TRACE------ Processing topic $name"}
+           set revcode [getRevCode [set base]_[set name] short]
+           set turl [getTopicURL $base $name]
+           puts $fouth ""
+           puts $fouth "/** Publish a sample of the $turl Kafka topic. A publisher must already have been set up"
+           puts $fouth "  * @param data The payload of the sample as defined in the XML for SALData"
+           puts $fouth "  */"
+           puts $fouth "      salReturn putSample_[set name]([set base]_[set name]C *data);"
+           puts $fouth ""
+           puts $fouth "/** Receive the latest sample of the $turl Kafka topic. A subscriber must already have been set up."
+           puts $fouth "  * If there are no samples available then SAL__NO_UPDATES is returned, otherwise SAL__OK is returned."
+           puts $fouth "  * If there are multiple samples in the history cache, they are skipped over and only the most recent is supplied."
+           puts $fouth "  * @param data The payload of the sample as defined in the XML for SALData"
+           puts $fouth "  */"
+           puts $fouth "      salReturn getSample_[set name]([set base]_[set name]C *data);"
+           puts $fouth ""
+           puts $fouth "/** Receive the next sample of the $turl Kafka topic from the history cache. A subscriber must already have been set up"
+           puts $fouth "  * If there are no samples available then SAL__NO_UPDATES is returned, otherwise SAL__OK is returned."
+           puts $fouth "  * If there are multiple samples in the history cache, they are iterated over by consecutive calls to getNextSample_[set name]"
+           puts $fouth "  * @param data The payload of the sample as defined in the XML for SALData"
+           puts $fouth "  */"
+           puts $fouth "      salReturn getNextSample_[set name]([set base]_[set name]C *data);"
+           puts $fouth ""
+           puts $fouth "/** Empty the history cache of samples. After this only newly published samples will be available to getSample_[set name] or "
+           puts $fouth "  * getNextSample_[set name]"
+           puts $fouth "  */"
+           puts $fouth "      salReturn flushSamples_[set name]([set base]_[set name]C *data);"
+           puts $fouth ""
+           puts $fouth "/** Provides the data from the most recently received $turl sample. This may be a new sample that has not been read before"
+           puts $fouth "  * by the caller, or it may be a copy of the last received sample if no new data has since arrived."
+           puts $fouth "  * If there are no samples available then SAL__NO_UPDATES is returned, otherwise SAL__OK is returned."
+           puts $fouth " * @param data The payload of the sample as defined in the XML for SALData"
+           puts $fouth "  */"
+           puts $fouth "      salReturn getLastSample_[set name]([set base]_[set name]C *data);"
+           puts $fouth "      [set base]_[set name]C lastSample_[set base]_[set name];"
+           puts $fouth ""
+           insertcfragments $fout $base $name
         }
+        puts stdout "=============================done ACTIVETOPICS"
         gencmdaliascode $base include $fouth
         gencmdaliascode $base cpp $fout
         geneventaliascode $base include $fouth
         geneventaliascode $base cpp $fout
+        flush $fout
+        flush $fouth
 ###        gengenericreader $fout $base
      } else {
-        if { $rec == "using namespace SALData;" } {
-          puts $fout "using namespace [set base];"
-        } else {
-          puts $fout $rec
-        }
+        puts $fout $rec
      }
   }
   close $fin

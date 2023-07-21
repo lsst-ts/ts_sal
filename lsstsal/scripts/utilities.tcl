@@ -219,7 +219,7 @@ global SAL_WORK_DIR
 #
 proc getTopicURL  { base topic } {
   set anchor [string tolower [lindex [split $topic _] end]]
-  set linktext [set base]_[join [lrange [split $topic _] 0 end] _]
+  set linktext [join [lrange [split $topic _] 0 end] _]
   set url "<A HREF=https://ts-xml.lsst.io/python/lsst/ts/xml/data/sal_interfaces/[set base].html#[set anchor]>$linktext</A>"
 }
 

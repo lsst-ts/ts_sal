@@ -42,8 +42,7 @@ global SAL_WORK_DIR OPTIONS
    exec touch $SAL_WORK_DIR/[set base]/cpp/src/.depend.Makefile.sacpp_[set base]_event
    exec touch $SAL_WORK_DIR/[set base]/cpp/src/.depend.Makefile.sacpp_[set base]_testcommands
    exec touch $SAL_WORK_DIR/[set base]/cpp/src/.depend.Makefile.sacpp_[set base]_testevents
-   exec ln -sf $SAL_WORK_DIR/avro-templates/sal/sal_revCoded_$base.json $SAL_WORK_DIR/$base/cpp/sal_$base.json
-    if { $OPTIONS(verbose) } {stdlog "###TRACE<<< makesaldirs $base $name"}
+   if { $OPTIONS(verbose) } {stdlog "###TRACE<<< makesaldirs $base $name"}
 }
 
 
@@ -214,18 +213,20 @@ global SAL_DIR SAL_WORK_DIR SYSDIC VPROPS EVENT_ENUM OPTIONS CMD_ALIASES METADAT
             puts $fhdr "\};"
             puts $fhlv "\} [set subsys]_[set name]_Ctl;"
          } else {
-               puts $fhdr [typejsontoc $rec]
-               puts $fhlv [typejsontoc $rec]
-               set VPROPS(idx) $argidx
-               set VPROPS(base) $subsys
-               set VPROPS(topic) "[set subsys]_[set name]"
-               updatecfragments $fcod1 $fcod1b $fcod2 $fcod2b $fcod3 $fcod4 $fcod5 $fcod6 $fcod7 $fcod8 $fcod10 $fcod11 $fcod12 $fcod13
-               set vname $VPROPS(name)
-               if { $VPROPS(array) } {
-                 incr argidx $VPROPS(dim)
-               } else {
-                 incr argidx 1
-               }
+            if { [string range $rec 0 0] != "\]" } {
+              set VPROPS(idx) $argidx
+              set VPROPS(base) $subsys
+              set VPROPS(topic) "[set subsys]_[set name]"
+              puts $fhdr [typejsontoc $rec]
+              puts $fhlv [typejsontoc $rec]
+              updatecfragments $fcod1 $fcod1b $fcod2 $fcod2b $fcod3 $fcod4 $fcod5 $fcod6 $fcod7 $fcod8 $fcod10 $fcod11 $fcod12 $fcod13
+              set vname $VPROPS(name)
+              if { $VPROPS(array) } {
+                incr argidx $VPROPS(dim)
+              } else {
+                incr argidx 1
+              }
+            }
          }
       }
       close $fin
@@ -244,6 +245,9 @@ global SAL_DIR SAL_WORK_DIR SYSDIC VPROPS EVENT_ENUM OPTIONS CMD_ALIASES METADAT
       close $fcod12
       close $fcod13
     }
+   }
+   if { [info exists CMD_ALIASES($subsys)] } {
+     genackcmdincl $subsys $fhdr $fhlv
    }
    puts $fhdr "#endif"
    close $fhdr
@@ -276,11 +280,11 @@ global SAL_DIR SAL_WORK_DIR SYSDIC VPROPS EVENT_ENUM OPTIONS CMD_ALIASES METADAT
 #  and write the individual data fields of the SAL Topics
 #
 proc updatecfragments { fcod1 fcod1b fcod2 fcod2b fcod3 fcod4 fcod5 fcod6 fcod7 fcod8 fcod10 fcod11 fcod12 fcod13 } {
-global VPROPS TYPEFORMAT
+global VPROPS TYPEFORMAT METADATA
    set idx $VPROPS(idx)
    if { $VPROPS(array) } {
-      puts $fcod1 "    for (int iseq=0;iseq<$VPROPS(dim);iseq++) \{data->$VPROPS(name)\[iseq\] = Instances.$VPROPS(name)\[iseq\];\}"
-      puts $fcod1 "    for (int iseq=0;iseq<$VPROPS(dim);iseq++) \{lastSample_[set VPROPS(topic)].$VPROPS(name)\[iseq\] = Instances.$VPROPS(name)\[iseq\];\}"
+      puts $fcod1 "    for (int iseq=0;iseq<$VPROPS(dim);iseq++) \{data->$VPROPS(name)\[iseq\] = Instance.$VPROPS(name)\[iseq\];\}"
+      puts $fcod1 "    for (int iseq=0;iseq<$VPROPS(dim);iseq++) \{lastSample_[set VPROPS(topic)].$VPROPS(name)\[iseq\] = Instance.$VPROPS(name)\[iseq\];\}"
       puts $fcod1b "    for (int iseq=0;iseq<$VPROPS(dim);iseq++) \{data->$VPROPS(name)\[iseq\] = lastSample_[set VPROPS(topic)].$VPROPS(name)\[iseq\];\}"
       puts $fcod2 "    for (int iseq=0;iseq<$VPROPS(dim);iseq++) \{Instance.$VPROPS(name)\[iseq\] = data->$VPROPS(name)\[iseq\];\}"
       puts $fcod3 "       cout << \"    $VPROPS(name) : \" << SALInstance.$VPROPS(name)\[0\] << endl;"
@@ -346,8 +350,8 @@ global VPROPS TYPEFORMAT
       }
    } else {
       if { $VPROPS(string) } {
-         puts $fcod1 "    data->$VPROPS(name)=Instances.$VPROPS(name).m_ptr;"
-         puts $fcod1 "    lastSample_[set VPROPS(topic)].$VPROPS(name)=Instances.$VPROPS(name).m_ptr;"
+         puts $fcod1 "    data->$VPROPS(name)=Instance.$VPROPS(name);"
+         puts $fcod1 "    lastSample_[set VPROPS(topic)].$VPROPS(name)=Instance.$VPROPS(name);"
          puts $fcod1b "   data->$VPROPS(name) = lastSample_[set VPROPS(topic)].$VPROPS(name);"
          if { $VPROPS(dim) > 0 } {
            puts $fcod2b "
@@ -394,8 +398,8 @@ global VPROPS TYPEFORMAT
              cout << \"Incoming $VPROPS(topic) $VPROPS(name) =  \" << Incoming_[set VPROPS(topic)]->$VPROPS(name) << endl;
            \}"
       } else {
-         puts $fcod1 "    data->$VPROPS(name) = Instances.$VPROPS(name);"
-         puts $fcod1 "    lastSample_[set VPROPS(topic)].$VPROPS(name) = Instances.$VPROPS(name);"
+         puts $fcod1 "    data->$VPROPS(name) = Instance.$VPROPS(name);"
+         puts $fcod1 "    lastSample_[set VPROPS(topic)].$VPROPS(name) = Instance.$VPROPS(name);"
          puts $fcod1b "   data->$VPROPS(name) = lastSample_[set VPROPS(topic)].$VPROPS(name);"
          puts $fcod2 "    Instance.$VPROPS(name) = data->$VPROPS(name);"
          puts $fcod3 "    cout << \"    $VPROPS(name) : \" << SALInstance.$VPROPS(name) << endl;"
@@ -453,6 +457,46 @@ global VPROPS TYPEFORMAT
 }
 
 #
+## Documented proc \c genackcmdincl .
+# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
+# \param[in] fhdr File handle of output header file
+# \param[in] fhlv File handle of output LabVIEW header file
+#
+#  Generate header fragments defining the 'ackcmd' Topic
+#
+proc genackcmdincl { subsys fhdr fhlv } {
+global OPTIONS
+   if { $OPTIONS(verbose) } {stdlog "###TRACE>>> genackcmdincl $subsys $fhdr $fhlv "}
+   puts $fhdr "
+struct [set subsys]_ackcmdC
+\{
+      double            private_rcvStamp;
+      int               ack;
+      int               error;
+      std::string       result;
+      std::string       identity;
+      long              origin;
+      long              cmdtype;
+      double            timeout;
+\};
+"
+   puts $fhlv "
+typedef struct [set subsys]_ackcmdLV \{
+      int       cmdSeqNum;
+      int       ack;
+      int       error;
+      StrHdl    result; /* 1000 */
+\} [set subsys]_ackcmd_Ctl;
+typedef struct [set subsys]_waitCompleteLV \{
+      int       cmdSeqNum;
+      unsigned int timeout;
+\} [set subsys]_waitComplete_Ctl;
+"
+   if { $OPTIONS(verbose) } {stdlog "###TRACE<<< genackcmdincl $subsys $fhdr $fhlv "}
+}
+
+
+#
 ## Documented proc \c makesalcmdevt .
 # \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
 # \param[in] lang Language to generate code for
@@ -475,7 +519,7 @@ global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS
         if { [info exists SYSDIC($base,keyedID)] } {
             puts $frep "  -e 's/#-DSAL_SUBSYSTEM/-DSAL_SUBSYSTEM/g' \\"
         }
-        puts $frep "$SAL_DIR/code/templates/Makefile.sacpp_SAL_testcommands.template > [set base]/cpp/src/Makefile.sacpp_[set base]_testcommands"
+        puts $frep "$SAL_DIR/code/templates/Makefile.sacpp_SALKafka_testcommands.template > [set base]/cpp/src/Makefile.sacpp_[set base]_testcommands"
 
         puts $frep "sed \\"
         puts $frep "  -e 's/_SAL_/_[set base]_/g' \\"
@@ -484,7 +528,7 @@ global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS
         if { [info exists SYSDIC($base,keyedID)] } {
             puts $frep "  -e 's/#-DSAL_SUBSYSTEM/-DSAL_SUBSYSTEM/g' \\"
         }
-        puts $frep "$SAL_DIR/code/templates/Makefile.sacpp_SAL_testevents.template > [set base]/cpp/src/Makefile.sacpp_[set base]_testevents"
+        puts $frep "$SAL_DIR/code/templates/Makefile.sacpp_SALKafka_testevents.template > [set base]/cpp/src/Makefile.sacpp_[set base]_testevents"
       }
 
       close $frep
@@ -517,8 +561,8 @@ global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS CMD_ALIASES
         puts $frep "sed \\"
         puts $frep "  -e 's/sacpp_SAL_types/sacpp_[set base]_types/g' \\"
         puts $frep "  -e 's/_SAL_/_[set id]_/g' \\"
-        puts $frep "$SAL_DIR/code/templates/Makefile-cpp.template > [set id]/cpp/standalone/Makefile"
-        exec cp $SAL_DIR/code/templates/Makefile-cpp.template [set id]/cpp/standalone/Makefile
+        puts $frep "$SAL_DIR/code/templates/Makefile-cppKafka.template > [set id]/cpp/standalone/Makefile"
+###        exec cp $SAL_DIR/code/templates/Makefile-cppKafka.template [set id]/cpp/standalone/Makefile
         if { $name != "notused" } {
           puts $frep "sed \\"
           puts $frep "  -e 's/_SAL_/_[set base]_/g' \\"
@@ -527,7 +571,7 @@ global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS CMD_ALIASES
           if { [info exists SYSDIC($base,keyedID)] } {
             puts $frep "  -e 's/#-DSAL_SUBSYSTEM/-DSAL_SUBSYSTEM/g' \\"
           }
-          puts $frep "$SAL_DIR/code/templates/Makefile.sacpp_SAL_sub.template > [set id]/cpp/standalone/Makefile.sacpp_[set id]_sub"
+          puts $frep "$SAL_DIR/code/templates/Makefile.sacpp_SALKafka_sub.template > [set id]/cpp/standalone/Makefile.sacpp_[set id]_sub"
 
           puts $frep "sed \\"
           puts $frep "  -e 's/_SAL_/_[set base]_/g' \\"
@@ -536,7 +580,7 @@ global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS CMD_ALIASES
           if { [info exists SYSDIC($base,keyedID)] } {
             puts $frep "  -e 's/#-DSAL_SUBSYSTEM/-DSAL_SUBSYSTEM/g' \\"
           }
-          puts $frep "$SAL_DIR/code/templates/Makefile.sacpp_SAL_pub.template > [set id]/cpp/standalone/Makefile.sacpp_[set id]_pub"
+          puts $frep "$SAL_DIR/code/templates/Makefile.sacpp_SALKafka_pub.template > [set id]/cpp/standalone/Makefile.sacpp_[set id]_pub"
         }
 
         if { $name != "notused" } {
@@ -557,20 +601,20 @@ global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS CMD_ALIASES
         puts $frep "$SAL_DIR/code/templates/Makefile-java.template > [set id]/java/standalone/Makefile"
         puts $frep "sed \\"
         puts $frep "  -e 's/_SAL_/_[set id]_/g' \\"
-        puts $frep "$SAL_DIR/code/templates/Makefile-java.template > [set id]/java/Makefile"
+        puts $frep "$SAL_DIR/code/templates/Makefile-javaKafka.template > [set id]/java/Makefile"
 
         if { $name != "notused" } {
           puts $frep "sed \\"
           puts $frep "  -e 's/_SAL_/_[set id]_/g' \\"
           puts $frep "  -e 's/SALTopic/[set id]/g' \\"
           puts $frep "  -e 's/SALData/[set base]/g' \\"
-          puts $frep "$SAL_DIR/code/templates/Makefile.saj_SAL_pub.template > [set id]/java/standalone/Makefile.saj_[set id]_pub"
+          puts $frep "$SAL_DIR/code/templates/Makefile.saj_SALKafka_pub.template > [set id]/java/standalone/Makefile.saj_[set id]_pub"
 
           puts $frep "sed \\"
           puts $frep "  -e 's/_SAL_/_[set id]_/g' \\"
           puts $frep "  -e 's/SALTopic/[set id]/g' \\"
           puts $frep "  -e 's/SALData/[set base]/g' \\"
-          puts $frep "$SAL_DIR/code/templates/Makefile.saj_SAL_sub.template > [set id]/java/standalone/Makefile.saj_[set id]_sub"
+          puts $frep "$SAL_DIR/code/templates/Makefile.saj_SALKafka_sub.template > [set id]/java/standalone/Makefile.saj_[set id]_sub"
 
           puts $frep "sed \\"
           if { [info exists SYSDIC($base,keyedID)] } {
@@ -647,10 +691,10 @@ global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS CMD_ALIASES
       salavrogen $base $lang
       stdlog "done salavrogen $base $lang"
       if { $lang == "cpp" } {
-         set incfiles [glob [set base]/cpp/*.h]
-         stdlog "Updating include files : $incfiles"
+####        set incfiles [glob [set base]/cpp/*.h]
+####        stdlog "Updating include files : $incfiles"
 ####         catch { foreach i $incfiles {  exec cp $i $SAL_DIR/include/. } }
-         exec cp [set base]/cpp/libsacpp_[set base]_types.so $SAL_WORK_DIR/lib/.
+####         exec cp [set base]/cpp/libsacpp_[set base]_types.so $SAL_WORK_DIR/lib/.
          exec ln -sf $SAL_WORK_DIR/[set base]/cpp/src/SAL_[set base].cpp $SAL_WORK_DIR/[set id]/cpp/src/.
          exec ln -sf $SAL_WORK_DIR/[set base]/cpp/src/SAL_[set base].h $SAL_WORK_DIR/[set id]/cpp/src/.
          salcpptestgen $base $id
@@ -680,7 +724,7 @@ global SAL_WORK_DIR OPTIONS ONEDONEGEN SAL_DIR
           set all [glob $SAL_WORK_DIR/avro-templates/[set base]_*.json]
           foreach i $all {
              puts stdout "Processing $i"
-             exec avrogencpp -i $i -o $SAL_WORK_DIR/[set base]/cpp/src/[file rootname [file tail $i]].hh
+             exec avrogencpp -i $i -o $SAL_WORK_DIR/[set base]/cpp/src/[file rootname [file tail $i]].hh -n $base
           }
        }
        if { $lang == "java"} {
@@ -690,9 +734,9 @@ global SAL_WORK_DIR OPTIONS ONEDONEGEN SAL_DIR
              exec java -jar $SAL_DIR/../lib/avro-tools-1.11.1.jar compile schema  $SAL_WORK_DIR/[set base]/java/src/
           }
       }
-       stdlog "Avro : $result"
-       cd $SAL_WORK_DIR
-       set ONEDONEGEN 1
+      stdlog "Avro : data type support code generated"
+      cd $SAL_WORK_DIR
+      set ONEDONEGEN 1
    }
    if { $OPTIONS(verbose) } {stdlog "###TRACE<<< salavrogen $base $lang"}
 }

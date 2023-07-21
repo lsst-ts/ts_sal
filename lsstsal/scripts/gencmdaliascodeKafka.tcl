@@ -14,7 +14,7 @@
 #\code
 
 set SAL_DIR $env(SAL_DIR)
-source $SAL_DIR/gencommandtests.tcl
+source $SAL_DIR/gencommandtestsKafka.tcl
 source $SAL_DIR/gencommandtestssinglefile.tcl 
 source $SAL_DIR/gencommandtestsjava.tcl
 source $SAL_DIR/gencommandtestssinglefilejava.tcl
@@ -109,7 +109,7 @@ global CMD_ALIASES CMDS DONE_CMDEVT ACKREVCODE REVCODE SAL_WORK_DIR OPTIONS
   */
       salReturn ackCommand_[set i]C( SALData_ackcmdC *data );
 
-      salReturn getResponse_[set i]( SALData::ackcmd[set ACKREVCODE]Seq data );
+      salReturn getResponse_[set i]( SALData::ackcmd data );
 
 /** Get the response (ack) from a command transaction. It is up to the application to validate against the 
   * command sequence number and command type if multiple commands may be in-progress simultaneously
@@ -182,8 +182,7 @@ int SAL_SALData::issueCommand_[set i]( SALData_command_[set i]C *data )
   while { [gets $frag rec] > -1} {puts $fout $rec}
   close $frag
   puts $fout "
-  InstanceHandle_t cmdHandle = NULL;
-  SALData::command_[set i][set revcode] Instance;
+  [set subsys]::[set subsys]_command_[set i] Instance;
   int actorIdx = SAL__SALData_command_[set i]_ACTOR;
   // create DataWriter :
   if (sal\[actorIdx\].isCommand == false) \{
@@ -210,29 +209,24 @@ int SAL_SALData::issueCommand_[set i]( SALData_command_[set i]C *data )
         close $fin
         puts $fout "
   \}
-  Instance.private_sndStamp = getCurrentTime();
-###  ReturnCode_t status = SALWriter->write(Instance, cmdHandle);
+  Instance.private_sndStamp = getCurrentTime();"
+        writerFragment $fout $subsys [set subsys]_command_[set i]
+        puts $fout "
   sal\[actorIdx\].sndSeqNum++;
-//  if(sal\[actorIdx\].sndSeqNum >= 32768*(actorIdx+1) ) \{
-//     sal\[actorIdx\].sndSeqNum = 32768*actorIdx + 1;
-//  \}
-      if (debugLevel >= SAL__LOG_ROUTINES) \{
-          logError(status);
-      \}
+  if (debugLevel >= SAL__LOG_ROUTINES) \{
+      logError(status);
   \}
-    return (sal\[actorIdx\].sndSeqNum-1);
+  return (sal\[actorIdx\].sndSeqNum-1);
 \}
 "
       puts $fout "
 int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
 \{
-   ReturnCode_t status = 0;
-   ReturnCode_t istatus =  -1;
-   c::command_[set i] Instance_[set i];
+//   long istatus =  -1;
+   [set subsys]::SALData_command_[set i] Instance;
    SALData::ackcmd ackdata;
-   InstanceHandle_t ackHandle = NULL;
+//   long ackHandle = NULL;
    int actorIdx = SAL__SALData_command_[set i]_ACTOR;
-   int j=0;
    if ( data == NULL ) \{
       throw std::runtime_error(\"NULL pointer for acceptCommand_[set i]\");
    \}
@@ -244,38 +238,38 @@ int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
   if { $i != "setAuthList" } {
      puts $fout "	checkAuthList(sal\[actorIdx\].activeidentity);"
   }
-  readerFragment $fout \"SALData\" \"[set i]\"" 
+  readerFragment $fout SALData command_[set i] 
   puts $fout "  
     if (debugLevel > 8) \{
       cout << \"=== \[acceptCommandC $i\] reading a command containing :\" << endl;
-      cout << \"    seqNum   : \" << Instance_[set i].private_seqNum << endl;
-      cout << \"    origin   : \" << Instance_[set i].private_origin << endl;
-      cout << \"    identity   : \" << Instance_[set i].private_identity << endl;
+      cout << \"    seqNum   : \" << Instance.private_seqNum << endl;
+      cout << \"    origin   : \" << Instance.private_origin << endl;
+      cout << \"    identity   : \" << Instance.private_identity << endl;
     \}
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
     ackdata.salIndex = subsystemID;
 #endif
-    ackdata.identity = Instance_[set i].private_identity;
-    ackdata.origin = Instance_[set i].private_origin;
-    ackdata.private_seqNum = Instance_[set i].private_seqNum;
+    ackdata.identity = Instance.private_identity;
+    ackdata.origin = Instance.private_origin;
+    ackdata.private_seqNum = Instance.private_seqNum;
     ackdata.private_revCode = \"[string trim $ACKREVCODE _]\";
     ackdata.private_sndStamp = getCurrentTime();
     ackdata.cmdtype = actorIdx;
     ackdata.error = 0;
     ackdata.result = \"SAL ACK\";
-    status = Instance_[set i].private_seqNum;
+    status = Instance.private_seqNum;
     ackdata.private_revCode = \"[string trim $ACKREVCODE _]\";
     ackdata.private_sndStamp = getCurrentTime();
     rcvdTime = getCurrentTime();
     sal\[actorIdx\].rcvStamp = rcvdTime;
-    sal\[actorIdx\].sndStamp = Instance_[set i].private_sndStamp;
-    if ( (rcvdTime - Instance_[set i].private_sndStamp) < sal\[actorIdx\].sampleAge ) \{
+    sal\[actorIdx\].sndStamp = Instance.private_sndStamp;
+    if ( (rcvdTime - Instance.private_sndStamp) < sal\[actorIdx\].sampleAge ) \{
       rcvSeqNum = status;
-      rcvOrigin = Instance_[set i].private_origin;
-      rcvIdentity = Instance_[set i].private_identity;
-      sal\[actorIdx\].activeorigin = Instance_[set i].private_origin;
-      sal\[actorIdx\].activeidentity = Instance_[set i].private_identity;
-      sal\[actorIdx\].activecmdid = Instance_[set i].private_seqNum;
+      rcvOrigin = Instance.private_origin;
+      rcvIdentity = Instance.private_identity;
+      sal\[actorIdx\].activeorigin = Instance.private_origin;
+      sal\[actorIdx\].activeidentity = Instance.private_identity;
+      sal\[actorIdx\].activecmdid = Instance.private_seqNum;
       ackdata.ack = SAL__CMD_ACK;"
         set fin [open $SAL_WORK_DIR/include/SAL_[set subsys]_command_[set i]Cget.tmp r]
         while { [gets $fin rec] > -1 } {
@@ -302,7 +296,7 @@ int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
      }
      puts $fout "    
     if ( ackdata.ack != SAL__CMD_ACK ) \{
-###       istatus = SALWriter->write(ackdata, ackHandle);
+//       istatus = SALWriter->write(ackdata, ackHandle);
     \}
 "
    puts $fout "
@@ -320,7 +314,7 @@ salReturn SAL_SALData::waitForCompletion_[set i]( int cmdSeqNum , unsigned int t
 \{
      salReturn status = SAL__OK;
    int countdown = timeout*100;
-   SALData::ackcmd[set ACKREVCODE]Seq response;
+   SALData::ackcmd response;
    int actorIdx = SAL__SALData_command_[set i]_ACTOR;
 
    while (status != SAL__CMD_COMPLETE && countdown != 0) \{
@@ -355,45 +349,41 @@ salReturn SAL_SALData::waitForCompletion_[set i]( int cmdSeqNum , unsigned int t
 \}
 "
    puts $fout "
-salReturn SAL_SALData::getResponse_[set i](c::ackcmd data)
+salReturn SAL_SALData::getResponse_[set i](SALData::ackcmd data)
 \{
   int actorIdx = SAL__SALData_ackcmd_ACTOR;
   int actorIdxCmd = SAL__SALData_command_[set i]_ACTOR;
-  ReturnCode_t status = SAL__CMD_NOACK;
-  ReturnCode_t istatus =  -1;
-  int j=0;"
-  readerFragment $fout \"SALData\" \"ackcmd\"" 
+  long status = SAL__CMD_NOACK;
+  SALData::ackcmd Instance;"
+  readerFragment $fout SALData ackcmd
   puts $fout "
   sal\[actorIdxCmd\].rcvSeqNum = 0;
   sal\[actorIdxCmd\].rcvOrigin = 0;
   sal\[actorIdxCmd\].rcvIdentity = \"\";
-  if (data.length() > 0) \{
-   j = data.length()-1;
-   if (Instance_\[set i\].private_seqNum > 0) \{
+  if (Instance.private_seqNum > 0) \{
     if (debugLevel > 8) \{
       cout << \"=== \[getResponse_[set i]\] reading a message containing :\" << endl;
-      cout << \"    seqNum   : \" << Instance_\[set i\].private_seqNum << endl;
-      cout << \"    error    : \" << Instance_\[set i\].error << endl;
-      cout << \"    ack      : \" << Instance_\[set i\].ack << endl;
-      cout << \"    result   : \" << Instance_\[set i\].result << endl;
+      cout << \"    seqNum   : \" << Instance.private_seqNum << endl;
+      cout << \"    error    : \" << Instance.error << endl;
+      cout << \"    ack      : \" << Instance.ack << endl;
+      cout << \"    result   : \" << Instance.result << endl;
      \}
 // check identity, cmdtype here
-    status = Instance_\[set i\].ack;
+    status = Instance.ack;
     rcvdTime = getCurrentTime();
     sal\[actorIdxCmd\].rcvStamp = rcvdTime;
-    sal\[actorIdxCmd\].sndStamp = Instance_\[set i\].private_sndStamp;
-    sal\[actorIdxCmd\].rcvSeqNum = Instance_\[set i\].private_seqNum;
-    sal\[actorIdxCmd\].rcvOrigin = Instance_\[set i\].private_origin;
-    sal\[actorIdxCmd\].rcvIdentity = Instance_\[set i\].private_identity;
-    sal\[actorIdxCmd\].ack = Instance_\[set i\].ack;
-    sal\[actorIdxCmd\].error = Instance_\[set i\].error;
-    strcpy(sal\[actorIdxCmd\].result,Instance_\[set i\].result);
+    sal\[actorIdxCmd\].sndStamp = Instance.private_sndStamp;
+    sal\[actorIdxCmd\].rcvSeqNum = Instance.private_seqNum;
+    sal\[actorIdxCmd\].rcvOrigin = Instance.private_origin;
+    sal\[actorIdxCmd\].rcvIdentity = Instance.private_identity;
+    sal\[actorIdxCmd\].ack = Instance.ack;
+    sal\[actorIdxCmd\].error = Instance.error;
+    strcpy(sal\[actorIdxCmd\].result,Instance.result);
    \} else \{
       if (debugLevel > 8) \{
          cout << \"=== \[getResponse_[set i]\] No ack yet!\" << endl;
       \}
       status = SAL__CMD_NOACK;
-   \}
   \}
   return status;
 \}
@@ -403,44 +393,42 @@ salReturn SAL_SALData::getResponse_[set i]C(SALData_ackcmdC *response)
 \{
   int actorIdx = SAL__SALData_ackcmd_ACTOR;
   int actorIdxCmd = SAL__SALData_command_[set i]_ACTOR;
-  c::ackcmd Instance_ackcmd;
-  ReturnCode_t status = SAL__CMD_NOACK;
-  ReturnCode_t istatus =  -1;
-  int j=0;
+  SALData::ackcmd Instance;
+  long status = SAL__CMD_NOACK;
   if ( response == NULL ) \{
      throw std::runtime_error(\"NULL pointer for getResponse_[set i]\");
   \}"
-  readerFragment $fout \"SALData\" \"[set i]\"
+  readerFragment $fout SALData command_[set i]
   puts $fout "
   sal\[actorIdxCmd\].rcvSeqNum = 0;
   sal\[actorIdxCmd\].rcvOrigin = 0;
   sal\[actorIdxCmd\].rcvIdentity = \"\";
-   if (Instance_\[set i\].private_seqNum > 0) \{
+   if (Instance.private_seqNum > 0) \{
     if (debugLevel > 8) \{
       cout << \"=== \[getResponse_[set i]\] reading a message containing :\" << endl;
-      cout << \"    seqNum   : \" << Instance_\[set i\].private_seqNum << endl;
-      cout << \"    error    : \" << Instance_\[set i\].error << endl;
-      cout << \"    ack      : \" << Instance_\[set i\].ack << endl;
-      cout << \"    result   : \" << Instance_\[set i\].result << endl;
+      cout << \"    seqNum   : \" << Instance.private_seqNum << endl;
+      cout << \"    error    : \" << Instance.error << endl;
+      cout << \"    ack      : \" << Instance.ack << endl;
+      cout << \"    result   : \" << Instance.result << endl;
      \}
 // check identity, cmdtype here
-    status = Instance_\[set i\].private_seqNum;;
+    status = Instance.private_seqNum;;
     rcvdTime = getCurrentTime();
     sal\[actorIdxCmd\].rcvStamp = rcvdTime;
-    sal\[actorIdxCmd\].sndStamp = Instance_\[set i\].private_sndStamp;
-    sal\[actorIdxCmd\].rcvSeqNum = Instance_\[set i\].private_seqNum;
-    sal\[actorIdxCmd\].rcvOrigin = Instance_\[set i\].private_origin;
-    sal\[actorIdxCmd\].rcvIdentity = Instance_\[set i\].private_identity;
-    sal\[actorIdxCmd\].ack = Instance_\[set i\].ack;
-    sal\[actorIdxCmd\].error = Instance_\[set i\].error;
-    strcpy(sal\[actorIdxCmd\].result,Instance_\[set i\].result);
-    response->ack = Instance_\[set i\].ack;
-    response->error = Instance_\[set i\].error;
-    response->origin = Instance_\[set i\].origin;
-    response->identity = Instance_\[set i\].identity;
-    response->cmdtype = Instance_\[set i\].cmdtype;
-    response->timeout = Instance_\[set i\].timeout;
-    response->result= Instance_\[set i\].result;
+    sal\[actorIdxCmd\].sndStamp = Instance.private_sndStamp;
+    sal\[actorIdxCmd\].rcvSeqNum = Instance.private_seqNum;
+    sal\[actorIdxCmd\].rcvOrigin = Instance.private_origin;
+    sal\[actorIdxCmd\].rcvIdentity = Instance.private_identity;
+    sal\[actorIdxCmd\].ack = Instance.ack;
+    sal\[actorIdxCmd\].error = Instance.error;
+    strcpy(sal\[actorIdxCmd\].result,Instance.result);
+    response->ack = Instance.ack;
+    response->error = Instance.error;
+    response->origin = Instance.origin;
+    response->identity = Instance.identity;
+    response->cmdtype = Instance.cmdtype;
+    response->timeout = Instance.timeout;
+    response->result= Instance.result;
    \} else \{
       if (debugLevel > 8) \{
          cout << \"=== \[getResponse_[set i]C\] No ack yet!\" << endl;
@@ -453,12 +441,12 @@ salReturn SAL_SALData::getResponse_[set i]C(SALData_ackcmdC *response)
    puts $fout "
 salReturn SAL_SALData::ackCommand_[set i]( int cmdId, salLONG ack, salLONG error, char *result )
 \{
-     ReturnCode_t istatus = -1;
-   InstanceHandle_t ackHandle = NULL;
-   int actorIdx = SAL__SALData_ackcmd_ACTOR;
+//   long istatus = -1;
+//   long ackHandle = 0;
+//   int actorIdx = SAL__SALData_ackcmd_ACTOR;
    int actorIdxCmd = SAL__SALData_command_[set i]_ACTOR;
 
-   SALData::ackcmd[set ACKREVCODE] ackdata;
+   SALData::ackcmd ackdata;
 
    ackdata.private_seqNum = cmdId;
    ackdata.private_identity = CSC_identity;
@@ -485,22 +473,22 @@ salReturn SAL_SALData::ackCommand_[set i]( int cmdId, salLONG ack, salLONG error
 #endif
    ackdata.private_revCode = \"[string trim $ACKREVCODE _]\";
    ackdata.private_sndStamp = getCurrentTime();
-###   istatus = SALWriter->write(ackdata, ackHandle);
+//   istatus = SALWriter->write(ackdata, ackHandle);
    return SAL__OK;
 \}
 "
    puts $fout "
 salReturn SAL_SALData::ackCommand_[set i]C(SALData_ackcmdC *response )
 \{
-   ReturnCode_t istatus = -1;
-   InstanceHandle_t ackHandle = NULL;
-   int actorIdx = SAL__SALData_ackcmd_ACTOR;
+//   long istatus = -1;
+//   long ackHandle = NULL;
+//   int actorIdx = SAL__SALData_ackcmd_ACTOR;
    int actorIdxCmd = SAL__SALData_command_[set i]_ACTOR;
    if ( response == NULL ) \{
       throw std::runtime_error(\"NULL pointer for ackCommand_[set i]\");
    \}
 
-   SALData::ackcmd[set ACKREVCODE] ackdata;
+   SALData::ackcmd ackdata;
 
    ackdata.private_seqNum = sal\[actorIdxCmd\].activecmdid;
    ackdata.private_origin = getpid();
@@ -528,7 +516,7 @@ salReturn SAL_SALData::ackCommand_[set i]C(SALData_ackcmdC *response )
 #endif
    ackdata.private_revCode = \"[string trim $ACKREVCODE _]\";
    ackdata.private_sndStamp = getCurrentTime();
-###   istatus = SALWriter->write(ackdata, ackHandle);
+//   istatus = SALWriter->write(ackdata, ackHandle);
    return SAL__OK;
 \}
 "
@@ -568,23 +556,24 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
 	\{
           Random randGen = new java.util.Random();
   	  long cmdHandle = HANDLE_NIL.value;
-          c::command_[set i] Instance_\[set i\] = new c::command_[set i]();
+          SALData::SALData_command_[set i] Instance = new SALData_command_[set i]();
           int status;
           int actorIdx = SAL__SALData_command_[set i]_ACTOR;
-	  Instance_\[set i\].private_revCode = \"[string trim $revcode _]\";
-	  Instance_\[set i\].private_seqNum = sal\[actorIdx\].sndSeqNum;
-          Instance_\[set i\].private_identity = CSC_identity;
-          Instance_\[set i\].private_origin = origin;
-          Instance_\[set i\].private_sndStamp = getCurrentTime();"
+	  Instance.private_revCode = \"[string trim $revcode _]\";
+	  Instance.private_seqNum = sal\[actorIdx\].sndSeqNum;
+          Instance.private_identity = CSC_identity;
+          Instance.private_origin = origin;
+          Instance.private_sndStamp = getCurrentTime();"
       if { [info exists SYSDIC($subsys,keyedID)] } {
-        puts $fout "	  Instance_\[set i\].salIndex = subsystemID;"
+        puts $fout "	  Instance.salIndex = subsystemID;"
       }"
       copytojavasample $fout $subsys command_[set i]
       puts $fout "
 	  if (debugLevel > 0) \{
 	    System.out.println( \"=== \[issueCommand\] $i writing a command\");
 	  \}
-###	  status = SALWriter.write(Instance_\[set i\], cmdHandle);
+//	  status = SALWriter.write(Instance, cmdHandle);
+          writerFragment $fout $subsys [set subsys]_command_[set i]
 	  sal\[actorIdx\].sndSeqNum++;
 	  return (sal\[actorIdx\].sndSeqNum-1);
 	\}
@@ -597,13 +586,13 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
   */
 	public int acceptCommand_[set i]( SALData.command_[set i] data )
 	\{
-                c::command_[set i] Instance_\[set i\] = new c::command_[set i];
-                SALData.ackcmd[set ACKREVCODE] ackdata;
+                SALData::SALData_command_[set i] Instance = new SALData_command_[set i];
+                SALData::ackcmd ackdata;
    		int status = 0;
-                int j=0;
+   		int numSamples = 0;
    		int istatus =  -1;
                 String dummy=\"\";
-   		long ackHandle = HANDLE_NIL.value;
+   		long ackHandle = NULL;
                 int actorIdx = SAL__SALData_command_[set i]_ACTOR;
 "
       if { $i != "setAuthList" } { 
@@ -611,37 +600,37 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
       }
       puts $fout "
   		// create processor :"
-      readerFragment $fout \"SALData\" \"[set i]\"
+      readerFragment $fout SALData command_[set i]
       puts $fout "
-		if (Instance_\[set i\] != NULL) \{
+		if (Instance != NULL) \{
     		     if (debugLevel > 8) \{
       			System.out.println(  \"=== \[acceptCommand\] $i reading a command containing :\" );
-      			System.out.println(  \"    seqNum   : \" + Instance_\[set i\].private_seqNum );
+      			System.out.println(  \"    seqNum   : \" + Instance.private_seqNum );
     		    \}
-    		    status = Instance_\[set i\].private_seqNum;
+    		    status = Instance.private_seqNum;
     		    double rcvdTime = getCurrentTime();
-		    double dTime = rcvdTime - Instance_\[set i\].private_sndStamp;
+		    double dTime = rcvdTime - Instance.private_sndStamp;
     		    if ( dTime < sal\[actorIdx\].sampleAge ) \{
-                      sal\[actorIdx\].activeorigin = Instance_\[set i\].private_origin;
-                      sal\[actorIdx\].activeidentity = Instance_\[set i\].private_identity;
-                      sal\[actorIdx\].activecmdid = Instance_\[set i\].private_seqNum;
-                      ackdata = new SALData.ackcmd[set ACKREVCODE]();"
+                      sal\[actorIdx\].activeorigin = Instance.private_origin;
+                      sal\[actorIdx\].activeidentity = Instance.private_identity;
+                      sal\[actorIdx\].activecmdid = Instance.private_seqNum;
+                      ackdata = new SALData.ackcmd();"
       if { [info exists SYSDIC($subsys,keyedID)] } {
          puts $fout "	              ackdata.salIndex = subsystemID;"
       }
-      puts $fout "		      ackdata.private_identity = Instance_\[set i\].private_identity;
-		      ackdata.private_origin = Instance_\[set i\].private_origin;
-		      ackdata.private_seqNum = Instance_\[set i\].private_seqNum;
+      puts $fout "		      ackdata.private_identity = Instance.private_identity;
+		      ackdata.private_origin = Instance.private_origin;
+		      ackdata.private_seqNum = Instance.private_seqNum;
                       ackdata.private_revCode = \"[string trim $ACKREVCODE _]\";
                       ackdata.private_sndStamp = getCurrentTime();
 		      ackdata.error  = 0;
 		      ackdata.result = \"SAL ACK\";"
            copyfromjavasample $fout $subsys command_[set i]
            puts $fout "
-		      status = Instance_\[set i\].private_seqNum;
+		      status = Instance.private_seqNum;
 		      rcvSeqNum = status;
-		      rcvOrigin = Instance_\[set i\].private_origin;
-		      rcvIdentity = Instance_\[set i\].private_identity;
+		      rcvOrigin = Instance.private_origin;
+		      rcvIdentity = Instance.private_identity;
 		      ackdata.ack = SAL__CMD_ACK;
 "
            if { $subsys != "LOVE" } {
@@ -767,7 +756,7 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
           int numSamples = 0;
           int actorIdx = SAL__SALData_ackcmd_ACTOR;
           int actorIdxCmd = SAL__SALData_command_[set i]_ACTOR;"
-  readerFragment $fout \"SALData\" \"[set i]\"
+  readerFragment $fout SALData command_[set i]
   puts $fout "
 	  if (numSamples > 0) \{
  		for (int i = 0; i < data.value.length; i++) \{
@@ -801,7 +790,7 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
 	public int ackCommand_[set i]( int cmdId, int ack, int error, String result )
 	\{
    		int istatus = -1;
-   		long ackHandle = HANDLE_NIL.value;
+   		long ackHandle = 0;
                 int actorIdx = SAL__SALData_command_[set i]_ACTOR;
                 int actorIdx2 = SAL__SALData_ackcmd_ACTOR;
 
@@ -875,7 +864,6 @@ global SYSDIC
 
 	  //create Topics
 	  createTopic(actorIdx,cmdAlias);
-	  boolean autodispose_unregistered_instances = true;
 	  sal\[actorIdx\].isWriter = true;
 	  sal\[actorIdx\].isCommand = true;
           sal\[SAL__SALData_ackcmd_ACTOR\].sampleAge = 1.0;
@@ -883,8 +871,6 @@ global SYSDIC
 	
           if ( sal\[SAL__SALData_ackcmd_ACTOR\].isReader == false ) \{
 	    createSubscriber(SAL__SALData_ackcmd_ACTOR);
-	    SALResponseTypeSupport mtr = new SALResponseTypeSupport();
-	    registerType2(SAL__SALData_ackcmd_ACTOR,mtr);
 	    createTopic2(SAL__SALData_ackcmd_ACTOR,sresponse);
 	    //create a reader for responses
 "
@@ -920,10 +906,7 @@ global SYSDIC
           if (sal\[actorIdx\].isProcessor == false) \{
   	    //create Publisher
 	    createPublisher(SAL__SALData_ackcmd_ACTOR);
-	    SALResponseTypeSupport mtr = new SALResponseTypeSupport();
-	    registerType2(SAL__SALData_ackcmd_ACTOR,mtr);
 	    createTopic2(SAL__SALData_ackcmd_ACTOR,sresponse);
-   	    boolean autodispose_unregistered_instances = true;
 	    sal\[SAL__SALData_ackcmd_ACTOR\].isWriter = true;
           \}
 	  sal\[actorIdx\].isProcessor = true;
@@ -957,15 +940,15 @@ global SYSDIC
 	  if ( sal\[SAL__SALData_command_setAuthList_ACTOR\].isProcessor == false ) \{
      	    salProcessor(\"SALData_command_setAuthList\");
      	    salEventPub(\"SALData_logevent_authList\");
-            logevent_authList myData = new logevent_authList();
+            SALData::logevent_authList myData = new SALData::logevent_authList();
      	    authorizedUsers = \"\";
      	    nonAuthorizedCSCs = \"\";
      	    myData.authorizedUsers = authorizedUsers;
      	    myData.nonAuthorizedCSCs = nonAuthorizedCSCs;
      	    logEvent_authList(myData, 1);
   	  \}
-          c::command_setAuthList Instance_setAuthList = new c::command_setAuthList();
-          logevent_authList myData = new logevent_authList();
+          SALData_command_setAuthList Instance_setAuthList = new SALData::SALData_command_setAuthList();
+          SALData::logevent_authList myData = new SALData::logevent_authList();
   	  cmdId = acceptCommand_setAuthList(Instance_setAuthList);
   	  if (cmdId > 0) \{
       	    if (debugLevel > 0) \{

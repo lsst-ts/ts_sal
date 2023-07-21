@@ -142,9 +142,8 @@ global TRAILINGITEMS
       }
       if { $tag == "EFDB_Topic" } {
         if { $fout != "" } {
-           puts $fout "\], \"description\": \"[set METADATA($tname,description)]\"
-\}
-"
+           puts $fout "\], \"description\": [set METADATA($tname,description)]
+\}"
            close $fout
         }
         set itemid 0
@@ -163,9 +162,9 @@ global TRAILINGITEMS
         puts $fout "\{
 \"type\": \"record\", \"name\": \"[set tname]\", \"namespace\": \"lsst.sal.kafka_[set subsys]\", \"fields\": \["
         if { $TRAILINGITEMS($tname) == "private_origin" } {
-          add_private_json $fout ""
+          add_private_json $fout $subsys ""
         } else {
-          add_private_json $fout ","
+          add_private_json $fout $subsys ","
         }
         add_private_metadata [set tname]
         puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",1,\"private_revCode\",\"char\",32,\"unitless\",1,\"\",\"\",\"Revision code of topic\");"
@@ -310,9 +309,8 @@ global TRAILINGITEMS
       }
    }
    if { $fout != "" } {
-      puts $fout "\], \"description\": \"[set METADATA($tname,description)]\"
-\}
-"
+      puts $fout "\], \"description\": [set METADATA($tname,description)]
+\}"
       enumsToCPP $subsys $alias
       indexedEnumsToCPP $subsys
       close $fout
@@ -431,6 +429,12 @@ global METADATA
   set METADATA([set topic],private_seqNum,description) "\"Sequence number\""
   set METADATA([set topic],private_identity,description) "\"Identity of publisher\""
   set METADATA([set topic],private_origin,description) "\"PID of publisher\""
+  set METADATA([set topic],private_revCode,size) 1"
+  set METADATA([set topic],private_sndStamp,size) 1"
+  set METADATA([set topic],private_rcvStamp,size) 1"
+  set METADATA([set topic],private_seqNum,size) 1"
+  set METADATA([set topic],private_identity,size) 1"
+  set METADATA([set topic],private_origin,size) 1"
 }
 
 #

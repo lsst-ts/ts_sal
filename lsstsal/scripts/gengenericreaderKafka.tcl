@@ -18,27 +18,21 @@
 # \param[in] fout File handle of output C++ file
 # \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
 # \param[in] name Topic name
-# \param[in] ctype Topic type (command,event,telemetry)
+# \param[in] ctype code fragment type
 #
 #  Generates a code fragment to use the SAL API to read Topic data
 #
 proc genericreaderfragment { fout base name ctype } {
-global ACTORTYPE
-   if { $ctype == "command" || $ctype == "event" || $ctype == "telemetry" } {
-      set ACTORTYPE $ctype
-      puts $fout "
-salReturn SAL_[set base]::[set ctype]Available () \{
+   puts $fout "
+salReturn SAL_[set base]::[set name]Available () \{
   ReturnCode_t status = -1;
   DataReader_var dreader = NULL;
   unsigned int numsamp = 0;
   int actorIdx = 0;
-  int lastActor_[set ACTORTYPE] = 0;
 "
-   }
    if { $ctype == "init" } {
       puts $fout "
   const RdKafka::Headers *headers;
-  c::[set name] Instances_[set name];
   avro::DecoderPtr Instance = avro::binaryDecoder();
   Instance->init(*in);
 "
@@ -64,7 +58,6 @@ salReturn SAL_[set base]::[set ctype]Available () \{
    }
    if { $ctype == "final" } {
       puts $fout ""
-      puts $fout "  lastActor_[set ACTORTYPE] = 0;"
       puts $fout "  return SAL__NO_UPDATES;"
       puts $fout "\}"
    }
@@ -72,16 +65,19 @@ salReturn SAL_[set base]::[set ctype]Available () \{
 
 
 proc readerFragment { fout base name } {
-global ACTORTYPE
-     puts $fout "  numSamples = 0"
-     puts $fout "  actorIdx = SAL__[set base]_[set name]_ACTOR;"
-     puts $fout "  if (actorIdx > lastActor_[set ACTORTYPE]) \{"
-     puts $fout "   RdKafka::Message *msg = sal\[actorIdx\].subscriber->consume(sal\[actorIdx\].topicHandle, partition, 1000);"
+     puts $fout "   int numSamples = 0;"
+     puts $fout "   actorIdx = SAL__[set base]_[set name]_ACTOR;"
+     puts $fout "   RdKafka::Message *message = subscriber->consume(sal\[actorIdx\].topic, partition, 1000);"
+     puts $fout "   const char* payload = (const char*)message->payload();"
+     puts $fout "   int len = static_cast<int> (message->len());"
      puts $fout "   switch (message->err()) \{"
      puts $fout "   case RdKafka::ERR__TIMED_OUT:"
+     puts $fout "   \{"
      puts $fout "    break;"
+     puts $fout "   \}"
      puts $fout ""
      puts $fout "   case RdKafka::ERR_NO_ERROR:"
+     puts $fout "   \{"
      puts $fout "    /* Read message */"
      puts $fout "   if (debugLevel > 1) \{" 
      puts $fout "     std::cout << \"Read msg at offset \" << message->offset() << std::endl;"
@@ -97,68 +93,71 @@ global ACTORTYPE
      puts $fout ""
      puts $fout "      if (debugLevel > 1) \{" 
      puts $fout "       if (hdr.value() != NULL)"
-     puts $fout "         printf(\" Header: %s = \"%.*s\"\n\", hdr.key().c_str(),"
+     puts $fout "         printf(\" Header: %s = %i, %s\", hdr.key().c_str(),"
      puts $fout "                (int)hdr.value_size(), (const char *)hdr.value());"
      puts $fout "        else"
-     puts $fout "         printf(\" Header:  %s = NULL\n\", hdr.key().c_str());"
+     puts $fout "         printf(\" Header:  %s = NULL\\n\", hdr.key().c_str());"
      puts $fout "      \}"
      puts $fout "     \}"
      puts $fout "   \}"
-     puts $fout "    printf(\"%.*s\n\", static_cast<int>(message->len()),"
-     puts $fout "           static_cast<const char *>(message->payload()));"
-     puts $fout "    std::unique_ptr<avro::InputStream> in = avro::memoryInputStream(message->payload());"
-     puts $fout "    avro::DecoderPtr d = avro::validatingDecoder(c::[set name], avro::binaryDecoder());"
-     puts $fout "    Instance_[set name]->init(*in);"
-     puts $fout "    avro::decode(*d, Instance_[set name]);
+     puts $fout "//    printf(\"%.*s\\n\", static_cast<int>(message->len()),"
+     puts $fout "//           static_cast<const char *>(message->payload()));"
+     puts $fout "    std::unique_ptr<avro::InputStream> in_[set name] = avro::memoryInputStream((const char*)payload, len);"
+     puts $fout "    avro::DecoderPtr d_[set name] = avro::binaryDecoder();"
+     puts $fout "    d_[set name]->init(*in_[set name]);"
+     puts $fout "    avro::decode(*d_[set name], Instance);"
      puts $fout "    numSamples = 1;"
      puts $fout "    break;"
      puts $fout ""
+     puts $fout "   \}"
+     puts $fout ""
      puts $fout "    case RdKafka::ERR__UNKNOWN_TOPIC:"
+     puts $fout "   \{"
+     puts $fout "   \}"
+     puts $fout ""
      puts $fout "    case RdKafka::ERR__UNKNOWN_PARTITION:"
+     puts $fout "   \{"
      puts $fout "     std::cerr << \"Consume failed: \" << message->errstr() << std::endl;"
-     puts $fout "     run = 0;"
      puts $fout "     break;"
      puts $fout ""
+     puts $fout "   \}"
+     puts $fout ""
      puts $fout "    default:"
+     puts $fout "   \{"
      puts $fout "     /* Errors */"
      puts $fout "      std::cerr << \"Consume failed: \" << message->errstr() << std::endl;"
-     puts $fout "     run = 0;"
-     puts $fout "  \}"
-     puts $fout ""
-     puts $fout "   if (numSamples > 0) \{"
-     puts $fout "      lastActor_[set ACTORTYPE] = actorIdx;"
-     puts $fout "       return lastActor_[set ACTORTYPE];"
-     puts $fout "    \}"
+     puts $fout "     break;"
+     puts $fout "   \}"
      puts $fout "  \}"
 }
 
 proc writerFragment { fout base name } {
-global ACTORTYPE
   puts $fout "     std::unique_ptr<avro::OutputStream> out = avro::memoryOutputStream();"
   puts $fout "     avro::EncoderPtr e = avro::binaryEncoder();"
+  puts $fout "//     long outsize;"
   puts $fout "     e->init(*out);"
-  puts $fout "     avro::encode(*e, NewInstance_[set name]);"
-  puts $fout "     RdKafka::Headers *headers = NULL;"
-  puts $fout "     RdKafka::ErrorCode resp ="
-  puts $fout "           publisher->produce(\"lsst.sal.[set base]_[set name]\", partition,"
-  puts $fout "                                 RdKafka::Producer::RK_MSG_COPY /* Copy payload */,"
-  puts $fout "                                 out, out.size(),"
-  puts $fout "                                 NULL, 0,"
-  puts $fout "                                 0,"
-  puts $fout "                                 headers,"
-  puts $fout "                                 NULL);"
-  puts $fout "     if (resp != RdKafka::ERR_NO_ERROR) \{"
-  puts $fout "       std::cerr << \"% Produce failed: \" << RdKafka::err2str(resp)"
-  puts $fout "                 << std::endl;"
-  puts $fout "       delete headers; /* Headers are automatically deleted on produce()"
-  puts $fout "                              * success. */"
-  puts $fout "     \} else \{"
-  puts $fout "       if (debugLevel >1) \{"
-  puts $fout "         std::cerr << \"% Produced message (\" << NewInstance_[set name].size() << \" bytes)\""
-  puts $fout "                 << std::endl;"
-  puts $fout "       \}"
-  puts $fout "     \}"
-  puts $fout "     publisher.poll(0);"
+  puts $fout "     avro::encode(*e, Instance);"
+  puts $fout "//     RdKafka::Headers *headers = NULL;"
+  puts $fout "//     RdKafka::ErrorCode resp ="
+  puts $fout "//           publisher->produce(\"lsst.sal.[set name]\", partition,"
+  puts $fout "//                                 RdKafka::Producer::RK_MSG_COPY /* Copy payload */,"
+  puts $fout "//                                 out, out.size,"
+  puts $fout "//                                 NULL, 0,"
+  puts $fout "//                                 0,"
+  puts $fout "//                                 headers,"
+  puts $fout "//                                 NULL);"
+  puts $fout "//     if (resp != RdKafka::ERR_NO_ERROR) \{"
+  puts $fout "//       std::cerr << \"% Produce failed: \" << RdKafka::err2str(resp)"
+  puts $fout "//                 << std::endl;"
+  puts $fout "//       delete headers; /* Headers are automatically deleted on produce()"
+  puts $fout "//                              * success. */"
+  puts $fout "//     \} else \{"
+  puts $fout "//       if (debugLevel >1) \{"
+  puts $fout "//         std::cerr << \"% Produced message (\" << outsize << \" bytes)\""
+  puts $fout "//                 << std::endl;"
+  puts $fout "//       \}"
+  puts $fout "//     \}"
+  puts $fout "//     publisher->poll(0);"
 }
 
 
@@ -223,8 +222,6 @@ global SAL_WORK_DIR SYSDIC
 #include <iostream>
 #include <time.h>
 #include \"SAL_[set base].h\"
-#include \"ccpp_sal_[set base].h\"
-using namespace [set base];
 
 /* entry point exported and demangled so symbol can be found in shared library */
 extern \"C\"
@@ -246,8 +243,8 @@ int test_[set base]_telemetry reader()
   }
   puts $fout "
   struct timespec delay_10ms;
-  delay_1s.tv_sec = 0;
-  delay_1s.tv_nsec = 10000000;
+  delay_10ms.tv_sec = 0;
+  delay_10ms.tv_nsec = 10000000;
   int status=0;
 
   while (1) \{
@@ -307,8 +304,6 @@ global SAL_WORK_DIR SYSDIC ACTIVETOPICS
 #include <iostream>
 #include <time.h>
 #include \"SAL_[set base].h\"
-#include \"ccpp_sal_[set base].h\"
-using namespace [set base];
 
 /* entry point exported and demangled so symbol can be found in shared library */
 extern \"C\"
@@ -331,8 +326,8 @@ int test_[set base]_event_reader()
 
   puts $fout "
   struct timespec delay_10ms;
-  delay_1s.tv_sec = 0;
-  delay_1s.tv_nsec = 10000000;
+  delay_10ms.tv_sec = 0;
+  delay_10ms.tv_nsec = 10000000;
   int status=0;
 
   while (1) \{
@@ -392,8 +387,6 @@ global SAL_WORK_DIR SYSDIC ACTIVETOPICS
 #include <iostream>
 #include <time.h>
 #include \"SAL_[set base].h\"
-#include \"ccpp_sal_[set base].h\"
-using namespace [set base];
 
 /* entry point exported and demangled so symbol can be found in shared library */
 extern \"C\"
@@ -415,8 +408,8 @@ int test_[set base]_command_reader()
   }
   puts $fout "
   struct timespec delay_10ms;
-  delay_1s.tv_sec = 0;
-  delay_1s.tv_nsec = 10000000;
+  delay_10ms.tv_sec = 0;
+  delay_10ms.tv_nsec = 10000000;
   int status=0;
 
   while (1) \{

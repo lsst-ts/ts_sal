@@ -1,6 +1,7 @@
 {
 "type": "record", "name": "ackcmd", "namespace": "lsst.sal.kafka_Test", "fields": [
    {"name": "salIndex", "type": "long", "default": 0, "description": "SAL index (only present for indexed SAL components)", "units": "unitless"},
+   {"name": "private_revCode", "type": "string", "default": "", "description": "Revision code", "units": "unitless"},
    {"name": "private_sndStamp", "type": "double", "default": 0.0, "description": "Time of instance publication", "units": "second"},
    {"name": "private_rcvStamp", "type": "double", "default": 0.0, "description": "Time of instance reception", "units": "second"},
    {"name": "private_seqNum", "type": "long", "default": 0, "description": "Sequence number", "units": "unitless"},
