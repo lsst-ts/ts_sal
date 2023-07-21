@@ -36,7 +36,7 @@
  
   using namespace std;
   using namespace RdKafka;
-
+  
 #ifndef _SAL_SALActorMGR_
   #define _SAL_SALActorMGR_
 
@@ -57,7 +57,7 @@
 /// topicName holds the root name of the Kafka topic
       char 			topicName[SAL__ACTORS_NAMESIZE];
 /// partition holds the Kafka partition to which the topic is associated with
-      string		partition;
+      int		partition;
 /// topicHandle holds the actual name of the Kafka topic with an AVRO versioned hash appended 
       char 			topicHandle[SAL__ACTORS_NAMESIZE];
 /// sFilter is used to build the filtering pattern for indexed Kafka topics, for example HexapodID=2
@@ -72,13 +72,13 @@
 /// topic2 holds a pointer to the internal Kafka topic object
       RdKafka::Topic 		*topic2;
 /// topic holds a pointer to the internal Kafka topic object
-      int		        topicConf;
+      RdKafka::Conf		*topicConf;
 /// topic2 holds a pointer to the internal Kafka topic object
-      int		 	topicConf2;
+      RdKafka::Conf	 	*topicConf2;
 /// publisher holds a pointer to the internal Kafka Publisher object
-      RdKafka::Publisher 	*publisher;
+///      RdKafka::Publisher 	*publisher;
 /// subscriber holds a pointer to the internal Kafka Subscriber object
-      RdkafKa::Consumer		*subscriber; 
+///      RdkafKa::Consumer		*subscriber; 
 /// isActive is true when the Actor has been connected to Kafka
       bool			isActive;
 /// isReader is true when the Actor is a Kafka reader
@@ -130,7 +130,7 @@
 /// historyDepth is the maximum size (in samples) of the Kafka message cache for the topic
       int                       historyDepth;
 /// historyOffset is current offset the Kafka message store for the topic
-      int64                     historyOffset;
+      long                     historyOffset;
   };
 #endif
 
@@ -138,18 +138,16 @@
   {
       /* Generic Kafka entities */
       std::string *server;
-      int partition;
       RdKafka::TopicPartition *tpartition;
       RdKafka::Conf *configuration;
       RdKafka::Topic *topic;
       RdKafka::Topic *topic2;
-      RdKafka::Publisher *publisher;
-      RdfKafka::Consumer *subscriber;
+      RdKafka::Producer *publisher;
+      RdKafka::Consumer *subscriber;
       RdKafka::Headers *headers;
       int domain;
       int status;
-
-      string partition;
+      int participant;
       string typeName;
       string typeName2;
       string sFilter;
@@ -170,7 +168,7 @@
       double rcvdTime;
       salU64  origin;
       char domainName[128];
-      char partitionPrefix[128];
+      int partition;
       salActor sal[SAL__ACTORS_MAXCOUNT];
       int lastActor_telemetry;
       int lastActor_command;
@@ -275,6 +273,9 @@
 
 /// Returns the current AVRO version e.g. "1.11.1"
       static std::string getAVROVersion();
+      
+/// Returns the current OSPL version e.g. "0.0.0"
+      static std::string getOSPLVersion();
 
 /** Sets up the Kafka data type low level support for the named Kafka type
   @param topicName is the name of the Kafka topic
@@ -331,10 +332,10 @@
       void deletePublisher();
       void deleteTopics();
       void deleteSubscriber();
-      rd_kafak_conf_t getPublisher();
-      rd_kafka_conf_t getSubscriber();
-      rd_kafka_topic_t getTopic();
-      DomainParticipant_ptr getParticipant();
+//      RdKafka::Producer getPublisher();
+//      RdKafka::Consumer getSubscriber();
+//      RdKafka::Topic getTopic();
+//      DomainParticipant_ptr getParticipant();
 
       void initSalActors();
       salReturn salTelemetryPub(int actorIdx);
@@ -351,10 +352,8 @@
       void createTopic2(int actorIdx, char *topicName);
       void createPublisher(int actorIdx);
       void createSubscriber(int actorIdx);
-      Publisher_ptr  getPublisher(int actorIdx);
-      Subscriber_ptr getSubscriber(int actorIdx);
-      rd_kafka_topic_t  getTopic(int actorIdx);
-      rd_kafka_topic_t  getTopic2(int actorIdx);
+ //     RdKafka::Topic  getTopic(int actorIdx);
+ //     RdKafka::Topic  getTopic2(int actorIdx);
       bool actorActive(int actorIdx);
       bool actorReader(int actorIdx);
       bool actorWriter(int actorIdx);

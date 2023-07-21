@@ -15,7 +15,7 @@
 
 
 set SAL_DIR $env(SAL_DIR)
-source $SAL_DIR/geneventtests.tcl 
+source $SAL_DIR/geneventtestsKafka.tcl 
 source $SAL_DIR/geneventtestssinglefile.tcl
 source $SAL_DIR/geneventtestsjava.tcl 
 source $SAL_DIR/geneventtestssinglefilejava.tcl
@@ -77,12 +77,6 @@ global EVENT_ALIASES EVTS DONE_CMDEVT
        stdlog "$result"
      }
   }
-  if { $lang == "isocpp" } {
-     set result none
-     catch { set result [geneventaliasisocpp $subsys $fout] } bad
-     if { $result == "none" } {stdlog $bad ; errorexit "failure in geneventaliasisocpp" }
-     stdlog "$result"
-  }
  }
 }
 
@@ -105,7 +99,7 @@ global EVENT_ALIASES EVTS SAL_WORK_DIR OPTIONS
       puts $fout "
 int SAL_SALData::getEvent_[set i](SALData_logevent_[set i]C *data)
 \{
-  ReturnCode_t status =  -1;
+  long status =  -1;
   string stopic=\"SALData_logevent_[set i]\";
   int actorIdx = SAL__SALData_logevent_[set i]_ACTOR;
   int maxSample = sal\[actorIdx\].maxSamples;
@@ -159,7 +153,6 @@ global EVENT_ALIASES EVTS
           int actorIdx = SAL__SALData_logevent_[set i]_ACTOR;
           if (sal\[actorIdx\].subscriber == null) \{
              createSubscriber(actorIdx);
-             createReader(actorIdx,false);
              sal\[actorIdx\].isEventReader = true;
           \}
           int maxSample = sal\[actorIdx\].maxSamples;
@@ -177,10 +170,9 @@ global EVENT_ALIASES EVTS
 	\{
 	   int status = 0;
            int actorIdx = SAL__SALData_logevent_[set i]_ACTOR;
-           if (sal\[actorIdx\].publisher == null) \{
-              createPublisher(actorIdx);
+           if (sal\[actorIdx\].topic == null) \{
+              createTopic(actorIdx);
               boolean autodispose_unregistered_instances = true;
-              createWriter(actorIdx,autodispose_unregistered_instances);
               sal\[actorIdx\].isEventWriter = true;
            \}
            status = putSample(event);

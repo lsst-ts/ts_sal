@@ -186,6 +186,10 @@ proc insertSubscribers { subsys file_writer } {
 }
 
 proc insertTelemetryMakeFile { subsys file_writer } {
+    set keyed ""
+    if { [info exists SYSDIC($subsys,keyedID)] } {
+       set keyed "-DSAL_SUBSYSTEM_ID_IS_KEYED"
+    }
     puts $file_writer "#----------------------------------------------------------------------------"
     puts $file_writer "#       Macros"
     puts $file_writer "#----------------------------------------------------------------------------"
@@ -197,12 +201,12 @@ proc insertTelemetryMakeFile { subsys file_writer } {
     puts $file_writer "LD            = \$(CXX) \$(CCFLAGS) \$(CPPFLAGS)"
     puts $file_writer "AR            = ar"
     puts $file_writer "PICFLAGS      = -fPIC"
-    puts $file_writer "CPPFLAGS      = \$(PICFLAGS) \$(GENFLAGS) -g \$(SAL_CPPFLAGS) -D_REENTRANT -Wall -I\".\" -I\"\$(OSPL_HOME)/examples/include\" -I\"\$(OSPL_HOME)/examples\" -I\"\$(OSPL_HOME)/include\" -I\"\$(OSPL_HOME)/include/sys\" -I\"\$(OSPL_HOME)/include/dcps/C++/SACPP\" -I../../[set subsys]/cpp/src -I\"\$(SAL_HOME)/include\" -I.. -I\"\$(SAL_WORK_DIR)/include\" -Wno-write-strings -DSAL_SUBSYSTEM_ID_IS_KEYED"
+    puts $file_writer "CPPFLAGS      = \$(PICFLAGS) \$(GENFLAGS) -g \$(SAL_CPPFLAGS) -D_REENTRANT -Wall -I\".\"  -I\"\$(AVRO_INCL)\" -I../../[set subsys]/cpp/src -I\"\$(SAL_HOME)/include\" -I.. -I\"\$(SAL_WORK_DIR)/include\" -Wno-write-strings $keyed"
     puts $file_writer "OBJEXT        = .o"
     puts $file_writer "OUTPUT_OPTION = -o \"\$@\""
     puts $file_writer "COMPILE.c     = \$(CC) \$(CFLAGS) \$(CPPFLAGS) -c"
     puts $file_writer "COMPILE.cc    = \$(CXX) \$(CCFLAGS) \$(CPPFLAGS) -c"
-    puts $file_writer "LDFLAGS       = -L\".\" -L\"\$(OSPL_HOME)/lib\" -Wl,-rpath,\$\$ORIGIN -Wl,-rpath,\$\$ORIGIN/\$(OSPL_HOME)/lib -L\"\$(SAL_WORK_DIR)/lib\""
+    puts $file_writer "LDFLAGS       = -L\".\" -L\"\$(SAL_WORK_DIR)/lib\""
     puts $file_writer "CCC           = \$(CXX)"
     puts $file_writer "MAKEFILE      = Makefile.sacpp_[set subsys]_testcommands // may be not needed"
     puts $file_writer "DEPENDENCIES  ="
@@ -227,9 +231,9 @@ proc insertTelemetryMakeFile { subsys file_writer } {
     puts $file_writer "TOUCH         = touch"
     puts $file_writer "EXEEXT        ="
     puts $file_writer "LIBPREFIX     = lib"
-    puts $file_writer "LIBSUFFIX     ="
+    puts $file_writer "LIBSUFFIX     = .so"
     puts $file_writer "GENFLAGS      = -g"
-    puts $file_writer "LDLIBS        = -l\"sacpp_[set subsys]_types\$(LIBSUFFIX)\" -l\"dcpssacpp\" -l\"dcpsgapi\" -l\"ddsuser\" -l\"ddskernel\" -l\"ddsserialization\" -l\"ddsconfparser\" -l\"ddsconf\" -l\"ddsdatabase\" -l\"ddsutil\" -l\"ddsos\" -ldl \$(subst lib,-l,\$(sort \$(basename \$(notdir \$(wildcard /usr/lib/librt.so /lib/librt.so))))) -lrt -lpthread"
+    puts $file_writer "LDLIBS        = -l\"sacpp_SAL_types\$(LIBSUFFIX)\" -ldl -lrt -lpthread -lrdkafka -lboost"
     puts $file_writer "LINK.cc       = \$(LD) \$(LDFLAGS)"
     puts $file_writer "EXPORTFLAGS   ="
     puts $file_writer "endif"

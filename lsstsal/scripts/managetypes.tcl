@@ -214,48 +214,6 @@ global TYPESUBS VPROPS OPTIONS
    return $res
 }
 
-#
-## Documented proc \c typeidltoc .
-# \param[in] rec Record from JSON input file
-#
-#  Return the C/C++ code for an JSON data type declaration
-#
-proc typejsontoc { rec } {
-global TYPESUBS VPROPS OPTIONS
-   if { $OPTIONS(verbose) } {stdlog "### typejsontoc : $rec"}
-   set u ""
-   set VPROPS(array) 0
-   set VPROPS(string) 0
-   set VPROPS(int) 0
-   set VPROPS(long) 0
-   set VPROPS(boolean) 0
-   set VPROPS(longlong) 0
-   set VPROPS(short) 0
-   set VPROPS(byte) 0
-   set VPROPS(double) 0
-   set VPROPS(lvres) 0
-   set VPROPS(dim) 1
-   set VPROPS(name) ""
-   set spl [split $rec "\{\}\":,"]
-   set name [lindex $spl 5]
-   if { [lindex $spl 11] == "string" } {
-      set VPROPS(string) 1
-      set VPROPS(lvres) 5
-      set VPROPS(dim) -1
-      set VPROPS(name) $name
-      set res "  std::string	$name;"
-   } else {
-     if { [lindex $spl 11] != "float" && [lindex $spl 11] != "double" } {set VPROPS(int) 1; set VPROPS(lvres) 9}
-     if { [lindex $spl 11] == "double" } {set VPROPS(double) 1; set VPROPS(lvres) 10 }
-     if { [lindex $spl 11] == "byte" } {set VPROPS(byte) 1; set VPROPS(lvres) 1  }
-     if { [lindex $spl 11] == "long" } {set VPROPS(int) 1; set VPROPS(long); set VPROPS(lvres) 3  }
-     if { [lindex $spl 11] == "long" } {set VPROPS(int) 1; set VPROPS(longlong) 1; set VPROPS(lvres) 4  }
-     if { [lindex $spl 11] == "boolean" } {set VPROPS(boolean) 1; set VPROPS(lvres) 5  }
-     set res "  [lindex $spl 11]	$name;"
-   }
-   return $res
-}
-
 
 #
 ## Documented proc \c simpletypecode .

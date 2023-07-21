@@ -21,16 +21,14 @@
 #  getCommandNames, getEventNames, getTelemetryNames
 # 
 proc generatetypelists { subsys {fout stdout} } {
-global env
-  set jsonfile $env(SAL_WORK_DIR)/avro-templates/sal/sal_[set subsys].json
-  set ptypes [lsort [split [exec grep pragma $jsonfile] \n]]
-  foreach t $ptypes {
-     set id [lindex $t 2]
-     if { $id != "command" && $id != "logevent" && $id != "ackcmd" } {
-      if { [lindex [split $id _] 0] == "command" } {
+global env ACTIVETOPICS
+  foreach id $ACTIVETOPICS {
+     set it [lindex [split $id "_"] 0]
+     if { $it != "ackcmd" } {
+      if { $it == "command" } {
         lappend cmds [join [lrange [split $id _] 1 end] _]
       } else {
-       if { [lindex [split $id _] 0] == "logevent" } {
+       if { $it == "logevent" } {
           lappend evts [join [lrange [split $id _] 1 end] _]
        } else {
           lappend tlms $id
