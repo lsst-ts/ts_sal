@@ -33,7 +33,8 @@
   #include <avro/Specific.hh>
   #include <avro/Exception.hh>
   #include <avro/Compiler.hh>
- 
+  #include "libserdes/serdescpp-avro.h"
+
   using namespace std;
   using namespace RdKafka;
   
@@ -56,6 +57,8 @@
       char 			baseName[SAL__ACTORS_NAMESIZE];
 /// topicName holds the root name of the Kafka topic
       char 			topicName[SAL__ACTORS_NAMESIZE];
+/// topicName2 holds the root name of the Kafka topic
+      char 			topicName2[SAL__ACTORS_NAMESIZE];
 /// partition holds the Kafka partition to which the topic is associated with
       int		partition;
 /// topicHandle holds the actual name of the Kafka topic with an AVRO versioned hash appended 
@@ -71,10 +74,10 @@
       RdKafka::Topic		*topic;
 /// topic2 holds a pointer to the internal Kafka topic object
       RdKafka::Topic 		*topic2;
-/// topic holds a pointer to the internal Kafka topic object
-      RdKafka::Conf		*topicConf;
-/// topic2 holds a pointer to the internal Kafka topic object
-      RdKafka::Conf	 	*topicConf2;
+/// topic holds a pointer to the internal Kafka topic configuration object
+      RdKafka::Conf		*topicConfiguration;
+/// topic2 holds a pointer to the internal Kafka topic configuration object
+      RdKafka::Conf	 	*topicConfiguration2;
 /// publisher holds a pointer to the internal Kafka Publisher object
 ///      RdKafka::Publisher 	*publisher;
 /// subscriber holds a pointer to the internal Kafka Subscriber object
@@ -120,7 +123,7 @@
 /// timeout is the number of seconds the command is expected to take to execute
       double			timeout;
 /// result is the text message result of the most recent command
-      char			result[256];
+      string			result;
 /// sndStamp is the TAI timestamp of the most recent command sent
       double	 		sndStamp;
 /// rcvStamp is the TAI timestamp of the most recent command received
@@ -137,14 +140,21 @@
   class SAL_SALData
   {
       /* Generic Kafka entities */
-      std::string *server;
+      const std::string server;
       RdKafka::TopicPartition *tpartition;
       RdKafka::Conf *configuration;
+      RdKafka::Conf *topicConfiguration;
       RdKafka::Topic *topic;
       RdKafka::Topic *topic2;
       RdKafka::Producer *publisher;
       RdKafka::Consumer *subscriber;
       RdKafka::Headers *headers;
+      Serdes::Conf *sconf;
+      Serdes::Avro *serdes;
+      Serdes::Schema *schema;
+      std::string schema_name;
+      std::string schema_def;
+      const avro::ValidSchema *avro_schema;
       int domain;
       int status;
       int participant;
@@ -326,7 +336,6 @@
       void salShutdown();
 
       void createParticipant(const char *partitiontName);
-      void deleteParticipant();
       void createTopic(char *topicName);
       void createTopic2(char *topicName);
       void deletePublisher();

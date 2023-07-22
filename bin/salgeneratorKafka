@@ -340,15 +340,12 @@ if { $OPTIONS(lib) } {
     if { $s != "lib" } {
       stdlog "Building shared library for $s subsystem"
       set result none
-      if { $OPTIONS(verbose) } {stdlog "Calling $env(TS_SAL_DIR)/bin/buildsharedlib $s"}
-      catch { set result [exec $env(TS_SAL_DIR)/bin/buildsharedlib $s] } bad
+      if { $OPTIONS(verbose) } {stdlog "Calling $env(TS_SAL_DIR)/bin/buildsharedlibKafka $s"}
+      catch { set result [exec $env(TS_SAL_DIR)/bin/buildsharedlibKafka $s] } bad
       if { $OPTIONS(verbose) } {stdlog $result}
     }
     if { [file exists $SAL_WORK_DIR/[set s]/labview/SALLV_[set s].so] } {
       exec cp $SAL_WORK_DIR/[set s]/labview/SALLV_[set s].so $SAL_WORK_DIR/lib/.
-    }
-    if { [file exists $SAL_WORK_DIR/[set s]/cpp/libsacpp_[set s]_types.so] } {
-      exec cp $SAL_WORK_DIR/[set s]/cpp/libsacpp_[set s]_types.so $SAL_WORK_DIR/lib/.
     }
   }
 }

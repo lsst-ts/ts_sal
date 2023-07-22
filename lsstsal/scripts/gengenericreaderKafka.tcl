@@ -25,7 +25,7 @@
 proc genericreaderfragment { fout base name ctype } {
    puts $fout "
 salReturn SAL_[set base]::[set name]Available () \{
-  ReturnCode_t status = -1;
+  int status = -1;
   DataReader_var dreader = NULL;
   unsigned int numsamp = 0;
   int actorIdx = 0;
@@ -65,10 +65,10 @@ salReturn SAL_[set base]::[set name]Available () \{
 
 
 proc readerFragment { fout base name } {
-     puts $fout "   int numSamples = 0;"
+     puts $fout "   numSamples = 0;"
      puts $fout "   actorIdx = SAL__[set base]_[set name]_ACTOR;"
      puts $fout "   RdKafka::Message *message = subscriber->consume(sal\[actorIdx\].topic, partition, 1000);"
-     puts $fout "   const char* payload = (const char*)message->payload();"
+     puts $fout "   const uint8_t* payload = (const uint8_t*) message->payload();"
      puts $fout "   int len = static_cast<int> (message->len());"
      puts $fout "   switch (message->err()) \{"
      puts $fout "   case RdKafka::ERR__TIMED_OUT:"
@@ -102,7 +102,7 @@ proc readerFragment { fout base name } {
      puts $fout "   \}"
      puts $fout "//    printf(\"%.*s\\n\", static_cast<int>(message->len()),"
      puts $fout "//           static_cast<const char *>(message->payload()));"
-     puts $fout "    std::unique_ptr<avro::InputStream> in_[set name] = avro::memoryInputStream((const char*)payload, len);"
+     puts $fout "    std::unique_ptr<avro::InputStream> in_[set name] = avro::memoryInputStream((const uint8_t*) payload, len);"
      puts $fout "    avro::DecoderPtr d_[set name] = avro::binaryDecoder();"
      puts $fout "    d_[set name]->init(*in_[set name]);"
      puts $fout "    avro::decode(*d_[set name], Instance);"
@@ -132,32 +132,41 @@ proc readerFragment { fout base name } {
 }
 
 proc writerFragment { fout base name } {
+  puts $fout "///      avro::GenericDatum* out = avro::GenericDatum(Instance);"
+  puts $fout "///      avro::EncoderPtr json_encoder = avro::jsonEncoder(*avro_schema);"
+  puts $fout "///      avro::GenericDatum *out = new avro::GenericDatum(*avro_schema);"
+  puts $fout "///      json_Encoder->init(*json_is);"
+  puts $fout "///      avro::encode(*json_encoder, *datum);"
+  puts $fout "     std::string errstr;"
+  puts $fout "     std::vector<char> eout;"
   puts $fout "     std::unique_ptr<avro::OutputStream> out = avro::memoryOutputStream();"
-  puts $fout "     avro::EncoderPtr e = avro::binaryEncoder();"
-  puts $fout "//     long outsize;"
+  puts $fout "     avro::EncoderPtr e = avro::jsonEncoder(*avro_schema); /* ok */"
   puts $fout "     e->init(*out);"
   puts $fout "     avro::encode(*e, Instance);"
-  puts $fout "//     RdKafka::Headers *headers = NULL;"
-  puts $fout "//     RdKafka::ErrorCode resp ="
-  puts $fout "//           publisher->produce(\"lsst.sal.[set name]\", partition,"
-  puts $fout "//                                 RdKafka::Producer::RK_MSG_COPY /* Copy payload */,"
-  puts $fout "//                                 out, out.size,"
-  puts $fout "//                                 NULL, 0,"
+  puts $fout "     if (serdes->serialize(schema, out, eout, errstr) == -1) \{"
+  puts $fout "          std::cerr << \"% Avro serialization failed: \" << errstr << std::endl;"
+  puts $fout "     \}"
+  puts $fout "     RdKafka::Headers *headers = NULL;"
+  puts $fout "     RdKafka::ErrorCode resp ="
+  puts $fout "           publisher->produce(\"lsst.sal.[set name]\", partition,"
+  puts $fout "                                 RdKafka::Producer::RK_MSG_COPY /* Copy payload */,"
+  puts $fout "                                 eout.data, eout.size,"
+  puts $fout "                                 NULL, 0, 0, NULL);"
   puts $fout "//                                 0,"
   puts $fout "//                                 headers,"
   puts $fout "//                                 NULL);"
-  puts $fout "//     if (resp != RdKafka::ERR_NO_ERROR) \{"
-  puts $fout "//       std::cerr << \"% Produce failed: \" << RdKafka::err2str(resp)"
-  puts $fout "//                 << std::endl;"
-  puts $fout "//       delete headers; /* Headers are automatically deleted on produce()"
-  puts $fout "//                              * success. */"
-  puts $fout "//     \} else \{"
-  puts $fout "//       if (debugLevel >1) \{"
-  puts $fout "//         std::cerr << \"% Produced message (\" << outsize << \" bytes)\""
-  puts $fout "//                 << std::endl;"
-  puts $fout "//       \}"
-  puts $fout "//     \}"
-  puts $fout "//     publisher->poll(0);"
+  puts $fout "     if (resp != RdKafka::ERR_NO_ERROR) \{"
+  puts $fout "       std::cerr << \"% Produce failed: \" << RdKafka::err2str(resp)"
+  puts $fout "                 << std::endl;"
+  puts $fout "       delete headers; /* Headers are automatically deleted on produce()"
+  puts $fout "                              * success. */"
+  puts $fout "     \} else \{"
+  puts $fout "       if (debugLevel >1) \{"
+  puts $fout "         std::cerr << \"% Produced message (\" << eout.size << \" bytes)\""
+  puts $fout "                 << std::endl;"
+  puts $fout "       \}"
+  puts $fout "     \}"
+  puts $fout "     publisher->poll(0);"
 }
 
 
@@ -432,7 +441,7 @@ int test_[set base]_command_reader()
    }
    puts $fout "
      \}
-     nanosleep(&delay_10m,NULLs);
+     nanosleep(&delay_10m,NULL);
   \}
 
   /* Remove the DataWriters etc */

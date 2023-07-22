@@ -16,9 +16,9 @@
 
 set SAL_DIR $env(SAL_DIR)
 source $SAL_DIR/geneventtestsKafka.tcl 
-source $SAL_DIR/geneventtestssinglefile.tcl
+source $SAL_DIR/geneventtestssinglefileKafka.tcl
 source $SAL_DIR/geneventtestsjava.tcl 
-source $SAL_DIR/geneventtestssinglefilejava.tcl
+source $SAL_DIR/geneventtestssinglefilejavaKafka.tcl
 
 ## Documented proc \c geneventaliascode .
 # \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml

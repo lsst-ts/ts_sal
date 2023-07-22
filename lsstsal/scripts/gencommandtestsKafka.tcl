@@ -48,7 +48,6 @@ global CMD_ALIASES CMDS SAL_WORK_DIR SAL_DIR SYSDIC DONE_CMDEVT OPTIONS
 int main (int argc, char *argv\[\])
 \{ 
   int cmdId;
-  int timeout=10;
   int status=0;
 
   [set subsys]_command_[set alias]C myData;
@@ -89,11 +88,11 @@ int main (int argc, char *argv\[\])
   puts $fcmd "
   // generate command
   cmdId = mgr->issueCommand_[set alias](&myData);
-  cout << \"=== command $alias issued = \" << endl;"
+  cout << \"=== command $alias issued = \" << cmdId << endl;"
   if { $alias == "setAuthList" } {
     puts $fcmd "  sleep(2);"
   } else {
-    puts $fcmd "  status = mgr->waitForCompletion_[set alias](cmdId, timeout);"
+    puts $fcmd "  status = mgr->waitForCompletion_[set alias](cmdId, 10);"
   } 
   puts $fcmd "
   /* Remove the DataWriters etc */
@@ -125,7 +124,6 @@ int main (int argc, char *argv\[\])
 /* entry point exported and demangled so symbol can be found in shared library */
 extern \"C\"
 \{
-  OS_API_EXPORT
   int test_[set subsys]_[set alias]_controller();
 \}
 
@@ -166,7 +164,7 @@ int test_[set subsys]_[set alias]_controller()
   puts $fcmd "
        if (timeout > 0) \{
           mgr.ackCommand_[set alias](cmdId, SAL__CMD_INPROGRESS, 0, \"Ack : OK\");
-          os_nanoSleep(delay_10ms);
+          nanosleep(&delay_10ms,NULL);
        \}       
        mgr.ackCommand_[set alias](cmdId, SAL__CMD_COMPLETE, 0, \"Done : OK\");
     \}

@@ -18,8 +18,8 @@ source $env(SAL_DIR)/gencmdaliascodeKafka.tcl
 source $env(SAL_DIR)/gengenericreaderKafka.tcl
 source $env(SAL_DIR)/gensalintrospectKafka.tcl
 source $env(SAL_DIR)/activaterevcodesKafka.tcl
-source $env(SAL_DIR)/gentelemetrytestssinglefile.tcl
-source $env(SAL_DIR)/gentelemetrytestssinglefilejava.tcl
+source $env(SAL_DIR)/gentelemetrytestssinglefileKafka.tcl
+source $env(SAL_DIR)/gentelemetrytestssinglefilejavaKafka.tcl
 
 #
 ## Documented proc \c insertcfragments .
@@ -72,6 +72,7 @@ salReturn SAL_[set base]::putSample_[set name]([set base]_[set name]C *data)
 
 salReturn SAL_[set base]::getSample_[set name]([set base]_[set name]C *data)
 \{
+  int numSamples = 0;
   salReturn istatus = -1;
   [set base]::[set base]_[set name] Instance;
 

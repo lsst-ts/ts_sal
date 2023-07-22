@@ -45,7 +45,7 @@ int SALTelemetryPublisher(char *topic_name)
 // INSERT_SAL_PUBC
     iseq++;
     mgr.putSample_SALTopic(&myData);
-    nanoleep(&delay_1s,NULL);
+    nanosleep(&delay_1s,NULL);
   }
 
   /* Remove the DataWriters etc */
