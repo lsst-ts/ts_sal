@@ -104,7 +104,6 @@ int main (int argc, char *argv\[\])
 /* entry point exported and demangled so symbol can be found in shared library */
 extern \"C\"
 \{
-  OS_API_EXPORT
   int test_[set subsys]_[set alias]_Log();
 \}
 
@@ -150,7 +149,7 @@ int test_[set subsys]_[set alias]_Log()
   return 0;
 \}
 
-int OSPL_MAIN (int argc, char *argv\[\])
+int main(int argc, char *argv\[\])
 \{
   return test_[set subsys]_[set alias]_Log();
 \}

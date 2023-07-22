@@ -17,16 +17,15 @@ using namespace SALData;
 /* entry point exported and demangled so symbol can be found in shared library */
 extern "C"
 {
-  OS_API_EXPORT
-  int SALTelemetrySubscriber(int argc, char *argv[]);
+   int SALTelemetrySubscriber(int argc, char *argv[]);
 }
 
 
 int SALTelemetrySubscriber(char *topic_name)
 {
   struct timespec delay_10ms;
-  delay_1s.tv_sec = 0;
-  delay_1s.tv_nsec = 10000000;
+  delay_10ms.tv_sec = 0;
+  delay_10ms.tv_nsec = 10000000;
   SALNAMESTRINGC SALInstance;
 
 
@@ -44,7 +43,7 @@ int SALTelemetrySubscriber(char *topic_name)
 
   cout << "=== [Subscriber] Ready ..." << endl;
 
-  ReturnCode_t status =  - 1;
+  int status = -1;
   int count = 0;
   while (1)
   {
@@ -52,7 +51,7 @@ int SALTelemetrySubscriber(char *topic_name)
     if (status == SAL__OK) {
 // INSERT_SAL_SUBC
     }
-   nanoleep(&delay_10ms,NULL);
+   nanosleep(&delay_10ms,NULL);
    ++count;
   }
 

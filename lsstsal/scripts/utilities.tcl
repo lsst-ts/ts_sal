@@ -101,13 +101,15 @@ global SAL_WORK_DIR SALVERSION OPTIONS
 #  Check for SAL generated files expected as salgenerator output
 #
 proc checkAssets { subsys } {
-global SAL_WORK_DIR OPTIONS CMD_ALIASES EVENT_ALIASES TLM_ALIASES
+global SAL_WORK_DIR OPTIONS CMD_ALIASES EVENT_ALIASES TLM_ALIASES env
    if { $OPTIONS(verbose) } {stdlog "###TRACE>>> checkAssets $subsys"}
    if { $OPTIONS(idl) } {
         checkFileAsset $SAL_WORK_DIR/[set subsys]/sal_revCoded_[set subsys].idl
    }
    if { $OPTIONS(cpp) } {
-        checkFileAsset $SAL_WORK_DIR/[set subsys]/cpp/libsacpp_[set subsys]_types.so
+        if { [info exists env(LSST_KAFKA_PREFIX)] == 0 } {
+          checkFileAsset $SAL_WORK_DIR/[set subsys]/cpp/libsacpp_[set subsys]_types.so
+        }
         checkFileAsset $SAL_WORK_DIR/[set subsys]/cpp/src/SAL_[set subsys].cpp
         checkFileAsset $SAL_WORK_DIR/[set subsys]/cpp/src/SAL_[set subsys].h
         checkFileAsset $SAL_WORK_DIR/[set subsys]/cpp/src/SAL_[set subsys]C.h

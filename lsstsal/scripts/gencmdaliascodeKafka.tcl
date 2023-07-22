@@ -15,9 +15,9 @@
 
 set SAL_DIR $env(SAL_DIR)
 source $SAL_DIR/gencommandtestsKafka.tcl
-source $SAL_DIR/gencommandtestssinglefile.tcl 
+source $SAL_DIR/gencommandtestssinglefileKafka.tcl 
 source $SAL_DIR/gencommandtestsjava.tcl
-source $SAL_DIR/gencommandtestssinglefilejava.tcl
+source $SAL_DIR/gencommandtestssinglefilejavaKafka.tcl
 source $SAL_DIR/activaterevcodesKafka.tcl 
 
 #
@@ -223,6 +223,7 @@ int SAL_SALData::issueCommand_[set i]( SALData_command_[set i]C *data )
 int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
 \{
 //   long istatus =  -1;
+   int numSamples = 0;
    [set subsys]::SALData_command_[set i] Instance;
    SALData::ackcmd ackdata;
 //   long ackHandle = NULL;
@@ -240,6 +241,7 @@ int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
   }
   readerFragment $fout SALData command_[set i] 
   puts $fout "  
+   if ( numSamples > 0) \{
     if (debugLevel > 8) \{
       cout << \"=== \[acceptCommandC $i\] reading a command containing :\" << endl;
       cout << \"    seqNum   : \" << Instance.private_seqNum << endl;
@@ -306,6 +308,7 @@ int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
         \}
         status = 0;
      \}
+    \}
     return status;
 \}
 "
@@ -351,12 +354,14 @@ salReturn SAL_SALData::waitForCompletion_[set i]( int cmdSeqNum , unsigned int t
    puts $fout "
 salReturn SAL_SALData::getResponse_[set i](SALData::ackcmd data)
 \{
+  int numSamples = 0;
   int actorIdx = SAL__SALData_ackcmd_ACTOR;
   int actorIdxCmd = SAL__SALData_command_[set i]_ACTOR;
   long status = SAL__CMD_NOACK;
   SALData::ackcmd Instance;"
   readerFragment $fout SALData ackcmd
   puts $fout "
+  if (numSamples > 0) \{
   sal\[actorIdxCmd\].rcvSeqNum = 0;
   sal\[actorIdxCmd\].rcvOrigin = 0;
   sal\[actorIdxCmd\].rcvIdentity = \"\";
@@ -367,7 +372,7 @@ salReturn SAL_SALData::getResponse_[set i](SALData::ackcmd data)
       cout << \"    error    : \" << Instance.error << endl;
       cout << \"    ack      : \" << Instance.ack << endl;
       cout << \"    result   : \" << Instance.result << endl;
-     \}
+    \}
 // check identity, cmdtype here
     status = Instance.ack;
     rcvdTime = getCurrentTime();
@@ -378,12 +383,13 @@ salReturn SAL_SALData::getResponse_[set i](SALData::ackcmd data)
     sal\[actorIdxCmd\].rcvIdentity = Instance.private_identity;
     sal\[actorIdxCmd\].ack = Instance.ack;
     sal\[actorIdxCmd\].error = Instance.error;
-    strcpy(sal\[actorIdxCmd\].result,Instance.result);
-   \} else \{
+    sal\[actorIdxCmd\].result = Instance.result;
+    \} else \{
       if (debugLevel > 8) \{
          cout << \"=== \[getResponse_[set i]\] No ack yet!\" << endl;
       \}
       status = SAL__CMD_NOACK;
+    \}
   \}
   return status;
 \}
@@ -391,6 +397,7 @@ salReturn SAL_SALData::getResponse_[set i](SALData::ackcmd data)
    puts $fout "
 salReturn SAL_SALData::getResponse_[set i]C(SALData_ackcmdC *response)
 \{
+  int numSamples = 0;
   int actorIdx = SAL__SALData_ackcmd_ACTOR;
   int actorIdxCmd = SAL__SALData_command_[set i]_ACTOR;
   SALData::ackcmd Instance;
@@ -400,6 +407,7 @@ salReturn SAL_SALData::getResponse_[set i]C(SALData_ackcmdC *response)
   \}"
   readerFragment $fout SALData command_[set i]
   puts $fout "
+  if (numSamples > 0) \{
   sal\[actorIdxCmd\].rcvSeqNum = 0;
   sal\[actorIdxCmd\].rcvOrigin = 0;
   sal\[actorIdxCmd\].rcvIdentity = \"\";
@@ -421,7 +429,7 @@ salReturn SAL_SALData::getResponse_[set i]C(SALData_ackcmdC *response)
     sal\[actorIdxCmd\].rcvIdentity = Instance.private_identity;
     sal\[actorIdxCmd\].ack = Instance.ack;
     sal\[actorIdxCmd\].error = Instance.error;
-    strcpy(sal\[actorIdxCmd\].result,Instance.result);
+    sal\[actorIdxCmd\].result = Instance.result;
     response->ack = Instance.ack;
     response->error = Instance.error;
     response->origin = Instance.origin;
@@ -435,6 +443,7 @@ salReturn SAL_SALData::getResponse_[set i]C(SALData_ackcmdC *response)
       \}
       status = SAL__CMD_NOACK;
    \}
+  \}
   return status;
 \}
 "

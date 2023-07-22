@@ -105,7 +105,6 @@ global SAL_WORK_DIR XMLVERSION SAL_DIR SYSDIC SALVERSION env
       copyasset $SAL_WORK_DIR/[set subsys]/labview/SAL_[set subsys]_shmem.h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
       copyasset $SAL_WORK_DIR/[set subsys]/labview/sal_[set subsys].json [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/labview/.
       copyasset $SAL_WORK_DIR/[set subsys]/cpp/src/SAL_[set subsys]LV.h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
-      copyasset $SAL_WORK_DIR/lib/libsacpp_[set subsys]_types.so [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/lib/.
     }
     if { [info exists SYSDIC([set subsys],java)] } {
       exec mkdir -p [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/jar
@@ -116,8 +115,7 @@ global SAL_WORK_DIR XMLVERSION SAL_DIR SYSDIC SALVERSION env
     if { [info exists SYSDIC([set subsys],cpp)] } {
       copyasset $SAL_WORK_DIR/lib/libSAL_[set subsys].so [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/lib/.
       copyasset $SAL_WORK_DIR/lib/libSAL_[set subsys].a [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/lib/.
-      copyasset $SAL_WORK_DIR/lib/libsacpp_[set subsys]_types.so [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/lib/.
-    }
+     }
     copyasset $SAL_WORK_DIR/avro-templates/[set subsys]_revCodes.tcl [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/scripts/.
     copyasset $SAL_WORK_DIR/avro-templates/sal/sal_revCoded_[set subsys].json [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/avro/.
     if { [info exists SYSDIC([set subsys],cpp)] } {
