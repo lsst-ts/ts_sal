@@ -34,7 +34,7 @@ EXEEXT        =
 LIBPREFIX     = lib
 LIBSUFFIX     = 
 GENFLAGS      = -g
-LDLIBS        = -l"sacpp_SAL_types$(LIBSUFFIX)" -ldl -lrt -lpthread -lboost_filesystem -lboost_iostreams -lboost_program_options -lboost_system -lavrocpp -lrdkafka++ -lserdes
+LDLIBS        = -ldl -lrt -lpthread -lboost_filesystem -lboost_iostreams -lboost_program_options -lboost_system -lavrocpp -lrdkafka++ -lcppkafka -lserdes
 LINK.cc       = $(LD) $(LDFLAGS)
 EXPORTFLAGS   = 
 endif

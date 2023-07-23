@@ -226,7 +226,7 @@ global SYSDIC
     puts $file_writer "LIBPREFIX     = lib"
     puts $file_writer "LIBSUFFIX     = .so"
     puts $file_writer "GENFLAGS      = -g"
-    puts $file_writer "LDLIBS        = -ldl -lrt -lpthread -lboost_filesystem -lboost_iostreams -lboost_program_options -lboost_system -lavrocpp -lrdkafka++ -lserdes"
+    puts $file_writer "LDLIBS        = -ldl -lrt -lpthread -lboost_filesystem -lboost_iostreams -lboost_program_options -lboost_system -lavrocpp -lrdkafka++ -lcppkafka -lserdes"
     puts $file_writer "LINK.cc       = \$(LD) \$(LDFLAGS)"
     puts $file_writer "EXPORTFLAGS   ="
     puts $file_writer "endif"
