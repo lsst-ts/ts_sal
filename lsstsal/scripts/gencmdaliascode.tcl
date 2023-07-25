@@ -140,22 +140,14 @@ global CMD_ALIASES CMDS DONE_CMDEVT ACKREVCODE REVCODE SAL_WORK_DIR OPTIONS
      set result none
      gencmdgenericjava $subsys $fout
      catch { set result [gencmdaliasjava $subsys $fout] } bad
-     if { $result == "none" } {stdlog $bad ; errorexit "failure in gencmdaliasjava" }
+##     if { $result == "none" } {stdlog $bad ; errorexit "failure in gencmdaliasjava" }
      stdlog "$result"
      if { $DONE_CMDEVT == 0} {
        set result none
-       catch { set result [gencommandtestsjava $subsys] } bad
+##       catch { set result [gencommandtestsjava $subsys] } bad
        stdlog "$result"
        if { $result == "none" } {stdlog $bad ; errorexit "failure in gencommandtestsjava" }
      }
-  }
-  if { $lang == "isocpp" } {
-     set result none
-     if { $result == "none" } {stdlog $bad ; errorexit "failure in addgenericcmdcode" }
-     addgenericcmdcode $fout $lang $subsys
-     catch { set result [gencmdaliasisocpp $subsys $fout] } bad
-     if { $result == "none" } {stdlog $bad ; errorexit "failure in gencmdaliasisocpp" }
-     stdlog "$result"
   }
  }
  if { $OPTIONS(verbose) } {stdlog "###TRACE<<< gencmdaliascode $subsys $lang $fout"}

@@ -3,7 +3,7 @@ package org.lsst.sal;
 import org.apache.kafka.clients.admin.*;
 import org.apache.kafka.common.KafkaFuture;
 import org.apache.kafka.clients.publisher.* 
-import org.apache.kafka.clients.consumer.* 
+import org.apache.kafka.clients.consumer.*;
 import org.apache.kafka.common.serialization.StringDeserializer;  
 import java.time.Duration;  
 import java.util.Arrays;  
@@ -33,6 +33,7 @@ public class salActor {
 	public kafkaPublisher publisher;
 /// subscriber holds a pointer to the internal Kafka Subscriber object
 	public kafkaConsumer subscriber;
+	public AvroSchema avroSchema;
 /// typeName holds the Kafka type, in our case it is the same as the topicHandle
 	public String typeName;
 /// typeName2 holds the complementary type of the ackCmd when typeName is a command topic

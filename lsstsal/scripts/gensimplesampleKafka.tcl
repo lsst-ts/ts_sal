@@ -549,8 +549,8 @@ global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS
 #   Generate the base SAL API code
 #
 proc makesalcode { jsonfile base name lang } {
-global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS CMD_ALIASES
-      if { $OPTIONS(verbose) } {stdlog "###TRACE>>> makesalcode $jsonfile $base $name $lang"}
+global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS CMD_ALIASES ONEDONEGEN
+      if { $OPTIONS(verbose) } {stdlog "###TRACE>>> makesalcode $jsonfile $base $name $lang $ONEDONEGEN"}
       stdlog "Processing $base $name in $SAL_WORK_DIR"
       cd $SAL_WORK_DIR
       catch {makesaldirs $base $name}
@@ -562,7 +562,6 @@ global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS CMD_ALIASES
         puts $frep "  -e 's/sacpp_SAL_types/sacpp_[set base]_types/g' \\"
         puts $frep "  -e 's/_SAL_/_[set id]_/g' \\"
         puts $frep "$SAL_DIR/code/templates/Makefile-cppKafka.template > [set id]/cpp/standalone/Makefile"
-###        exec cp $SAL_DIR/code/templates/Makefile-cppKafka.template [set id]/cpp/standalone/Makefile
         if { $name != "notused" } {
           puts $frep "sed \\"
           puts $frep "  -e 's/_SAL_/_[set base]_/g' \\"
@@ -598,23 +597,20 @@ global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS CMD_ALIASES
         puts $frep "sed \\"
         puts $frep "  -e 's/saj_SAL_types/saj_[set base]_types/g' \\"
         puts $frep "  -e 's/_SAL_/_[set id]_/g' \\"
-        puts $frep "$SAL_DIR/code/templates/Makefile-java.template > [set id]/java/standalone/Makefile"
-        puts $frep "sed \\"
-        puts $frep "  -e 's/_SAL_/_[set id]_/g' \\"
-        puts $frep "$SAL_DIR/code/templates/Makefile-javaKafka.template > [set id]/java/Makefile"
-
+        puts $frep "  -e 's/SALData/[set base]/g' \\"
+        puts $frep "$SAL_DIR/code/templates/Makefile.saj_SAL_Kafkatypes.template > [set base]/java/src/Makefile.saj_[set base]_types"
         if { $name != "notused" } {
           puts $frep "sed \\"
           puts $frep "  -e 's/_SAL_/_[set id]_/g' \\"
           puts $frep "  -e 's/SALTopic/[set id]/g' \\"
           puts $frep "  -e 's/SALData/[set base]/g' \\"
-          puts $frep "$SAL_DIR/code/templates/Makefile.saj_SALKafka_pub.template > [set id]/java/standalone/Makefile.saj_[set id]_pub"
+          puts $frep "$SAL_DIR/code/templates/Makefile.saj_SAL_Kafkapub.template > [set id]/java/standalone/Makefile.saj_[set id]_pub"
 
           puts $frep "sed \\"
           puts $frep "  -e 's/_SAL_/_[set id]_/g' \\"
           puts $frep "  -e 's/SALTopic/[set id]/g' \\"
           puts $frep "  -e 's/SALData/[set base]/g' \\"
-          puts $frep "$SAL_DIR/code/templates/Makefile.saj_SALKafka_sub.template > [set id]/java/standalone/Makefile.saj_[set id]_sub"
+          puts $frep "$SAL_DIR/code/templates/Makefile.saj_SAL_Kafkasub.template > [set id]/java/standalone/Makefile.saj_[set id]_sub"
 
           puts $frep "sed \\"
           if { [info exists SYSDIC($base,keyedID)] } {
@@ -652,10 +648,10 @@ global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS CMD_ALIASES
       catch { set result [exec /tmp/sreplace_[set base][set lang].sal] } bad
       if { $bad != "" } {stdlog $bad}
 ##      if { $name != "notused" } {
-        stdlog "calling addSALKAFKAtypes $jsonfile $id $lang"
+        stdlog "calling addSALKAFKAtypes $id $lang $base"
         checkTopicTypes $base
-        addSALKAFKAtypes $jsonfile $id $lang $base
-        stdlog "done addSALKAFKAtypes $jsonfile $id $lang"
+        addSALKAFKAtypes $id $lang $base
+        stdlog "done addSALKAFKAtypes $id $lang $base"
 ##      }
       if { $lang == "cpp" } {
         set frep [open /tmp/sreplace2_[set base][set lang].sal w]
@@ -688,8 +684,10 @@ global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS CMD_ALIASES
         catch { set result [exec /tmp/sreplace2_[set base][set lang].sal] } bad
       }
       stdlog "calling salavrogen $base $lang"
-      salavrogen $base $lang
-      stdlog "done salavrogen $base $lang"
+      if { $ONEDONEGEN == 0 } {
+         salavrogen $base $lang
+         stdlog "done salavrogen $base $lang"
+      }
       if { $lang == "cpp" } {
 ####        set incfiles [glob [set base]/cpp/*.h]
 ####        stdlog "Updating include files : $incfiles"
@@ -700,7 +698,9 @@ global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS CMD_ALIASES
          salcpptestgen $base $id
       }
       if { $lang == "java" } {
-         exec cp [set base]/java/saj_[set base]_types.jar $SAL_WORK_DIR/lib/.
+         if { [llength [split $base "_"]] == 1  } {
+           exec cp [set base]/java/src/saj_[set base]_types.jar $SAL_WORK_DIR/lib/.
+         }
          saljavaclassgen $base $id
       }
       if { $OPTIONS(verbose) } {stdlog "###TRACE<<< makesalcode $jsonfile $base $name $lang"}
@@ -731,10 +731,15 @@ global SAL_WORK_DIR OPTIONS ONEDONEGEN SAL_DIR
           set all [glob $SAL_WORK_DIR/avro-templates/[set base]_*.json]
           foreach i $all {
              puts stdout "Processing $i"
-             exec java -jar $SAL_DIR/../lib/avro-tools-1.11.1.jar compile schema  $SAL_WORK_DIR/[set base]/java/src/
+             catch {exec java -jar $SAL_DIR/../lib/avro-tools-1.11.1.jar compile schema $i $SAL_WORK_DIR/[set base]/java/src/}
           }
+          cd $SAL_WORK_DIR/$base/$lang/src
+          set result none
+          catch { set result [exec make -f Makefile.saj_[set base]_types] } bad
+          catch {stdlog "result = $result"}
+          catch {stdlog "$bad"}
+          stdlog "Avro : Java type support code generated"
       }
-      stdlog "Avro : data type support code generated"
       cd $SAL_WORK_DIR
       set ONEDONEGEN 1
    }
@@ -755,6 +760,12 @@ global SAL_WORK_DIR OPTIONS
  if { $OPTIONS(verbose) } {stdlog "###TRACE>>> saljavaclassgen $base $id"}
  if { $OPTIONS(fastest) == 0 } {
   if { $id != "[set base]_notused" } {
+   cd $SAL_WORK_DIR/$id/java/src
+   set result none
+   catch { set result [exec make -f Makefile.saj_[set base]_types] } bad
+   catch {stdlog "result = $result"}
+   catch {stdlog "bad = $bad"}
+   stdlog "javac : Done types"
    cd $SAL_WORK_DIR/$id/java/standalone
    set result none
    catch { set result [exec make -f Makefile.saj_[set id]_pub] } bad
