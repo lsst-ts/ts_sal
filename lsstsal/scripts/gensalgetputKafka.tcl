@@ -309,32 +309,30 @@ public String getAVROVersion()
 #
 #   Add code to support salActor data structure initialization in C++
 #
-proc addActorIndexesCPP { jsonfile base fout } {
+proc addActorIndexesCPP { base fout } {
 global SAL_WORK_DIR ACTIVETOPICS
    set idx 0
    set fact [open $SAL_WORK_DIR/[set base]/cpp/src/SAL_[set base]_actors.h w]
    foreach name $ACTIVETOPICS {
-      puts $fact "#define SAL__[set base]_[set name]_ACTOR    $idx"
+      puts $fact "#define SAL__[set base]_[set name]_ACTOR  $idx"
       incr idx 1
    }
    close $fact
-   puts $fout "
-void SAL_SALData::initSalActors ()
-\{
-    for (int i=0; i<SAL__ACTORS_MAXCOUNT;i++) \{
-      sal\[i\].isReader = false;
-      sal\[i\].isWriter = false;
-      sal\[i\].isCommand = false;
-      sal\[i\].isEventReader = false;
-      sal\[i\].isProcessor = false;
-      sal\[i\].isEventReader = false;
-      sal\[i\].isEventWriter = false;
-      sal\[i\].isActive = false;
-      sal\[i\].maxSamples = 1000;
-      sal\[i\].sampleAge = 1.0e20;
-      sal\[i\].historyDepth = 100;     
-    \}
-"
+   puts $fout "void SAL_SALData::initSalActors ()"
+   puts $fout "\{"
+   puts $fout "    for (int i=0; i<SAL__ACTORS_MAXCOUNT;i++) \{"
+   puts $fout "      sal\[i\].isReader = false;"
+   puts $fout "      sal\[i\].isWriter = false;"
+   puts $fout "      sal\[i\].isCommand = false;"
+   puts $fout "      sal\[i\].isEventReader = false;"
+   puts $fout "      sal\[i\].isProcessor = false;"
+   puts $fout "      sal\[i\].isEventReader = false;"
+   puts $fout "      sal\[i\].isEventWriter = false;"
+   puts $fout "      sal\[i\].isActive = false;"
+   puts $fout "      sal\[i\].maxSamples = 1000;"
+   puts $fout "      sal\[i\].sampleAge = 1.0e20;"
+   puts $fout "      sal\[i\].historyDepth = 100;" 
+   puts $fout "    \}"
    set idx 0
    foreach name $ACTIVETOPICS {
       set type [lindex [split $name _] 0]
@@ -343,8 +341,7 @@ void SAL_SALData::initSalActors ()
       puts $fout "    strcpy(sal\[$idx\].topicName,\"[set base]_[set name]\");"
       incr idx 1
    }
-  puts $fout "
-\}"
+  puts $fout "\}"
 }
 
 #
@@ -355,8 +352,8 @@ void SAL_SALData::initSalActors ()
 #
 #   Add code to support salActor data structure initialization in Java
 #
-proc addActorIndexesJava { jsonfile base fout } {
-global ACTIVETOPICS
+proc addActorIndexesJava { base fout } {
+global ACTIVETOPICS env
    set idx 0
    foreach name $ACTIVETOPICS {
       set type [lindex [split $name _] 0]
@@ -364,12 +361,12 @@ global ACTIVETOPICS
       incr idx 1
    }
    puts $fout " public static final int SAL__ACTORS_MAXCOUNT = $idx;"
-   puts $fout "
-  public void initSalActors ()
-  \{
-      int status=-1;
-     int idx;
-"
+   puts $fout ""
+   puts $fout "  public void initSalActors ()"
+   puts $fout "  \{"
+   puts $fout "     int status=-1;"
+   puts $fout "     int idx;"
+   puts $fout ""
    set idx 0
    foreach name $ACTIVETOPICS {
       set type [lindex [split $name _] 0]
@@ -409,9 +406,9 @@ global CMDS TLMS EVTS
                     }
             set arr [lindex [split $p "()"] 1]
             if { $arr != "" } {
-              puts $fout "           System.arraycopy(SALInstance.$apar,0,data.$apar,0,$arr);"
+              puts $fout "           System.arraycopy(Instance.$apar,0,data.$apar,0,$arr);"
             } else {
-              puts $fout "           data.$apar = SALInstance.$apar;"
+              puts $fout "           data.$apar = Instance.$apar;"
             }
           }
          }
@@ -428,9 +425,9 @@ global CMDS TLMS EVTS
                     }
             set arr [lindex [split $p "()"] 1]
             if { $arr != "" } {
-              puts $fout "           System.arraycopy(SALInstance.$apar,0,data.$apar,0,$arr);"
+              puts $fout "           System.arraycopy(Instance.$apar,0,data.$apar,0,$arr);"
             } else {
-              puts $fout "           data.$apar = SALInstance.$apar;"
+              puts $fout "           data.$apar = Instance.$apar;"
             }
           }
          }
@@ -447,9 +444,9 @@ global CMDS TLMS EVTS
                     }
             set arr [lindex [split $p "()"] 1]
             if { $arr != "" } {
-              puts $fout "           System.arraycopy(SALInstance.$apar,0,data.$apar,0,$arr);"
+              puts $fout "           System.arraycopy(Instance.$apar,0,data.$apar,0,$arr);"
             } else {
-              puts $fout "           data.$apar = SALInstance.$apar;"
+              puts $fout "           data.$apar = Instance.$apar;"
             }
           }
          }
@@ -478,9 +475,9 @@ global CMDS TLMS EVTS
                     }
             set arr [lindex [split $p "()"] 1]
             if { $arr != "" } {
-              puts $fout "           System.arraycopy(data.$apar,0,SALInstance.$apar,0,$arr);"
+              puts $fout "           System.arraycopy(data.$apar,0,Instance.$apar,0,$arr);"
             } else {
-              puts $fout "           SALInstance.$apar = data.$apar;"
+              puts $fout "           Instance.$apar = data.$apar;"
             }
           }
          }
@@ -497,9 +494,9 @@ global CMDS TLMS EVTS
                     }
             set arr [lindex [split $p "()"] 1]
             if { $arr != "" } {
-              puts $fout "           System.arraycopy(data.$apar,0,SALInstance.$apar,0,$arr);"
+              puts $fout "           System.arraycopy(data.$apar,0,Instance.$apar,0,$arr);"
             } else {
-              puts $fout "           SALInstance.$apar = data.$apar;"
+              puts $fout "           Instance.$apar = data.$apar;"
             }
           }
          }
@@ -516,19 +513,246 @@ global CMDS TLMS EVTS
                     }
             set arr [lindex [split $p "()"] 1]
             if { $arr != "" } {
-              puts $fout "          System.arraycopy(data.$apar,0,SALInstance.$apar,0,$arr);"
+              puts $fout "          System.arraycopy(data.$apar,0,Instance.$apar,0,$arr);"
             } else {
-              puts $fout "          SALInstance.$apar = data.$apar;"
+              puts $fout "          Instance.$apar = data.$apar;"
             }
           }
          }
         }
 }
 
+proc javaTypeSupport { fout base } {
+global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS AVRO_PREFIX
+   puts $fout "/** Configure AVRO type support for [set base] Kafka topics."
+   puts $fout "  * @param topicName The Kafka topic name"
+   puts $fout "  */"
+   puts $fout "public int salTypeSupport(String topicName) \{"
+   puts $fout "  String\[\] parts = topicName.split(\"_\");"
+   puts $fout "  int actorIdx = getActorIndex(topicName);"
+   puts $fout "  if (\"[set base]\".equals(parts\[0\]) ) \{"
+   foreach name $ACTIVETOPICS {
+     set revcode [getRevCode [set base]_[set name] short]
+     puts $fout "   if ( \"[set base]_$name\".equals(topicName) ) \{"
+     puts $fout "     sal\[actorIdx\].avroSchema = avroMapper.schemaFor([set env(AVRO_PREFIX)].[set base]_[set name].class);"
+     puts $fout "     return SAL__OK;"
+     puts $fout "   \}"
+   }
+   puts $fout "  \}"
+   puts $fout "  return SAL__ERR;"
+   puts $fout "\}"
+   puts $fout ""
+   puts $fout "public int salTypeSupport(int actorIdx) \{"
+   foreach name $ACTIVETOPICS {
+     set revcode [getRevCode [set base]_[set name] short]
+     puts $fout "  if ( actorIdx == SAL__[set base]_[set name]_ACTOR ) \{"
+     puts $fout "    sal\[actorIdx\].avroSchema = avroMapper.schemaFor([set env(AVRO_PREFIX)].[set base]_[set name].class);"
+     puts $fout "    return SAL__OK;"
+     puts $fout "  \}"
+   }
+   puts $fout "  return SAL__ERR;"
+   puts $fout "\}"
+   puts $fout ""
+}
+
+proc javaputSample { fout base } {
+global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS
+  foreach name $ACTIVETOPICS {
+    set revcode [getRevCode [set base]_[set name] short]
+    set alias [string range $name 9 end]
+    set turl [getTopicURL $base $name]
+    puts $fout "/** Publish a sample of the $turl Kafka topic. A publisher must already have been set up"
+    puts $fout "  * @param data The payload of the sample as defined in the XML for SALData"
+    puts $fout "  */"
+    puts $fout "  public int putSample([set base].[set name] data)"
+    puts $fout "  \{"
+    puts $fout "    int status = SAL__OK;"
+    puts $fout "    [set base]_[set name] Instance = new [set base]_[set name]();"
+    puts $fout "    int actorIdx = SAL__[set base]_[set name]_ACTOR;"
+    puts $fout "    if ( sal\[actorIdx\].isWriter == false ) \{"
+    puts $fout "      createWriter(actorIdx,false);"
+    puts $fout "      sal\[actorIdx\].isWriter = true;"
+    puts $fout "    \}"
+    puts $fout "   Instance = new GenericData.Record(sal\[actorIdx\].avroSchema);"
+    puts $fout "   Instance.private_revCode = \"[string trim $revcode _]\";"
+    puts $fout "   Instance.private_sndStamp = getCurrentTime();"
+    puts $fout "   Instance.private_identity = CSC_identity;"
+    puts $fout "   Instance.private_origin = origin;"
+    puts $fout "   Instance.private_seqNum = sal\[actorIdx\].sndSeqNum;"
+    puts $fout "   sal\[actorIdx\].sndSeqNum++;"
+    puts $fout "   if (debugLevel > 0) \{"
+    puts $fout "     System.out.println(\"=== putSample $name writing a message containing :\");"
+    puts $fout "     System.out.println(\"  revCode  : \" + Instance.private_revCode);"
+    puts $fout "     System.out.println(\"  sndStamp  : \" + Instance.private_sndStamp);"
+    puts $fout "     System.out.println(\"  identity : \" + Instance.private_identity);"
+    puts $fout "   \}"
+    copytojavasample $fout $base $name
+    if { [info exists SYSDIC($base,keyedID)] } {
+      puts $fout "    Instance.salIndex = subsystemID;"
+    }
+    writerFragmentJava $fout $base $name
+    puts $fout "    return status;"
+    puts $fout "  \}"
+  }
+}
+
+proc javagetSample { fout base } {
+global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS
+  foreach name $ACTIVETOPICS {
+    set revcode [getRevCode [set base]_[set name] short]
+    set alias [string range $name 9 end]
+    set turl [getTopicURL $base $name]
+    puts $fout "/** Receive the latest sample of the $turl Kafka topic. A subscriber must already have been set up."
+    puts $fout "  * If there are no samples available then SAL__NO_UPDATES is returned, otherwise SAL__OK is returned."
+    puts $fout "  * If there are multiple samples in the history cache, they are skipped over and only the most recent is supplied."
+    puts $fout "  * @param data The payload of the sample as defined in the XML for SALData"
+    puts $fout "  */"
+    puts $fout "  public int getSample([set base].[set name] data)"
+    puts $fout "  \{"
+    puts $fout "    int status =  -1;"
+    puts $fout "    int last = SAL__NO_UPDATES;"
+    puts $fout "    int numsamp;"
+    puts $fout "    [set base]_[set name] Instance = new [set base]_[set name]();"
+    puts $fout "    int actorIdx = SAL__[set base]_[set name]_ACTOR;"
+    puts $fout "    if ( sal\[actorIdx\].isReader == false ) \{"
+    puts $fout "	    sal\[actorIdx\].isReader = true;"
+    puts $fout "    \}"
+    readerFragmentJava $fout $base $name
+    puts $fout "    if (numsamp > 0) \{"
+    puts $fout "      if (debugLevel > 0) \{"
+    puts $fout "        for (int i = 0; i < numsamp; i++) \{"
+    puts $fout "          System.out.println(\"=== getSample $name message received :\" + i);"
+    puts $fout "          System.out.println(\"  revCode  : \" + Instance.private_revCode);"
+    puts $fout "          System.out.println(\"  identity : \" + Instance.private_identity);"
+    puts $fout "          System.out.println(\"  sndStamp  : \" + Instance.private_sndStamp);"
+    puts $fout "      \}"
+    puts $fout "       int j=numsamp-1;"
+    puts $fout "       double rcvdTime = getCurrentTime();"
+    puts $fout "       double dTime = rcvdTime - Instance.private_sndStamp;"
+    puts $fout "       if ( dTime < sal\[actorIdx\].sampleAge ) \{"
+    puts $fout "          data.private_sndStamp = Instance.private_sndStamp;"
+    copyfromjavasample $fout $base $name
+    puts $fout "          last = SAL__OK;"
+    puts $fout "       \} else \{"
+    puts $fout "          System.out.println(\"dropped sample : \" + rcvdTime + \" \" + Instance.private_sndStamp);"
+    puts $fout "          last = SAL__NO_UPDATES;"
+    puts $fout "       \}"
+    puts $fout "     \} else \{"
+    puts $fout "             last = SAL__NO_UPDATES;"
+    puts $fout "     \}"
+    puts $fout "   \}"
+    puts $fout "   return last;"
+    puts $fout "\}"
+  }
+}
+
+proc javagetNextFlushSample { fout base } {
+global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS
+  foreach name $ACTIVETOPICS {
+    set revcode [getRevCode [set base]_[set name] short]
+    set alias [string range $name 9 end]
+    set turl [getTopicURL $base $name]
+    puts $fout "/** Receive the next sample of the  Kafka topic from the history cache. "
+    puts $fout "  * A subscriber must already have been set up"
+    puts $fout "  * If there are no samples available then SAL__NO_UPDATES is returned, otherwise SAL__OK is returned."
+    puts $fout "  * If there are multiple samples in the history cache, they are iterated over by consecutive"
+    puts $fout "  * calls to getNextSample_[set name]"
+    puts $fout "  * @param data The payload of the sample as defined in the XML for SALData"
+    puts $fout "  */"
+    puts $fout "  public int getNextSample([set base].[set name] data)"
+    puts $fout "  \{"
+    puts $fout "    int status = -1;"
+    puts $fout "    int actorIdx = SAL__[set base]_[set name]_ACTOR;"
+    puts $fout "    int saveMax = sal\[actorIdx\].maxSamples;"
+    puts $fout "    sal\[actorIdx\].maxSamples = 1;"
+    puts $fout "    status = getSample(data);"
+    puts $fout "    sal\[actorIdx\].maxSamples = saveMax;"
+    puts $fout "    return status;"
+    puts $fout "  \}"
+    puts $fout ""
+    puts $fout "/** Empty the history cache of samples. After this only newly published samples"
+    puts $fout "  * will be available to getSample_[set name] or getNextSample_[set name]"
+    puts $fout "  */"
+    puts $fout "  public int flushSamples([set base].[set name] data)"
+    puts $fout "  \{"
+    puts $fout "    int status = -1;"
+    puts $fout "    int actorIdx = SAL__[set base]_[set name]_ACTOR;"
+    puts $fout "    sal\[actorIdx\].maxSamples = 500;"
+    puts $fout "    sal\[actorIdx\].sampleAge = -1.0;"
+    puts $fout "    status = getSample(data);"
+    puts $fout "    sal\[actorIdx\].sampleAge = 1.0e20;"
+    puts $fout "    return SAL__OK;"
+    puts $fout "  \}"
+  }
+}
+
+proc cpptypeSupport  { fout base } {
+global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS
+  puts $fout " salReturn SAL_[set base]::salTypeSupport(char *topicName)"
+  puts $fout " \{"
+  foreach name $ACTIVETOPICS {
+     puts $fout "  if (strncmp(\"$base\",topicName,[string length $base]) == 0) \{"
+     if { $OPTIONS(verbose) } {stdlog "###TRACE--- Processing topic $name"}
+     set revcode [getRevCode [set base]_[set name] short]
+     puts $fout "    if ( strcmp(\"[set base]_[set name]\",topicName) == 0) \{"
+     puts $fout "       return SAL__OK;"
+     puts $fout "     \}"
+     puts $fout "  \}"
+  }
+  puts $fout "    return SAL__ERR;"
+  puts $fout "  \}"
+  puts $fout " salReturn SAL_[set base]::salTypeSupport(int actorIdx)"
+  puts $fout "  \{"
+  foreach name $ACTIVETOPICS {
+    set revcode [getRevCode [set base]_[set name] short]
+    puts $fout "    if ( actorIdx == SAL__[set base]_[set name]_ACTOR ) \{"
+    puts $fout "      return SAL__OK;"
+    puts $fout "    \}"
+  }
+  puts $fout "  return SAL__ERR;"
+  puts $fout "\}"
+}
+
+proc cppHeaders  { fouth base name } {
+global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS
+  puts $fouth ""
+  puts $fouth "/** Publish a sample of the  Kafka topic. A publisher must already have been set up"
+  puts $fouth "  * @param data The payload of the sample as defined in the XML for SALData"
+  puts $fouth "  */"
+  puts $fouth "      salReturn putSample_[set name]([set base]_[set name]C *data);"
+  puts $fouth ""
+  puts $fouth "/** Receive the latest sample of the Kafka topic. A subscriber must already have been set up."
+  puts $fouth "  * If there are no samples available then SAL__NO_UPDATES is returned, otherwise SAL__OK is returned."
+  puts $fouth "  * If there are multiple samples in the history cache, they are skipped over and only the most recent is supplied."
+  puts $fouth "  * @param data The payload of the sample as defined in the XML for SALData"
+  puts $fouth "  */"
+  puts $fouth "      salReturn getSample_[set name]([set base]_[set name]C *data);"
+  puts $fouth ""
+  puts $fouth "/** Receive the next sample of the Kafka topic from the history cache. A subscriber must already have been set up"
+  puts $fouth "  * If there are no samples available then SAL__NO_UPDATES is returned, otherwise SAL__OK is returned."
+  puts $fouth "  * If there are multiple samples in the history cache, they are iterated over by consecutive calls to getNextSample_[set name]"
+  puts $fouth "  * @param data The payload of the sample as defined in the XML for SALData"
+  puts $fouth "  */"
+  puts $fouth "      salReturn getNextSample_[set name]([set base]_[set name]C *data);"
+  puts $fouth ""
+  puts $fouth "/** Empty the history cache of samples. After this only newly published samples will be available to getSample_[set name] or "
+  puts $fouth "  * getNextSample_[set name]"
+  puts $fouth "  */"
+  puts $fouth "      salReturn flushSamples_[set name]([set base]_[set name]C *data);"
+  puts $fouth ""
+  puts $fouth "/** Provides the data from the most recently received sample. This may be a new sample that has not been read before"
+  puts $fouth "  * by the caller, or it may be a copy of the last received sample if no new data has since arrived."
+  puts $fouth "  * If there are no samples available then SAL__NO_UPDATES is returned, otherwise SAL__OK is returned."
+  puts $fouth " * @param data The payload of the sample as defined in the XML for SALData"
+  puts $fouth "  */"
+  puts $fouth "      salReturn getLastSample_[set name]([set base]_[set name]C *data);"
+  puts $fouth "      [set base]_[set name]C lastSample_[set base]_[set name];"
+  puts $fouth ""
+}
+
 
 #
 ## Documented proc \c addSALKAFKAtypes .
-# \param[in] jsonfile Name of input AVRO Schema definition file
 # \param[in] id Subsystem identity
 # \param[in] lang Language to generate code for (cpp,java)
 # \param[in] base Name of CSC/SUbsystem as defined in SALSubsystems.xml
@@ -537,9 +761,9 @@ global CMDS TLMS EVTS
 #  SAL Topic for a Subsystem/CSC, getSample,putSample,getNextSample,flushSamples
 #  and also code to manage the low level Kafka topic registration and management
 #
-proc addSALKAFKAtypes { jsonfile id lang base } {
+proc addSALKAFKAtypes { id lang base } {
 global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS
- if { $OPTIONS(verbose) } {stdlog "###TRACE>>>  addSALKAFKAtypes $jsonfile $id $lang $base "}
+ if { $OPTIONS(verbose) } {stdlog "###TRACE>>>  addSALKAFKAtypes $id $lang $base "}
  if { $lang == "java" } {
   exec cp $SAL_DIR/code/templates/salActorKafka.java [set id]/java/src/org/lsst/sal/salActor.java
   exec cp $SAL_DIR/code/templates/salActorKafka.java [set base]/java/src/org/lsst/sal/salActor.java
@@ -551,167 +775,19 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS
   while { [gets $fin rec] > -1 } {
      if { [string range $rec 0 20] == "// INSERT SAL IMPORTS" } {
         puts $fout "import [set base].*;"
+        puts $fout "import org.lsst.sal.*;"
+        puts $fout "import $env(AVRO_PREFIX).*;"
      }
      if { [string range $rec 0 31] == "#ifdef SAL_SUBSYSTEM_ID_IS_KEYED" } {
          processifdefregion $fin $fout $base
      }
      if { [string range $rec 0 21] == "// INSERT TYPE SUPPORT" } {
-        addActorIndexesJava $jsonfile $base $fout
+        addActorIndexesJava $base $fout
         addSWVersionsJava $fout
-        puts $fout "
-/** Configure AVRO type support for [set base] Kafka topics. 
-  * @param topicName The Kafka topic name
-  */
-        public int salTypeSupport(String topicName) \{
-    String\[\] parts = topicName.split(\"_\");"
-         puts $fout "                if (\"[set base]\".equals(parts\[0\]) ) \{"
-         foreach name $ACTIVETOPICS {
-             set revcode [getRevCode [set base]_[set name] short]
-             puts $fout "
-                    if ( \"[set base]_$name\".equals(topicName) ) \{
-      [set name][set revcode]TypeSupport [set name][set revcode]TS = new [set name][set revcode]TypeSupport();
-//      registerType([set name][set revcode]TS);
-                        return SAL__OK;
-        \}"
-           puts $fout "  \}"
-        }
-        puts $fout "
-  return SAL__ERR;
-\}"
-        puts $fout "        public int salTypeSupport(int actorIdx) \{"
-        foreach name $ACTIVETOPICS {
-               set revcode [getRevCode [set base]_[set name] short]
-               puts stdout "  for $base $name"
-               puts $fout "
-                    if ( actorIdx == SAL__[set base]_[set name]_ACTOR ) \{
-      [set name][set revcode]TypeSupport [set name][set revcode]TS = new [set name][set revcode]TypeSupport();
-//      registerType(actorIdx,[set name][set revcode]TS);
-                        return SAL__OK;
-        \}"
-        }
-        puts $fout "
-  return SAL__ERR;
-\}"
-         foreach name $ACTIVETOPICS {
-            set revcode [getRevCode [set base]_[set name] short]
-            set alias [string range $name 9 end]
-            set turl [getTopicURL $base $name]
-            puts $fout "
-/** Publish a sample of the $turl Kafka topic. A publisher must already have been set up
-  * @param data The payload of the sample as defined in the XML for SALData
-  */
-  public int putSample([set base].[set name] data)
-  \{
-          int status = SAL__OK;
-          [set base]_[set name] SALInstance = new [set base]_[set name]();
-    int actorIdx = SAL__[set base]_[set name]_ACTOR;
-    if ( sal\[actorIdx\].isWriter == false ) \{
-      createWriter(actorIdx,false);
-      sal\[actorIdx\].isWriter = true;
-    \}
-    SALInstance.private_revCode = \"[string trim $revcode _]\";
-    SALInstance.private_sndStamp = getCurrentTime();
-    SALInstance.private_identity = CSC_identity;
-    SALInstance.private_origin = origin;
-    SALInstance.private_seqNum = sal\[actorIdx\].sndSeqNum;
-    sal\[actorIdx\].sndSeqNum++;
-    if (debugLevel > 0) \{
-      System.out.println(\"=== \[putSample $name\] writing a message containing :\");
-      System.out.println(\"  revCode  : \" + SALInstance.private_revCode);
-      System.out.println(\"  sndStamp  : \" + SALInstance.private_sndStamp);
-      System.out.println(\"  identity : \" + SALInstance.private_identity);
-    \}"
-        copytojavasample $fout $base $name
-        if { [info exists SYSDIC($base,keyedID)] } {
-          puts $fout "
-           SALInstance.salIndex = subsystemID;
-//           status = SALWriter.write(SALInstance, dataHandle);
-        } else {
-          puts $fout "
-//           status = SALWriter.write(SALInstance, dataHandle);"
-         }
-        puts $fout "
-    return status;
-  \}
-
-
-/** Receive the latest sample of the $turl Kafka topic. A subscriber must already have been set up.
-  * If there are no samples available then SAL__NO_UPDATES is returned, otherwise SAL__OK is returned.
-  * If there are multiple samples in the history cache, they are skipped over and only the most recent is supplied.
-  * @param data The payload of the sample as defined in the XML for SALData
-  */
-  public int getSample([set base].[set name] data)
-  \{
-    int status =  -1;
-          int last = SAL__NO_UPDATES;
-          int numsamp;
-          [set base]_[set name] SALInstance = new [set base]_[set name];
-    int actorIdx = SAL__[set base]_[set name]_ACTOR;
-    if ( sal\[actorIdx\].isReader == false ) \{"
-        puts $fout "
-	    sal\[actorIdx\].isReader = true;
-	  \}"
-	readerFragment $fout $base $name
-        puts $fout "
-          if (numsamp > 0) \{
-      if (debugLevel > 0) \{
-    for (int i = 0; i < numsamp; i++) \{
-        System.out.println(\"=== \[getSample $name \] message received :\" + i);
-        System.out.println(\"  revCode  : \" + SALInstance.private_revCode);
-        System.out.println(\"  identity : \" + SALInstance.private_identity);
-        System.out.println(\"  sndStamp  : \" + SALInstance.private_sndStamp);
-      \}
-      \}
-            int j=numsamp-1;
-        double rcvdTime = getCurrentTime();
-        double dTime = rcvdTime - SALInstance.private_sndStamp;
-        if ( dTime < sal\[actorIdx\].sampleAge ) \{
-                   data.private_sndStamp = SALInstance.private_sndStamp;"
-                copyfromjavasample $fout $base $name
-         puts $fout "                   last = SAL__OK;
-                \} else \{
-                   System.out.println(\"dropped sample : \" + rcvdTime + \" \" + SALInstance.private_sndStamp);
-                   last = SAL__NO_UPDATES;
-                \}
-          \} else \{
-              last = SAL__NO_UPDATES;
-          \}
-    return last;
-  \}
-
-/** Receive the next sample of the $turl Kafka topic from the history cache. 
-  * A subscriber must already have been set up
-  * If there are no samples available then SAL__NO_UPDATES is returned, otherwise SAL__OK is returned.
-  * If there are multiple samples in the history cache, they are iterated over by consecutive 
-  * calls to getNextSample_[set name]
-  * @param data The payload of the sample as defined in the XML for SALData
-  */
-  public int getNextSample([set base].[set name] data)
-  \{
-    int status = -1;
-    int actorIdx = SAL__[set base]_[set name]_ACTOR;
-          int saveMax = sal\[actorIdx\].maxSamples; 
-          sal\[actorIdx\].maxSamples = 1;
-          status = getSample(data);
-          sal\[actorIdx\].maxSamples = saveMax;
-          return status;
-  \}
-
-/** Empty the history cache of samples. After this only newly published samples
-  * will be available to getSample_[set name] or getNextSample_[set name]
-  */
-  public int flushSamples([set base].[set name] data)
-  \{
-          int status = -1;
-    int actorIdx = SAL__[set base]_[set name]_ACTOR;
-          sal\[actorIdx\].maxSamples = 500;
-          sal\[actorIdx\].sampleAge = -1.0;
-          status = getSample(data);
-          sal\[actorIdx\].sampleAge = 1.0e20;
-          return SAL__OK;
-  \}
-"
-        }
+        javaTypeSupport $fout $base
+        javaputSample $fout $base
+        javagetSample $fout $base
+        javagetNextFlushSample $fout $base
         gencmdaliascode $base java $fout
         geneventaliascode $base java $fout
      } else {
@@ -719,11 +795,9 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS
           puts $fout $rec
         }
      }
-
   }
   close $fin
   close $fout
-  exec cp [set id]/java/src/org/lsst/sal/SAL_[set base].java [set base]/java/src/org/lsst/sal/.
  }
  if { $lang == "cpp" } {
   set finh [open $SAL_DIR/code/templates/SALKAFKA.h.template r]
@@ -746,73 +820,15 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS
   set fout [open $SAL_WORK_DIR/[set base]/cpp/src/SAL_[set base].cpp w]
   while { [gets $fin rec] > -1 } {
      if { [string range $rec 0 21] == "// INSERT TYPE SUPPORT" } {
-        addActorIndexesCPP $jsonfile $base $fout
+        addActorIndexesCPP $base $fout
         addSWVersionsCPP $fout
-        puts $fout " salReturn SAL_[set base]::salTypeSupport(char *topicName)"
-        puts $fout " \{"
-        foreach name $ACTIVETOPICS {
-           puts $fout "    if (strncmp(\"$base\",topicName,[string length $base]) == 0) \{"
-           if { $OPTIONS(verbose) } {stdlog "###TRACE--- Processing topic $name"}
-           set revcode [getRevCode [set base]_[set name] short]
-           puts $fout ""
-           puts $fout "       if ( strcmp(\"[set base]_[set name]\",topicName) == 0) \{"
-           puts $fout "//    registerType(mt.in());"
-           puts $fout "          return SAL__OK;"
-           puts $fout "       \}"
-           puts $fout "  \}"
-        }
-        puts $fout "  return SAL__ERR;"
-        puts $fout "\}"
-        puts $fout " salReturn SAL_[set base]::salTypeSupport(int actorIdx)"
-        puts $fout "\{"
-        foreach name $ACTIVETOPICS {
-           set revcode [getRevCode [set base]_[set name] short]
-           puts $fout ""
-           puts $fout "       if ( actorIdx == SAL__[set base]_[set name]_ACTOR ) \{"
-           puts $fout "//   registerType(actorIdx,mt.in());"
-           puts $fout "         return SAL__OK;"
-           puts $fout "       \}"
-        }
-        puts $fout "  return SAL__ERR;"
-        puts $fout "\}"
+        cpptypeSupport $fout $base
         generatetypelists $base $fout
         foreach name $ACTIVETOPICS {
            if { $OPTIONS(verbose) } {stdlog "###TRACE------ Processing topic $name"}
            set revcode [getRevCode [set base]_[set name] short]
            set turl [getTopicURL $base $name]
-           puts $fouth ""
-           puts $fouth "/** Publish a sample of the $turl Kafka topic. A publisher must already have been set up"
-           puts $fouth "  * @param data The payload of the sample as defined in the XML for SALData"
-           puts $fouth "  */"
-           puts $fouth "      salReturn putSample_[set name]([set base]_[set name]C *data);"
-           puts $fouth ""
-           puts $fouth "/** Receive the latest sample of the $turl Kafka topic. A subscriber must already have been set up."
-           puts $fouth "  * If there are no samples available then SAL__NO_UPDATES is returned, otherwise SAL__OK is returned."
-           puts $fouth "  * If there are multiple samples in the history cache, they are skipped over and only the most recent is supplied."
-           puts $fouth "  * @param data The payload of the sample as defined in the XML for SALData"
-           puts $fouth "  */"
-           puts $fouth "      salReturn getSample_[set name]([set base]_[set name]C *data);"
-           puts $fouth ""
-           puts $fouth "/** Receive the next sample of the $turl Kafka topic from the history cache. A subscriber must already have been set up"
-           puts $fouth "  * If there are no samples available then SAL__NO_UPDATES is returned, otherwise SAL__OK is returned."
-           puts $fouth "  * If there are multiple samples in the history cache, they are iterated over by consecutive calls to getNextSample_[set name]"
-           puts $fouth "  * @param data The payload of the sample as defined in the XML for SALData"
-           puts $fouth "  */"
-           puts $fouth "      salReturn getNextSample_[set name]([set base]_[set name]C *data);"
-           puts $fouth ""
-           puts $fouth "/** Empty the history cache of samples. After this only newly published samples will be available to getSample_[set name] or "
-           puts $fouth "  * getNextSample_[set name]"
-           puts $fouth "  */"
-           puts $fouth "      salReturn flushSamples_[set name]([set base]_[set name]C *data);"
-           puts $fouth ""
-           puts $fouth "/** Provides the data from the most recently received $turl sample. This may be a new sample that has not been read before"
-           puts $fouth "  * by the caller, or it may be a copy of the last received sample if no new data has since arrived."
-           puts $fouth "  * If there are no samples available then SAL__NO_UPDATES is returned, otherwise SAL__OK is returned."
-           puts $fouth " * @param data The payload of the sample as defined in the XML for SALData"
-           puts $fouth "  */"
-           puts $fouth "      salReturn getLastSample_[set name]([set base]_[set name]C *data);"
-           puts $fouth "      [set base]_[set name]C lastSample_[set base]_[set name];"
-           puts $fouth ""
+           cppHeaders $fouth $base $name
            insertcfragments $fout $base $name
         }
         puts stdout "=============================done ACTIVETOPICS"
@@ -833,9 +849,48 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS
   close $finh
   close $fouth
  }
- if { $OPTIONS(verbose) } {stdlog "###TRACE<<<  addSALKAFKAtypes $jsonfile $id $lang $base "}
+ if { $OPTIONS(verbose) } {stdlog "###TRACE<<<  addSALKAFKAtypes $id $lang $base "}
 }
 
+proc writerFragmentJava { fout base name } {
+   puts $fout "
+         DatumWriter<GenericRecord> datumWriter = new SpecificDatumWriter(sal\[actorIdx\].avroSchema);
+         ByteArrayOutputStream out = new ByteArrayOutputStream();
+         DirectBinaryEncoder binaryEncoder = (DirectBinaryEncoder) EncoderFactory.get().directBinaryEncoder(out, null);
+         datumWriter.write(Instance, binaryEncoder);
+         binaryEncoder.flush();
+         out.close();
+         serializedBytes = out.toByteArray();
+         producer.send(serializedBytes);
+         producer.flush();
+         "
+}
+
+proc readerFragmentJava { fout base name } {
+    puts $fout "
+        String avroTopic = \"lsst.ts.sal.kafka_Test.[set base]_[set name]\";
+        if (sal\[actorIdx\].consumer == null ) \{
+           AvroMapper avroMapper = new AvroMapper();
+           AvroSchema salschema = avroMapper.schemaFor(lsst.ts.sal.kafka_Test.[set base]_[set name].class);
+           sal\[actorIdx\].avroSchema = salschema;
+           Consumer<avroTopic, avro_schema> consumer = new KafkaConsumer<avroTopic, avro_schema>(cprops);
+           consumer.subscribe(Arrays.asList(avroTopic));
+           sal\[actorIdx\].consumer = consumer;
+        \} else \{
+           consumer = sal\[actorIdx\].consumer;
+        \}
+        ConsumerRecords<lsst.ts.sal.kafka_Test.[set base]_[set name]> records = consumer.poll(100);
+        for (ConsumerRecord<lsst.ts.sal.kafka_Test.[set base]_[set name]> Instance : records) \{
+            numsamp++;
+        \}      
+//        DatumReader<GenericRecord> datumReader = new SpecificDatumReader(sal\[actorIdx\].avroSchema);
+//        ByteArrayInputStream in = new ByteArrayInputStream();
+//        DirectBinaryDecoder binaryDecoder = (DirectBinaryDecoder) DecoderFactory.get().directBinaryDecoder(in, null);
+//        datumReader.read(Instance, binaryDecoder);
+         "
+}
+
+  
 #
 ## Documented proc \c modpubsubexamples .
 # \param[in] id Subsystem identity

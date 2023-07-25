@@ -1,0 +1,78 @@
+#----------------------------------------------------------------------------
+#       Macros
+#----------------------------------------------------------------------------
+JAVAC         = javac
+JAR           = jar
+JAVACFLAGS    = $(GENFLAGS)
+CLASSEXT      = .class
+CLASSDIR      = classes/
+OUTPUT_OPTION = -d $(CLASSDIR)
+COMPILE.java  = $(JAVAC) $(JAVACFLAGS) -cp $(JAVACCPATH) 
+JAVACCPATH    = "$(SAL_WORK_DIR)/lib/saj_SALData_types.jar:$(CLASSDIR):$(AVRO_HOME)/avro-tools-$(AVRO_RELEASE).jar:"
+MAKEFILE      = Makefile.saj_SALData_types
+DEPENDENCIES  =
+LTARGETDIR    = ./
+CAT           = cat
+MV            = mv -f
+RM            = rm -rf
+CP            = cp -p
+NUL           = /dev/null
+MKDIR         = mkdir -p
+TOUCH         = touch
+GENFLAGS      =  
+CLASSES       =  $(CLASSDIR)SALData/*$(CLASSEXT)
+JARCLASSES    =  $(AVRO_CLASSPATH)/*$(CLASSEXT)
+JAREXT        = .jar
+JARFILE       = $(LTARGETDIR)$(LIBPREFIX)saj_SALData_types$(LIBSUFFIX)$(JAREXT)
+MANIFEST      = saj_SALData_types.manifest
+JARFLAGS      = cvfm
+SRC           = $(AVRO_CLASSPATH)/*.java
+
+#----------------------------------------------------------------------------
+#       Local targets
+#----------------------------------------------------------------------------
+
+all: $(JARFILE)
+
+SALData: $(AVRO_CLASSPATH)/*.java 
+
+$(JARFILE): $(CLASSES) $(CLASSDIR)$(MANIFEST)
+	cd $(CLASSDIR) && $(JAR) $(JARFLAGS) $(JARFILE) $(MANIFEST) $(JARCLASSES) 
+	$(MV) $(CLASSDIR)/$(JARFILE) .
+
+$(CLASSDIR)$(MANIFEST):
+	echo Class-Path: $(AVRO_HOME)/avro-tools-$(AVRO_RELEASE).jar > $(CLASSDIR)$(MANIFEST)
+
+GENERATED_DIRTY = SALData
+
+.PRECIOUS: $(GENERATED_DIRTY)
+$(CLASSES): $(GENERATED_DIRTY)
+
+generated: $(GENERATED_DIRTY)
+	@-:
+
+$(CLASSDIR)SALData/*$(CLASSEXT): SALData
+	$(COMPILE.java) $(EXPORTFLAGS) $(OUTPUT_OPTION) $(AVRO_CLASSPATH)/*.java
+
+clean:
+	-$(RM) $(CLASSES)
+
+realclean: clean
+	-$(RM) $(SHLIB) $(JARFILE)
+	-$(RM) $(GENERATED_DIRTY)
+	-$(RM) $(CLASSDIR)$(MANIFEST)
+
+check-syntax:
+	$(COMPILE.java) $(EXPORTFLAGS) $(CHK_SOURCES)
+
+#----------------------------------------------------------------------------
+#       Dependencies
+#----------------------------------------------------------------------------
+
+$(DEPENDENCIES):
+	@$(TOUCH) $(DEPENDENCIES)
+
+depend:
+	-$(MPC_ROOT)/depgen.pl  $(JAVACFLAGS) $(JAVAJAVACFLAGS) $(CPPFLAGS) -f $(DEPENDENCIES) $(SRC) 2> $(NUL)
+
+include $(DEPENDENCIES)
