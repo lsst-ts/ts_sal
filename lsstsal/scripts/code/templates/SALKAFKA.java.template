@@ -2,32 +2,32 @@
 
 
 package org.lsst.sal;
-import org.apache.kafka.clients.admin.*;
-import org.apache.kafka.common.KafkaFuture;
-import org.apache.kafka.clients.consumer.*;
-import org.apache.kafka.common.serialization.StringDeserializer;  
 import java.time.Duration;  
 import java.util.Arrays;  
 import java.util.Collections;  
-import java.util.Properties;  
-import org.lsst.sal.salActor;
-import org.lsst.sal.salUtils;
+import java.util.Properties;
 import java.util.Random;
 import java.util.StringTokenizer;
-import lsst.sal.*;
+
+import org.lsst.sal.SAL_SALData;
+import org.lsst.sal.salActor;
+import org.lsst.sal.salUtils;
+
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.generic.GenericRecordBuilder;
+
+import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.admin.*;
+import org.apache.kafka.common.KafkaFuture;
+import org.apache.kafka.clients.consumer.*;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
+
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
-import java.util.Properties;
-
-
-import org.apache.avro.generic.GenericRecordBuilder;
-import org.apache.kafka.clients.producer.Producer;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.dataformat.avro.AvroMapper;
@@ -37,14 +37,13 @@ import com.fasterxml.jackson.dataformat.avro.AvroSchema;
 
 public class SAL_SALData {
 
-	private DomainParticipant participant;
-	private Topic topic;
-        private Topic topic2;
+	private String participant;
+	private String topic;
+        private String topic2;
  
         private String server;
-	private Publisher publisher;
-	private Subscriber subscriber;
-	private Configuration configuration;
+	private Producer publisher;
+	private Consumer subscriber;
 	private String typeName;
 	private String typeName2;
 	private String partitionName;
@@ -89,44 +88,6 @@ public class SAL_SALData {
           throw new RuntimeException("Unknown Topic");
         }
 
-
-/** Sets up the Kafka Publisher support for the named Kafka type
-  @param topicName is the name of the Kafka topic
-  @throws RuntimeException if the topic is not defined
- */    
-	public int salTelemetryPub(String topicName)
-	{
-	  int actorIdx = -1;
-	  int status = 0;
-
-	  actorIdx = getActorIndex(topicName);
-	  if (actorIdx > -1) {
-	     salTelemetryPub(actorIdx);
-	  } else {
-             throw new RuntimeException("Unknown Topic");
-	  }
-	  return status;
-	}
-
-/** Sets up the Kafka Subscriber support for the named Kafka type
-  @param topicName is the name of the Kafka topic
-  @throws RuntimeException if the topic is not defined
- */    
-	public int salTelemetrySub(String topicName)
-	{
-	  int actorIdx = -1;
-	  int status = 0;
-
-	  actorIdx = getActorIndex(topicName);
-	  if (actorIdx > -1) {
-	     salTelemetrySub(actorIdx);
-	  } else {
-             throw new RuntimeException("Unknown Topic");
-	  }
-	  return status;
-	}
-
-
 /** Sets up the Kafka Publisher support for the indexed SAL Actor
   @param actorIdx is the index of the Kafka topic's salActor
  */    
@@ -137,8 +98,6 @@ public class SAL_SALData {
 		// create Type
 		salTypeSupport(actorIdx);
 
-		// create Publisher
-		createPublisher();
 
 		// create Topic
 		createTopic(actorIdx);
@@ -159,16 +118,12 @@ public class SAL_SALData {
                 String errstr;
                 
  
-                if (!subscriber) {
-                  FATAL(errstr);
+                if (subscriber == null) {
+                   return SAL__ERROR;
                  
                 } else {
 		  // create Type
 		  salTypeSupport(actorIdx);
-
-		  // create Subscriber
-		  createSubscriber();
-  
                   sal[actorIdx].isReader = true;
                 }
                   
@@ -178,7 +133,7 @@ public class SAL_SALData {
 
 
 /// Placeholder routine to be replaced by system wide logging once available
-	public void logError(int status) 
+	public void logError(long status) 
 	{
 		System.out.println("=== ERROR return value = " + status); 
 	}
@@ -243,11 +198,6 @@ public class SAL_SALData {
                String securityUserName = System.getenv("LSST_KAFKA_SECURITY_USERNAME");
                String securityPassword = System.getenv("LSST_KAFKA_SECURITY_PASSWORD");
                String avroPrefix = System.getenv("AVRO_PREFIX");
-               if (pname != null) {
-                   partitionPrefix = pname;
-               } else {
-                   throw new RuntimeException("ERROR : Cannot find envvar LSST_KAFKA_PREFIX");
-               }
                server = khost + ":" + kport;
                Properties props = new Properties();
                props.put("bootstrap.servers", server);
@@ -256,29 +206,25 @@ public class SAL_SALData {
                props.put("kafka.sasl.mechanism",securityMechanism);
                props.put("kafka.sasl.username",securityUserName);
                props.put("kafka.sasl.password",securityPassword);                  
-               props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
-                         org.apache.kafka.common.serialization.StringSerializer.class);
-               props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
-                         io.confluent.kafka.serializers.KafkaAvroSerializer.class);
+//               props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
+//                         org.apache.kafka.common.serialization.StringSerializer.class);
+//               props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
+//                         io.confluent.kafka.serializers.KafkaAvroSerializer.class);
                props.put("schema.registry.url", schemaRegistry);
-               props.put(AbstractKafkaSchemaSerDeConfig.AUTO_REGISTER_SCHEMAS, true);
-               props.put(AbstractKafkaSchemaSerDeConfig.USE_LATEST_VERSION, true);
+//               props.put(AbstractKafkaSchemaSerDeConfig.AUTO_REGISTER_SCHEMAS, true);
+//               props.put(AbstractKafkaSchemaSerDeConfig.USE_LATEST_VERSION, true);
 
                KafkaProducer publisher = new KafkaProducer(props);
 
                Properties cprops = new Properties();               
                cprops.put(ConsumerConfig.GROUP_ID_CONFIG, "LSST");
-               cprops.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
-               cprops.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
+//               cprops.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
+//               cprops.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
                cprops.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
                cprops.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
       	       KafkaConsumer subscriber = new KafkaConsumer(cprops);
       	       
-               if (hname == null) {
-                   historySync = 0;
-                } else {
-                   historySync = Integer.parseInt(hname);
-                }
+                long historySync = 1000;
                 authListEnabled = false;
                 if (aname != null) {
                   if (Integer.valueOf(aname) == 1) {
@@ -427,7 +373,9 @@ public class SAL_SALData {
   @throws RuntimeException if the topic is not defined
  */    
 	public int salEventSub(String topicName)
-	{
+	{	        
+		int status = SAL__OK;
+                int actorIdx = getActorIndex(topicName);
 		status = salTelemetrySub(actorIdx);
                 sal[actorIdx].isEventReader = true;
 		return status;
@@ -471,6 +419,7 @@ public class SAL_SALData {
 	public int salEventPub(String topicName)
 	{
 		int status = SAL__ERROR;
+                int actorIdx = getActorIndex(topicName);
 		status = salTelemetryPub(actorIdx);
                 sal[actorIdx].isEventWriter = true;
 		return status;
@@ -478,6 +427,7 @@ public class SAL_SALData {
 
 
 	public void createTopic(int actorIdx) {
+                String kafkaPrefix = System.getenv("LSST_KAFKA_PREFIX");
 		sal[actorIdx].avroTopic = "lsst.ts.sal." + kafkaPrefix + "." + sal[actorIdx].topicName;
                 if (debugLevel > 1) {
   		  System.out.println("=== [createTopic] : topicName " + sal[actorIdx].topicName + " type = " + sal[actorIdx].typeName);
@@ -485,6 +435,7 @@ public class SAL_SALData {
 	}
 
 	public void createTopic2(int actorIdx) {
+                String kafkaPrefix = System.getenv("LSST_KAFKA_PREFIX");
 		sal[actorIdx].avroTopic2 = "lsst.ts.sal." + kafkaPrefix + "." + sal[actorIdx].topicName;
                 if (debugLevel > 1) {
 		  System.out.println("=== [createTopic2] : topicName " + sal[actorIdx].topicName + " type = " + sal[actorIdx].typeName2);
@@ -492,6 +443,7 @@ public class SAL_SALData {
 	}
 
 	public void createTopic(int actorIdx, String topicName) {
+                String kafkaPrefix = System.getenv("LSST_KAFKA_PREFIX");
  		sal[actorIdx].avroTopic = "lsst.ts.sal." + kafkaPrefix + "." + sal[actorIdx].topicName;
                 if (debugLevel > 1) {
 		  System.out.println("=== [createTopic] : topicName " + topicName + " type = " + sal[actorIdx].typeName);
@@ -499,6 +451,7 @@ public class SAL_SALData {
 	}
 
 	public void createTopic2(int actorIdx, String topicName) {
+                String kafkaPrefix = System.getenv("LSST_KAFKA_PREFIX");
 		sal[actorIdx].avroTopic2 = "lsst.ts.sal." + kafkaPrefix + "." + sal[actorIdx].topicName;
                 if (debugLevel > 1) {
 		  System.out.println("=== [createTopic2] : topicName " + topicName + " type = " + sal[actorIdx].typeName2);
@@ -521,12 +474,6 @@ public class SAL_SALData {
 	}
 
 
-	public void createPublisher() {
-	   if (publisher == null ) {
-           }
-	}
-
-
 	public void deletePublisher() {
             if (publisher != null) {
 		publisher  = null;
@@ -538,12 +485,6 @@ public class SAL_SALData {
                       }
                    }
             }
-	}
-
-
-	public void createSubscriber() {
-	   if (subscriber == null ) {
-           }
 	}
 
 

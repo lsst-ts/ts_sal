@@ -5,19 +5,15 @@
    {"name": "private_sndStamp", "type": "double", "default": 0.0, "description": "Time of instance publication", "units": "second"},
    {"name": "private_rcvStamp", "type": "double", "default": 0.0, "description": "Time of instance reception", "units": "second"},
    {"name": "private_seqNum", "type": "long", "default": 0, "description": "Sequence number", "units": "unitless"},
-   {"name": "private_identity", "type": "string", "default": "", "description": "Identity of publisher: SAL component name for a CSC or user@host fo
-r a user", "units": "unitless"},
+   {"name": "private_identity", "type": "string", "default": "", "description": "Identity of publisher: SAL component name for a CSC or user host for a user", "units": "unitless"},
    {"name": "private_origin", "type": "long", "default": 0, "description": "Process ID of publisher", "units": "unitless"},
    {"name": "ack", "type": "long", "default": 0, "description": "Acknowledgement code", "units": "unitless"},
    {"name": "error", "type": "long", "default": 0, "description": "An error code; only relevant if ack=FAILED", "units": "unitless"},
    {"name": "result", "type": "string", "default": "", "description": "Message", "units": "unitless"},
-   {"name": "identity", "type": "string", "default": "", "description": "private_identity field of the command being acknowledged", "units": "unitle
-ss"},
+   {"name": "identity", "type": "string", "default": "", "description": "private_identity field of the command being acknowledged", "units": "unitless"},
    {"name": "origin", "type": "long", "default": 0, "description": "private_origin field of the command being acknowledged", "units": "unitless"},
-   {"name": "cmdtype", "type": "long", "default": 0, "description": "Index of command in alphabetical list of commands, with 0 being the first", "un
-its": "unitless"},
-   {"name": "timeout", "type": "double", "default": 0.0, "description": "Estimated remaining duration of command; only relevant if ack=INPROGRESS", 
-"units": "second"}
+   {"name": "cmdtype", "type": "long", "default": 0, "description": "Index of command in alphabetical list of commands, with 0 being the first", "units": "unitless"},
+   {"name": "timeout", "type": "double", "default": 0.0, "description": "Estimated remaining duration of command; only relevant if ack=INPROGRESS", "units": "second"}
 ], "description": "Command acknowledgement"
 }
 

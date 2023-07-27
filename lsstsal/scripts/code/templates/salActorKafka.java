@@ -1,8 +1,9 @@
 package org.lsst.sal;
 
+import org.apache.avro.*;
 import org.apache.kafka.clients.admin.*;
 import org.apache.kafka.common.KafkaFuture;
-import org.apache.kafka.clients.publisher.* 
+import org.apache.kafka.clients.producer.*;
 import org.apache.kafka.clients.consumer.*;
 import org.apache.kafka.common.serialization.StringDeserializer;  
 import java.time.Duration;  
@@ -26,14 +27,18 @@ public class salActor {
 /// partition holds the Kafka partition to which the topic is associated with
         public String partition;
 /// topic holds a pointer to the internal Kafka Topic object
-	public Topic topic;
+	public String topic;
 /// topic2 holds a pointer to the internal Kafka Topic object
-        public Topic topic2;
+        public String topic2;
+/// topic holds a pointer to the internal Kafka Topic object
+	public String avroTopic;
+/// topic2 holds a pointer to the internal Kafka Topic object
+        public String avroTopic2;
 /// publisher holds a pointer to the internal Kafka Publisher object
-	public kafkaPublisher publisher;
+	public KafkaProducer publisher;
 /// subscriber holds a pointer to the internal Kafka Subscriber object
-	public kafkaConsumer subscriber;
-	public AvroSchema avroSchema;
+	public KafkaConsumer subscriber;
+	public Schema avroSchema;
 /// typeName holds the Kafka type, in our case it is the same as the topicHandle
 	public String typeName;
 /// typeName2 holds the complementary type of the ackCmd when typeName is a command topic
@@ -64,23 +69,23 @@ public class salActor {
 /// sndSeqNum holds the sequence number of the most recent Kafka message sent for this topic
         public int sndSeqNum;
 /// cmdSeqNum holds the sequence number of the most recent Kafka command sent for this topic
-        public int cmdSeqNum;
+        public long cmdSeqNum;
 /// sndSeqNum holds the sequence number of the most recent Kafka message received for this topic
-        public int rcvSeqNum;
+        public long rcvSeqNum;
 /// rcvOrigin holds the private_origin from the last received message for this topic 
-        public int rcvOrigin;
+        public long rcvOrigin;
 /// rcvIdentity holds the private_identity filled from the last Kafka message received for this topic
         public String rcvIdentity;
 /// error is the error field for the most recent ackCmd message (commands)
-        public int error;
+        public long error;
 /// ack is the ack field for the most recent ackCmd message (commands)
-        public int ack;
+        public long ack;
 /// activeorigin is the private_origin field of the most recent command
-        public int activeorigin;
+        public long activeorigin;
 /// activeidentity is the private_identity field of the most recent command
         public String activeidentity;
 /// activecmdid is the command sequence number of the most recent command
-        public int activecmdid;
+        public long activecmdid;
 /// timeout is the number of seconds the command is expected to take to execute
         public double timeout;
 /// result is the text message result of the most recent command

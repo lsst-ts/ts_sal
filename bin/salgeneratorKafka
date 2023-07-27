@@ -67,11 +67,13 @@ set LSST_KAFKA_HOST $env(LSST_KAFKA_HOST)
 set LSST_KAFKA_BROKER_PORT $env(LSST_KAFKA_BROKER_PORT)
 set LSST_KAFKA_PREFIX $env(LSST_KAFKA_PREFIX)
 set AVRO_RELEASE $env(AVRO_RELEASE)
+set AVRO_PREFIX $env(AVRO_PREFIX)
 
 source $SAL_DIR/versioning.tcl
 source $SAL_DIR/utilities.tcl
 source $SAL_DIR/activaterevcodesKafka.tcl
 source $SAL_DIR/add_system_dictionary.tcl
+source $SAL_DIR/checkjson.tcl
 
 puts stdout "argv = $argv"
 set RELVERSION ""

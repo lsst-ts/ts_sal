@@ -137,7 +137,7 @@ salReturn SAL_SALData::logEvent_[set i]( SALData_logevent_[set i]C *data, int pr
 #  per-command Topic type. This routine generates Java code.
 #
 proc geneventaliasjava { subsys fout } {
-global EVENT_ALIASES EVTS
+global EVENT_ALIASES EVTS AVRO_PREFIX
    foreach i $EVENT_ALIASES($subsys) {
     if { [info exists EVTS($subsys,$i,param)] } {
       stdlog "	: alias = $i"
@@ -147,12 +147,11 @@ global EVENT_ALIASES EVTS
   * @param data is the logevent payload $turl
   * @returns SAL__NO_UPDATES if no data is available, or SAL__OK otherwise
   */
-	public int getEvent_[set i](SALData.logevent_[set i] anEvent)
+	public int getEvent_[set i]([set AVRO_PREFIX].SALData.[set subsys]_logevent_[set i] anEvent)
 	\{
 	  int status =  -1;
           int actorIdx = SAL__SALData_logevent_[set i]_ACTOR;
           if (sal\[actorIdx\].subscriber == null) \{
-             createSubscriber(actorIdx);
              sal\[actorIdx\].isEventReader = true;
           \}
           int maxSample = sal\[actorIdx\].maxSamples;
@@ -166,7 +165,7 @@ global EVENT_ALIASES EVTS
   * @param data is the logevent payload $turl
   * @priority is deprecated
   */
-	public int logEvent_[set i]( SALData.logevent_[set i] event, int priority )
+	public int logEvent_[set i]( [set AVRO_PREFIX].SALData.[set subsys]_logevent_[set i] event, int priority )
 	\{
 	   int status = 0;
            int actorIdx = SAL__SALData_logevent_[set i]_ACTOR;
