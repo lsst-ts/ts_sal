@@ -160,7 +160,7 @@ global TRAILINGITEMS
         puts stdout "Translating $tname"
         set fout [open $SAL_WORK_DIR/avro-templates/[set tname].json w]
         puts $fout "\{
-\"type\": \"record\", \"name\": \"[set tname]\", \"namespace\": \"lsst.sal.kafka_[set subsys]\", \"fields\": \["
+\"type\": \"record\", \"name\": \"[set tname]\", \"namespace\": \"lsst.sal.kafka_Test.[set subsys]\", \"fields\": \["
         if { $TRAILINGITEMS($tname) == "private_origin" } {
           add_private_json $fout $subsys ""
         } else {
@@ -317,6 +317,7 @@ global TRAILINGITEMS
       set alias ""
    }
    close $fin
+   createackcmdjson $subsys
    puts stdout "itemid for $SAL_WORK_DIR/avro-templates/[set tname].json=  $itemid"
    if { [info exists CMD_ALIASES($subsys)] } {
     if { $CMD_ALIASES($subsys) != "" } {

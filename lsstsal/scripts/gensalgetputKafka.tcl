@@ -398,18 +398,20 @@ global CMDS TLMS EVTS
         if { $ctype != "logevent" && $ctype != "command_" } {
          if { [info exists TLMS($base,$name,param)] } {
           foreach p $TLMS($base,$name,param) {
-                    set tpar [lindex [string trim $p "\{\}"]]
-                    if { [lindex $tpar 0] == "unsigned" } {
-                set apar [lindex [split [lindex $tpar 2] "()"] 0]
-                    } else {
-                set apar [lindex [split [lindex $tpar 1] "()"] 0]
-                    }
-            set arr [lindex [split $p "()"] 1]
-            if { $arr != "" } {
-              puts $fout "           System.arraycopy(Instance.$apar,0,data.$apar,0,$arr);"
-            } else {
-              puts $fout "           data.$apar = Instance.$apar;"
-            }
+             set tpar [lindex [string trim $p "\{\}"]]
+             if { [lindex $tpar 0] == "unsigned" } {
+             set apar [lindex [split [lindex $tpar 2] "()"] 0]
+               } else {
+             set apar [lindex [split [lindex $tpar 1] "()"] 0]
+               }
+             set arr [lindex [split $p "()"] 1]
+             set avgname get[getAvroMethod $apar]()
+             set avsname set[getAvroMethod $apar]
+             if { $arr != "" } {
+               puts $fout "           data.$avsname\(Instance.$avgname\);"
+             } else {
+                puts $fout "          data.$avsname\(Instance.$avgname\);"
+             }
           }
          }
         }
@@ -424,10 +426,12 @@ global CMDS TLMS EVTS
                 set apar [lindex [split [lindex $tpar 1] "()"] 0]
                     }
             set arr [lindex [split $p "()"] 1]
+            set avgname get[getAvroMethod $apar]()
+            set avsname set[getAvroMethod $apar]
             if { $arr != "" } {
-              puts $fout "           System.arraycopy(Instance.$apar,0,data.$apar,0,$arr);"
+               puts $fout "           data.$avsname\(Instance.$avgname\);"
             } else {
-              puts $fout "           data.$apar = Instance.$apar;"
+               puts $fout "           data.$avsname\(Instance.$avgname\);"
             }
           }
          }
@@ -442,11 +446,13 @@ global CMDS TLMS EVTS
                     } else {
                 set apar [lindex [split [lindex $tpar 1] "()"] 0]
                     }
+            set avgname get[getAvroMethod $apar]()
+            set avsname set[getAvroMethod $apar]
             set arr [lindex [split $p "()"] 1]
             if { $arr != "" } {
-              puts $fout "           System.arraycopy(Instance.$apar,0,data.$apar,0,$arr);"
+               puts $fout "           data.$avsname\(Instance.$avgname\);"
             } else {
-              puts $fout "           data.$apar = Instance.$apar;"
+               puts $fout "           data.$avsname\(Instance.$avgname\);"
             }
           }
          }
@@ -464,7 +470,7 @@ global CMDS TLMS EVTS
 proc copytojavasample { fout base name } {
 global CMDS TLMS EVTS
         set ctype [string range $name 0 7]
-        if { $ctype != "logevent" && $ctype != "command_" } {
+         if { $ctype != "logevent" && $ctype != "command_" } {
          if { [info exists TLMS($base,$name,param)] } {
           foreach p $TLMS($base,$name,param) {
                     set tpar [lindex [string trim $p "\{\}"]]
@@ -473,11 +479,13 @@ global CMDS TLMS EVTS
                     } else {
                 set apar [lindex [split [lindex $tpar 1] "()"] 0]
                     }
+            set avgname get[getAvroMethod $apar]()
+            set avsname set[getAvroMethod $apar]
             set arr [lindex [split $p "()"] 1]
             if { $arr != "" } {
-              puts $fout "           System.arraycopy(data.$apar,0,Instance.$apar,0,$arr);"
+              puts $fout "           Instance.$avsname\(data.$avgname\);"
             } else {
-              puts $fout "           Instance.$apar = data.$apar;"
+              puts $fout "           Instance.$avsname\(data.$avgname\);"
             }
           }
          }
@@ -492,11 +500,13 @@ global CMDS TLMS EVTS
                     } else {
                 set apar [lindex [split [lindex $tpar 1] "()"] 0]
                     }
+            set avgname get[getAvroMethod $apar]()
+            set avsname set[getAvroMethod $apar]
             set arr [lindex [split $p "()"] 1]
             if { $arr != "" } {
-              puts $fout "           System.arraycopy(data.$apar,0,Instance.$apar,0,$arr);"
+              puts $fout "           Instance.$avsname\(data.$avgname\);"
             } else {
-              puts $fout "           Instance.$apar = data.$apar;"
+              puts $fout "           Instance.$avsname\(data.$avgname\);"
             }
           }
          }
@@ -511,11 +521,13 @@ global CMDS TLMS EVTS
                     } else {
                 set apar [lindex [split [lindex $tpar 1] "()"] 0]
                     }
+            set avgname get[getAvroMethod $apar]()
+            set avsname set[getAvroMethod $apar]
             set arr [lindex [split $p "()"] 1]
             if { $arr != "" } {
-              puts $fout "          System.arraycopy(data.$apar,0,Instance.$apar,0,$arr);"
+              puts $fout "          Instance.$avsname\(data.$avgname\);"
             } else {
-              puts $fout "          Instance.$apar = data.$apar;"
+              puts $fout "          Instance.$avsname\(data.$avgname\);"
             }
           }
          }
@@ -534,7 +546,7 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS AVRO_PREFI
    foreach name $ACTIVETOPICS {
      set revcode [getRevCode [set base]_[set name] short]
      puts $fout "   if ( \"[set base]_$name\".equals(topicName) ) \{"
-     puts $fout "     sal\[actorIdx\].avroSchema = avroMapper.schemaFor([set env(AVRO_PREFIX)].[set base]_[set name].class);"
+     puts $fout "//     sal\[actorIdx\].avroSchema = avroMapper.schemaFor([set base]_[set name].class);"
      puts $fout "     return SAL__OK;"
      puts $fout "   \}"
    }
@@ -546,7 +558,7 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS AVRO_PREFI
    foreach name $ACTIVETOPICS {
      set revcode [getRevCode [set base]_[set name] short]
      puts $fout "  if ( actorIdx == SAL__[set base]_[set name]_ACTOR ) \{"
-     puts $fout "    sal\[actorIdx\].avroSchema = avroMapper.schemaFor([set env(AVRO_PREFIX)].[set base]_[set name].class);"
+     puts $fout "//    sal\[actorIdx\].avroSchema = avroMapper.schemaFor([set base]_[set name].class);"
      puts $fout "    return SAL__OK;"
      puts $fout "  \}"
    }
@@ -556,49 +568,51 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS AVRO_PREFI
 }
 
 proc javaputSample { fout base } {
-global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS
+global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS AVRO_PREFIX
   foreach name $ACTIVETOPICS {
+   if { $name != "ackcmd" } {
     set revcode [getRevCode [set base]_[set name] short]
     set alias [string range $name 9 end]
     set turl [getTopicURL $base $name]
     puts $fout "/** Publish a sample of the $turl Kafka topic. A publisher must already have been set up"
     puts $fout "  * @param data The payload of the sample as defined in the XML for SALData"
     puts $fout "  */"
-    puts $fout "  public int putSample([set base].[set name] data)"
+    puts $fout "  public int putSample([set AVRO_PREFIX].[set base].[set base]_[set name] data)"
     puts $fout "  \{"
     puts $fout "    int status = SAL__OK;"
-    puts $fout "    [set base]_[set name] Instance = new [set base]_[set name]();"
+    puts $fout "    [set AVRO_PREFIX].[set base].[set base]_[set name] Instance = new [set AVRO_PREFIX].[set base].[set base]_[set name]();"
     puts $fout "    int actorIdx = SAL__[set base]_[set name]_ACTOR;"
     puts $fout "    if ( sal\[actorIdx\].isWriter == false ) \{"
-    puts $fout "      createWriter(actorIdx,false);"
     puts $fout "      sal\[actorIdx\].isWriter = true;"
     puts $fout "    \}"
-    puts $fout "   Instance = new GenericData.Record(sal\[actorIdx\].avroSchema);"
-    puts $fout "   Instance.private_revCode = \"[string trim $revcode _]\";"
-    puts $fout "   Instance.private_sndStamp = getCurrentTime();"
-    puts $fout "   Instance.private_identity = CSC_identity;"
-    puts $fout "   Instance.private_origin = origin;"
-    puts $fout "   Instance.private_seqNum = sal\[actorIdx\].sndSeqNum;"
+    puts $fout "//   Instance = new GenericData.Record(sal\[actorIdx\].avroSchema);"
+    puts $fout "   Instance.set[getAvroMethod private_revCode](\"[string trim $revcode _]\");"
+    puts $fout "   Instance.set[getAvroMethod private_sndStamp](getCurrentTime());"
+    puts $fout "   Instance.set[getAvroMethod private_identity](CSC_identity);"
+    puts $fout "   Instance.set[getAvroMethod private_origin](origin);"
+    puts $fout "   Instance.set[getAvroMethod private_SeqNum](sal\[actorIdx\].sndSeqNum);"
     puts $fout "   sal\[actorIdx\].sndSeqNum++;"
     puts $fout "   if (debugLevel > 0) \{"
     puts $fout "     System.out.println(\"=== putSample $name writing a message containing :\");"
-    puts $fout "     System.out.println(\"  revCode  : \" + Instance.private_revCode);"
-    puts $fout "     System.out.println(\"  sndStamp  : \" + Instance.private_sndStamp);"
-    puts $fout "     System.out.println(\"  identity : \" + Instance.private_identity);"
+    puts $fout "     System.out.println(\"  revCode  : \" + Instance.get[getAvroMethod private_revCode]());"
+    puts $fout "     System.out.println(\"  sndStamp  : \" + Instance.get[getAvroMethod private_sndStamp]());"
+    puts $fout "     System.out.println(\"  identity : \" + Instance.get[getAvroMethod private_identity]());"
     puts $fout "   \}"
     copytojavasample $fout $base $name
     if { [info exists SYSDIC($base,keyedID)] } {
-      puts $fout "    Instance.salIndex = subsystemID;"
+      puts $fout "    Instance.set[getAvroMethod salIndex](subsystemID);"
     }
     writerFragmentJava $fout $base $name
     puts $fout "    return status;"
     puts $fout "  \}"
+   }
   }
 }
 
 proc javagetSample { fout base } {
-global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS
+global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS AVRO_PREFIX
   foreach name $ACTIVETOPICS {
+   if { $name != "ackcmd" } {
     set revcode [getRevCode [set base]_[set name] short]
     set alias [string range $name 9 end]
     set turl [getTopicURL $base $name]
@@ -607,48 +621,50 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS
     puts $fout "  * If there are multiple samples in the history cache, they are skipped over and only the most recent is supplied."
     puts $fout "  * @param data The payload of the sample as defined in the XML for SALData"
     puts $fout "  */"
-    puts $fout "  public int getSample([set base].[set name] data)"
+    puts $fout "  public int getSample([set AVRO_PREFIX].[set base].[set base]_[set name] data)"
     puts $fout "  \{"
     puts $fout "    int status =  -1;"
     puts $fout "    int last = SAL__NO_UPDATES;"
-    puts $fout "    int numsamp;"
-    puts $fout "    [set base]_[set name] Instance = new [set base]_[set name]();"
+    puts $fout "    int numsamp = 0;"
+    puts $fout "    [set AVRO_PREFIX].[set base].[set base]_[set name] Instance = new [set AVRO_PREFIX].[set base].[set base]_[set name]();"
     puts $fout "    int actorIdx = SAL__[set base]_[set name]_ACTOR;"
     puts $fout "    if ( sal\[actorIdx\].isReader == false ) \{"
     puts $fout "	    sal\[actorIdx\].isReader = true;"
     puts $fout "    \}"
     readerFragmentJava $fout $base $name
     puts $fout "    if (numsamp > 0) \{"
-    puts $fout "      if (debugLevel > 0) \{"
+    puts $fout "       if (debugLevel > 0) \{"
     puts $fout "        for (int i = 0; i < numsamp; i++) \{"
     puts $fout "          System.out.println(\"=== getSample $name message received :\" + i);"
-    puts $fout "          System.out.println(\"  revCode  : \" + Instance.private_revCode);"
-    puts $fout "          System.out.println(\"  identity : \" + Instance.private_identity);"
-    puts $fout "          System.out.println(\"  sndStamp  : \" + Instance.private_sndStamp);"
-    puts $fout "      \}"
+    puts $fout "          System.out.println(\"  revCode  : \" + Instance.get[getAvroMethod private_revCode]());"
+    puts $fout "          System.out.println(\"  identity : \" + Instance.get[getAvroMethod private_identity]());"
+    puts $fout "          System.out.println(\"  sndStamp  : \" + Instance.get[getAvroMethod private_sndStamp]());"
+    puts $fout "        \}"
+    puts $fout "       \}"
     puts $fout "       int j=numsamp-1;"
     puts $fout "       double rcvdTime = getCurrentTime();"
-    puts $fout "       double dTime = rcvdTime - Instance.private_sndStamp;"
+    puts $fout "       double dTime = rcvdTime - Instance.get[getAvroMethod private_sndStamp]();"
     puts $fout "       if ( dTime < sal\[actorIdx\].sampleAge ) \{"
-    puts $fout "          data.private_sndStamp = Instance.private_sndStamp;"
+    puts $fout "          data.set[getAvroMethod private_sndStamp](Instance.get[getAvroMethod private_sndStamp]());"
     copyfromjavasample $fout $base $name
     puts $fout "          last = SAL__OK;"
     puts $fout "       \} else \{"
-    puts $fout "          System.out.println(\"dropped sample : \" + rcvdTime + \" \" + Instance.private_sndStamp);"
+    puts $fout "          System.out.println(\"dropped sample : \" + rcvdTime + \" \" + Instance.get[getAvroMethod private_sndStamp]());"
     puts $fout "          last = SAL__NO_UPDATES;"
     puts $fout "       \}"
-    puts $fout "     \} else \{"
-    puts $fout "             last = SAL__NO_UPDATES;"
-    puts $fout "     \}"
-    puts $fout "   \}"
+    puts $fout "    \} else \{"
+    puts $fout "          last = SAL__NO_UPDATES;"
+    puts $fout "    \}"
     puts $fout "   return last;"
     puts $fout "\}"
+   }
   }
 }
 
 proc javagetNextFlushSample { fout base } {
-global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS
+global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS AVRO_PREFIX
   foreach name $ACTIVETOPICS {
+   if { $name != "ackcmd" } {
     set revcode [getRevCode [set base]_[set name] short]
     set alias [string range $name 9 end]
     set turl [getTopicURL $base $name]
@@ -659,7 +675,7 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS
     puts $fout "  * calls to getNextSample_[set name]"
     puts $fout "  * @param data The payload of the sample as defined in the XML for SALData"
     puts $fout "  */"
-    puts $fout "  public int getNextSample([set base].[set name] data)"
+    puts $fout "  public int getNextSample([set AVRO_PREFIX].[set base].[set base]_[set name] data)"
     puts $fout "  \{"
     puts $fout "    int status = -1;"
     puts $fout "    int actorIdx = SAL__[set base]_[set name]_ACTOR;"
@@ -673,7 +689,7 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS
     puts $fout "/** Empty the history cache of samples. After this only newly published samples"
     puts $fout "  * will be available to getSample_[set name] or getNextSample_[set name]"
     puts $fout "  */"
-    puts $fout "  public int flushSamples([set base].[set name] data)"
+    puts $fout "  public int flushSamples([set AVRO_PREFIX].[set base].[set base]_[set name] data)"
     puts $fout "  \{"
     puts $fout "    int status = -1;"
     puts $fout "    int actorIdx = SAL__[set base]_[set name]_ACTOR;"
@@ -683,6 +699,7 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS
     puts $fout "    sal\[actorIdx\].sampleAge = 1.0e20;"
     puts $fout "    return SAL__OK;"
     puts $fout "  \}"
+   }
   }
 }
 
@@ -774,9 +791,9 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS
   puts stdout "Configuring [set id]/java/src/org/lsst/sal/SAL_[set base].java"
   while { [gets $fin rec] > -1 } {
      if { [string range $rec 0 20] == "// INSERT SAL IMPORTS" } {
-        puts $fout "import [set base].*;"
-        puts $fout "import org.lsst.sal.*;"
-        puts $fout "import $env(AVRO_PREFIX).*;"
+        puts $fout "import org.lsst.sal.salActor;"
+        puts $fout "import org.lsst.sal.salUtils;"
+        puts $fout "import $env(AVRO_PREFIX).[set base].*;"
      }
      if { [string range $rec 0 31] == "#ifdef SAL_SUBSYSTEM_ID_IS_KEYED" } {
          processifdefregion $fin $fout $base
@@ -854,35 +871,35 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS
 
 proc writerFragmentJava { fout base name } {
    puts $fout "
-         DatumWriter<GenericRecord> datumWriter = new SpecificDatumWriter(sal\[actorIdx\].avroSchema);
-         ByteArrayOutputStream out = new ByteArrayOutputStream();
-         DirectBinaryEncoder binaryEncoder = (DirectBinaryEncoder) EncoderFactory.get().directBinaryEncoder(out, null);
-         datumWriter.write(Instance, binaryEncoder);
-         binaryEncoder.flush();
-         out.close();
-         serializedBytes = out.toByteArray();
-         producer.send(serializedBytes);
-         producer.flush();
+//        DatumWriter<GenericRecord> datumWriter = new SpecificDatumWriter(sal\[actorIdx\].avroSchema);
+//        ByteArrayOutputStream out = new ByteArrayOutputStream();
+//        DirectBinaryEncoder binaryEncoder = (DirectBinaryEncoder) EncoderFactory.get().directBinaryEncoder(out, null);
+//         datumWriter.write(Instance, binaryEncoder);
+//         binaryEncoder.flush();
+//         out.close();
+//         serializedBytes = out.toByteArray();
+//         publisher.send(serializedBytes);
+           publisher.flush();
          "
 }
 
 proc readerFragmentJava { fout base name } {
     puts $fout "
         String avroTopic = \"lsst.ts.sal.kafka_Test.[set base]_[set name]\";
-        if (sal\[actorIdx\].consumer == null ) \{
+        if (sal\[actorIdx\].subscriber == null ) \{
            AvroMapper avroMapper = new AvroMapper();
-           AvroSchema salschema = avroMapper.schemaFor(lsst.ts.sal.kafka_Test.[set base]_[set name].class);
-           sal\[actorIdx\].avroSchema = salschema;
-           Consumer<avroTopic, avro_schema> consumer = new KafkaConsumer<avroTopic, avro_schema>(cprops);
-           consumer.subscribe(Arrays.asList(avroTopic));
-           sal\[actorIdx\].consumer = consumer;
+//           Schema salschema = avroMapper.schemaFor([set base].[set base]_[set name].class);
+//           sal\[actorIdx\].avroSchema = salschema;
+//           Consumer<String, Instance> consumer = new KafkaConsumer<>(cprops);
+//           consumer.subscribe(Arrays.asList(Instance));
+//           sal\[actorIdx\].subscriber = consumer;
         \} else \{
-           consumer = sal\[actorIdx\].consumer;
+//           consumer = sal\[actorIdx\].subscriber;
         \}
-        ConsumerRecords<lsst.ts.sal.kafka_Test.[set base]_[set name]> records = consumer.poll(100);
-        for (ConsumerRecord<lsst.ts.sal.kafka_Test.[set base]_[set name]> Instance : records) \{
-            numsamp++;
-        \}      
+//        ConsumerRecords<String, [set base]_[set name]> records = consumer.poll(100);
+//        for (ConsumerRecord<String, [set base]_[set name]> Instances : records) \{
+//            numsamp++;
+//        \}      
 //        DatumReader<GenericRecord> datumReader = new SpecificDatumReader(sal\[actorIdx\].avroSchema);
 //        ByteArrayInputStream in = new ByteArrayInputStream();
 //        DirectBinaryDecoder binaryDecoder = (DirectBinaryDecoder) DecoderFactory.get().directBinaryDecoder(in, null);

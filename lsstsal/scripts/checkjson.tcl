@@ -119,13 +119,27 @@ global SAL_WORK_DIR OPTIONS env
   if { $OPTIONS(verbose) } {stdlog "###TRACE>>> createackcmdjson $base $keyid"}
   exec cp $env(SAL_DIR)/code/templates/subsys_ackcmd.json $SAL_WORK_DIR/avro-templates/[set base]_ackcmd.json
   set frep [open /tmp/genackcmdjson_[set base] w]
-  puts $frep "perl -pi -w -e 's/lsst.sal.kafka_Test/lsst.sal.kafka_[set base]/g;' $SAL_WORK_DIR/avro-templates/[set base]_ackcmd.json"
+  puts $frep "perl -pi -w -e 's/lsst.sal.kafka_Test/lsst.sal.kafka_Test.[set base]/g;' $SAL_WORK_DIR/avro-templates/[set base]_ackcmd.json"
   close $frep
   exec chmod 755 /tmp/genackcmdjson_[set base]
-  catch { set result [exec ]  /tmp/genackcmdjson_[set base] } bad
+  catch { set result [exec /tmp/genackcmdjson_[set base]] } bad
   if { $OPTIONS(verbose) } {stdlog "###TRACE<<< createackcmdjson $base $keyid"}
 }
-
+#
+## Documented proc \c getAvroMetod.
+# \param[in] item Name of SAL Topic item
+#
+#  Returns the name of the Avro method used to get/set values
+#  Removes _ and converts to UpperCamelCase
+#
+proc getAvroMethod { item } {
+   set nitem [split $item "_"]
+   set res ""
+   foreach i $nitem {
+      set res "$res[string toupper [string range $i 0 0]][string range $i 1 end]"
+   }
+   return $res
+}
 
 
 set SAL_WORK_DIR $env(SAL_WORK_DIR)

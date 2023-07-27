@@ -733,6 +733,7 @@ global SAL_WORK_DIR OPTIONS ONEDONEGEN SAL_DIR
              puts stdout "Processing $i"
              catch {exec java -jar $SAL_DIR/../lib/avro-tools-1.11.1.jar compile schema $i $SAL_WORK_DIR/[set base]/java/src/}
           }
+          catch {exec java -jar $SAL_DIR/../lib/avro-tools-1.11.1.jar compile schema $SAL_WORK_DIR/avro-templates/[set base]_ackcmd.json $SAL_WORK_DIR/[set base]/java/src/}
           cd $SAL_WORK_DIR/$base/$lang/src
           set result none
           catch { set result [exec make -f Makefile.saj_[set base]_types] } bad
@@ -759,24 +760,26 @@ proc saljavaclassgen { base id } {
 global SAL_WORK_DIR OPTIONS
  if { $OPTIONS(verbose) } {stdlog "###TRACE>>> saljavaclassgen $base $id"}
  if { $OPTIONS(fastest) == 0 } {
-  if { $id != "[set base]_notused" } {
-   cd $SAL_WORK_DIR/$id/java/src
+   cd $SAL_WORK_DIR/$base/java/src
    set result none
    catch { set result [exec make -f Makefile.saj_[set base]_types] } bad
    catch {stdlog "result = $result"}
    catch {stdlog "bad = $bad"}
+   exec cp saj_[set base]_types.jar $SAL_WORK_DIR/lib/.
    stdlog "javac : Done types"
-   cd $SAL_WORK_DIR/$id/java/standalone
-   set result none
-   catch { set result [exec make -f Makefile.saj_[set id]_pub] } bad
-   catch {stdlog "result = $result"}
-   catch {stdlog "$bad"}
-   stdlog "javac : Done Publisher"
-   catch { set result [exec make -f Makefile.saj_[set id]_sub] } bad
-   catch {stdlog "result = $result"}
-   catch {stdlog "$bad"}
-   stdlog "javac : Done Subscriber"
-   cd $SAL_WORK_DIR
+   if { $id != "[set base]_notused" } {
+    stdlog "javac : Done types"
+    cd $SAL_WORK_DIR/$id/java/standalone
+    set result none
+    catch { set result [exec make -f Makefile.saj_[set id]_pub] } bad
+    catch {stdlog "result = $result"}
+    catch {stdlog "$bad"}
+    stdlog "javac : Done Publisher"
+    catch { set result [exec make -f Makefile.saj_[set id]_sub] } bad
+    catch {stdlog "result = $result"}
+    catch {stdlog "$bad"}
+    stdlog "javac : Done Subscriber"
+    cd $SAL_WORK_DIR
   }
  }
  if { $OPTIONS(verbose) } {stdlog "###TRACE<<< saljavaclassgen $base $id"}

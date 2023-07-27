@@ -226,7 +226,6 @@ int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
    int numSamples = 0;
    [set subsys]::SALData_command_[set i] Instance;
    SALData::ackcmd ackdata;
-//   long ackHandle = NULL;
    int actorIdx = SAL__SALData_command_[set i]_ACTOR;
    if ( data == NULL ) \{
       throw std::runtime_error(\"NULL pointer for acceptCommand_[set i]\");
@@ -297,9 +296,9 @@ int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
 "
      }
      puts $fout "    
-    if ( ackdata.ack != SAL__CMD_ACK ) \{
-//       istatus = SALWriter->write(ackdata, ackHandle);
-    \}
+     if ( ackdata.ack != SAL__CMD_ACK ) \{"
+       writerFragment $fout $subsys ackcmd
+      puts $fout "    \}
 "
    puts $fout "
      \} else \{
@@ -549,7 +548,7 @@ salReturn SAL_SALData::ackCommand_[set i]C(SALData_ackcmdC *response )
 #  per-command Topic type. This routine generates Java code.
 #
 proc gencmdaliasjava { subsys fout } {
-global CMD_ALIASES CMDS SYSDIC ACKREVCODE
+global CMD_ALIASES CMDS SYSDIC ACKREVCODE AVRO_PREFIX
   if { [info exists CMD_ALIASES($subsys)] } {
    foreach i $CMD_ALIASES($subsys) {
     set revcode [getRevCode [set subsys]_command_[set i] short]
@@ -561,20 +560,19 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
   * @param data is the command payload $turl
   * @returns the sequence number aka command id
   */
-	public int issueCommand_[set i]( SALData.command_[set i] data )
+	public long issueCommand_[set i]( [set AVRO_PREFIX].[set subsys].SALData_command_[set i] data )
 	\{
           Random randGen = new java.util.Random();
-  	  long cmdHandle = HANDLE_NIL.value;
-          SALData.SALData_command_[set i] Instance = new SALData_command_[set i]();
-          int status;
+          [set AVRO_PREFIX].SALData.SALData_command_[set i] Instance = new [set AVRO_PREFIX].[set subsys].SALData_command_[set i]();
+          long status;
           int actorIdx = SAL__SALData_command_[set i]_ACTOR;
-	  Instance.private_revCode = \"[string trim $revcode _]\";
-	  Instance.private_seqNum = sal\[actorIdx\].sndSeqNum;
-          Instance.private_identity = CSC_identity;
-          Instance.private_origin = origin;
-          Instance.private_sndStamp = getCurrentTime();"
+	  Instance.set[getAvroMethod private_revCode](\"[string trim $revcode _]\");
+	  Instance.set[getAvroMethod private_seqNum](sal\[actorIdx\].sndSeqNum);
+          Instance.set[getAvroMethod private_identity](CSC_identity);
+          Instance.set[getAvroMethod private_origin](origin);
+          Instance.set[getAvroMethod private_sndStamp](getCurrentTime());"
       if { [info exists SYSDIC($subsys,keyedID)] } {
-        puts $fout "	  Instance.salIndex = subsystemID;"
+        puts $fout "	  Instance.set[getAvroMethod salIndex](subsystemID);"
       }
       copytojavasample $fout $subsys command_[set i]
       puts $fout "
@@ -593,15 +591,13 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
     and no cmdId will be returned to the caller (=0)
   * @param data is the command payload $turl
   */
-	public int acceptCommand_[set i]( SALData.command_[set i] data )
+	public long acceptCommand_[set i]( [set AVRO_PREFIX].SALData.SALData_command_[set i] data )
 	\{
-                SALData.SALData_command_[set i] Instance = new SALData_command_[set i]();
-                SALData.ackcmd ackdata;
-   		int status = 0;
+                [set AVRO_PREFIX].SALData.SALData_command_[set i] Instance = new [set AVRO_PREFIX].SALData.SALData_command_[set i]();
+   		long status = 0;
    		int numSamples = 0;
    		int istatus =  -1;
                 String dummy=\"\";
-   		long ackHandle = NULL;
                 int actorIdx = SAL__SALData_command_[set i]_ACTOR;
 "
       if { $i != "setAuthList" } { 
@@ -611,53 +607,53 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
   		// create processor :"
       readerFragmentJava $fout SALData command_[set i]
       puts $fout "
-		if (Instance != NULL) \{
+		if (Instance != null) \{
     		     if (debugLevel > 8) \{
       			System.out.println(  \"=== acceptCommand $i reading a command containing :\" );
-      			System.out.println(  \"    seqNum   : \" + Instance.private_seqNum );
+      			System.out.println(  \"    seqNum   : \" + Instance.get[getAvroMethod private_seqNum]());
     		    \}
-    		    status = Instance.private_seqNum;
+    		    status = Instance.get[getAvroMethod private_seqNum]();
     		    double rcvdTime = getCurrentTime();
-		    double dTime = rcvdTime - Instance.private_sndStamp;
+		    double dTime = rcvdTime - Instance.get[getAvroMethod private_sndStamp]();
     		    if ( dTime < sal\[actorIdx\].sampleAge ) \{
-                      sal\[actorIdx\].activeorigin = Instance.private_origin;
-                      sal\[actorIdx\].activeidentity = Instance.private_identity;
-                      sal\[actorIdx\].activecmdid = Instance.private_seqNum;
-                      ackdata = new SALData.ackcmd();"
+                      sal\[actorIdx\].activeorigin = Instance.get[getAvroMethod private_origin]();
+                      sal\[actorIdx\].activeidentity = String.valueOf(Instance.get[getAvroMethod private_identity]());
+                      sal\[actorIdx\].activecmdid = Instance.get[getAvroMethod private_seqNum]();
+                      [set AVRO_PREFIX].SALData.ackcmd ackdata = new [set AVRO_PREFIX].SALData.ackcmd();"
       if { [info exists SYSDIC($subsys,keyedID)] } {
-         puts $fout "	              ackdata.salIndex = subsystemID;"
+         puts $fout "	              ackdata.set[getAvroMethod salIndex](subsystemID);"
       }
-      puts $fout "		      ackdata.private_identity = Instance.private_identity;
-		      ackdata.private_origin = Instance.private_origin;
-		      ackdata.private_seqNum = Instance.private_seqNum;
-                      ackdata.private_revCode = \"[string trim $ACKREVCODE _]\";
-                      ackdata.private_sndStamp = getCurrentTime();
-		      ackdata.error  = 0;
-		      ackdata.result = \"SAL ACK\";"
+      puts $fout "		      ackdata.set[getAvroMethod private_identity](Instance.get[getAvroMethod private_identity]());
+		      ackdata.set[getAvroMethod private_origin](Instance.get[getAvroMethod private_origin]());
+		      ackdata.set[getAvroMethod private_seqNum](Instance.get[getAvroMethod private_seqNum]());
+                      ackdata.set[getAvroMethod private_revCode](\"[string trim $ACKREVCODE _]\");
+                      ackdata.set[getAvroMethod private_sndStamp](getCurrentTime());
+		      ackdata.setError(0);
+		      ackdata.setResult(\"SAL ACK\");"
            copyfromjavasample $fout $subsys command_[set i]
            puts $fout "
-		      status = Instance.private_seqNum;
-		      rcvSeqNum = status;
-		      rcvOrigin = Instance.private_origin;
-		      rcvIdentity = Instance.private_identity;
-		      ackdata.ack = SAL__CMD_ACK;
+		      status = Instance.get[getAvroMethod private_seqNum]();
+		      long rcvSeqNum = status;
+		      long rcvOrigin = Instance.get[getAvroMethod private_origin]();
+		      rcvIdentity = String.valueOf(Instance.get[getAvroMethod private_identity]());
+		      ackdata.setAck(SAL__CMD_ACK);
 "
            if { $subsys != "LOVE" } {
               puts $fout "
                       if ( actorIdx != SAL__SALData_command_setAuthList_ACTOR ) \{
 		        if (checkAuthList(sal\[actorIdx\].activeidentity) != SAL__OK) \{
-       			  ackdata.ack = SAL__CMD_NOPERM;
-       			  ackdata.error = 1;
-       			  ackdata.result = \"Commanding not permitted by authList setting\";
+       			  ackdata.setAck(SAL__CMD_NOPERM);
+       			  ackdata.setError(1);
+       			  ackdata.setResult(\"Commanding not permitted by authList setting\");
        			  status = 0;
     		        \}
                        \}
 "
            }
       puts $fout "
-                 if ( ackdata.ack != SAL__CMD_ACK ) \{"
+                 if ( ackdata.getAck() != SAL__CMD_ACK ) \{"
       if { [info exists SYSDIC($subsys,keyedID)] } {
-         puts $fout "		      ackdata.salIndex = subsystemID;"
+         puts $fout "		      ackdata.setSalIndex(subsystemID);"
       }
       puts $fout "
     		     if (debugLevel > 8) \{
@@ -676,11 +672,11 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
   * else returns SAL__OK if a command message has been received.
   * @param cmdSeqNum is the sequence number of the command involved, as returned by issueCommand
   */
-	public int waitForCompletion_[set i]( int cmdSeqNum , int timeout )
+	public long waitForCompletion_[set i]( int cmdSeqNum , int timeout )
 	\{
-	   int status = 0;
+	   long status = 0;
            int actorIdx = SAL__SALData_command_[set i]_ACTOR;
-	   SALData.ackcmd ackcmd = new SALData.ackcmd();
+	   [set AVRO_PREFIX].SALData.ackcmd ackcmd = new [set AVRO_PREFIX].SALData.ackcmd();
            long finishBy = System.currentTimeMillis() + timeout*1000;
 
 	   while (status != SAL__CMD_COMPLETE && System.currentTimeMillis() < finishBy ) \{
@@ -719,23 +715,23 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
 	\}
 "
     puts $fout "
-	public int waitForAck_[set i]( int timeout , ackcmd ack)
+	public long waitForAck_[set i]( int timeout , [set AVRO_PREFIX].SALData.ackcmd ack)
 	\{
-	   int status = 0;
+	   long status = 0;
            int actorIdx = SAL__SALData_ackcmd_ACTOR;
-	   SALData.ackcmd ackcmd = new SALData.ackcmd();
+	   [set AVRO_PREFIX].SALData.ackcmd ackcmd = new [set AVRO_PREFIX].SALData.ackcmd();
            long finishBy = System.currentTimeMillis() + timeout*1000;
 
 	   while (status == SAL__CMD_NOACK && System.currentTimeMillis() < finishBy ) \{
 	      status = getResponse_[set i](ackcmd);
 	      if (status != SAL__CMD_NOACK) \{
-  		ack.private_seqNum = sal\[actorIdx\].rcvSeqNum;
-   		ack.error = sal\[actorIdx\].error;
-   		ack.ack = sal\[actorIdx\].ack;
-   		ack.result = sal\[actorIdx\].result;
-                ack.origin = sal\[actorIdx\].activeorigin;
-                ack.identity = sal\[actorIdx\].activeidentity;
-                ack.cmdtype = sal\[actorIdx\].activecmdid;
+  		ack.set[getAvroMethod private_seqNum](sal\[actorIdx\].rcvSeqNum);
+   		ack.setError(sal\[actorIdx\].error);
+   		ack.setAck(sal\[actorIdx\].ack);
+   		ack.setResult(sal\[actorIdx\].result);
+                ack.setOrigin(sal\[actorIdx\].activeorigin);
+                ack.setIdentity(sal\[actorIdx\].activeidentity);
+                ack.setCmdtype(sal\[actorIdx\].activecmdid);
 	      \}
 	      try
 		\{
@@ -758,9 +754,9 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
   * @param data is the ackCmd payload
   * @returns SAL__CMD_NOACK if no ackCmd is available, or SAL__OK if there is
   */
-	public int getResponse_[set i](SALData.ackcmd data)
+	public long getResponse_[set i]([set AVRO_PREFIX].SALData.ackcmd data)
 	\{
-	  int status =  -1;
+	  long status =  -1;
           int lastsample = 0;
           int numSamples = 0;
           int actorIdx = SAL__SALData_ackcmd_ACTOR;
@@ -768,21 +764,18 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
   readerFragmentJava $fout SALData command_[set i]
   puts $fout "
 	  if (numSamples > 0) \{
- 		for (int i = 0; i < data.value.length; i++) \{
-                     if ( debugLevel > 8) \{
-				System.out.println(\"=== getResponse_[set i] message received :\");
-				System.out.println(\"    revCode  : \"
-						+ data.value\[i\].private_revCode);
-		    \}
-                    lastsample = i;
-		\}
-	 	status = data.value\[lastsample\].ack;
-	  	sal\[actorIdxCmd\].rcvOrigin = data.value\[lastsample\].private_origin;
-	  	sal\[actorIdxCmd\].rcvSeqNum = data.value\[lastsample\].private_seqNum;
-	  	sal\[actorIdxCmd\].rcvIdentity = data.value\[lastsample\].private_identity;
-	  	sal\[actorIdxCmd\].activeorigin = data.value\[lastsample\].origin;
-	  	sal\[actorIdxCmd\].activeidentity = data.value\[lastsample\].identity;
-	  	sal\[actorIdxCmd\].activecmdid = data.value\[lastsample\].cmdtype;
+                if ( debugLevel > 8) \{
+			System.out.println(\"=== getResponse_[set i] message received :\");
+			System.out.println(\"    revCode  : \" + data.getPrivateRevCode());
+                \}
+                lastsample = 1;
+	 	status = data.getAck();
+	  	sal\[actorIdxCmd\].rcvOrigin = data.getPrivateOrigin();
+	  	sal\[actorIdxCmd\].rcvSeqNum = data.getPrivateSeqNum();
+	  	sal\[actorIdxCmd\].rcvIdentity = String.valueOf(data.getPrivateIdentity());
+	  	sal\[actorIdxCmd\].activeorigin = data.getOrigin();
+	  	sal\[actorIdxCmd\].activeidentity = String.valueOf(data.getIdentity());
+	  	sal\[actorIdxCmd\].activecmdid = data.getCmdtype();
 	  \} else \{
                 if ( debugLevel > 8) \{
 	            System.out.println(\"=== getResponse_[set i] No ack yet!\"); 
@@ -796,39 +789,39 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
 /** Acknowledge a command by sending an ackCmd message, this time with access to all the ackCmd message payload
   * @param data is the ackCmd topic data
   */
-	public int ackCommand_[set i]( int cmdId, int ack, int error, String result )
+	public int ackCommand_[set i]( long cmdId, long ack, long error, String result )
 	\{
    		int istatus = -1;
    		long ackHandle = 0;
                 int actorIdx = SAL__SALData_command_[set i]_ACTOR;
                 int actorIdx2 = SAL__SALData_ackcmd_ACTOR;
 
-   		SALData.ackcmd Instance_ackcmd;
-    		ackdata.private_seqNum = cmdId;
-   		Instance_ackcmd.error = error;
-   		Instance_ackcmd.ack = ack;
-                Instance_ackcmd.origin = sal\[actorIdx\].activeorigin;
-                Instance_ackcmd.identity = sal\[actorIdx\].activeidentity;
-                Instance_ackcmd.private_origin = origin;
-                Instance_ackcmd.private_identity = CSC_identity;
-                Instance_ackcmd.private_revCode = \"[string trim $ACKREVCODE _]\";
-                Instance_ackcmd.private_sndStamp = getCurrentTime();
-   		Instance_ackcmd.result = result;"
+                [set AVRO_PREFIX].SALData.ackcmd Instance = new [set AVRO_PREFIX].SALData.ackcmd();
+    		Instance.setPrivateSeqNum(cmdId);
+   		Instance.setError(error);
+   		Instance.setAck(ack);
+                Instance.setOrigin(sal\[actorIdx\].activeorigin);
+                Instance.setIdentity(sal\[actorIdx\].activeidentity);
+                Instance.setPrivateOrigin(origin);
+                Instance.setPrivateIdentity(CSC_identity);
+                Instance.setPrivateRevCode(\"[string trim $ACKREVCODE _]\");
+                Instance.setPrivateSndStamp(getCurrentTime());
+   		Instance.setResult(result);"
       if { [info exists SYSDIC($subsys,keyedID)] } {
-         puts $fout "   		Instance_ackcmd.salIndex = subsystemID;"
+         puts $fout "   		Instance.setSalIndex(subsystemID);"
       }
       puts $fout "
    		if (debugLevel > 0) \{
-      			System.out.println(  \"=== ackCommand_[set i] acknowledging a command with :\" );
-      			System.out.println(  \"    seqNum   : \" + Instance_ackcmd.private_seqNum );
-      			System.out.println(  \"    ack      : \" + Instance_ackcmd.ack );
-      			System.out.println(  \"    error    : \" + Instance_ackcmd.error );
-      			System.out.println(  \"    origin : \" + Instance_ackcmd.origin );
-      			System.out.println(  \"    identity : \" + Instance_ackcmd.identity );
-      			System.out.println(  \"    result   : \" + Instance_ackcmd.result );
+      			System.out.println(  \"=== ackCommand_[set i] acknowledging a command with :\");
+      			System.out.println(  \"    seqNum   : \" + Instance.getPrivateSeqNum());
+      			System.out.println(  \"    ack      : \" + Instance.getAck());
+      			System.out.println(  \"    error    : \" + Instance.getError());
+      			System.out.println(  \"    origin : \" + Instance.getOrigin());
+      			System.out.println(  \"    identity : \" + Instance.getIdentity());
+      			System.out.println(  \"    result   : \" + Instance.getResult());
    		\}"
       if { [info exists SYSDIC($subsys,keyedID)] } {
-         puts $fout "   		Instance_ackcmd.salIndex = subsystemID;"
+         puts $fout "   		Instance.setSalIndex(subsystemID);"
        }
       writerFragmentJava $fout $subsys ackcmd
       puts $fout "
@@ -853,7 +846,7 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE
 #  Create the generic Kafka code to manage command Topics for Java
 #
 proc gencmdgenericjava { subsys fout } {
-global SYSDIC
+global SYSDIC AVRO_PREFIX
    puts $fout "
 	public void salCommand(String cmdAlias)
 	\{
@@ -861,12 +854,6 @@ global SYSDIC
 	  String stopic1=\"keyedCommand\";
 	  String stopic2=\"keyedResponse\";
 	  String sresponse=\"SALData_ackcmd\";
-
-	  // create domain participant
-	  createParticipant(domainName);
-
-	  //create Publisher
-	  createPublisher(actorIdx);
 
 	  //create types
 	  salTypeSupport(actorIdx);
@@ -879,9 +866,7 @@ global SYSDIC
           sal\[actorIdx\].sndSeqNum = (int)getCurrentTime() + 32768*actorIdx;
 	
           if ( sal\[SAL__SALData_ackcmd_ACTOR\].isReader == false ) \{
-	    createSubscriber(SAL__SALData_ackcmd_ACTOR);
 	    createTopic2(SAL__SALData_ackcmd_ACTOR,sresponse);
-	    //create a reader for responses
 "
    puts $fout "
  	    sal\[SAL__SALData_ackcmd_ACTOR\].isReader = true;
@@ -896,11 +881,6 @@ global SYSDIC
 	  String stopic2=\"keyedResponse\";
 	  String sresponse=\"SALData_ackcmd\";
 
-	  // create domain participant
-	  createParticipant(domainName);
-
-	  createSubscriber(actorIdx);
-
 	  //create types
 	  salTypeSupport(actorIdx);
 
@@ -913,9 +893,7 @@ global SYSDIC
 #   set evtrevcode [getRevCode [set subsys]_logevent_authList short]
    puts $fout "
           if (sal\[actorIdx\].isProcessor == false) \{
-  	    //create Publisher
-	    createPublisher(SAL__SALData_ackcmd_ACTOR);
-	    createTopic2(SAL__SALData_ackcmd_ACTOR,sresponse);
+ 	    createTopic2(SAL__SALData_ackcmd_ACTOR,sresponse);
 	    sal\[SAL__SALData_ackcmd_ACTOR\].isWriter = true;
           \}
 	  sal\[actorIdx\].isProcessor = true;
@@ -933,7 +911,7 @@ global SYSDIC
       puts $fout "
 	public int checkAuthList(String private_identity)
 	\{
-          int cmdId;
+          long cmdId;
           int iat = 0;
   	  String my_identity = CSC_identity;
 
@@ -949,26 +927,28 @@ global SYSDIC
 	  if ( sal\[SAL__SALData_command_setAuthList_ACTOR\].isProcessor == false ) \{
      	    salProcessor(\"SALData_command_setAuthList\");
      	    salEventPub(\"SALData_logevent_authList\");
-            logevent_authList myData = new logevent_authList();
+            [set AVRO_PREFIX].SALData.SALData_logevent_authList myData = new [set AVRO_PREFIX].SALData.SALData_logevent_authList();
      	    authorizedUsers = \"\";
      	    nonAuthorizedCSCs = \"\";
-     	    myData.authorizedUsers = authorizedUsers;
-     	    myData.nonAuthorizedCSCs = nonAuthorizedCSCs;
+     	    myData.set[getAvroMethod authorizedUsers](authorizedUsers);
+     	    myData.set[getAvroMethod nonAuthorizedCSCs](nonAuthorizedCSCs);
      	    logEvent_authList(myData, 1);
   	  \}
-          command_setAuthList Instance = new command_setAuthList();
-          logevent_authList myData = new logevent_authList();
+          [set AVRO_PREFIX].SALData.SALData_command_setAuthList Instance_setAuthList = new [set AVRO_PREFIX].SALData.SALData_command_setAuthList();
+          [set AVRO_PREFIX].SALData.SALData_logevent_authList myData = new [set AVRO_PREFIX].SALData.SALData_logevent_authList();
   	  cmdId = acceptCommand_setAuthList(Instance_setAuthList);
   	  if (cmdId > 0) \{
       	    if (debugLevel > 0) \{
               System.out.println( \"=== command setAuthList received = \");
-              System.out.println( \"    authorizedUsers : \" + Instance_setAuthList.authorizedUsers);
-              System.out.println( \"    nonAuthorizedCSCs : \" + Instance_setAuthList.nonAuthorizedCSCs);
+              System.out.println( \"    authorizedUsers : \" + Instance_setAuthList.get[getAvroMethod authorizedUsers]());
+              System.out.println( \"    nonAuthorizedCSCs : \" + Instance_setAuthList.get[getAvroMethod nonAuthorizedCSCs]());
             \}
-     	    authorizedUsers = Instance_setAuthList.authorizedUsers.replaceAll(\"\\\\s+\",\"\");
-     	    nonAuthorizedCSCs = Instance_setAuthList.nonAuthorizedCSCs.replaceAll(\"\\\\s+\",\"\");
-     	    myData.authorizedUsers = Instance_setAuthList.authorizedUsers;
-     	    myData.nonAuthorizedCSCs = Instance_setAuthList.nonAuthorizedCSCs;
+     	    authorizedUsers = String.valueOf(Instance_setAuthList.get[getAvroMethod authorizedUsers]());
+     	    authorizedUsers.replaceAll(\"\\\\s+\",\"\");
+     	    nonAuthorizedCSCs = String.valueOf(Instance_setAuthList.get[getAvroMethod nonAuthorizedCSCs]());
+     	    nonAuthorizedCSCs.replaceAll(\"\\\\s+\",\"\");
+     	    myData.set[getAvroMethod authorizedUsers](Instance_setAuthList.get[getAvroMethod authorizedUsers]());
+     	    myData.set[getAvroMethod nonAuthorizedCSCs](Instance_setAuthList.get[getAvroMethod nonAuthorizedCSCs]());
             ackCommand_setAuthList( cmdId, SAL__CMD_COMPLETE, 0, \"OK\" );
      	    logEvent_authList(myData, 1);
           \}
