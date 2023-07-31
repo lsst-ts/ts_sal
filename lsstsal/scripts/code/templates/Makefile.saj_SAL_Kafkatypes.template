@@ -8,7 +8,7 @@ CLASSEXT      = .class
 CLASSDIR      = classes/
 OUTPUT_OPTION = -d $(CLASSDIR)
 COMPILE.java  = $(JAVAC) $(JAVACFLAGS) -cp $(JAVACCPATH) 
-JAVACCPATH    = "$(SAL_WORK_DIR)/lib/saj_SALData_types.jar:$(CLASSDIR):$(AVRO_HOME)/avro-tools-$(AVRO_RELEASE).jar:$(SAL_DIR)/../lib/kafka-clients-3.5.0.jar:$(SAL_DIR)/../lib/kafka-avro-serializer-5.3.0.jar:$(SAL_DIR)/../lib/jackson-dataformat-avro-2.15.2.jar"
+JAVACCPATH    = "$(SAL_WORK_DIR)/lib/saj_Test_types.jar:$(CLASSDIR):$(AVRO_HOME)/avro-tools-$(AVRO_RELEASE).jar:$(SAL_DIR)/../lib/kafka-clients-3.5.0.jar:$(SAL_DIR)/../lib/kafka-avro-serializer-5.3.0.jar:$(SAL_DIR)/../lib/jackson-dataformat-avro-2.15.2.jar:$(SAL_DIR)/../lib/kafka-schema-registry-client-6.0.1.jar $(SAL_DIR)/../lib/kafka_2.9.1-0.8.2.2.jar:$(SAL_DIR)/../lib/kafka-clients-3.5.0.jar:$(SAL_DIR)/../lib/common-config-5.3.0.jar:$(SAL_DIR)/../lib/common-utils-5.3.0.jar"
 MAKEFILE      = Makefile.saj_SALData_types
 DEPENDENCIES  =
 LTARGETDIR    = ./
@@ -32,7 +32,7 @@ SRC           = $(AVRO_CLASSPATH)/SALData/*.java
 #       Local targets
 #----------------------------------------------------------------------------
 
-all: $(JARFILE)
+all: $(JARFILE) SAL_SALData.jar
 
 SALData: $(AVRO_CLASSPATH)/SALData/*.java 
 
@@ -53,6 +53,11 @@ generated: $(GENERATED_DIRTY)
 
 $(CLASSDIR)SALData/*$(CLASSEXT): SALData
 	$(COMPILE.java) $(EXPORTFLAGS) $(OUTPUT_OPTION) $(AVRO_CLASSPATH)/SALData/*.java
+
+SAL_SALData.jar:
+	$(COMPILE.java) $(EXPORTFLAGS) $(OUTPUT_OPTION) org/lsst/sal/*.java
+	cd $(CLASSDIR) && jar -cvf SAL_SALData.jar org/lsst/sal/*.class
+	mv $(CLASSDIR)/SAL_SALData.jar .
 
 clean:
 	-$(RM) $(CLASSES)

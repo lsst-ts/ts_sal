@@ -22,14 +22,14 @@ TESTDIRSTART  = test -d
 TESTDIREND    = ||
 TOUCH         = touch
 GENFLAGS      =  
-CLASSES       =  $(CLASSDIR)/org/lsst/sal/SAL_SALData$(CLASSEXT) $(CLASSDIR)/org/lsst/sal/salActor$(CLASSEXT) $(CLASSDIR)SALTopicDataPublisher$(CLASSEXT) 
+CLASSES       =  $(CLASSDIR)/org/lsst/sal/SAL_SALData$(CLASSEXT) $(CLASSDIR)/org/lsst/sal/salActor$(CLASSEXT) $(CLASSDIR)ErrorHandler$(CLASSEXT)  $(CLASSDIR)SALTopicDataPublisher$(CLASSEXT) 
 JARCLASSES    =  org/lsst/sal/SAL_SALData$(CLASSEXT) org/lsst/sal/salActor$(CLASSEXT) SALTopicDataPublisher$(CLASSEXT) 
 JAREXT        = .jar
 MAINCLASS     = SALTopicDataPublisher
 JARFILE       = $(LTARGETDIR)$(LIBPREFIX)saj_SAL_pub$(LIBSUFFIX)$(JAREXT)
 MANIFEST      = saj_SAL_pub.manifest
 JARFLAGS      = cvfm
-SRC           = ../src/org/lsst/sal/SAL_SALData.java ../src/org/lsst/sal/salActor.java  ../src/SALTopicDataPublisher.java 
+SRC           = ../src/org/lsst/sal/SAL_SALData.java ../src/org/lsst/sal/salActor.java ../src/ErrorHandler.java  ../src/SALTopicDataPublisher.java 
 
 #----------------------------------------------------------------------------
 #       Local targets
@@ -60,6 +60,11 @@ $(CLASSDIR)/org/lsst/sal/SAL_SALData$(CLASSEXT): ../src/org/lsst/sal/SAL_SALData
 $(CLASSDIR)SALTopicDataPublisher$(CLASSEXT): ../src/SALTopicDataPublisher.java
 	@$(TESTDIRSTART) "$(CLASSDIR)" $(TESTDIREND) $(MKDIR) "$(CLASSDIR)"
 	$(COMPILE.java) $(EXPORTFLAGS) $(OUTPUT_OPTION) ../src/SALTopicDataPublisher.java
+
+$(CLASSDIR)ErrorHandler$(CLASSEXT): ../src/ErrorHandler.java
+	@$(TESTDIRSTART) "$(CLASSDIR)" $(TESTDIREND) $(MKDIR) "$(CLASSDIR)"
+	$(COMPILE.java) $(EXPORTFLAGS) $(OUTPUT_OPTION) ../src/ErrorHandler.java
+
 
 clean:
 	-$(RM) $(CLASSES)

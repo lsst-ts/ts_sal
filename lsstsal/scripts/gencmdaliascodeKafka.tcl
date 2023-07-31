@@ -191,6 +191,8 @@ int SAL_SALData::issueCommand_[set i]( SALData_command_[set i]C *data )
 
   Instance.private_revCode =  \"[string trim $revcode _]\";
   Instance.private_sndStamp = getCurrentTime();
+  Instance.private_efdStamp = getCurrentUTC();
+  Instance.private_kafkaStamp = getCurrentTime();
   Instance.private_origin = getpid();
   Instance.private_identity = CSC_identity;
   Instance.private_seqNum =   sal\[actorIdx\].sndSeqNum;"
@@ -209,7 +211,9 @@ int SAL_SALData::issueCommand_[set i]( SALData_command_[set i]C *data )
         close $fin
         puts $fout "
   \}
-  Instance.private_sndStamp = getCurrentTime();"
+  Instance.private_sndStamp = getCurrentTime();
+  Instance.private_efdStamp = getCurrentUTC();
+  Instance.private_kafkaStamp = getCurrentTime();"
         writerFragment $fout $subsys [set subsys]_command_[set i]
         puts $fout "
   sal\[actorIdx\].sndSeqNum++;
@@ -255,12 +259,13 @@ int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
     ackdata.private_seqNum = Instance.private_seqNum;
     ackdata.private_revCode = \"[string trim $ACKREVCODE _]\";
     ackdata.private_sndStamp = getCurrentTime();
+    ackdata.private_efdStamp = getCurrentUTC();
+    ackdata.private_kafkaStamp = getCurrentTime();
     ackdata.cmdtype = actorIdx;
     ackdata.error = 0;
     ackdata.result = \"SAL ACK\";
     status = Instance.private_seqNum;
     ackdata.private_revCode = \"[string trim $ACKREVCODE _]\";
-    ackdata.private_sndStamp = getCurrentTime();
     rcvdTime = getCurrentTime();
     sal\[actorIdx\].rcvStamp = rcvdTime;
     sal\[actorIdx\].sndStamp = Instance.private_sndStamp;
@@ -281,7 +286,6 @@ int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
     ackdata.salIndex = subsystemID;
 #endif
-    ackdata.private_sndStamp = getCurrentTime();
 "
      if { $subsys != "LOVE" } {
        puts $fout "
@@ -480,7 +484,9 @@ salReturn SAL_SALData::ackCommand_[set i]( int cmdId, salLONG ack, salLONG error
    Instance.salIndex = subsystemID;
 #endif
    Instance.private_revCode = \"[string trim $ACKREVCODE _]\";
-   Instance.private_sndStamp = getCurrentTime();"
+   Instance.private_sndStamp = getCurrentTime();
+   Instance.private_efdStamp = getCurrentUTC();
+   Instance.private_kafkaStamp = getCurrentTime();"
    writerFragment $fout $subsys ackcmd
    puts $fout "   return SAL__OK;
 \}
@@ -523,7 +529,9 @@ salReturn SAL_SALData::ackCommand_[set i]C(SALData_ackcmdC *response )
    Instance.salIndex = subsystemID;
 #endif
    Instance.private_revCode = \"[string trim $ACKREVCODE _]\";
-   Instance.private_sndStamp = getCurrentTime();"
+   Instance.private_sndStamp = getCurrentTime();
+   Instance.private_efdStamp = getCurrentUTC();
+   Instance.private_kafkaStamp = getCurrentTime();"
    writerFragment $fout $subsys ackcmd
    puts $fout "return SAL__OK;
 \}
@@ -563,14 +571,16 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE AVRO_PREFIX
 	public long issueCommand_[set i]( [set AVRO_PREFIX].[set subsys].SALData_command_[set i] data )
 	\{
           Random randGen = new java.util.Random();
-          [set AVRO_PREFIX].SALData.SALData_command_[set i] Instance = new [set AVRO_PREFIX].[set subsys].SALData_command_[set i]();
+          SALData_command_[set i] Instance = new SALData_command_[set i]();
           long status;
           int actorIdx = SAL__SALData_command_[set i]_ACTOR;
 	  Instance.set[getAvroMethod private_revCode](\"[string trim $revcode _]\");
 	  Instance.set[getAvroMethod private_seqNum](sal\[actorIdx\].sndSeqNum);
           Instance.set[getAvroMethod private_identity](CSC_identity);
           Instance.set[getAvroMethod private_origin](origin);
-          Instance.set[getAvroMethod private_sndStamp](getCurrentTime());"
+          Instance.set[getAvroMethod private_sndStamp](getCurrentTime());
+          Instance.set[getAvroMethod private_efdStamp](getCurrentUTC());
+          Instance.set[getAvroMethod private_kafkaStamp](getCurrentTime());"
       if { [info exists SYSDIC($subsys,keyedID)] } {
         puts $fout "	  Instance.set[getAvroMethod salIndex](subsystemID);"
       }
@@ -579,7 +589,7 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE AVRO_PREFIX
 	  if (debugLevel > 0) \{
 	    System.out.println( \"=== issueCommand $i writing a command\");
 	  \}"
-          writerFragmentJava $fout $subsys [set subsys]_command_[set i]
+          writerFragmentJava $fout $subsys command_[set i]
       puts $fout "
 	  sal\[actorIdx\].sndSeqNum++;
 	  return (sal\[actorIdx\].sndSeqNum-1);
@@ -593,9 +603,8 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE AVRO_PREFIX
   */
 	public long acceptCommand_[set i]( [set AVRO_PREFIX].SALData.SALData_command_[set i] data )
 	\{
-                [set AVRO_PREFIX].SALData.SALData_command_[set i] Instance = new [set AVRO_PREFIX].SALData.SALData_command_[set i]();
-   		long status = 0;
-   		int numSamples = 0;
+    		long status = 0;
+   		int numsamp = 0;
    		int istatus =  -1;
                 String dummy=\"\";
                 int actorIdx = SAL__SALData_command_[set i]_ACTOR;
@@ -628,6 +637,8 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE AVRO_PREFIX
 		      ackdata.set[getAvroMethod private_seqNum](Instance.get[getAvroMethod private_seqNum]());
                       ackdata.set[getAvroMethod private_revCode](\"[string trim $ACKREVCODE _]\");
                       ackdata.set[getAvroMethod private_sndStamp](getCurrentTime());
+                      ackdata.set[getAvroMethod private_efdStamp](getCurrentUTC());
+                      ackdata.set[getAvroMethod private_kafkaStamp](getCurrentTime());
 		      ackdata.setError(0);
 		      ackdata.setResult(\"SAL ACK\");"
            copyfromjavasample $fout $subsys command_[set i]
@@ -758,12 +769,12 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE AVRO_PREFIX
 	\{
 	  long status =  -1;
           int lastsample = 0;
-          int numSamples = 0;
+          int numsamp = 0;
           int actorIdx = SAL__SALData_ackcmd_ACTOR;
           int actorIdxCmd = SAL__SALData_command_[set i]_ACTOR;"
   readerFragmentJava $fout SALData command_[set i]
   puts $fout "
-	  if (numSamples > 0) \{
+	  if (numsamp > 0) \{
                 if ( debugLevel > 8) \{
 			System.out.println(\"=== getResponse_[set i] message received :\");
 			System.out.println(\"    revCode  : \" + data.getPrivateRevCode());
@@ -796,7 +807,7 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE AVRO_PREFIX
                 int actorIdx = SAL__SALData_command_[set i]_ACTOR;
                 int actorIdx2 = SAL__SALData_ackcmd_ACTOR;
 
-                [set AVRO_PREFIX].SALData.ackcmd Instance = new [set AVRO_PREFIX].SALData.ackcmd();
+                ackcmd Instance = new ackcmd();
     		Instance.setPrivateSeqNum(cmdId);
    		Instance.setError(error);
    		Instance.setAck(ack);
@@ -806,6 +817,8 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE AVRO_PREFIX
                 Instance.setPrivateIdentity(CSC_identity);
                 Instance.setPrivateRevCode(\"[string trim $ACKREVCODE _]\");
                 Instance.setPrivateSndStamp(getCurrentTime());
+                Instance.setPrivateEfdStamp(getCurrentUTC());
+                Instance.setPrivateKafkaStamp(getCurrentTime());
    		Instance.setResult(result);"
       if { [info exists SYSDIC($subsys,keyedID)] } {
          puts $fout "   		Instance.setSalIndex(subsystemID);"
@@ -823,7 +836,7 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE AVRO_PREFIX
       if { [info exists SYSDIC($subsys,keyedID)] } {
          puts $fout "   		Instance.setSalIndex(subsystemID);"
        }
-      writerFragmentJava $fout $subsys ackcmd
+      writerFragmentJava $fout $subsys [set subsys]_ackcmd
       puts $fout "
    		return SAL__OK;
 	\}

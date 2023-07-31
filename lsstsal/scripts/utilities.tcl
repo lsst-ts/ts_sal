@@ -127,8 +127,12 @@ global SAL_WORK_DIR OPTIONS CMD_ALIASES EVENT_ALIASES TLM_ALIASES env
         }
    }
    if { $OPTIONS(java) } {
-        checkFileAsset $SAL_WORK_DIR/[set subsys]/java/saj_[set subsys]_types.jar
-        checkFileAsset $SAL_WORK_DIR/[set subsys]/java/src/org/lsst/sal/SAL_[set subsys].java
+        if { [info exists env(LSST_KAFKA_PREFIX)] == 0 } {
+           checkFileAsset $SAL_WORK_DIR/[set subsys]/java/saj_[set subsys]_types.jar
+           checkFileAsset $SAL_WORK_DIR/[set subsys]/java/src/org/lsst/sal/SAL_[set subsys].java
+        } else {
+           checkFileAsset $SAL_WORK_DIR/[set subsys]/java/src/saj_[set subsys]_types.jar
+        }
    }
    if { $OPTIONS(labview) } {
         checkFileAsset $SAL_WORK_DIR/[set subsys]/labview/SALLV_[set subsys].so

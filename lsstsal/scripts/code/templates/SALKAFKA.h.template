@@ -265,6 +265,13 @@
   @return The current TAI system time
  */
       double getCurrentTime();
+      
+/** Get the time from the system. The CLOCK_REALTIME (UTC) time will be used, which assumes that the kernel 
+  * leap seconds offset has been correctly set. The getLeapSeconds method can be used to 
+  * do a simple sanity check
+  @return The current UTC system time
+ */
+      double getCurrentUTC();
 
 /** Get the timestamp from the most recent Kafka message received for a topic
   @param Name of the topic as defined in the XML
