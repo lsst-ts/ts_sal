@@ -549,7 +549,7 @@ global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS
 #   Generate the base SAL API code
 #
 proc makesalcode { jsonfile base name lang } {
-global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS CMD_ALIASES ONEDONEGEN
+global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS CMD_ALIASES ONEDONEGEN AVRO_PREFIX
       if { $OPTIONS(verbose) } {stdlog "###TRACE>>> makesalcode $jsonfile $base $name $lang $ONEDONEGEN"}
       stdlog "Processing $base $name in $SAL_WORK_DIR"
       cd $SAL_WORK_DIR
@@ -618,8 +618,9 @@ global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS CMD_ALIASES ONEDONEGEN
           } else {
             puts $frep "  -e 's/SALSUBSYSID//g' \\"
           }
-          puts $frep "  -e 's/SALTopic/[set name]/g' \\"
-          puts $frep "  -e 's/SALData/$base/g' \\"
+          puts $frep "  -e 's/SAL_SALData/SAL_[set base]/g' \\"
+          puts $frep "  -e 's/SALData.SALTopic/[set base]_[set name]/g' \\"
+          puts $frep "  -e 's/SALData./[set AVRO_PREFIX].[set base]./g' \\"
           puts $frep "  -e 's/SALNAMESTRING/[set id]/g' \\"
           puts $frep "$SAL_DIR/code/templates/SALTopicDataPublisher.java.template > [set id]/java/src/[set id]DataPublisher.java"
 
@@ -629,13 +630,14 @@ global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS CMD_ALIASES ONEDONEGEN
           } else {
             puts $frep "  -e 's/SALSUBSYSID//g' \\"
           }
-          puts $frep "  -e 's/SALTopic/[set name]/g' \\"
-          puts $frep "  -e 's/SALData/$base/g' \\"
+          puts $frep "  -e 's/SAL_SALData/SAL_[set base]/g' \\"
+          puts $frep "  -e 's/SALData.SALTopic/[set base]_[set name]/g' \\"
+         puts $frep "  -e 's/SALData./[set AVRO_PREFIX].[set base]./g' \\"
           puts $frep "  -e 's/SALNAMESTRING/[set id]/g' \\"
           puts $frep "$SAL_DIR/code/templates/SALTopicDataSubscriber.java.template > [set id]/java/src/[set id]DataSubscriber.java"
         }
-        exec cp $SAL_DIR/code/templates/ErrorHandler.java [set id]/java/src/ErrorHandler.java
-        exec cp $SAL_DIR/code/templates/ErrorHandler.java [set base]/java/src/ErrorHandler.java
+        exec cp $SAL_DIR/code/templates/ErrorHandlerKafka.java [set id]/java/src/ErrorHandler.java
+        exec cp $SAL_DIR/code/templates/ErrorHandlerKafka.java [set base]/java/src/ErrorHandler.java
 
         puts $frep "sed \\"
         puts $frep "  -e 's/SALTopic/[set id]/g' \\"
@@ -768,7 +770,6 @@ global SAL_WORK_DIR OPTIONS
    exec cp saj_[set base]_types.jar $SAL_WORK_DIR/lib/.
    stdlog "javac : Done types"
    if { $id != "[set base]_notused" } {
-    stdlog "javac : Done types"
     cd $SAL_WORK_DIR/$id/java/standalone
     set result none
     catch { set result [exec make -f Makefile.saj_[set id]_pub] } bad

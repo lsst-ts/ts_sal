@@ -256,6 +256,12 @@ public class SAL_SALData {
 		return ts;
 	}
 
+	public double getCurrentUTC()
+	{
+  		double ts = salUtil.getUTCSeconds();
+		return ts;
+	}
+
 
 
 // INSERT CMDALIAS SUPPORT  for issueCommand and acceptCommand  

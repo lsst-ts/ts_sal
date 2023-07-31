@@ -23,6 +23,14 @@ JNIEXPORT jint JNICALL Java_salUtils_getLeapSeconds
 JNIEXPORT jdouble JNICALL Java_salUtils_getTAISeconds
   (JNIEnv *, jobject);
 
+/*
+ * Class:     salUtils
+ * Method:    getTAISeconds
+ * Signature: ()D
+ */
+JNIEXPORT jdouble JNICALL Java_salUtils_getUTCSeconds
+  (JNIEnv *, jobject);
+
 #ifdef __cplusplus
 }
 #endif

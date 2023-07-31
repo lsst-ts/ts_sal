@@ -27,7 +27,9 @@ global TRAILINGITEMS SYSDIC
     }
     puts $fson "   \{\"name\": \"private_revCode\", \"type\": \"string\", \"default\": \"\", \"description\": \"Revision code\", \"units\": \"unitless\"\},
    \{\"name\": \"private_sndStamp\", \"type\": \"double\", \"default\": 0.0, \"description\": \"Time of instance publication\", \"units\": \"second\"\},
-   \{\"name\": \"private_rcvStamp\", \"type\": \"double\", \"default\": 0.0, \"description\": \"Time of instance reception\", \"units\": \"second\"\},
+   \{\"name\": \"private_rcvStamp\", \"type\": \"double\", \"default\": 0.0, \"description\": \"Time of instance publication\", \"units\": \"second\"\},
+   \{\"name\": \"private_efdStamp\", \"type\": \"double\", \"default\": 0.0, \"description\": \"UIC Time of instance publication\", \"units\": \"second\"\},
+   \{\"name\": \"private_kafkaStamp\", \"type\": \"double\", \"default\": 0.0, \"description\": \"TAI Time of instance reception\", \"units\": \"second\"\},
    \{\"name\": \"private_seqNum\", \"type\": \"long\", \"default\": 0, \"description\": \"Sequence number\", \"units\": \"unitless\"\},
    \{\"name\": \"private_identity\", \"type\": \"string\", \"default\": \"\", \"description\": \"Identity of publisher: SAL component name for a CSC or user@host for a user\", \"units\": \"unitless\"\},
    \{\"name\": \"private_origin\", \"type\": \"long\", \"default\": 0, \"description\": \"Process ID of publisher\", \"units\": \"unitless\"\}[set trail]"

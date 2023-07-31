@@ -49,6 +49,8 @@ salReturn SAL_[set base]::putSample_[set name]([set base]_[set name]C *data)
   puts $fout "
   Instance.private_revCode = \"[string trim $revcode _]\";
   Instance.private_sndStamp = getCurrentTime();
+  Instance.private_efdStamp = getCurrentUTC();
+  Instance.private_kafkaStamp = getCurrentTime();
   sal\[actorIdx\].sndStamp = Instance.private_sndStamp;
   Instance.private_identity = CSC_identity;
   Instance.private_origin = getpid();
@@ -64,8 +66,10 @@ salReturn SAL_[set base]::putSample_[set name]([set base]_[set name]C *data)
     cout << \"=== \[putSample\] [set base]_[set name] writing a message containing :\" << endl;
     cout << \"    revCode  : \" << Instance.private_revCode << endl;
   \}
-  Instance.private_sndStamp = getCurrentTime();"
-      writerFragment $fout $base [set base]_[set name]
+  Instance.private_sndStamp = getCurrentTime();
+  Instance.private_efdStamp = getCurrentUTC();
+  Instance.private_kafkaStamp = getCurrentTime();"
+    writerFragment $fout $base [set base]_[set name]
       puts $fout "
   return status;
 \}
@@ -580,7 +584,7 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS AVRO_PREFI
     puts $fout "  public int putSample([set AVRO_PREFIX].[set base].[set base]_[set name] data)"
     puts $fout "  \{"
     puts $fout "    int status = SAL__OK;"
-    puts $fout "    [set AVRO_PREFIX].[set base].[set base]_[set name] Instance = new [set AVRO_PREFIX].[set base].[set base]_[set name]();"
+    puts $fout "    [set base]_[set name] Instance = new [set base]_[set name]();"
     puts $fout "    int actorIdx = SAL__[set base]_[set name]_ACTOR;"
     puts $fout "    if ( sal\[actorIdx\].isWriter == false ) \{"
     puts $fout "      sal\[actorIdx\].isWriter = true;"
@@ -588,6 +592,8 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS AVRO_PREFI
     puts $fout "//   Instance = new GenericData.Record(sal\[actorIdx\].avroSchema);"
     puts $fout "   Instance.set[getAvroMethod private_revCode](\"[string trim $revcode _]\");"
     puts $fout "   Instance.set[getAvroMethod private_sndStamp](getCurrentTime());"
+    puts $fout "   Instance.set[getAvroMethod private_efdStamp](getCurrentUTC());"
+    puts $fout "   Instance.set[getAvroMethod private_kafkaStamp](getCurrentTime());"
     puts $fout "   Instance.set[getAvroMethod private_identity](CSC_identity);"
     puts $fout "   Instance.set[getAvroMethod private_origin](origin);"
     puts $fout "   Instance.set[getAvroMethod private_SeqNum](sal\[actorIdx\].sndSeqNum);"
@@ -626,7 +632,6 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS AVRO_PREFI
     puts $fout "    int status =  -1;"
     puts $fout "    int last = SAL__NO_UPDATES;"
     puts $fout "    int numsamp = 0;"
-    puts $fout "    [set AVRO_PREFIX].[set base].[set base]_[set name] Instance = new [set AVRO_PREFIX].[set base].[set base]_[set name]();"
     puts $fout "    int actorIdx = SAL__[set base]_[set name]_ACTOR;"
     puts $fout "    if ( sal\[actorIdx\].isReader == false ) \{"
     puts $fout "	    sal\[actorIdx\].isReader = true;"
@@ -787,8 +792,8 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS
   exec cp $SAL_DIR/code/templates/salUtils.java [set id]/java/src/org/lsst/sal/.
   exec cp $SAL_DIR/code/templates/salUtils.java [set base]/java/src/org/lsst/sal/.
   set fin [open $SAL_DIR/code/templates/SALKAFKA.java.template r]
-  set fout [open [set id]/java/src/org/lsst/sal/SAL_[set base].java w]
-  puts stdout "Configuring [set id]/java/src/org/lsst/sal/SAL_[set base].java"
+  set fout [open [set base]/java/src/org/lsst/sal/SAL_[set base].java w]
+  puts stdout "Configuring [set base]/java/src/org/lsst/sal/SAL_[set base].java"
   while { [gets $fin rec] > -1 } {
      if { [string range $rec 0 20] == "// INSERT SAL IMPORTS" } {
         puts $fout "import org.lsst.sal.salActor;"
@@ -815,6 +820,7 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS
   }
   close $fin
   close $fout
+  exec cp [set base]/java/src/org/lsst/sal/SAL_[set base].java [set id]/java/src/org/lsst/sal/SAL_[set base].java 
  }
  if { $lang == "cpp" } {
   set finh [open $SAL_DIR/code/templates/SALKAFKA.h.template r]
@@ -870,41 +876,62 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS
 }
 
 proc writerFragmentJava { fout base name } {
-   puts $fout "
-//        DatumWriter<GenericRecord> datumWriter = new SpecificDatumWriter(sal\[actorIdx\].avroSchema);
-//        ByteArrayOutputStream out = new ByteArrayOutputStream();
-//        DirectBinaryEncoder binaryEncoder = (DirectBinaryEncoder) EncoderFactory.get().directBinaryEncoder(out, null);
-//         datumWriter.write(Instance, binaryEncoder);
-//         binaryEncoder.flush();
-//         out.close();
-//         serializedBytes = out.toByteArray();
-//         publisher.send(serializedBytes);
-           publisher.flush();
-         "
+global AVRO_PREFIX OPTIONS
+ if { $OPTIONS(verbose) } {stdlog "###TRACE>>> writerFragmentJava $base $nane "}
+   set avroname [set base]_[set name]
+   if { $name == "[set base]_ackcmd" } {
+     set avroname "ackcmd"
+   }
+   puts $fout "  if (sal\[actorIdx\].publisher == null ) \{";
+   puts $fout "  Properties props = new Properties();"
+#props.put("bootstrap.servers", "localhost:9092");
+#props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,org.apache.kafka.common.serialization.StringSerializer.class);
+#props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,io.confluent.kafka.serializers.KafkaAvroSerializer.class);
+#props.put("schema.registry.url", "http://localhost:8081");
+#props.put("kafka.security.protocol","SASL_SSL");
+#props.put("kafka.sasl.mechanism","SCRAM-SHA=512");
+#props.put("kafka.sasl.username","ts-salkafka");
+#props.put("kafka.sasl.password","Arpd8QY9B8NI");                  
+   puts $fout "     KafkaProducer<String, [set avroname]> producer = new KafkaProducer<String, [set avroname]>(props);"
+   puts $fout "     sal\[actorIdx\].publisher = producer;";
+   puts $fout "  \}";
+   puts $fout "  try \{";
+   puts $fout "     publisher.send(new ProducerRecord<String,[set avroname]>(\"[set AVRO_PREFIX].[set base].[set avroname]\", \"LSST\", Instance));";
+   puts $fout "  \} catch (Exception e) \{";
+   puts $fout "     System.out.println(\"An error occurred: \" + e.getMessage());";
+   puts $fout "  \}";
+   puts $fout "  publisher.flush();";
+ if { $OPTIONS(verbose) } {stdlog "###TRACE<<< writerFragmentJava $base $nane "}
 }
 
 proc readerFragmentJava { fout base name } {
-    puts $fout "
-        String avroTopic = \"lsst.ts.sal.kafka_Test.[set base]_[set name]\";
-        if (sal\[actorIdx\].subscriber == null ) \{
-           AvroMapper avroMapper = new AvroMapper();
-//           Schema salschema = avroMapper.schemaFor([set base].[set base]_[set name].class);
-//           sal\[actorIdx\].avroSchema = salschema;
-//           Consumer<String, Instance> consumer = new KafkaConsumer<>(cprops);
-//           consumer.subscribe(Arrays.asList(Instance));
-//           sal\[actorIdx\].subscriber = consumer;
-        \} else \{
-//           consumer = sal\[actorIdx\].subscriber;
-        \}
-//        ConsumerRecords<String, [set base]_[set name]> records = consumer.poll(100);
-//        for (ConsumerRecord<String, [set base]_[set name]> Instances : records) \{
-//            numsamp++;
-//        \}      
-//        DatumReader<GenericRecord> datumReader = new SpecificDatumReader(sal\[actorIdx\].avroSchema);
-//        ByteArrayInputStream in = new ByteArrayInputStream();
-//        DirectBinaryDecoder binaryDecoder = (DirectBinaryDecoder) DecoderFactory.get().directBinaryDecoder(in, null);
-//        datumReader.read(Instance, binaryDecoder);
-         "
+global AVRO_PREFIX
+   set avroname [set base]_[set name]
+   if { $name == "[set base]_ackcmd" } {
+     set avroname "ackcmd"
+   }
+   puts $fout "  String avroTopic = \"[set AVRO_PREFIX].[set base].[set avroname]\";"
+    puts $fout "//  if (sal\[actorIdx\].subscriber == null ) \{"
+    puts $fout "//     AvroMapper avroMapper = new AvroMapper();"
+    puts $fout "//     Schema salschema = avroMapper.schemaFor([set avroname].class);"
+    puts $fout "//     sal\[actorIdx\].avroSchema = salschema;"
+    puts $fout "     Properties cprops = new Properties();"
+    puts $fout "     KafkaConsumer<String, [set avroname]> consumer = new KafkaConsumer<>(cprops);"
+    puts $fout "     consumer.subscribe(Collections.singletonList(\"[set AVRO_PREFIX].[set base].[set avroname]\"));"
+    puts $fout "     sal\[actorIdx\].subscriber = consumer;"
+    puts $fout "//  \} else \{"
+    puts $fout "//     KafkaConsumer<String, [set avroname]> consumer = sal\[actorIdx\].subscriber;"
+    puts $fout "//  \}"
+    puts $fout "  [set avroname] Instance = new [set avroname]();"
+    puts $fout "  ConsumerRecords<String, [set avroname]> records = consumer.poll(100);"
+    puts $fout "  for (final ConsumerRecord<String, [set avroname]> record : records) \{"
+    puts $fout "    numsamp++;"
+    puts $fout "    String key = record.key();"
+    puts $fout "    Instance = record.value();"
+    puts $fout "    if (debugLevel > 0) \{"
+    puts $fout "       System.out.printf(\"key = %s, [set avroname]\", key);"
+    puts $fout "    \}"
+    puts $fout "  \}"
 }
 
   

@@ -132,6 +132,19 @@ double SAL_SALData::getCurrentTime()
    return taiTime;
 }
 
+double SAL_SALData::getCurrentUTC()
+{
+   struct timex tx;
+   struct timespec now;
+   double utcTime;
+
+   memset(&tx, 0, sizeof(tx));
+   adjtimex(&tx);
+   clock_gettime(CLOCK_REALTIME,&now);
+   utcTime = (double)now.tv_sec + (double)now.tv_nsec/1000000000.;
+   return utcTime;
+}
+
 int SAL_SALData::getLeapSeconds()
 {
    struct timex tx;
