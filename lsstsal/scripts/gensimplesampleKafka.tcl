@@ -172,7 +172,7 @@ global SAL_DIR SAL_WORK_DIR SYSDIC VPROPS EVENT_ENUM OPTIONS CMD_ALIASES METADAT
    foreach i $all {
      stdlog "Adding $i to sal_$subsys code fragments"
      set fin [open $i r]
-     gets $fin rec; gets $fin rec;gets $fin rec;gets $fin rec;gets $fin rec;gets $fin rec;gets $fin rec;
+     gets $fin rec; gets $fin rec;gets $fin rec;gets $fin rec;gets $fin rec;gets $fin rec;gets $fin rec; gets $fin rec; gets $fin rec
      set name [join [lrange [split [file rootname [file tail $i]] _] 1 end] _]
      if { $name != "ackcmd" } {
       set VPROPS(iscommand) 0
@@ -585,10 +585,12 @@ global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS CMD_ALIASES ONEDONEGEN AV
         if { $name != "notused" } {
           modpubsubexamples $id
           puts $frep "sed -i -e 's/SALTopic/[set name]/g' [set id]/cpp/src/[set id]DataPublisher.cpp"
-          puts $frep "sed -i -e 's/SALNAMESTRING/[set base]_[set name]/g' [set id]/cpp/src/[set id]DataPublisher.cpp"
+          puts $frep "sed -i -e 's/SALNAMESTRING/[set name]/g' [set id]/cpp/src/[set id]DataPublisher.cpp"
+          puts $frep "sed -i -e 's/SALSTRUCTSTRING/[set base]_[set name]/g' [set id]/cpp/src/[set id]DataPublisher.cpp"
           puts $frep "sed -i -e 's/SALData/$base/g' [set id]/cpp/src/[set id]DataPublisher.cpp"
           puts $frep "sed -i -e 's/SALTopic/[set name]/g' [set id]/cpp/src/[set id]DataSubscriber.cpp"
-          puts $frep "sed -i -e 's/SALNAMESTRING/[set base]_[set name]/g' [set id]/cpp/src/[set id]DataSubscriber.cpp"
+          puts $frep "sed -i -e 's/SALNAMESTRING/[set name]/g' [set id]/cpp/src/[set id]DataSubscriber.cpp"
+          puts $frep "sed -i -e 's/SALSTRUCTSTRING/[set base]_[set name]/g' [set id]/cpp/src/[set id]DataSubscriber.cpp"
           puts $frep "sed -i -e 's/SALData/$base/g' [set id]/cpp/src/[set id]DataSubscriber.cpp"
         }
       }
@@ -619,7 +621,7 @@ global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS CMD_ALIASES ONEDONEGEN AV
             puts $frep "  -e 's/SALSUBSYSID//g' \\"
           }
           puts $frep "  -e 's/SAL_SALData/SAL_[set base]/g' \\"
-          puts $frep "  -e 's/SALData.SALTopic/[set base]_[set name]/g' \\"
+          puts $frep "  -e 's/SALData.SALTopic/[set name]/g' \\"
           puts $frep "  -e 's/SALData./[set AVRO_PREFIX].[set base]./g' \\"
           puts $frep "  -e 's/SALNAMESTRING/[set id]/g' \\"
           puts $frep "$SAL_DIR/code/templates/SALTopicDataPublisher.java.template > [set id]/java/src/[set id]DataPublisher.java"
@@ -631,7 +633,7 @@ global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS CMD_ALIASES ONEDONEGEN AV
             puts $frep "  -e 's/SALSUBSYSID//g' \\"
           }
           puts $frep "  -e 's/SAL_SALData/SAL_[set base]/g' \\"
-          puts $frep "  -e 's/SALData.SALTopic/[set base]_[set name]/g' \\"
+          puts $frep "  -e 's/SALData.SALTopic/[set name]/g' \\"
          puts $frep "  -e 's/SALData./[set AVRO_PREFIX].[set base]./g' \\"
           puts $frep "  -e 's/SALNAMESTRING/[set id]/g' \\"
           puts $frep "$SAL_DIR/code/templates/SALTopicDataSubscriber.java.template > [set id]/java/src/[set id]DataSubscriber.java"
