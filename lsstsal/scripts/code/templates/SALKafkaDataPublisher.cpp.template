@@ -24,7 +24,7 @@ int SALTelemetryPublisher(char *topic_name)
   struct timespec delay_1s;
   delay_1s.tv_sec = 1;
   delay_1s.tv_nsec = 0;
-  SALNAMESTRINGC myData;
+  SALSTRUCTSTRINGC myData;
   long iseq;
 
   // Publish Events

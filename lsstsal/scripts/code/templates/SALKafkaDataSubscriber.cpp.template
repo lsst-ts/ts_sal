@@ -26,7 +26,7 @@ int SALTelemetrySubscriber(char *topic_name)
   struct timespec delay_10ms;
   delay_10ms.tv_sec = 0;
   delay_10ms.tv_nsec = 10000000;
-  SALNAMESTRINGC SALInstance;
+  SALSTRUCTSTRINGC SALInstance;
 
 
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED

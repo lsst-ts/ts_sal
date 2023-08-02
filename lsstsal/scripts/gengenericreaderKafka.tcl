@@ -65,6 +65,7 @@ salReturn SAL_[set base]::[set name]Available () \{
 
 
 proc readerFragment { fout base name } {
+global AVRO_PREFIX
      puts $fout "   numSamples = 0;"
      puts $fout "   actorIdx = SAL__[set base]_[set name]_ACTOR;"
      puts $fout "   RdKafka::Message *message = subscriber->consume(sal\[actorIdx\].topic, partition, 1000);"
@@ -132,23 +133,27 @@ proc readerFragment { fout base name } {
 }
 
 proc writerFragment { fout base name } {
+global AVRO_PREFIX
   puts $fout "     avro::EncoderPtr e = avro::binaryEncoder();"
   puts $fout "     const avro::OutputStreamPtr out = avro::memoryOutputStream();"
   puts $fout "     e->init(*out.get());"
   puts $fout "     unsigned long outsize;"
-  puts $fout "// eg Instance ====     Test::Test_command_setAuthList mydata;"
+  puts $fout "// eg Instance ====     Test::command_setAuthList mydata;"
   puts $fout "     avro::encode(*e,Instance);"
   puts $fout "     std::vector<uint8_t> buffer;"
   puts $fout "     std::shared_ptr<std::vector<uint8_t> > v = avro::snapshot(*out.get());"
   puts $fout "     buffer.insert(buffer.end(), v->begin(), v->end());"
   puts $fout "     outsize = buffer.size();"
-  puts $fout "//     MessageBuilder builder(\"lsst.sal.[set name]\");"
-  puts $fout "//     builder.payload(buffer);"
-  puts $fout "//     kafkabuilder->produce(builder);"
-  puts $fout "//     kafkabuilder->flush();"
+  puts $fout "//     std::string errstr;"
+  puts $fout "//     const avro::GenericDatum *serializedBytes;"
+  puts $fout "//     if (serdes->serialize(sal\[actorIdx\].avroSchema, serializedBytes, buffer, errstr) == -1) \{"
+  puts $fout "//       std::cerr << \"% Avro serialization failed: \" << errstr << std::endl;"
+  puts $fout "//       continue;"
+  puts $fout "//     \}"
+  puts $fout "//     outsize = serializedBytes.size();"
   puts $fout "     RdKafka::Headers *headers = RdKafka::Headers::create();"
   puts $fout "     RdKafka::ErrorCode resp ="
-  puts $fout "           publisher->produce(\"lsst.sal.[set name]\", partition,"
+  puts $fout "           publisher->produce(sal\[actorIdx\].avroName, partition,"
   puts $fout "                                 RdKafka::Producer::RK_MSG_COPY /* Copy payload */,"
   puts $fout "                                 buffer.data(), outsize,"
   puts $fout "                                 NULL, 0, 0, headers);"
@@ -164,6 +169,7 @@ proc writerFragment { fout base name } {
   puts $fout "       \}"
   puts $fout "     \}"
   puts $fout "     publisher->poll(0);"
+  puts $fout "//     publisher->flush();"
 }
 
 

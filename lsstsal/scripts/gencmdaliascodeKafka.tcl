@@ -182,7 +182,7 @@ int SAL_SALData::issueCommand_[set i]( SALData_command_[set i]C *data )
   while { [gets $frag rec] > -1} {puts $fout $rec}
   close $frag
   puts $fout "
-  [set subsys]::[set subsys]_command_[set i] Instance;
+  [set subsys]::command_[set i] Instance;
   int actorIdx = SAL__SALData_command_[set i]_ACTOR;
   // create DataWriter :
   if (sal\[actorIdx\].isCommand == false) \{
@@ -228,7 +228,7 @@ int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
 \{
 //   long istatus =  -1;
    int numSamples = 0;
-   [set subsys]::SALData_command_[set i] Instance;
+   [set subsys]::command_[set i] Instance;
    SALData::ackcmd ackdata;
    int actorIdx = SAL__SALData_command_[set i]_ACTOR;
    if ( data == NULL ) \{
@@ -453,10 +453,7 @@ salReturn SAL_SALData::getResponse_[set i]C(SALData_ackcmdC *response)
    puts $fout "
 salReturn SAL_SALData::ackCommand_[set i]( int cmdId, salLONG ack, salLONG error, char *result )
 \{
-//   long istatus = -1;
-//   long ackHandle = 0;
-//   int actorIdx = SAL__SALData_ackcmd_ACTOR;
-   int actorIdxCmd = SAL__SALData_command_[set i]_ACTOR;
+   int actorIdx = SAL__SALData_command_[set i]_ACTOR;
 
    SALData::ackcmd Instance;
 
@@ -465,9 +462,9 @@ salReturn SAL_SALData::ackCommand_[set i]( int cmdId, salLONG ack, salLONG error
    Instance.error = error;
    Instance.ack = ack;
    Instance.result = result;
-   Instance.origin = sal\[actorIdxCmd\].activeorigin;
-   Instance.identity = sal\[actorIdxCmd\].activeidentity.c_str();
-   Instance.cmdtype = actorIdxCmd;
+   Instance.origin = sal\[actorIdx\].activeorigin;
+   Instance.identity = sal\[actorIdx\].activeidentity.c_str();
+   Instance.cmdtype = actorIdx;
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
    Instance.salIndex = subsystemID;
 #endif
@@ -494,25 +491,22 @@ salReturn SAL_SALData::ackCommand_[set i]( int cmdId, salLONG ack, salLONG error
    puts $fout "
 salReturn SAL_SALData::ackCommand_[set i]C(SALData_ackcmdC *response )
 \{
-//   long istatus = -1;
-//   long ackHandle = NULL;
-//   int actorIdx = SAL__SALData_ackcmd_ACTOR;
-   int actorIdxCmd = SAL__SALData_command_[set i]_ACTOR;
+   int actorIdx = SAL__SALData_command_[set i]_ACTOR;
    if ( response == NULL ) \{
       throw std::runtime_error(\"NULL pointer for ackCommand_[set i]\");
    \}
 
    SALData::ackcmd Instance;
 
-   Instance.private_seqNum = sal\[actorIdxCmd\].activecmdid;
+   Instance.private_seqNum = sal\[actorIdx\].activecmdid;
    Instance.private_origin = getpid();
    Instance.private_identity = CSC_identity;
    Instance.error = response->error;
    Instance.ack = response->ack;
    Instance.result = response->result.c_str();
-   Instance.origin = sal\[actorIdxCmd\].activeorigin;
-   Instance.identity = sal\[actorIdxCmd\].activeidentity.c_str();
-   Instance.cmdtype = actorIdxCmd;
+   Instance.origin = sal\[actorIdx\].activeorigin;
+   Instance.identity = sal\[actorIdx\].activeidentity.c_str();
+   Instance.cmdtype = actorIdx;
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
    Instance.salIndex = subsystemID;
 #endif
@@ -568,10 +562,10 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE AVRO_PREFIX
   * @param data is the command payload $turl
   * @returns the sequence number aka command id
   */
-	public long issueCommand_[set i]( [set AVRO_PREFIX].[set subsys].SALData_command_[set i] data )
+	public long issueCommand_[set i]( [set AVRO_PREFIX].[set subsys].command_[set i] data )
 	\{
           Random randGen = new java.util.Random();
-          SALData_command_[set i] Instance = new SALData_command_[set i]();
+          command_[set i] Instance = new command_[set i]();
           long status;
           int actorIdx = SAL__SALData_command_[set i]_ACTOR;
 	  Instance.set[getAvroMethod private_revCode](\"[string trim $revcode _]\");
@@ -601,7 +595,7 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE AVRO_PREFIX
     and no cmdId will be returned to the caller (=0)
   * @param data is the command payload $turl
   */
-	public long acceptCommand_[set i]( [set AVRO_PREFIX].SALData.SALData_command_[set i] data )
+	public long acceptCommand_[set i]( [set AVRO_PREFIX].SALData.command_[set i] data )
 	\{
     		long status = 0;
    		int numsamp = 0;
@@ -836,7 +830,7 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE AVRO_PREFIX
       if { [info exists SYSDIC($subsys,keyedID)] } {
          puts $fout "   		Instance.setSalIndex(subsystemID);"
        }
-      writerFragmentJava $fout $subsys [set subsys]_ackcmd
+      writerFragmentJava $fout $subsys ackcmd
       puts $fout "
    		return SAL__OK;
 	\}
@@ -940,15 +934,15 @@ global SYSDIC AVRO_PREFIX
 	  if ( sal\[SAL__SALData_command_setAuthList_ACTOR\].isProcessor == false ) \{
      	    salProcessor(\"SALData_command_setAuthList\");
      	    salEventPub(\"SALData_logevent_authList\");
-            [set AVRO_PREFIX].SALData.SALData_logevent_authList myData = new [set AVRO_PREFIX].SALData.SALData_logevent_authList();
+            [set AVRO_PREFIX].SALData.logevent_authList myData = new [set AVRO_PREFIX].SALData.logevent_authList();
      	    authorizedUsers = \"\";
      	    nonAuthorizedCSCs = \"\";
      	    myData.set[getAvroMethod authorizedUsers](authorizedUsers);
      	    myData.set[getAvroMethod nonAuthorizedCSCs](nonAuthorizedCSCs);
      	    logEvent_authList(myData, 1);
   	  \}
-          [set AVRO_PREFIX].SALData.SALData_command_setAuthList Instance_setAuthList = new [set AVRO_PREFIX].SALData.SALData_command_setAuthList();
-          [set AVRO_PREFIX].SALData.SALData_logevent_authList myData = new [set AVRO_PREFIX].SALData.SALData_logevent_authList();
+          [set AVRO_PREFIX].SALData.command_setAuthList Instance_setAuthList = new [set AVRO_PREFIX].SALData.command_setAuthList();
+          [set AVRO_PREFIX].SALData.logevent_authList myData = new [set AVRO_PREFIX].SALData.logevent_authList();
   	  cmdId = acceptCommand_setAuthList(Instance_setAuthList);
   	  if (cmdId > 0) \{
       	    if (debugLevel > 0) \{

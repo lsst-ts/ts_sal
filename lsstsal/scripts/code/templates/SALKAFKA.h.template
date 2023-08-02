@@ -27,6 +27,7 @@
   #include "SAL_SALDataC.h"
 
   #include <librdkafka/rdkafkacpp.h>
+  #include <librdkafka/rdkafka.h>
   #include <avro/Encoder.hh>
   #include <avro/Decoder.hh>
   #include <avro/Generic.hh>
@@ -36,12 +37,9 @@
   #include "libserdes/serdescpp-avro.h"
   #include <avro/Schema.hh>
   #include <avro/ValidSchema.hh>
-  #include "cppkafka/producer.h"
-  #include "cppkafka/configuration.h"
-
+ 
   using namespace std;
   using namespace RdKafka;
-  using namespace cppkafka;
 
 #ifndef _SAL_SALActorMGR_
   #define _SAL_SALActorMGR_
@@ -86,8 +84,13 @@
 /// publisher holds a pointer to the internal Kafka Publisher object
 ///      RdKafka::Publisher 	*publisher;
 /// subscriber holds a pointer to the internal Kafka Subscriber object
-///      RdkafKa::Consumer		*subscriber; 
-    avro::ValidSchema avroSchema;
+///      RdkafKa::Consumer	*subscriber; 
+    std::string avroName;
+    std::string avroName2;
+    Serdes::Schema 		*avroSchema;
+    Serdes::Schema 		*avroSchema2;
+///    avro::ValidSchema 		avroSchema;
+///    avro::ValidSchema 		avroSchema2;
     bool hasSchema;
 /// isActive is true when the Actor has been connected to Kafka
       bool			isActive;
@@ -147,23 +150,21 @@
   class SAL_SALData
   {
       /* Generic Kafka entities */
-      cppkafka::Producer *kafkabuilder;
-      cppkafka::Configuration *cppconfiguration;
       const std::string server;
       RdKafka::TopicPartition *tpartition;
       RdKafka::Conf *configuration;
+      RdKafka::Conf *consumerConfiguration;
       RdKafka::Conf *topicConfiguration;
       RdKafka::Topic *topic;
       RdKafka::Topic *topic2;
       RdKafka::Producer *publisher;
       RdKafka::Consumer *subscriber;
       RdKafka::Headers *headers;
-      Serdes::Conf *sconf;
+      Serdes::Conf *serdesConfiguration;
       Serdes::Avro *serdes;
       Serdes::Schema *schema;
       std::string schema_name;
       std::string schema_def;
-      std::string localSchemaDir;
       int domain;
       int status;
       int participant;
@@ -187,12 +188,23 @@
       double rcvdTime;
       salU64  origin;
       char domainName[128];
-      int partition;
+      int partition = -1;
       salActor sal[SAL__ACTORS_MAXCOUNT];
       int lastActor_telemetry;
       int lastActor_command;
       int lastActor_event;
       bool authListEnabled;
+      char *pname;
+      char *aname;
+      char *sname;
+      char *kport;
+      char *khost;
+      char *securityProtocol;
+      char *securityMechanism;
+      char *securityUserName;
+      char *securityPassword;
+      char *schemaRegistry;
+      char *localSchemaDir;
 
 ///   Holds the private_identity of this SAL Object, set at creation
       char CSC_identity[128];

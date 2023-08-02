@@ -158,9 +158,10 @@ global TRAILINGITEMS
         set topics([string tolower $value]) 1
         set tname $value
         puts stdout "Translating $tname"
+        set atname [join [lrange [split $tname "_"] 1 end] "_"]
         set fout [open $SAL_WORK_DIR/avro-templates/[set tname].json w]
         puts $fout "\{
-\"type\": \"record\", \"name\": \"[set tname]\", \"namespace\": \"lsst.sal.kafka_Test.[set subsys]\", \"fields\": \["
+\"type\": \"record\", \"name\": \"[set atname]\", \"namespace\": \"lsst.sal.[set subsys]\", \"fields\": \["
         if { $TRAILINGITEMS($tname) == "private_origin" } {
           add_private_json $fout $subsys ""
         } else {

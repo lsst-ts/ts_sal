@@ -39,7 +39,7 @@ global SAL_WORK_DIR OPTIONS
 salReturn SAL_[set base]::putSample_[set name]([set base]_[set name]C *data)
 \{
   int actorIdx = SAL__[set base]_[set name]_ACTOR;
-  [set base]::[set base]_[set name] Instance;
+  [set base]::[set name] Instance;
   if ( data == NULL ) \{
      throw std::runtime_error(\"NULL pointer for putSample_[set name]\");
   \}"
@@ -63,7 +63,7 @@ salReturn SAL_[set base]::putSample_[set name]([set base]_[set name]C *data)
   puts $fout "
 
   if (debugLevel > 0) \{
-    cout << \"=== \[putSample\] [set base]_[set name] writing a message containing :\" << endl;
+    cout << \"=== \[putSample\] [set base].[set name] writing a message containing :\" << endl;
     cout << \"    revCode  : \" << Instance.private_revCode << endl;
   \}
   Instance.private_sndStamp = getCurrentTime();
@@ -78,7 +78,7 @@ salReturn SAL_[set base]::getSample_[set name]([set base]_[set name]C *data)
 \{
   int numSamples = 0;
   salReturn istatus = -1;
-  [set base]::[set base]_[set name] Instance;
+  [set base]::[set name] Instance;
 
   if ( data == NULL ) \{
      throw std::runtime_error(\"NULL pointer for getSample_[set name]\");
@@ -314,7 +314,7 @@ public String getAVROVersion()
 #   Add code to support salActor data structure initialization in C++
 #
 proc addActorIndexesCPP { base fout } {
-global SAL_WORK_DIR ACTIVETOPICS
+global SAL_WORK_DIR ACTIVETOPICS AVRO_PREFIX
    set idx 0
    set fact [open $SAL_WORK_DIR/[set base]/cpp/src/SAL_[set base]_actors.h w]
    foreach name $ACTIVETOPICS {
@@ -335,6 +335,7 @@ global SAL_WORK_DIR ACTIVETOPICS
    puts $fout "      sal\[i\].isActive = false;"
    puts $fout "      sal\[i\].maxSamples = 1000;"
    puts $fout "      sal\[i\].sampleAge = 1.0e20;"
+   puts $fout "      sal\[i\].hasSchema = false;"
    puts $fout "      sal\[i\].historyDepth = 100;" 
    puts $fout "    \}"
    set idx 0
@@ -342,7 +343,8 @@ global SAL_WORK_DIR ACTIVETOPICS
       set type [lindex [split $name _] 0]
       set revcode [getRevCode [set base]_[set name] short]
       puts $fout "    strcpy(sal\[$idx\].topicHandle,\"[set base]_[set name][set revcode]\");"
-      puts $fout "    strcpy(sal\[$idx\].topicName,\"[set base]_[set name]\");"
+      puts $fout "    strcpy(sal\[$idx\].topicName,\"[set name]\");"
+      puts $fout "    sal\[$idx\].avroName = \"[set AVRO_PREFIX].[set base].[set name]\";"
       incr idx 1
    }
   puts $fout "\}"
@@ -377,7 +379,7 @@ global ACTIVETOPICS env
       set revcode [getRevCode [set base]_[set name] short]
       puts $fout "    sal\[$idx\]=new salActor();" 
       puts $fout "    sal\[$idx\].topicHandle=\"[set base]_[set name][set revcode]\";"
-      puts $fout "    sal\[$idx\].topicName=\"[set base]_[set name]\";"
+      puts $fout "    sal\[$idx\].topicName=\"[set name]\";"
       if { $type == "logevent" || $type == "command" || $type == "ackcmd" } {
         puts $fout "    sal\[$idx\].topicType=\"[set type]\";"
       } else {
@@ -549,7 +551,7 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS AVRO_PREFI
    puts $fout "  if (\"[set base]\".equals(parts\[0\]) ) \{"
    foreach name $ACTIVETOPICS {
      set revcode [getRevCode [set base]_[set name] short]
-     puts $fout "   if ( \"[set base]_$name\".equals(topicName) ) \{"
+     puts $fout "   if ( \"$name\".equals(topicName) ) \{"
      puts $fout "//     sal\[actorIdx\].avroSchema = avroMapper.schemaFor([set base]_[set name].class);"
      puts $fout "     return SAL__OK;"
      puts $fout "   \}"
@@ -581,10 +583,10 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS AVRO_PREFI
     puts $fout "/** Publish a sample of the $turl Kafka topic. A publisher must already have been set up"
     puts $fout "  * @param data The payload of the sample as defined in the XML for SALData"
     puts $fout "  */"
-    puts $fout "  public int putSample([set AVRO_PREFIX].[set base].[set base]_[set name] data)"
+    puts $fout "  public int putSample([set AVRO_PREFIX].[set base].[set name] data)"
     puts $fout "  \{"
     puts $fout "    int status = SAL__OK;"
-    puts $fout "    [set base]_[set name] Instance = new [set base]_[set name]();"
+    puts $fout "    [set name] Instance = new [set name]();"
     puts $fout "    int actorIdx = SAL__[set base]_[set name]_ACTOR;"
     puts $fout "    if ( sal\[actorIdx\].isWriter == false ) \{"
     puts $fout "      sal\[actorIdx\].isWriter = true;"
@@ -627,7 +629,7 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS AVRO_PREFI
     puts $fout "  * If there are multiple samples in the history cache, they are skipped over and only the most recent is supplied."
     puts $fout "  * @param data The payload of the sample as defined in the XML for SALData"
     puts $fout "  */"
-    puts $fout "  public int getSample([set AVRO_PREFIX].[set base].[set base]_[set name] data)"
+    puts $fout "  public int getSample([set AVRO_PREFIX].[set base].[set name] data)"
     puts $fout "  \{"
     puts $fout "    int status =  -1;"
     puts $fout "    int last = SAL__NO_UPDATES;"
@@ -680,7 +682,7 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS AVRO_PREFI
     puts $fout "  * calls to getNextSample_[set name]"
     puts $fout "  * @param data The payload of the sample as defined in the XML for SALData"
     puts $fout "  */"
-    puts $fout "  public int getNextSample([set AVRO_PREFIX].[set base].[set base]_[set name] data)"
+    puts $fout "  public int getNextSample([set AVRO_PREFIX].[set base].[set name] data)"
     puts $fout "  \{"
     puts $fout "    int status = -1;"
     puts $fout "    int actorIdx = SAL__[set base]_[set name]_ACTOR;"
@@ -694,7 +696,7 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS AVRO_PREFI
     puts $fout "/** Empty the history cache of samples. After this only newly published samples"
     puts $fout "  * will be available to getSample_[set name] or getNextSample_[set name]"
     puts $fout "  */"
-    puts $fout "  public int flushSamples([set AVRO_PREFIX].[set base].[set base]_[set name] data)"
+    puts $fout "  public int flushSamples([set AVRO_PREFIX].[set base].[set name] data)"
     puts $fout "  \{"
     puts $fout "    int status = -1;"
     puts $fout "    int actorIdx = SAL__[set base]_[set name]_ACTOR;"
@@ -877,7 +879,7 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS
 
 proc writerFragmentJava { fout base name } {
 global AVRO_PREFIX OPTIONS
- if { $OPTIONS(verbose) } {stdlog "###TRACE>>> writerFragmentJava $base $nane "}
+ if { $OPTIONS(verbose) } {stdlog "###TRACE>>> writerFragmentJava $base $name "}
    set avroname [set base]_[set name]
    if { $name == "[set base]_ackcmd" } {
      set avroname "ackcmd"
@@ -892,16 +894,16 @@ global AVRO_PREFIX OPTIONS
 #props.put("kafka.sasl.mechanism","SCRAM-SHA=512");
 #props.put("kafka.sasl.username","ts-salkafka");
 #props.put("kafka.sasl.password","Arpd8QY9B8NI");                  
-   puts $fout "     KafkaProducer<String, [set avroname]> producer = new KafkaProducer<String, [set avroname]>(props);"
+   puts $fout "     KafkaProducer<String, [set name]> producer = new KafkaProducer<String, [set name]>(props);"
    puts $fout "     sal\[actorIdx\].publisher = producer;";
    puts $fout "  \}";
    puts $fout "  try \{";
-   puts $fout "     publisher.send(new ProducerRecord<String,[set avroname]>(\"[set AVRO_PREFIX].[set base].[set avroname]\", \"LSST\", Instance));";
+   puts $fout "     publisher.send(new ProducerRecord<String,[set name]>(\"[set AVRO_PREFIX].[set base].[set name]\", \"LSST\", Instance));";
    puts $fout "  \} catch (Exception e) \{";
    puts $fout "     System.out.println(\"An error occurred: \" + e.getMessage());";
    puts $fout "  \}";
    puts $fout "  publisher.flush();";
- if { $OPTIONS(verbose) } {stdlog "###TRACE<<< writerFragmentJava $base $nane "}
+ if { $OPTIONS(verbose) } {stdlog "###TRACE<<< writerFragmentJava $base $name "}
 }
 
 proc readerFragmentJava { fout base name } {
@@ -910,26 +912,26 @@ global AVRO_PREFIX
    if { $name == "[set base]_ackcmd" } {
      set avroname "ackcmd"
    }
-   puts $fout "  String avroTopic = \"[set AVRO_PREFIX].[set base].[set avroname]\";"
+   puts $fout "  String avroTopic = \"[set AVRO_PREFIX].[set base].[set name]\";"
     puts $fout "//  if (sal\[actorIdx\].subscriber == null ) \{"
     puts $fout "//     AvroMapper avroMapper = new AvroMapper();"
-    puts $fout "//     Schema salschema = avroMapper.schemaFor([set avroname].class);"
+    puts $fout "//     Schema salschema = avroMapper.schemaFor([set name].class);"
     puts $fout "//     sal\[actorIdx\].avroSchema = salschema;"
     puts $fout "     Properties cprops = new Properties();"
-    puts $fout "     KafkaConsumer<String, [set avroname]> consumer = new KafkaConsumer<>(cprops);"
-    puts $fout "     consumer.subscribe(Collections.singletonList(\"[set AVRO_PREFIX].[set base].[set avroname]\"));"
+    puts $fout "     KafkaConsumer<String, [set name]> consumer = new KafkaConsumer<>(cprops);"
+    puts $fout "     consumer.subscribe(Collections.singletonList(\"[set AVRO_PREFIX].[set base].[set name]\"));"
     puts $fout "     sal\[actorIdx\].subscriber = consumer;"
     puts $fout "//  \} else \{"
-    puts $fout "//     KafkaConsumer<String, [set avroname]> consumer = sal\[actorIdx\].subscriber;"
+    puts $fout "//     KafkaConsumer<String, [set name]> consumer = sal\[actorIdx\].subscriber;"
     puts $fout "//  \}"
-    puts $fout "  [set avroname] Instance = new [set avroname]();"
-    puts $fout "  ConsumerRecords<String, [set avroname]> records = consumer.poll(100);"
-    puts $fout "  for (final ConsumerRecord<String, [set avroname]> record : records) \{"
+    puts $fout "  [set name] Instance = new [set name]();"
+    puts $fout "  ConsumerRecords<String, [set name]> records = consumer.poll(100);"
+    puts $fout "  for (final ConsumerRecord<String, [set name]> record : records) \{"
     puts $fout "    numsamp++;"
     puts $fout "    String key = record.key();"
     puts $fout "    Instance = record.value();"
     puts $fout "    if (debugLevel > 0) \{"
-    puts $fout "       System.out.printf(\"key = %s, [set avroname]\", key);"
+    puts $fout "       System.out.printf(\"key = %s, [set name]\", key);"
     puts $fout "    \}"
     puts $fout "  \}"
 }

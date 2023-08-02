@@ -147,7 +147,7 @@ global EVENT_ALIASES EVTS AVRO_PREFIX
   * @param data is the logevent payload $turl
   * @returns SAL__NO_UPDATES if no data is available, or SAL__OK otherwise
   */
-	public int getEvent_[set i]([set AVRO_PREFIX].SALData.[set subsys]_logevent_[set i] anEvent)
+	public int getEvent_[set i]([set AVRO_PREFIX].SALData.logevent_[set i] anEvent)
 	\{
 	  int status =  -1;
           int actorIdx = SAL__SALData_logevent_[set i]_ACTOR;
@@ -165,7 +165,7 @@ global EVENT_ALIASES EVTS AVRO_PREFIX
   * @param data is the logevent payload $turl
   * @priority is deprecated
   */
-	public int logEvent_[set i]( [set AVRO_PREFIX].SALData.[set subsys]_logevent_[set i] event, int priority )
+	public int logEvent_[set i]( [set AVRO_PREFIX].SALData.logevent_[set i] event, int priority )
 	\{
 	   int status = 0;
            int actorIdx = SAL__SALData_logevent_[set i]_ACTOR;
