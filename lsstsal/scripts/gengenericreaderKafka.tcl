@@ -67,8 +67,9 @@ salReturn SAL_[set base]::[set name]Available () \{
 proc readerFragment { fout base name } {
 global AVRO_PREFIX
      puts $fout "   numSamples = 0;"
+     puts $fout "   std::string errstr;"
      puts $fout "   actorIdx = SAL__[set base]_[set name]_ACTOR;"
-     puts $fout "   RdKafka::Message *message = subscriber->consume(sal\[actorIdx\].topic, partition, 1000);"
+     puts $fout "   RdKafka::Message *message = sal\[actorIdx\].subscriber->consume(1);"
      puts $fout "   const uint8_t* payload = (const uint8_t*) message->payload();"
      puts $fout "   int len = static_cast<int> (message->len());"
      puts $fout "   switch (message->err()) \{"
@@ -101,12 +102,14 @@ global AVRO_PREFIX
      puts $fout "      \}"
      puts $fout "     \}"
      puts $fout "   \}"
-     puts $fout "//    printf(\"%.*s\\n\", static_cast<int>(message->len()),"
-     puts $fout "//           static_cast<const char *>(message->payload()));"
+     puts $fout "    printf(\"Got message for Actor %d , length %d\\n\", actorIdx, static_cast<int>(message->len()));"
      puts $fout "    std::unique_ptr<avro::InputStream> in_[set name] = avro::memoryInputStream((const uint8_t*) payload, len);"
-     puts $fout "    avro::DecoderPtr d_[set name] = avro::binaryDecoder();"
-     puts $fout "    d_[set name]->init(*in_[set name]);"
-     puts $fout "    avro::decode(*d_[set name], Instance);"
+     puts $fout "//    avro::GenericDatum *d = NULL;"
+     puts $fout "//    serdes->deserialize(sal\[actorIdx\].avroSchema, &d, payload, len, errstr);"
+     puts $fout "    avro::DecoderPtr bd = avro::binaryDecoder();"
+     puts $fout "    bd->init(*in_[set name]);"
+     puts $fout "    avro::decode(*bd, Instance);"
+     puts $fout "    std::cout << std::setprecision (17)<< \"Private_sndStamp = \" << Instance.private_sndStamp << std::endl;"
      puts $fout "    numSamples = 1;"
      puts $fout "    break;"
      puts $fout ""
@@ -153,7 +156,7 @@ global AVRO_PREFIX
   puts $fout "//     outsize = serializedBytes.size();"
   puts $fout "     RdKafka::Headers *headers = RdKafka::Headers::create();"
   puts $fout "     RdKafka::ErrorCode resp ="
-  puts $fout "           publisher->produce(sal\[actorIdx\].avroName, partition,"
+  puts $fout "           publisher->produce(sal\[actorIdx\].avroName, RdKafka::Topic::PARTITION_UA,"
   puts $fout "                                 RdKafka::Producer::RK_MSG_COPY /* Copy payload */,"
   puts $fout "                                 buffer.data(), outsize,"
   puts $fout "                                 NULL, 0, 0, headers);"
@@ -169,7 +172,7 @@ global AVRO_PREFIX
   puts $fout "       \}"
   puts $fout "     \}"
   puts $fout "     publisher->poll(0);"
-  puts $fout "//     publisher->flush();"
+  puts $fout "     publisher->flush(500);"
 }
 
 
