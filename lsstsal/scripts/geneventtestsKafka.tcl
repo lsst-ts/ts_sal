@@ -62,7 +62,7 @@ int main (int argc, char *argv\[\])
 #else
   SAL_[set subsys] mgr = SAL_[set subsys]();
 #endif
-  mgr.salEventPub(\"[set subsys]_logevent_[set alias]\");
+  mgr.salEventPub(\"logevent_[set alias]\");
 "
   set fin [open $SAL_WORK_DIR/include/SAL_[set subsys]_logevent_[set alias]Cargs.tmp r]
   while { [gets $fin rec] > -1 } {
@@ -124,7 +124,7 @@ int test_[set subsys]_[set alias]_Log()
 #else
   SAL_[set subsys] mgr = SAL_[set subsys]();
 #endif
-  mgr.salEventSub(\"[set subsys]_logevent_[set alias]\");
+  mgr.salEventSub(\"logevent_[set alias]\");
   cout << \"=== Event $alias logger ready = \" << endl;
 
   while (1) \{

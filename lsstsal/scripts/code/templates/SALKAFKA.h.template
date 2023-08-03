@@ -19,6 +19,7 @@
   #include <cstdlib>
   #include <cstring>
   #include <getopt.h>
+  #include <iomanip>
   
   #include "SAL_defines.h"
 
@@ -31,6 +32,7 @@
   #include <avro/Encoder.hh>
   #include <avro/Decoder.hh>
   #include <avro/Generic.hh>
+  #include <avro/GenericDatum.hh>
   #include <avro/Specific.hh>
   #include <avro/Exception.hh>
   #include <avro/Compiler.hh>
@@ -39,6 +41,7 @@
   #include <avro/ValidSchema.hh>
  
   using namespace std;
+  using namespace avro;
   using namespace RdKafka;
 
 #ifndef _SAL_SALActorMGR_
@@ -84,7 +87,7 @@
 /// publisher holds a pointer to the internal Kafka Publisher object
 ///      RdKafka::Publisher 	*publisher;
 /// subscriber holds a pointer to the internal Kafka Subscriber object
-///      RdkafKa::Consumer	*subscriber; 
+    RdKafka::KafkaConsumer      *subscriber;
     std::string avroName;
     std::string avroName2;
     Serdes::Schema 		*avroSchema;
@@ -158,7 +161,7 @@
       RdKafka::Topic *topic;
       RdKafka::Topic *topic2;
       RdKafka::Producer *publisher;
-      RdKafka::Consumer *subscriber;
+      RdKafka::KafkaConsumer *subscriber;
       RdKafka::Headers *headers;
       Serdes::Conf *serdesConfiguration;
       Serdes::Avro *serdes;

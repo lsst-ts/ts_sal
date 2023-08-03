@@ -91,7 +91,6 @@ void SAL_SALData::initSalEnvironment(int aKey)
   serdes = Serdes::Avro::create(serdesConfiguration, errstr);
 
   publisher = RdKafka::Producer::create(configuration, errstr); 
-  subscriber = RdKafka::Consumer::create(consumerConfiguration, errstr); 
 
    if ( pname != NULL ) {
       strncpy(partitionPrefix, pname, 128);
@@ -454,11 +453,12 @@ void SAL_SALData::createTopic(int actorIdx)
   }
   if (!sal[actorIdx].hasSchema) {
     std::string adir = "/avro-templates/"; 
-    std::string schema = localSchemaDir + adir + sal[actorIdx].topicName + ".json";
+    std::string schema = localSchemaDir + adir + "SALData_" + sal[actorIdx].topicName + ".json";
     std::ifstream ifs(schema);
     std::stringstream buffer;
     buffer << ifs.rdbuf();
-    sal[actorIdx].avroSchema = Serdes::Schema::add(serdes, sal[actorIdx].topicName, buffer.str(), errstr);
+    std::string svname = sal[actorIdx].avroName + "-value";
+    sal[actorIdx].avroSchema = Serdes::Schema::add(serdes, svname, buffer.str(), errstr);
     sal[actorIdx].hasSchema = true;
   }
 }
@@ -477,11 +477,12 @@ void SAL_SALData::createTopic2(int actorIdx)
   }
   if (!sal[actorIdx].hasSchema) {
     std::string adir = "/avro-templates/"; 
-    std::string schema = localSchemaDir + adir + sal[actorIdx].topicName2 + ".json";
+    std::string schema = localSchemaDir + adir + "SALData_"  + sal[actorIdx].topicName2 + ".json";
     std::ifstream ifs("schema");
     std::stringstream buffer;
     buffer << ifs.rdbuf();
-    sal[actorIdx].avroSchema2 = Serdes::Schema::add(serdes, sal[actorIdx].topicName2, buffer.str(), errstr);
+    std::string svname = sal[actorIdx].avroName2 + "-value";
+    sal[actorIdx].avroSchema2 = Serdes::Schema::add(serdes, svname, buffer.str(), errstr);
     sal[actorIdx].hasSchema = true;
   }
 }
@@ -500,14 +501,15 @@ void SAL_SALData::createTopic(int actorIdx, char *topicName)
   }
   if (!sal[actorIdx].hasSchema) {
     std::string adir = "/avro-templates/"; 
-    std::string schema = localSchemaDir + adir + sal[actorIdx].topicName + ".json";
+    std::string schema = localSchemaDir + adir + "SALData_"  + sal[actorIdx].topicName + ".json";
     std::ifstream ifs("schema");
     std::stringstream buffer;
     buffer << ifs.rdbuf();
-    sal[actorIdx].avroSchema = Serdes::Schema::add(serdes, sal[actorIdx].topicName, buffer.str(), errstr);
+    std::string svname = sal[actorIdx].avroName + "-value";
+    sal[actorIdx].avroSchema = Serdes::Schema::add(serdes, svname, buffer.str(), errstr);
     sal[actorIdx].hasSchema = true;
   }
-}
+ }
 
 void SAL_SALData::createTopic2(int actorIdx, char *topicName)
 {
@@ -523,14 +525,15 @@ void SAL_SALData::createTopic2(int actorIdx, char *topicName)
   }
   if (!sal[actorIdx].hasSchema) {
     std::string adir = "/avro-templates/"; 
-    std::string schema = localSchemaDir + adir + sal[actorIdx].topicName2 + ".json";
+    std::string schema = localSchemaDir + adir + "SALData_"  + sal[actorIdx].topicName2 + ".json";
     std::ifstream ifs("schema");
     std::stringstream buffer;
     buffer << ifs.rdbuf();
-    sal[actorIdx].avroSchema2 = Serdes::Schema::add(serdes, sal[actorIdx].topicName2, buffer.str(), errstr);
+    std::string svname = sal[actorIdx].avroName2 + "-value";
+    sal[actorIdx].avroSchema2 = Serdes::Schema::add(serdes, svname, buffer.str(), errstr);
     sal[actorIdx].hasSchema = true;
   }
-}
+ }
 
 
 void SAL_SALData::deleteTopics()
@@ -562,13 +565,33 @@ void SAL_SALData::deletePublisher()
   if (publisher != NULL) { delete publisher; }
 }
 
+std::string randomString( size_t length )
+{
+    auto randchar = []() -> char
+    {
+        const char charset[] =
+        "0123456789"
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        "abcdefghijklmnopqrstuvwxyz";
+        const size_t max_index = (sizeof(charset) - 1);
+        return charset[ rand() % max_index ];
+    };
+    std::string str(length,0);
+    std::generate_n( str.begin(), length, randchar );
+    return str;
+}
 
 void SAL_SALData::createSubscriber(int actorIdx)
 {
   std::string errstr;
-  if (subscriber == NULL) {
+  std::vector<std::string> topics;
+  topics.push_back(sal[actorIdx].avroName);
+  consumerConfiguration->set("group.id",randomString(15), errstr);
+  sal[actorIdx].subscriber = RdKafka::KafkaConsumer::create(consumerConfiguration, errstr); 
+  if (sal[actorIdx].subscriber == NULL) {
      throw std::runtime_error("Failed to create a Kafka subscriber");
   }
+  sal[actorIdx].subscriber->subscribe(topics);
 }
 
 

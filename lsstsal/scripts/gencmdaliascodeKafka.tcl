@@ -358,8 +358,8 @@ salReturn SAL_SALData::waitForCompletion_[set i]( int cmdSeqNum , unsigned int t
 salReturn SAL_SALData::getResponse_[set i](SALData::ackcmd data)
 \{
   int numSamples = 0;
-  int actorIdx = SAL__SALData_ackcmd_ACTOR;
   int actorIdxCmd = SAL__SALData_command_[set i]_ACTOR;
+  int actorIdx = SAL__SALData_ackcmd_ACTOR;
   long status = SAL__CMD_NOACK;
   SALData::ackcmd Instance;"
   readerFragment $fout SALData ackcmd
@@ -401,8 +401,8 @@ salReturn SAL_SALData::getResponse_[set i](SALData::ackcmd data)
 salReturn SAL_SALData::getResponse_[set i]C(SALData_ackcmdC *response)
 \{
   int numSamples = 0;
-  int actorIdx = SAL__SALData_ackcmd_ACTOR;
   int actorIdxCmd = SAL__SALData_command_[set i]_ACTOR;
+  int actorIdx = SAL__SALData_ackcmd_ACTOR;
   SALData::ackcmd Instance;
   long status = SAL__CMD_NOACK;
   if ( response == NULL ) \{
