@@ -228,6 +228,7 @@ int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
 \{
 //   long istatus =  -1;
    int numSamples = 0;
+   int status = 0;
    [set subsys]::command_[set i] Instance;
    SALData::ackcmd ackdata;
    int actorIdx = SAL__SALData_command_[set i]_ACTOR;
@@ -300,8 +301,9 @@ int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
 "
      }
      puts $fout "    
-     if ( ackdata.ack != SAL__CMD_ACK ) \{"
-       writerFragment $fout $subsys ackcmd
+     if ( ackdata.ack != SAL__CMD_ACK ) \{
+       actorIdx = SAL__SALData_ackcmd_ACTOR;"
+       writerFragmentAck $fout $subsys ackcmd
       puts $fout "    \}
 "
    puts $fout "
@@ -318,11 +320,11 @@ int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
    puts $fout "
 salReturn SAL_SALData::waitForCompletion_[set i]( int cmdSeqNum , unsigned int timeout )
 \{
-     salReturn status = SAL__OK;
+   salReturn status = SAL__OK;
    int countdown = timeout*100;
    SALData::ackcmd response;
    int actorIdx = SAL__SALData_command_[set i]_ACTOR;
-
+   double start = getCurrentTime();
    while (status != SAL__CMD_COMPLETE && countdown != 0) \{
       status = getResponse_[set i](response);
       if (status == SAL__CMD_NOPERM) \{
@@ -336,7 +338,7 @@ salReturn SAL_SALData::waitForCompletion_[set i]( int cmdSeqNum , unsigned int t
            status = SAL__CMD_NOACK;
         \}
       \}
-      usleep(SAL__SLOWPOLL);
+      usleep(SAL__FASTPOLL);
       countdown--;
    \}
    if (status != SAL__CMD_COMPLETE) \{
@@ -351,7 +353,11 @@ salReturn SAL_SALData::waitForCompletion_[set i]( int cmdSeqNum , unsigned int t
          cout << \"=== waitForCompletion_[set i] command \" << cmdSeqNum << \" completed ok :\" << endl;
       \} 
    \}
-     return status;
+   double end = getCurrentTime();
+   if (debugLevel > 0) \{
+      cout << \"Command roundtrip was \" << std::setprecision (8) << (end-start)*1000 << \" millseconds\" << endl;
+   \}
+   return status;
 \}
 "
    puts $fout "
@@ -453,7 +459,7 @@ salReturn SAL_SALData::getResponse_[set i]C(SALData_ackcmdC *response)
    puts $fout "
 salReturn SAL_SALData::ackCommand_[set i]( int cmdId, salLONG ack, salLONG error, char *result )
 \{
-   int actorIdx = SAL__SALData_command_[set i]_ACTOR;
+   int actorIdx = SAL__SALData_ackcmd_ACTOR;
 
    SALData::ackcmd Instance;
 
@@ -491,7 +497,7 @@ salReturn SAL_SALData::ackCommand_[set i]( int cmdId, salLONG ack, salLONG error
    puts $fout "
 salReturn SAL_SALData::ackCommand_[set i]C(SALData_ackcmdC *response )
 \{
-   int actorIdx = SAL__SALData_command_[set i]_ACTOR;
+   int actorIdx = SAL__SALData_ackcmd_ACTOR;
    if ( response == NULL ) \{
       throw std::runtime_error(\"NULL pointer for ackCommand_[set i]\");
    \}

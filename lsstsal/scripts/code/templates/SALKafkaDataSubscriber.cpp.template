@@ -23,9 +23,9 @@ extern "C"
 
 int SALTelemetrySubscriber(char *topic_name)
 {
-  struct timespec delay_10ms;
-  delay_10ms.tv_sec = 0;
-  delay_10ms.tv_nsec = 10000000;
+  struct timespec delay_1ms;
+  delay_1ms.tv_sec = 0;
+  delay_1ms.tv_nsec = 1000000;
   SALSTRUCTSTRINGC SALInstance;
 
 
@@ -39,6 +39,7 @@ int SALTelemetrySubscriber(char *topic_name)
   SAL_SALData mgr = SAL_SALData();
 #endif
 
+  mgr.setDebugLevel(9);
   mgr.salTelemetrySub(topic_name);
 
   cout << "=== [Subscriber] Ready ..." << endl;
@@ -51,7 +52,7 @@ int SALTelemetrySubscriber(char *topic_name)
     if (status == SAL__OK) {
 // INSERT_SAL_SUBC
     }
-   nanosleep(&delay_10ms,NULL);
+   nanosleep(&delay_1ms,NULL);
    ++count;
   }
 

@@ -68,7 +68,11 @@ proc readerFragment { fout base name } {
 global AVRO_PREFIX
      puts $fout "   numSamples = 0;"
      puts $fout "   std::string errstr;"
-     puts $fout "   actorIdx = SAL__[set base]_[set name]_ACTOR;"
+     puts $fout "   if ( strcmp(\"[set name]\",\"ackcmd\") == 0) \{"
+     puts $fout "      actorIdx = SAL__[set base]_ackcmd_ACTOR;"
+     puts $fout "   \} else \{"
+     puts $fout "      actorIdx = SAL__[set base]_[set name]_ACTOR;"
+     puts $fout "   \}"
      puts $fout "   RdKafka::Message *message = sal\[actorIdx\].subscriber->consume(1);"
      puts $fout "   const uint8_t* payload = (const uint8_t*) message->payload();"
      puts $fout "   int len = static_cast<int> (message->len());"
@@ -133,6 +137,7 @@ global AVRO_PREFIX
      puts $fout "     break;"
      puts $fout "   \}"
      puts $fout "  \}"
+     puts $fout "  delete message;"
 }
 
 proc writerFragment { fout base name } {
@@ -141,19 +146,11 @@ global AVRO_PREFIX
   puts $fout "     const avro::OutputStreamPtr out = avro::memoryOutputStream();"
   puts $fout "     e->init(*out.get());"
   puts $fout "     unsigned long outsize;"
-  puts $fout "// eg Instance ====     Test::command_setAuthList mydata;"
   puts $fout "     avro::encode(*e,Instance);"
   puts $fout "     std::vector<uint8_t> buffer;"
   puts $fout "     std::shared_ptr<std::vector<uint8_t> > v = avro::snapshot(*out.get());"
   puts $fout "     buffer.insert(buffer.end(), v->begin(), v->end());"
   puts $fout "     outsize = buffer.size();"
-  puts $fout "//     std::string errstr;"
-  puts $fout "//     const avro::GenericDatum *serializedBytes;"
-  puts $fout "//     if (serdes->serialize(sal\[actorIdx\].avroSchema, serializedBytes, buffer, errstr) == -1) \{"
-  puts $fout "//       std::cerr << \"% Avro serialization failed: \" << errstr << std::endl;"
-  puts $fout "//       continue;"
-  puts $fout "//     \}"
-  puts $fout "//     outsize = serializedBytes.size();"
   puts $fout "     RdKafka::Headers *headers = RdKafka::Headers::create();"
   puts $fout "     RdKafka::ErrorCode resp ="
   puts $fout "           publisher->produce(sal\[actorIdx\].avroName, RdKafka::Topic::PARTITION_UA,"
@@ -167,7 +164,7 @@ global AVRO_PREFIX
   puts $fout "                              * success. */"
   puts $fout "     \} else \{"
   puts $fout "       if (debugLevel >1) \{"
-  puts $fout "         std::cerr << \"% Produced message (\" << \" bytes)\""
+  puts $fout "         std::cerr << \"% Produced message (\" << outsize << \") bytes)\""
   puts $fout "                 << std::endl;"
   puts $fout "       \}"
   puts $fout "     \}"
@@ -175,6 +172,37 @@ global AVRO_PREFIX
   puts $fout "     publisher->flush(500);"
 }
 
+proc writerFragmentAck { fout base name } {
+global AVRO_PREFIX
+  puts $fout "     avro::EncoderPtr e = avro::binaryEncoder();"
+  puts $fout "     const avro::OutputStreamPtr out = avro::memoryOutputStream();"
+  puts $fout "     e->init(*out.get());"
+  puts $fout "     unsigned long outsize;"
+  puts $fout "     avro::encode(*e,ackdata);"
+  puts $fout "     std::vector<uint8_t> buffer;"
+  puts $fout "     std::shared_ptr<std::vector<uint8_t> > v = avro::snapshot(*out.get());"
+  puts $fout "     buffer.insert(buffer.end(), v->begin(), v->end());"
+  puts $fout "     outsize = buffer.size();"
+  puts $fout "     RdKafka::Headers *headers = RdKafka::Headers::create();"
+  puts $fout "     RdKafka::ErrorCode resp ="
+  puts $fout "           publisher->produce(sal\[actorIdx\].avroName, RdKafka::Topic::PARTITION_UA,"
+  puts $fout "                                 RdKafka::Producer::RK_MSG_COPY /* Copy payload */,"
+  puts $fout "                                 buffer.data(), outsize,"
+  puts $fout "                                 NULL, 0, 0, headers);"
+  puts $fout "     if (resp != RdKafka::ERR_NO_ERROR) \{"
+  puts $fout "       std::cerr << \"% Produce failed: \" << RdKafka::err2str(resp)"
+  puts $fout "                 << std::endl;"
+  puts $fout "       delete headers; /* Headers are automatically deleted on produce()"
+  puts $fout "                              * success. */"
+  puts $fout "     \} else \{"
+  puts $fout "       if (debugLevel >1) \{"
+  puts $fout "         std::cerr << \"% Produced ack message (\" << outsize << \" bytes)\""
+  puts $fout "                 << std::endl;"
+  puts $fout "       \}"
+  puts $fout "     \}"
+  puts $fout "     publisher->poll(0);"
+  puts $fout "     publisher->flush(500);"
+}
 
 #
 ## Documented proc \c genericreader .

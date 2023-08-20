@@ -77,6 +77,7 @@ int main (int argc, char *argv\[\])
 "
    }
    puts $fcmd "
+  mgr->setDebugLevel(9);
   mgr->salCommand(\"[set subsys]_command_[set alias]\");
 "
   set cpars $CMDS($subsys,$alias)
@@ -120,6 +121,7 @@ int main (int argc, char *argv\[\])
 #include <time.h>
 #include \"SAL_[set subsys].h\"
 #include <stdlib.h>
+#include <unistd.h>
 
 /* entry point exported and demangled so symbol can be found in shared library */
 extern \"C\"
@@ -129,9 +131,9 @@ extern \"C\"
 
 int test_[set subsys]_[set alias]_controller()
 \{ 
-  struct timespec delay_10ms;
-  delay_10ms.tv_sec = 0;
-  delay_10ms.tv_nsec = 10000000;
+  struct timespec delay_1ms;
+  delay_1ms.tv_sec = 0;
+  delay_1ms.tv_nsec = 1000000;
   int cmdId = -1;
   int timeout = 1;
   [set subsys]_command_[set alias]C SALInstance;"
@@ -146,6 +148,7 @@ int test_[set subsys]_[set alias]_controller()
       puts $fcmd "  SAL_[set subsys] mgr = SAL_[set subsys]();"
    }
    puts $fcmd "
+  mgr.setDebugLevel(9);
   mgr.salProcessor(\"[set subsys]_command_[set alias]\");
   cout << \"=== [set subsys]_[set alias] controller ready \" << endl;
 
@@ -164,14 +167,15 @@ int test_[set subsys]_[set alias]_controller()
   puts $fcmd "
        if (timeout > 0) \{
           mgr.ackCommand_[set alias](cmdId, SAL__CMD_INPROGRESS, 0, \"Ack : OK\");
-          nanosleep(&delay_10ms,NULL);
+          nanosleep(&delay_1ms,NULL);
        \}       
        mgr.ackCommand_[set alias](cmdId, SAL__CMD_COMPLETE, 0, \"Done : OK\");
     \}
-     nanosleep(&delay_10ms,NULL);
+     nanosleep(&delay_1ms,NULL);
   \}
 
   /* Remove the DataWriters etc */
+  sleep(1);
   mgr.salShutdown();
 
   return 0;

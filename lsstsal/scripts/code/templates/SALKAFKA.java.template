@@ -399,7 +399,7 @@ public class SAL_SALData {
                   throw new RuntimeException("Unknown Topic");
 		}
                 sal[actorIdx].isReader = true;
-//		sal[actorIdx].topic = subscriber.subscribe(Collections.singleton(sal[actorIdx].avroTopic));
+//		sal[actorIdx].topic = subscriber.subscribe(Collections.singleton(sal[actorIdx].avroName));
 		return status;
 	}
 
@@ -434,7 +434,7 @@ public class SAL_SALData {
 
 	public void createTopic(int actorIdx) {
                 String kafkaPrefix = System.getenv("LSST_KAFKA_PREFIX");
-		sal[actorIdx].avroTopic = "lsst.ts.sal." + kafkaPrefix + "." + sal[actorIdx].topicName;
+		sal[actorIdx].avroName = "lsst.ts.sal." + kafkaPrefix + "." + sal[actorIdx].topicName;
                 if (debugLevel > 1) {
   		  System.out.println("=== [createTopic] : topicName " + sal[actorIdx].topicName + " type = " + sal[actorIdx].typeName);
                 }
@@ -442,7 +442,7 @@ public class SAL_SALData {
 
 	public void createTopic2(int actorIdx) {
                 String kafkaPrefix = System.getenv("LSST_KAFKA_PREFIX");
-		sal[actorIdx].avroTopic2 = "lsst.ts.sal." + kafkaPrefix + "." + sal[actorIdx].topicName;
+		sal[actorIdx].avroName2 = "lsst.ts.sal." + kafkaPrefix + "." + sal[actorIdx].topicName;
                 if (debugLevel > 1) {
 		  System.out.println("=== [createTopic2] : topicName " + sal[actorIdx].topicName + " type = " + sal[actorIdx].typeName2);
                 }
@@ -450,7 +450,7 @@ public class SAL_SALData {
 
 	public void createTopic(int actorIdx, String topicName) {
                 String kafkaPrefix = System.getenv("LSST_KAFKA_PREFIX");
- 		sal[actorIdx].avroTopic = "lsst.ts.sal." + kafkaPrefix + "." + sal[actorIdx].topicName;
+ 		sal[actorIdx].avroName = "lsst.ts.sal." + kafkaPrefix + "." + sal[actorIdx].topicName;
                 if (debugLevel > 1) {
 		  System.out.println("=== [createTopic] : topicName " + topicName + " type = " + sal[actorIdx].typeName);
                 }
@@ -458,7 +458,7 @@ public class SAL_SALData {
 
 	public void createTopic2(int actorIdx, String topicName) {
                 String kafkaPrefix = System.getenv("LSST_KAFKA_PREFIX");
-		sal[actorIdx].avroTopic2 = "lsst.ts.sal." + kafkaPrefix + "." + sal[actorIdx].topicName;
+		sal[actorIdx].avroName2 = "lsst.ts.sal." + kafkaPrefix + "." + sal[actorIdx].topicName;
                 if (debugLevel > 1) {
 		  System.out.println("=== [createTopic2] : topicName " + topicName + " type = " + sal[actorIdx].typeName2);
                 }
