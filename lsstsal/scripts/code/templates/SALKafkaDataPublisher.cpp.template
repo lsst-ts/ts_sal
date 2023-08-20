@@ -21,9 +21,23 @@ extern "C"
 
 int SALTelemetryPublisher(char *topic_name)
 {
+  int numsamples = 10;
+  int deltams = 1000;
   struct timespec delay_1s;
-  delay_1s.tv_sec = 1;
-  delay_1s.tv_nsec = 0;
+  delay_1s.tv_sec = 0;
+  delay_1s.tv_nsec = deltams*1000000;
+    
+  char *deltaName = getenv("SAL_DEBUG_MS_DELTA");
+  if ( deltaName != NULL ) {
+    sscanf(deltaName,"%d",&deltams);
+    delay_1s.tv_nsec = deltams*1000000;
+ }
+  char *nSamples = getenv("SAL_DEBUG_NSAMPLES");
+  if ( nSamples != NULL ) {
+    sscanf(nSamples,"%d",&numsamples);
+ }
+
+
   SALSTRUCTSTRINGC myData;
   long iseq;
 
@@ -39,9 +53,10 @@ int SALTelemetryPublisher(char *topic_name)
   SAL_SALData mgr = SAL_SALData();
 #endif
 
+  mgr.setDebugLevel(9);
   mgr.salTelemetryPub(topic_name);
   iseq = 1;
-  while (iseq < 10) {
+  while (iseq < numsamples) {
 // INSERT_SAL_PUBC
     iseq++;
     mgr.putSample_SALTopic(&myData);

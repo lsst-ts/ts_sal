@@ -31,9 +31,9 @@ public class salActor {
 /// topic2 holds a pointer to the internal Kafka Topic object
         public String topic2;
 /// topic holds a pointer to the internal Kafka Topic object
-	public String avroTopic;
+	public String avroName;
 /// topic2 holds a pointer to the internal Kafka Topic object
-        public String avroTopic2;
+        public String avroName2;
 /// publisher holds a pointer to the internal Kafka Publisher object
 	public KafkaProducer publisher;
 /// subscriber holds a pointer to the internal Kafka Subscriber object

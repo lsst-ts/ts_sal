@@ -97,6 +97,8 @@ salReturn SAL_[set base]::getSample_[set name]([set base]_[set name]C *data)
       cout << \"    sndStamp  : \" << Instance.private_sndStamp << endl;
       cout << \"    origin  : \" << Instance.private_origin << endl;
       cout << \"    identity  : \" << Instance.private_identity << endl;
+      double latency = (rcvdTime - Instance.private_sndStamp)*1000.0;
+      cout << \"    latency (ms)  : \" << latency << endl;
     \}
     if ( (rcvdTime - Instance.private_sndStamp) < sal\[actorIdx\].sampleAge && Instance.private_origin != 0 ) \{
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
@@ -343,7 +345,7 @@ global SAL_WORK_DIR ACTIVETOPICS AVRO_PREFIX
       set type [lindex [split $name _] 0]
       set revcode [getRevCode [set base]_[set name] short]
       puts $fout "    strcpy(sal\[$idx\].topicHandle,\"[set base]_[set name][set revcode]\");"
-      puts $fout "    strcpy(sal\[$idx\].topicName,\"[set name]\");"
+      puts $fout "    strcpy(sal\[$idx\].topicName,\"[set base]_[set name]\");"
       puts $fout "    sal\[$idx\].avroName = \"[set AVRO_PREFIX].[set base].[set name]\";"
       incr idx 1
    }
@@ -359,7 +361,7 @@ global SAL_WORK_DIR ACTIVETOPICS AVRO_PREFIX
 #   Add code to support salActor data structure initialization in Java
 #
 proc addActorIndexesJava { base fout } {
-global ACTIVETOPICS env
+global ACTIVETOPICS env AVRO_PREFIX
    set idx 0
    foreach name $ACTIVETOPICS {
       set type [lindex [split $name _] 0]
@@ -379,7 +381,8 @@ global ACTIVETOPICS env
       set revcode [getRevCode [set base]_[set name] short]
       puts $fout "    sal\[$idx\]=new salActor();" 
       puts $fout "    sal\[$idx\].topicHandle=\"[set base]_[set name][set revcode]\";"
-      puts $fout "    sal\[$idx\].topicName=\"[set name]\";"
+      puts $fout "    sal\[$idx\].topicName=\"[set base]_[set name]\";"
+      puts $fout "    sal\[$idx\].avroName = \"[set AVRO_PREFIX].[set base].[set name]\";"
       if { $type == "logevent" || $type == "command" || $type == "ackcmd" } {
         puts $fout "    sal\[$idx\].topicType=\"[set type]\";"
       } else {

@@ -453,7 +453,7 @@ void SAL_SALData::createTopic(int actorIdx)
   }
   if (!sal[actorIdx].hasSchema) {
     std::string adir = "/avro-templates/"; 
-    std::string schema = localSchemaDir + adir + "SALData_" + sal[actorIdx].topicName + ".json";
+    std::string schema = localSchemaDir + adir + sal[actorIdx].topicName + ".json";
     std::ifstream ifs(schema);
     std::stringstream buffer;
     buffer << ifs.rdbuf();
@@ -477,7 +477,7 @@ void SAL_SALData::createTopic2(int actorIdx)
   }
   if (!sal[actorIdx].hasSchema) {
     std::string adir = "/avro-templates/"; 
-    std::string schema = localSchemaDir + adir + "SALData_"  + sal[actorIdx].topicName2 + ".json";
+    std::string schema = localSchemaDir + adir + sal[actorIdx].topicName2 + ".json";
     std::ifstream ifs("schema");
     std::stringstream buffer;
     buffer << ifs.rdbuf();
@@ -501,7 +501,7 @@ void SAL_SALData::createTopic(int actorIdx, char *topicName)
   }
   if (!sal[actorIdx].hasSchema) {
     std::string adir = "/avro-templates/"; 
-    std::string schema = localSchemaDir + adir + "SALData_"  + sal[actorIdx].topicName + ".json";
+    std::string schema = localSchemaDir + adir + sal[actorIdx].topicName + ".json";
     std::ifstream ifs("schema");
     std::stringstream buffer;
     buffer << ifs.rdbuf();
@@ -525,7 +525,7 @@ void SAL_SALData::createTopic2(int actorIdx, char *topicName)
   }
   if (!sal[actorIdx].hasSchema) {
     std::string adir = "/avro-templates/"; 
-    std::string schema = localSchemaDir + adir + "SALData_"  + sal[actorIdx].topicName2 + ".json";
+    std::string schema = localSchemaDir + adir + sal[actorIdx].topicName2 + ".json";
     std::ifstream ifs("schema");
     std::stringstream buffer;
     buffer << ifs.rdbuf();

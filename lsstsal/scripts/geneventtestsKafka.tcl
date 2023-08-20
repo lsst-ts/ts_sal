@@ -52,6 +52,23 @@ int main (int argc, char *argv\[\])
 "
      puts $fevt "     exit(1);
   \}
+ 
+  struct timespec delay_1ms;
+  delay_1ms.tv_sec = 0;
+  int numsamples = 100;
+  int deltams = 1;
+  int nsamples = 10;
+    
+  char *deltaName = getenv(\"SAL_DEBUG_MS_DELTA\");
+  if ( deltaName != NULL ) \{
+    sscanf(deltaName,\"%d\",&deltams);
+    delay_1ms.tv_nsec = deltams*1000000;
+  \}
+  char *nSamples = getenv(\"SAL_DEBUG_NSAMPLES\");
+  if ( nSamples != NULL ) \{
+    sscanf(nSamples,\"%d\",&nsamples);
+  \}
+  delay_1ms.tv_nsec = deltams*1000000;
 
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
   int salIndex = 1;
@@ -62,19 +79,24 @@ int main (int argc, char *argv\[\])
 #else
   SAL_[set subsys] mgr = SAL_[set subsys]();
 #endif
-  mgr.salEventPub(\"logevent_[set alias]\");
-"
+  mgr.setDebugLevel(9);
+  mgr.salEventPub(\"[set subsys]_logevent_[set alias]\");
+" 
   set fin [open $SAL_WORK_DIR/include/SAL_[set subsys]_logevent_[set alias]Cargs.tmp r]
   while { [gets $fin rec] > -1 } {
        puts $fevt $rec
   }
   close $fin
   puts $fevt "
+  int iseq = 1;
+  while (iseq < numsamples) {
   // generate event
-  priority = 0;
-  mgr.logEvent_[set alias](&myData, priority);
-  cout << \"=== Event $alias generated = \" << endl;
-  sleep(1);
+    priority = 0;
+    mgr.logEvent_[set alias](&myData, priority);
+    cout << \"=== Event $alias generated = \" << iseq << endl;
+    nanosleep(&delay_1ms,NULL);
+    iseq++;
+  }
 
   /* Remove the DataWriters etc */
   mgr.salShutdown();
@@ -109,9 +131,9 @@ extern \"C\"
 
 int test_[set subsys]_[set alias]_Log()
 \{ 
-  struct timespec delay_10ms;
-  delay_10ms.tv_sec = 0;
-  delay_10ms.tv_nsec = 10000000;
+  struct timespec delay_1ms;
+  delay_1ms.tv_sec = 0;
+  delay_1ms.tv_nsec = 1000;
   int status = -1;
 
   [set subsys]_logevent_[set alias]C SALInstance;
@@ -124,7 +146,8 @@ int test_[set subsys]_[set alias]_Log()
 #else
   SAL_[set subsys] mgr = SAL_[set subsys]();
 #endif
-  mgr.salEventSub(\"logevent_[set alias]\");
+  mgr.setDebugLevel(9);
+  mgr.salEventSub(\"[set subsys]_logevent_[set alias]\");
   cout << \"=== Event $alias logger ready = \" << endl;
 
   while (1) \{
@@ -140,7 +163,7 @@ int test_[set subsys]_[set alias]_Log()
   close $fin
   puts $fevt "
     \}
-     nanosleep(&delay_10ms,NULL);
+     nanosleep(&delay_1ms,NULL);
   \}
 
   /* Remove the DataWriters etc */

@@ -585,11 +585,11 @@ global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS CMD_ALIASES ONEDONEGEN AV
         if { $name != "notused" } {
           modpubsubexamples $id
           puts $frep "sed -i -e 's/SALTopic/[set name]/g' [set id]/cpp/src/[set id]DataPublisher.cpp"
-          puts $frep "sed -i -e 's/SALNAMESTRING/[set name]/g' [set id]/cpp/src/[set id]DataPublisher.cpp"
+          puts $frep "sed -i -e 's/SALNAMESTRING/[set base]_[set name]/g' [set id]/cpp/src/[set id]DataPublisher.cpp"
           puts $frep "sed -i -e 's/SALSTRUCTSTRING/[set base]_[set name]/g' [set id]/cpp/src/[set id]DataPublisher.cpp"
           puts $frep "sed -i -e 's/SALData/$base/g' [set id]/cpp/src/[set id]DataPublisher.cpp"
           puts $frep "sed -i -e 's/SALTopic/[set name]/g' [set id]/cpp/src/[set id]DataSubscriber.cpp"
-          puts $frep "sed -i -e 's/SALNAMESTRING/[set name]/g' [set id]/cpp/src/[set id]DataSubscriber.cpp"
+          puts $frep "sed -i -e 's/SALNAMESTRING/[set base]_[set name]/g' [set id]/cpp/src/[set id]DataSubscriber.cpp"
           puts $frep "sed -i -e 's/SALSTRUCTSTRING/[set base]_[set name]/g' [set id]/cpp/src/[set id]DataSubscriber.cpp"
           puts $frep "sed -i -e 's/SALData/$base/g' [set id]/cpp/src/[set id]DataSubscriber.cpp"
         }
