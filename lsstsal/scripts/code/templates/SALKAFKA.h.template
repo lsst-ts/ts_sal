@@ -144,9 +144,9 @@
 /// sampleAge is the time in seconds between command send and receive
       double			sampleAge;
 /// historyDepth is the maximum size (in samples) of the Kafka message cache for the topic
-      int                       historyDepth;
+      long                      historyDepth;
 /// historyOffset is current offset the Kafka message store for the topic
-      long                     historyOffset;
+      long                      historyOffset;
   };
 #endif
 

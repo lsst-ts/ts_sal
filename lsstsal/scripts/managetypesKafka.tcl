@@ -148,25 +148,35 @@ global TYPESUBS VPROPS OPTIONS METADATA
    set VPROPS(byte) 0
    set VPROPS(double) 0
    set VPROPS(lvres) 0
-   set spl [split $rec "\{\}\":,"]
-   set VPROPS(name) [lindex $spl 5]
-   set VPROPS(dim) $METADATA($VPROPS(topic),$VPROPS(name),size)
-   if { [lindex $spl 11] == "string" } {
+   set spl [string trim $rec " ;"]
+   set type [lindex $spl 0]
+   if { [string range $spl 0 10] == "std::vector" } {
+     set VPROPS(name) [lindex $spl 2]
+     set VPROPS(array) 1
+   } else {
+     set VPROPS(name) [lindex $spl 1]
+   }
+   if { $VPROPS(name) == "salIndex" } {
+     set VPROPS(dim) 1
+   } else {
+     set VPROPS(dim) $METADATA($VPROPS(topic),$VPROPS(name),size)
+   }
+   if { $type == "std::string" } {
       set VPROPS(string) 1
       set VPROPS(lvres) 5
       set VPROPS(dim) -1
       set res "  std::string	$VPROPS(name);"
    } else {
-     if { [lindex $spl 11] != "float" && [lindex $spl 11] != "double" } {set VPROPS(int) 1; set VPROPS(lvres) 9}
-     if { [lindex $spl 11] == "double" } {set VPROPS(double) 1; set VPROPS(lvres) 10 }
-     if { [lindex $spl 11] == "byte" } {set VPROPS(byte) 1; set VPROPS(lvres) 1  }
-     if { [lindex $spl 11] == "long" } {set VPROPS(int) 1; set VPROPS(long); set VPROPS(lvres) 3  }
-     if { [lindex $spl 11] == "long" } {set VPROPS(int) 1; set VPROPS(longlong) 1; set VPROPS(lvres) 4  }
-     if { [lindex $spl 11] == "boolean" } {set VPROPS(boolean) 1; set VPROPS(lvres) 5  }
+     if { $type != "float" && $type != "double" } {set VPROPS(int) 1; set VPROPS(lvres) 9}
+     if { $type == "double" } {set VPROPS(double) 1; set VPROPS(lvres) 10 }
+     if { $type == "byte" } {set VPROPS(byte) 1; set VPROPS(lvres) 1  }
+     if { $type == "long" } {set VPROPS(int) 1; set VPROPS(long); set VPROPS(lvres) 3  }
+     if { $type == "long" } {set VPROPS(int) 1; set VPROPS(longlong) 1; set VPROPS(lvres) 4  }
+     if { $type == "boolean" } {set VPROPS(boolean) 1; set VPROPS(lvres) 5  }
      if { $VPROPS(boolean) } {
        set res "  bool	$VPROPS(name);"
      } else {
-       set res "  [lindex $spl 11]	$VPROPS(name);"
+       set res "  $type	$VPROPS(name);"
      }
    }
    return $res

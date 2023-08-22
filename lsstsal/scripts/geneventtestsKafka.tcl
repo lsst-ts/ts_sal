@@ -49,8 +49,8 @@ int main (int argc, char *argv\[\])
   [set subsys]_logevent_[set alias]C myData;
   if (argc < [expr [llength $EVTS([set subsys],[set alias],plist)] +1]) \{
      printf(\"Usage :  input parameters...\\n\");
-"
-     puts $fevt "     exit(1);
+     printf(\"     $EVTS($subsys,$alias,plist)\\n\");
+     exit(1);
   \}
  
   struct timespec delay_1ms;

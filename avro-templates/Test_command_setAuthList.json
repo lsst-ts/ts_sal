@@ -1,0 +1,78 @@
+{
+    "type": "record",
+    "name": "command_setAuthList",
+    "namespace": "lsst.sal.kafka_Test",
+    "fields": [
+        {
+            "name": "salIndex",
+            "type": "long",
+            "default": 0,
+            "description": "SAL index (only present for indexed SAL components)",
+            "units": "unitless"
+        },
+        {
+            "name": "private_sndStamp",
+            "type": "double",
+            "default": 0.0,
+            "description": "Time of instance publication",
+            "units": "second"
+        },
+        {
+            "name": "private_rcvStamp",
+            "type": "double",
+            "default": 0.0,
+            "description": "Time of instance reception",
+            "units": "second"
+        },
+        {
+            "name": "private_efdStamp",
+            "type": "double",
+            "default": 0.0,
+            "description": "UTC time for EFD timestamp. An integer (the number of leap seconds) different from private_sndStamp.",
+            "units": "second"
+        },
+        {
+            "name": "private_kafkaStamp",
+            "type": "double",
+            "default": 0.0,
+            "description": "TAI time at which the Kafka message was created.",
+            "units": "second"
+        },
+        {
+            "name": "private_seqNum",
+            "type": "long",
+            "default": 0,
+            "description": "Sequence number",
+            "units": "unitless"
+        },
+        {
+            "name": "private_identity",
+            "type": "string",
+            "default": "",
+            "description": "Identity of publisher: SAL component name for a CSC or user@host for a user",
+            "units": "unitless"
+        },
+        {
+            "name": "private_origin",
+            "type": "long",
+            "default": 0,
+            "description": "Process ID of publisher",
+            "units": "unitless"
+        },
+        {
+            "name": "authorizedUsers",
+            "type": "string",
+            "default": "",
+            "description": "Comma seperated list of authorized users currently allowed to command this CSC,\n            in the form user@host.\n            If the first character is +/- then the specified users are added/removed.\n            Duplicates are silently ignored.\n            The CSC's own user@host is silently ignored, because it is always authorized.\n            For removal, CSCs that are not in the list are silently ignored.\n            Whitespace is allowed after the optional initial +/- and after each comma.\n        ",
+            "units": "unitless"
+        },
+        {
+            "name": "nonAuthorizedCSCs",
+            "type": "string",
+            "default": "",
+            "description": "Comma seperated list of CSC's not currently allowed to command this CSC,\n            in the form name[:index]. An index of 0 is stripped (name:0 becomes name).\n            If the first character is +/- then the specified CSCs are added/removed.\n            Duplicates are silently ignored.\n            For removal, CSCs that are not in the list are silently ignored.\n            Whitespace is allowed after the optional initial +/- and after each comma.\n        ",
+            "units": "unitless"
+        }
+    ],
+    "description": "Specify who can command this CSC."
+}

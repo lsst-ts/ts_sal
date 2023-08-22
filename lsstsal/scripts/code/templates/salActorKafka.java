@@ -109,8 +109,8 @@ public class salActor {
 	this.isEventReader = false;
 	this.isEventWriter = false;
 	this.isProcessor = false;
-        this.historyDepth = 500;
-        this.maxSamples = 500;
+        this.historyDepth = 0;
+        this.maxSamples = 0;
     }
 }
 

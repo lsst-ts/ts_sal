@@ -1,0 +1,99 @@
+{
+    "type": "record",
+    "name": "logevent_softwareVersions",
+    "namespace": "lsst.sal.kafka_Test",
+    "fields": [
+        {
+            "name": "salIndex",
+            "type": "long",
+            "default": 0,
+            "description": "SAL index (only present for indexed SAL components)",
+            "units": "unitless"
+        },
+        {
+            "name": "private_sndStamp",
+            "type": "double",
+            "default": 0.0,
+            "description": "Time of instance publication",
+            "units": "second"
+        },
+        {
+            "name": "private_rcvStamp",
+            "type": "double",
+            "default": 0.0,
+            "description": "Time of instance reception",
+            "units": "second"
+        },
+        {
+            "name": "private_efdStamp",
+            "type": "double",
+            "default": 0.0,
+            "description": "UTC time for EFD timestamp. An integer (the number of leap seconds) different from private_sndStamp.",
+            "units": "second"
+        },
+        {
+            "name": "private_kafkaStamp",
+            "type": "double",
+            "default": 0.0,
+            "description": "TAI time at which the Kafka message was created.",
+            "units": "second"
+        },
+        {
+            "name": "private_seqNum",
+            "type": "long",
+            "default": 0,
+            "description": "Sequence number",
+            "units": "unitless"
+        },
+        {
+            "name": "private_identity",
+            "type": "string",
+            "default": "",
+            "description": "Identity of publisher: SAL component name for a CSC or user@host for a user",
+            "units": "unitless"
+        },
+        {
+            "name": "private_origin",
+            "type": "long",
+            "default": 0,
+            "description": "Process ID of publisher",
+            "units": "unitless"
+        },
+        {
+            "name": "salVersion",
+            "type": "string",
+            "default": "",
+            "description": "This is the current version of SAL generation.",
+            "units": "unitless"
+        },
+        {
+            "name": "xmlVersion",
+            "type": "string",
+            "default": "",
+            "description": "This is the current version of CSC XML.",
+            "units": "unitless"
+        },
+        {
+            "name": "openSpliceVersion",
+            "type": "string",
+            "default": "",
+            "description": "This is the current version of OpenSplice.",
+            "units": "unitless"
+        },
+        {
+            "name": "cscVersion",
+            "type": "string",
+            "default": "",
+            "description": "The software version of this CSC.",
+            "units": "unitless"
+        },
+        {
+            "name": "subsystemVersions",
+            "type": "string",
+            "default": "",
+            "description": "A comma delimited list of key=value pairs relating subsystem name (key) to its version number (value). This may be left blank if there are no subsystems within this CSC.",
+            "units": "unitless"
+        }
+    ],
+    "description": "Current versions of software in use by CSC."
+}

@@ -1,0 +1,17 @@
+{
+    "Test_logevent_scalars": {
+        "int0": [
+            "Int0Enum_One",
+            "Int0Enum_Two",
+            "Int0Enum_Three"
+        ]
+    },
+    "Test_logevent_arrays": {
+        "int0": [
+            "Int0ValueEnum_Zero=0",
+            "Int0ValueEnum_Two=2",
+            "Int0ValueEnum_Four=04",
+            "Int0ValueEnum_Five=0x05"
+        ]
+    }
+}

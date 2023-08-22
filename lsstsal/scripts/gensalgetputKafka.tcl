@@ -346,7 +346,13 @@ global SAL_WORK_DIR ACTIVETOPICS AVRO_PREFIX
       set revcode [getRevCode [set base]_[set name] short]
       puts $fout "    strcpy(sal\[$idx\].topicHandle,\"[set base]_[set name][set revcode]\");"
       puts $fout "    strcpy(sal\[$idx\].topicName,\"[set base]_[set name]\");"
-      puts $fout "    sal\[$idx\].avroName = \"[set AVRO_PREFIX].[set base].[set name]\";"
+      puts $fout "    sal\[$idx\].avroName = \"[getAvroNamespace][set base].[set name]\";"
+      if { $type == "logevent" } {
+        puts $fout "   sal\[$idx\].historyDepth=1;"
+      }
+      if { $base == "Test" } {
+        puts $fout "   sal\[$idx\].historyDepth=5000;"
+      }
       incr idx 1
    }
   puts $fout "\}"
@@ -382,11 +388,17 @@ global ACTIVETOPICS env AVRO_PREFIX
       puts $fout "    sal\[$idx\]=new salActor();" 
       puts $fout "    sal\[$idx\].topicHandle=\"[set base]_[set name][set revcode]\";"
       puts $fout "    sal\[$idx\].topicName=\"[set base]_[set name]\";"
-      puts $fout "    sal\[$idx\].avroName = \"[set AVRO_PREFIX].[set base].[set name]\";"
+      puts $fout "    sal\[$idx\].avroName = \"[getAvroNamespace][set base].[set name]\";"
       if { $type == "logevent" || $type == "command" || $type == "ackcmd" } {
         puts $fout "    sal\[$idx\].topicType=\"[set type]\";"
       } else {
         puts $fout "    sal\[$idx\].topicType=\"telemetry\";"
+      }
+      if { $type == "logevent" } {
+        puts $fout "   sal\[$idx\].historyDepth=1;"
+      }
+      if { $base == "Test" } {
+        puts $fout "   sal\[$idx\].historyDepth=5000;"
       }
       incr idx 1
    }
@@ -586,7 +598,7 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS AVRO_PREFI
     puts $fout "/** Publish a sample of the $turl Kafka topic. A publisher must already have been set up"
     puts $fout "  * @param data The payload of the sample as defined in the XML for SALData"
     puts $fout "  */"
-    puts $fout "  public int putSample([set AVRO_PREFIX].[set base].[set name] data)"
+    puts $fout "  public int putSample([getAvroNamespace][set base].[set name] data)"
     puts $fout "  \{"
     puts $fout "    int status = SAL__OK;"
     puts $fout "    [set name] Instance = new [set name]();"
@@ -632,7 +644,7 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS AVRO_PREFI
     puts $fout "  * If there are multiple samples in the history cache, they are skipped over and only the most recent is supplied."
     puts $fout "  * @param data The payload of the sample as defined in the XML for SALData"
     puts $fout "  */"
-    puts $fout "  public int getSample([set AVRO_PREFIX].[set base].[set name] data)"
+    puts $fout "  public int getSample([getAvroNamespace][set base].[set name] data)"
     puts $fout "  \{"
     puts $fout "    int status =  -1;"
     puts $fout "    int last = SAL__NO_UPDATES;"
@@ -685,7 +697,7 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS AVRO_PREFI
     puts $fout "  * calls to getNextSample_[set name]"
     puts $fout "  * @param data The payload of the sample as defined in the XML for SALData"
     puts $fout "  */"
-    puts $fout "  public int getNextSample([set AVRO_PREFIX].[set base].[set name] data)"
+    puts $fout "  public int getNextSample([getAvroNamespace][set base].[set name] data)"
     puts $fout "  \{"
     puts $fout "    int status = -1;"
     puts $fout "    int actorIdx = SAL__[set base]_[set name]_ACTOR;"
@@ -699,7 +711,7 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS AVRO_PREFI
     puts $fout "/** Empty the history cache of samples. After this only newly published samples"
     puts $fout "  * will be available to getSample_[set name] or getNextSample_[set name]"
     puts $fout "  */"
-    puts $fout "  public int flushSamples([set AVRO_PREFIX].[set base].[set name] data)"
+    puts $fout "  public int flushSamples([getAvroNamespace][set base].[set name] data)"
     puts $fout "  \{"
     puts $fout "    int status = -1;"
     puts $fout "    int actorIdx = SAL__[set base]_[set name]_ACTOR;"
@@ -901,7 +913,7 @@ global AVRO_PREFIX OPTIONS
    puts $fout "     sal\[actorIdx\].publisher = producer;";
    puts $fout "  \}";
    puts $fout "  try \{";
-   puts $fout "     publisher.send(new ProducerRecord<String,[set name]>(\"[set AVRO_PREFIX].[set base].[set name]\", \"LSST\", Instance));";
+   puts $fout "     publisher.send(new ProducerRecord<String,[set name]>(\"[getAvroNamespace][set base].[set name]\", \"LSST\", Instance));";
    puts $fout "  \} catch (Exception e) \{";
    puts $fout "     System.out.println(\"An error occurred: \" + e.getMessage());";
    puts $fout "  \}";
@@ -915,14 +927,14 @@ global AVRO_PREFIX
    if { $name == "[set base]_ackcmd" } {
      set avroname "ackcmd"
    }
-   puts $fout "  String avroTopic = \"[set AVRO_PREFIX].[set base].[set name]\";"
+   puts $fout "  String avroTopic = \"[getAvroNamespace][set base].[set name]\";"
     puts $fout "//  if (sal\[actorIdx\].subscriber == null ) \{"
     puts $fout "//     AvroMapper avroMapper = new AvroMapper();"
     puts $fout "//     Schema salschema = avroMapper.schemaFor([set name].class);"
     puts $fout "//     sal\[actorIdx\].avroSchema = salschema;"
     puts $fout "     Properties cprops = new Properties();"
     puts $fout "     KafkaConsumer<String, [set name]> consumer = new KafkaConsumer<>(cprops);"
-    puts $fout "     consumer.subscribe(Collections.singletonList(\"[set AVRO_PREFIX].[set base].[set name]\"));"
+    puts $fout "     consumer.subscribe(Collections.singletonList(\"[getAvroNamespace][set base].[set name]\"));"
     puts $fout "     sal\[actorIdx\].subscriber = consumer;"
     puts $fout "//  \} else \{"
     puts $fout "//     KafkaConsumer<String, [set name]> consumer = sal\[actorIdx\].subscriber;"
