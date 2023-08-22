@@ -47,23 +47,33 @@ global OPTIONS
 #  Copies the test programs into the rpm base directory
 #
 proc updatetests { subsys rpmname } {
-global SAL_WORK_DIR XMLVERSION
+global SAL_WORK_DIR XMLVERSION RELVERSION
+   if { $RELVERSION != "" } {
+     set rpmversion [set XMLVERSION]~[set RELVERSION]
+     if { [string range $RELVERSION 0 0] == "_" } {
+       set rpmversion [set XMLVERSION]~[set RELVERSION]
+     } else {
+       set rpmversion [set XMLVERSION]~[set RELVERSION]
+     }
+   } else {
+     set rpmversion $XMLVERSION
+   }
    catch {
-    copyasset $SAL_WORK_DIR/lib/libSAL_[set subsys].so [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/lib/.
-    copyasset $SAL_WORK_DIR/lib/libSAL_[set subsys].a [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/lib/.
+    copyasset $SAL_WORK_DIR/lib/libSAL_[set subsys].so [set rpmname]-$rpmversion/opt/lsst/ts_sal/lib/.
+    copyasset $SAL_WORK_DIR/lib/libSAL_[set subsys].a [set rpmname]-$rpmversion/opt/lsst/ts_sal/lib/.
     set all ""
     catch {set all [glob [set subsys]_*/cpp]}
     foreach i $all {
        set tlm [lindex [split $i "/"] 0]
        set top [join [lrange [split $tlm "_"] 1 end] "_"]
-       copyasset $i/standalone/sacpp_[set subsys]_pub [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/bin/sacpp_[set subsys]_[set top]_publisher
-       copyasset $i/standalone/sacpp_[set subsys]_sub [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/bin/sacpp_[set subsys]_[set top]_subscriber
+       copyasset $i/standalone/sacpp_[set subsys]_pub [set rpmname]-$rpmversion/opt/lsst/ts_sal/bin/sacpp_[set subsys]_[set top]_publisher
+       copyasset $i/standalone/sacpp_[set subsys]_sub [set rpmname]-$rpmversion/opt/lsst/ts_sal/bin/sacpp_[set subsys]_[set top]_subscriber
        puts stdout "Done $subsys $top"
     }
     foreach ttype "commander controller send log logger sender publisher subscriber" {
       set all [glob [set subsys]/cpp/src/*_[set ttype]]
       foreach i $all {
-         copyasset $i [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/bin/.
+         copyasset $i [set rpmname]-$rpmversion/opt/lsst/ts_sal/bin/.
          puts stdout "Done $subsys $i"
       }
     }
@@ -79,13 +89,23 @@ global SAL_WORK_DIR XMLVERSION
 #  Copies the necessary files into rpm base directory
 #
 proc updateruntime { subsys {withtest 0} } {
-global SAL_WORK_DIR XMLVERSION SAL_DIR SYSDIC SALVERSION env
+global SAL_WORK_DIR XMLVERSION RELVERSION SAL_DIR SYSDIC SALVERSION env
   set rpmname $subsys
+  if { $RELVERSION != "" } {
+    set rpmversion [set XMLVERSION]~[set RELVERSION]
+    if { [string range $RELVERSION 0 0] == "_" } {
+      set rpmversion [set XMLVERSION]~[set RELVERSION]
+    } else {
+      set rpmversion [set XMLVERSION]~[set RELVERSION]
+    }
+  } else {
+    set rpmversion $XMLVERSION
+  }
   if { $withtest } {set rpmname [set subsys]_test}
-  exec rm -fr [set rpmname]-$XMLVERSION
-  exec mkdir -p [set rpmname]-$XMLVERSION/opt/lsst/ts_sal
-  exec mkdir -p [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/bin
-  exec mkdir -p [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/lib
+  exec rm -fr [set rpmname]-$rpmversion
+  exec mkdir -p [set rpmname]-$rpmversion/opt/lsst/ts_sal
+  exec mkdir -p [set rpmname]-$rpmversion/opt/lsst/ts_sal/bin
+  exec mkdir -p [set rpmname]-$rpmversion/opt/lsst/ts_sal/lib
   exec mkdir -p $SAL_WORK_DIR/rpmbuild/BUILD
   exec mkdir -p $SAL_WORK_DIR/rpmbuild/BUILDROOT
   exec mkdir -p $SAL_WORK_DIR/rpmbuild/RPMS
@@ -93,63 +113,64 @@ global SAL_WORK_DIR XMLVERSION SAL_DIR SYSDIC SALVERSION env
   exec mkdir -p $SAL_WORK_DIR/rpmbuild/SPECS
   exec mkdir -p $SAL_WORK_DIR/rpmbuild/SRPMS
   if { $withtest == 0 } {
-    exec mkdir -p [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include
-    exec mkdir -p [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/scripts
-    exec mkdir -p [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/idl
-    exec mkdir -p [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/lib
-    exec mkdir -p [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/doc
+    exec mkdir -p [set rpmname]-$rpmversion/opt/lsst/ts_sal/include
+    exec mkdir -p [set rpmname]-$rpmversion/opt/lsst/ts_sal/scripts
+    exec mkdir -p [set rpmname]-$rpmversion/opt/lsst/ts_sal/idl
+    exec mkdir -p [set rpmname]-$rpmversion/opt/lsst/ts_sal/lib
+    exec mkdir -p [set rpmname]-$rpmversion/opt/lsst/ts_sal/doc
     if { [info exists SYSDIC([set subsys],labview)] } {
-      exec mkdir -p [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/labview
-      exec mkdir -p [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/labview/lib
-      copyasset $SAL_WORK_DIR/lib/SALLV_[set subsys].so [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/labview/lib/.
-      copyasset $SAL_WORK_DIR/[set subsys]/labview/SALLV_[set subsys]_Monitor [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/bin/.
-      copyasset $SAL_WORK_DIR/[set subsys]/labview/SAL_[set subsys]_shmem.h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
-      copyasset $SAL_WORK_DIR/[set subsys]/labview/sal_[set subsys].idl [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/labview/.
-      copyasset $SAL_WORK_DIR/[set subsys]/cpp/src/SAL_[set subsys]LV.h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
-      copyasset $SAL_WORK_DIR/lib/libsacpp_[set subsys]_types.so [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/lib/.
+      exec mkdir -p [set rpmname]-$rpmversion/opt/lsst/ts_sal/labview
+      exec mkdir -p [set rpmname]-$rpmversion/opt/lsst/ts_sal/labview/lib
+      copyasset $SAL_WORK_DIR/lib/SALLV_[set subsys].so [set rpmname]-$rpmversion/opt/lsst/ts_sal/labview/lib/.
+      copyasset $SAL_WORK_DIR/[set subsys]/labview/SALLV_[set subsys]_Monitor [set rpmname]-$rpmversion/opt/lsst/ts_sal/bin/.
+      copyasset $SAL_WORK_DIR/[set subsys]/labview/SAL_[set subsys]_shmem.h [set rpmname]-$rpmversion/opt/lsst/ts_sal/include/.
+      copyasset $SAL_WORK_DIR/[set subsys]/labview/sal_[set subsys].idl [set rpmname]-$rpmversion/opt/lsst/ts_sal/labview/.
+      copyasset $SAL_WORK_DIR/[set subsys]/cpp/src/SAL_[set subsys]LV.h [set rpmname]-$rpmversion/opt/lsst/ts_sal/include/.
+      copyasset $SAL_WORK_DIR/lib/libsacpp_[set subsys]_types.so [set rpmname]-$rpmversion/opt/lsst/ts_sal/lib/.
     }
     if { [info exists SYSDIC([set subsys],java)] } {
-      exec mkdir -p [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/jar
-      copyasset $SAL_WORK_DIR/lib/saj_[set subsys]_types.jar [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/jar/.
-      copyasset $SAL_WORK_DIR/maven/[set rpmname]-[set XMLVERSION]_$SALVERSION/target/sal_[set subsys]-[set XMLVERSION]_$SALVERSION.jar [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/jar/.
+      exec mkdir -p [set rpmname]-$rpmversion/opt/lsst/ts_sal/jar
+      copyasset $SAL_WORK_DIR/lib/saj_[set subsys]_types.jar [set rpmname]-$rpmversion/opt/lsst/ts_sal/jar/.
+      copyasset $SAL_WORK_DIR/maven/[set rpmname]-[set rpmversion]_$SALVERSION/target/sal_[set subsys]-[set rpmversion]_$SALVERSION.jar [set rpmname]-$rpmversion/opt/lsst/ts_sal/jar/.
     }
-    exec mkdir -p [set rpmname]-$XMLVERSION/opt/lsst/ts_xml/python/lsst/ts/xml/data/sal_interfaces/[set subsys]
+    exec mkdir -p [set rpmname]-$rpmversion/opt/lsst/ts_xml/python/lsst/ts/xml/data/sal_interfaces/[set subsys]
     if { [info exists SYSDIC([set subsys],cpp)] } {
-      copyasset $SAL_WORK_DIR/lib/libSAL_[set subsys].so [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/lib/.
-      copyasset $SAL_WORK_DIR/lib/libSAL_[set subsys].a [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/lib/.
-      copyasset $SAL_WORK_DIR/lib/libsacpp_[set subsys]_types.so [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/lib/.
+      copyasset $SAL_WORK_DIR/lib/libSAL_[set subsys].so [set rpmname]-$rpmversion/opt/lsst/ts_sal/lib/.
+      copyasset $SAL_WORK_DIR/lib/libSAL_[set subsys].a [set rpmname]-$rpmversion/opt/lsst/ts_sal/lib/.
+      copyasset $SAL_WORK_DIR/lib/libsacpp_[set subsys]_types.so [set rpmname]-$rpmversion/opt/lsst/ts_sal/lib/.
     }
-    copyasset $SAL_WORK_DIR/idl-templates/validated/[set subsys]_revCodes.tcl [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/scripts/.
-    copyasset $SAL_WORK_DIR/idl-templates/validated/sal/sal_revCoded_[set subsys].idl [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/idl/.
+    copyasset $SAL_WORK_DIR/idl-templates/validated/[set subsys]_revCodes.tcl [set rpmname]-$rpmversion/opt/lsst/ts_sal/scripts/.
+    copyasset $SAL_WORK_DIR/idl-templates/validated/sal/sal_revCoded_[set subsys].idl [set rpmname]-$rpmversion/opt/lsst/ts_sal/idl/.
     if { [info exists SYSDIC([set subsys],cpp)] } {
-      copyasset $SAL_WORK_DIR/[set subsys]/cpp/src/SAL_[set subsys].h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
-      copyasset $SAL_WORK_DIR/[set subsys]/cpp/src/SAL_[set subsys]_actors.h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
-      copyasset $SAL_WORK_DIR/[set subsys]/cpp/src/SAL_[set subsys]C.h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
-      copyasset $SAL_WORK_DIR/[set subsys]/cpp/sal_[set subsys]Dcps.h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
-      copyasset $SAL_WORK_DIR/[set subsys]/cpp/sal_[set subsys]Dcps_impl.h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
-      copyasset $SAL_WORK_DIR/[set subsys]/cpp/sal_[set subsys].h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
-      copyasset $SAL_WORK_DIR/[set subsys]/cpp/ccpp_sal_[set subsys].h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
-      copyasset $SAL_WORK_DIR/[set subsys]/cpp/sal_[set subsys]SplDcps.h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
-      copyasset $SAL_DIR/code/templates/SAL_defines.h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
+      copyasset $SAL_WORK_DIR/[set subsys]/cpp/src/SAL_[set subsys].h [set rpmname]-$rpmversion/opt/lsst/ts_sal/include/.
+      copyasset $SAL_WORK_DIR/[set subsys]/cpp/src/SAL_[set subsys]_actors.h [set rpmname]-$rpmversion/opt/lsst/ts_sal/include/.
+      copyasset $SAL_WORK_DIR/[set subsys]/cpp/src/SAL_[set subsys]C.h [set rpmname]-$rpmversion/opt/lsst/ts_sal/include/.
+      copyasset $SAL_WORK_DIR/[set subsys]/cpp/sal_[set subsys]Dcps.h [set rpmname]-$rpmversion/opt/lsst/ts_sal/include/.
+      copyasset $SAL_WORK_DIR/[set subsys]/cpp/sal_[set subsys]Dcps_impl.h [set rpmname]-$rpmversion/opt/lsst/ts_sal/include/.
+      copyasset $SAL_WORK_DIR/[set subsys]/cpp/sal_[set subsys].h [set rpmname]-$rpmversion/opt/lsst/ts_sal/include/.
+      copyasset $SAL_WORK_DIR/[set subsys]/cpp/ccpp_sal_[set subsys].h [set rpmname]-$rpmversion/opt/lsst/ts_sal/include/.
+      copyasset $SAL_WORK_DIR/[set subsys]/cpp/sal_[set subsys]SplDcps.h [set rpmname]-$rpmversion/opt/lsst/ts_sal/include/.
+      copyasset $SAL_DIR/code/templates/SAL_defines.h [set rpmname]-$rpmversion/opt/lsst/ts_sal/include/.
     }
     foreach dtype "Commands Events Telemetry" {
       if { [file exists $env(TS_XML_DIR)/python/lsst/ts/xml/data/sal_interfaces/$subsys/[set subsys]_[set dtype].xml] } {
-        exec cp $env(TS_XML_DIR)/python/lsst/ts/xml/data/sal_interfaces/$subsys/[set subsys]_[set dtype].xml [set rpmname]-$XMLVERSION/opt/lsst/ts_xml/python/lsst/ts/xml/data/sal_interfaces/[set subsys]/.
+        exec cp $env(TS_XML_DIR)/python/lsst/ts/xml/data/sal_interfaces/$subsys/[set subsys]_[set dtype].xml [set rpmname]-$rpmversion/opt/lsst/ts_xml/python/lsst/ts/xml/data/sal_interfaces/[set subsys]/.
       }
     }
-    exec cp $SAL_WORK_DIR/[set subsys]_Generics.xml [set rpmname]-$XMLVERSION/opt/lsst/ts_xml/python/lsst/ts/xml/data/sal_interfaces/[set subsys]/.
+    exec cp $SAL_WORK_DIR/[set subsys]_Generics.xml [set rpmname]-$rpmversion/opt/lsst/ts_xml/python/lsst/ts/xml/data/sal_interfaces/[set subsys]/.
     foreach dtype "Commands Events Telemetry" {
       if { [file exists $SAL_WORK_DIR/html/[set subsys]/[set subsys]_[set dtype].html] } {
-        exec cp $SAL_WORK_DIR/html/[set subsys]/[set subsys]_[set dtype].html [set rpmname]-$XMLVERSION/opt/lsst/ts_xml/python/lsst/ts/xml/data/sal_interfaces/[set subsys]/.
+        exec cp $SAL_WORK_DIR/html/[set subsys]/[set subsys]_[set dtype].html [set rpmname]-$rpmversion/opt/lsst/ts_xml/python/lsst/ts/xml/data/sal_interfaces/[set subsys]/.
       }
     }
   }
   if { $withtest } { updatetests $subsys $rpmname }
-  exec tar cvzf $SAL_WORK_DIR/rpmbuild/SOURCES/[set rpmname]-$XMLVERSION.tgz [set rpmname]-$XMLVERSION
-  exec rm -fr $SAL_WORK_DIR/rpmbuild/BUILD/[set rpmname]-$XMLVERSION
-  exec cp -r [set rpmname]-$XMLVERSION $SAL_WORK_DIR/rpmbuild/BUILD/.
+  exec tar cvzf $SAL_WORK_DIR/rpmbuild/SOURCES/[set rpmname]-$rpmversion.tgz [set rpmname]-$rpmversion
+  exec rm -fr $SAL_WORK_DIR/rpmbuild/BUILD/[set rpmname]-[set rpmversion]
+  exec cp -r [set rpmname]-$rpmversion $SAL_WORK_DIR/rpmbuild/BUILD/[set rpmname]-[set rpmversion]
   listfilesforrpm $rpmname
   if { $withtest } {
+    puts [pwd]
     generatetestrpm $subsys
     set frpm [open /tmp/makerpm-runtime-[set subsys] w]
     puts $frpm "#!/bin/sh
@@ -219,9 +240,19 @@ proc updateddsruntime { version } {
 #  This is an RPM which Requires all the Main telescope RPMs
 #
 proc listfilesforrpm { rpmname } {
-global XMLVERSION env RPMFILES SAL_WORK_DIR
+global XMLVERSION RELVERSION env RPMFILES SAL_WORK_DIR
    set RPMFILES ""
-   cd $SAL_WORK_DIR/rpmbuild/BUILD/[set rpmname]-$XMLVERSION
+   if { $RELVERSION != "" } {
+     set rpmversion [set XMLVERSION]~[set RELVERSION]
+     if { [string range $RELVERSION 0 0] == "_" } {
+       set rpmversion [set XMLVERSION]~[set RELVERSION]
+     } else {
+       set rpmversion [set XMLVERSION]~[set RELVERSION]
+     }
+   } else {
+     set rpmversion $XMLVERSION
+   }
+   cd $SAL_WORK_DIR/rpmbuild/BUILD/[set rpmname]-[set rpmversion]
    set fl [split [exec find . -type f  -print] \n]
    foreach f $fl {
        if { [string range $f 0 4] == "./opt" } {
@@ -239,19 +270,19 @@ global XMLVERSION env RPMFILES SAL_WORK_DIR
 proc generatemetarpm { } {
 global SYSDIC SALRELEASE SALVERSION SAL_WORK_DIR OSPL_VERSION RELVERSION env XMLVERSION
    if { $RELVERSION != "" } {
-     set release [set SALVERSION].[set RELVERSION]
+     set rpmversion [set XMLVERSION]~[set RELVERSION]
      if { [string range $RELVERSION 0 0] == "_" } {
-       set release [set SALVERSION][set RELVERSION]
+       set rpmversion [set XMLVERSION]~[set RELVERSION]
      } else {
-       set release [set SALVERSION].[set RELVERSION]
+       set rpmversion [set XMLVERSION]~[set RELVERSION]
      }
    } else {
-     set release $SALVERSION
+     set rpmversion $XMLVERSION
    }
    set xmldist $XMLVERSION
    set fout [open $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_runtime.spec w]
-   set rpmversion $XMLVERSION
-   set release [join [split $release "-"] "."]
+   set rpmversion [join [split $rpmversion "-"] "~"]
+   set release $SALVERSION
    puts $fout "
 %global __os_install_post %{nil}
 %define debug_package %{nil}
@@ -311,19 +342,19 @@ rpmbuild -ba -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_runtime.spec
 proc generateATmetarpm { } {
 global SYSDIC SALRELEASE SALVERSION SAL_WORK_DIR OSPL_VERSION RELVERSION env XMLVERSION
    if { $RELVERSION != "" } {
-     set release [set SALVERSION].[set RELVERSION]
+     set rpmversion [set XMLVERSION]~[set RELVERSION]
      if { [string range $RELVERSION 0 0] == "_" } {
-       set release [set SALVERSION][set RELVERSION]
+       set rpmversion [set XMLVERSION]~[set RELVERSION]
      } else {
-       set release [set SALVERSION].[set RELVERSION]
+       set rpmversion [set XMLVERSION]~[set RELVERSION]
      }
    } else {
-     set release $SALVERSION
+     set rpmversion $XMLVERSION
    }
    set xmldist $XMLVERSION
    set fout [open $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_ATruntime.spec w]
-   set rpmversion $XMLVERSION
-   set release [join [split $release "-"] "."]
+   set rpmversion [join [split $rpmversion "-"] "~"]
+   set release $SALVERSION
    puts $fout "
 %global __os_install_post %{nil}
 %define debug_package %{nil}
@@ -389,17 +420,19 @@ global SAL_WORK_DIR SALVERSION SALRELEASE RPMFILES OSPL_VERSION RELVERSION XMLVE
   set xmldist $XMLVERSION
   set fout [open $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_[set subsys].spec w]
   if { $RELVERSION != "" } {
+     set rpmversion [set XMLVERSION]~[set RELVERSION]
      if { [string range $RELVERSION 0 0] == "_" } {
-       set release [set SALVERSION][set RELVERSION]
+       set rpmversion [set XMLVERSION]~[set RELVERSION]
      } else {
-       set release [set SALVERSION].[set RELVERSION]
+       set rpmversion [set XMLVERSION]~[set RELVERSION]
      }
   } else {
-     set release $SALVERSION
+     set rpmversion $XMLVERSION
   }
-  set release [join [split $release "-"] "."]
+  set rpmversion [join [split $rpmversion "-"] "~"]
+  set release $SALVERSION
   puts $fout "Name: $subsys
-Version: $XMLVERSION
+Version: [set rpmversion]
 Release: [set release]%\{?dist\}
 Summary: SAL runtime for $subsys Subsystem
 Vendor: LSST
@@ -407,7 +440,7 @@ License: GPL
 URL: http://project.lsst.org/ts
 Group: Telescope and Site SAL
 AutoReqProv: no
-Source0: [set subsys]-$XMLVERSION.tgz
+Source0: [set subsys]-$rpmversion.tgz
 Prefix: /opt
 BuildRoot: $SAL_WORK_DIR/rpmbuild/%\{name\}-%\{version\}-[set release]
 Packager: dmills@lsst.org
@@ -461,17 +494,17 @@ global SAL_WORK_DIR SALVERSION SALRELEASE RPMFILES OSPL_VERSION RELVERSION XMLVE
   set xmldist $XMLVERSION
   set fout [open $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_[set subsys]_test.spec w]
   if { $RELVERSION != "" } {
-     set release [set SALVERSION].[set RELVERSION]
+     set rpmversion [set XMLVERSION]~[set RELVERSION]
      if { [string range $RELVERSION 0 0] == "_" } {
-       set release [set SALVERSION][set RELVERSION]
+       set rpmversion [set XMLVERSION]~[set RELVERSION]
      } else {
-       set release [set SALVERSION].[set RELVERSION]
+       set rpmversion [set XMLVERSION]~[set RELVERSION]
      }
   } else {
-     set release $SALVERSION
+     set rpmversion $XMLVERSION
   }
-  set rpmversion $XMLVERSION
-  set release [join [split $release "-"] "."]
+  set rpmversion [join [split $rpmversion "-"] "~"]
+  set release $SALVERSION
   puts $fout "Name: [set subsys]_test
 Version: [set rpmversion]
 Release: [set release]%\{?dist\}
@@ -481,7 +514,7 @@ License: GPL
 URL: http://project.lsst.org/ts
 Group: Telescope and Site SAL
 AutoReqProv: no
-Source0: [set subsys]_test-$XMLVERSION.tgz
+Source0: [set subsys]_test-$rpmversion.tgz
 Prefix: /opt
 BuildRoot: $SAL_WORK_DIR/rpmbuild/%\{name\}-%\{version\}_[set release]
 Packager: dmills@lsst.org
