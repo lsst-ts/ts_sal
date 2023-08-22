@@ -52,8 +52,9 @@ int main (int argc, char *argv\[\])
 
   [set subsys]_command_[set alias]C myData;
   if (argc < $numargs ) \{
-     printf(\"Usage :  input parameters...\\n\");"
-    puts $fcmd "     exit(1);
+     printf(\"Usage :  input parameters...\\n\");
+     printf(\"     $CMDS($subsys,$alias,plist)\\n\");
+     exit(1);
   \}"
    if { [info exists SYSDIC($subsys,keyedID)] } {
       puts $fcmd "
@@ -331,6 +332,5 @@ echo \"=====================================================================\"
   exec chmod 755 $SAL_WORK_DIR/[set subsys]/cpp/src/testAuthList.sh
   if { $OPTIONS(verbose) } {stdlog "###TRACE<<< genauthlisttestscpp $subsys"}
 }
-
 
 

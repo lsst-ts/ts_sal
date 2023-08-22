@@ -593,16 +593,16 @@ void SAL_SALData::createSubscriber(int actorIdx)
      throw std::runtime_error("Failed to create a Kafka subscriber");
   }
   sal[actorIdx].subscriber->subscribe(topics);
-  if (historySync != 0) {
+  if (sal[actorIdx].historyDepth != 0) {
     const int partition = 0;
     RdKafka::ErrorCode err;
     int64_t low;
     int64_t high;
     sal[actorIdx].subscriber->query_watermark_offsets(sal[actorIdx].avroName, partition,&low,&high, 1000);
     cout << "topic offsets for " << sal[actorIdx].avroName << low << ":" << high << endl;
-    int64_t startOffset = high - historySync;
-    if (startOffset < 0) {
-       startOffset = 0;
+    int64_t startOffset = high - sal[actorIdx].historyDepth;
+    if (startOffset < low) {
+       startOffset = low;
     }
     std::vector<RdKafka::TopicPartition*> parts;
     parts.push_back(RdKafka::TopicPartition::create(sal[actorIdx].avroName, partition, startOffset));

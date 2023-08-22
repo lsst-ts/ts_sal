@@ -187,6 +187,21 @@ if { $OPTIONS(validate) || $OPTIONS(idl) } {
   set all $TSUBSYSTEMS
   stdlog "Processing $all"
   foreach i $all {
+    if { [file exists $env(TS_XML_DIR)/python/lsst/ts/xml/data/sal_interfaces/$i] } {
+      set old ""
+      catch {set old [glob $SAL_WORK_DIR/$d/[set i]_*.json]}
+      foreach o $old {
+        exec rm $o
+      }
+      stdlog "Validating $i interface Json format definitions"
+      set result none
+      catch { set result [exec get_component_info -o $SAL_WORK_DIR/avro-templates $i] } bad
+      if { $result == "none" } {stdlog $bad}
+      if { $OPTIONS(verbose) } {stdlog $result}
+    }
+    puts stdout "****************************************************************************"
+    exec ls -l avro-templates
+    puts stdout "****************************************************************************"
     set IDXENUMDONE($i) 0
     if { [file exists $env(TS_XML_DIR)/python/lsst/ts/xml/data/sal_interfaces/SALGenerics.xml] } {
       set x none
@@ -194,14 +209,6 @@ if { $OPTIONS(validate) || $OPTIONS(idl) } {
       set SALSubsys $i
       source $SAL_DIR/processgenerics.tcl
       generategenerics $i
-    }
-    gentopicdefsql $i
-    foreach d "avro-templates" {
-      set old ""
-      catch {set old [glob $SAL_WORK_DIR/$d/[set i]_*.json]}
-      foreach o $old {
-        exec rm $o
-      }
     }
     foreach t "Telemetry Commands Events" {
       if { [file exists $env(TS_XML_DIR)/python/lsst/ts/xml/data/sal_interfaces/$i/[set i]_[set t].xml] } {
@@ -213,11 +220,6 @@ if { $OPTIONS(validate) || $OPTIONS(idl) } {
     }
     parseXMLtoJson $SAL_WORK_DIR/[set i]_Generics.xml
     stdlog "Imported $i Generic interface definitions"
-    stdlog "Validating $i interface Json format definitions"
-    catch {
-      set hascmd [glob $SAL_WORK_DIR/avro-templates/[set i]_command_*.json]
-      createackcmdjson $i [info exists SYSDIC($i,keyedID)]
-    }
     updateRevCodes $i
     updateMetaData $i
     stdlog "Completed $i validation\n\n"

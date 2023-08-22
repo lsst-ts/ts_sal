@@ -1,0 +1,13 @@
+{
+    "Enum": [
+        "One",
+        "Two",
+        "Three"
+    ],
+    "ValueEnum": [
+        "Zero=0",
+        "Two=2",
+        "Four=04",
+        "Five=0x05"
+    ]
+}

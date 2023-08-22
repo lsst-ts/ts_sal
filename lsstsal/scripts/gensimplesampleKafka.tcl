@@ -153,15 +153,20 @@ typedef StrArray** StrArrayHdl;
 #  definitions
 #
 proc makesalincl { subsys } {
-global SAL_DIR SAL_WORK_DIR SYSDIC VPROPS EVENT_ENUM OPTIONS CMD_ALIASES METADATA
+global SAL_DIR SAL_WORK_DIR SYSDIC VPROPS EVENT_ENUM OPTIONS CMD_ALIASES METADATA ONEDONEGEN
    if { $OPTIONS(verbose) } {stdlog "###TRACE>>> makesalincl $subsys"}
-   set all [lsort [glob $SAL_WORK_DIR/avro-templates/[set subsys]_*.json]]
    exec mkdir -p $SAL_WORK_DIR/avro-templates/sal
    exec mkdir -p $SAL_WORK_DIR/[set subsys]/cpp/src
    catch {
      set prev [glob $SAL_WORK_DIR/include/SAL_[set subsys]*]
      foreach f $prev {exec rm $f}
    }
+   if { $ONEDONEGEN == 0 } {
+     stdlog "calling salavrogen $subsys cpp"
+     salavrogen $subsys cpp
+     stdlog "done salavrogen $subsys cpp"
+   }
+   set all [lsort [glob $SAL_WORK_DIR/[set subsys]/cpp/src/[set subsys]_*.hh]]
    set fhdr [open $SAL_WORK_DIR/[set subsys]/cpp/src/SAL_[set subsys]C.h w]
    set fhlv [open $SAL_WORK_DIR/[set subsys]/cpp/src/SAL_[set subsys]LV.h w]
    addlvtypes $fhlv
@@ -171,8 +176,8 @@ global SAL_DIR SAL_WORK_DIR SYSDIC VPROPS EVENT_ENUM OPTIONS CMD_ALIASES METADAT
    puts $fhdr "using namespace std;"
    foreach i $all {
      stdlog "Adding $i to sal_$subsys code fragments"
-     set fin [open $i r]
-     gets $fin rec; gets $fin rec;gets $fin rec;gets $fin rec;gets $fin rec;gets $fin rec;gets $fin rec; gets $fin rec; gets $fin rec
+###     set fin [open $i r]
+###     gets $fin rec; gets $fin rec;gets $fin rec;gets $fin rec;gets $fin rec;gets $fin rec;gets $fin rec; gets $fin rec; gets $fin rec
      set name [join [lrange [split [file rootname [file tail $i]] _] 1 end] _]
      if { $name != "ackcmd" } {
       set VPROPS(iscommand) 0
@@ -197,39 +202,44 @@ global SAL_DIR SAL_WORK_DIR SYSDIC VPROPS EVENT_ENUM OPTIONS CMD_ALIASES METADAT
              [set subsys]_memIO->client\[LVClient\].shmemIncoming_[set subsys]_[set name].private_rcvStamp = Incoming_[set subsys]_[set name]->private_rcvStamp;"
       puts $fhdr "struct [set subsys]_[set name]C \{"
       puts $fhdr "  double  private_rcvStamp;"
-      if { [info exists SYSDIC($subsys,keyedID)] } {
-         gets $fin rec
-         puts $fhdr "  long  salIndex;"
-      }
       puts $fhlv "typedef struct [set subsys]_[set name]LV \{"
       set argidx 1
-      while { [gets $fin rec] > -1 } {
-         if { $OPTIONS(verbose) } { stdlog "### processing $i : $rec" }
-         if { [string range $rec 0 0] == "\}" } {
-            puts $fhdr "#ifdef SAL_DEBUG_CSTRUCTS"
-            puts $fhdr "  [set subsys]_[set name]C()  \{ std::cout << \"[set subsys]_[set name]C()\"  << std::endl; \}"
-            puts $fhdr "  ~[set subsys]_[set name]C() \{ std::cout << \"~[set subsys]_[set name]C()\"  << std::endl; \}"
-            puts $fhdr "#endif"
-            puts $fhdr "\};"
-            puts $fhlv "\} [set subsys]_[set name]_Ctl;"
-         } else {
-            if { [string range $rec 0 0] != "\]" } {
-              set VPROPS(idx) $argidx
-              set VPROPS(base) $subsys
-              set VPROPS(topic) "[set subsys]_[set name]"
-              puts $fhdr [typejsontoc $rec]
-              puts $fhlv [typejsontoc $rec]
-              updatecfragments $fcod1 $fcod1b $fcod2 $fcod2b $fcod3 $fcod4 $fcod5 $fcod6 $fcod7 $fcod8 $fcod10 $fcod11 $fcod12 $fcod13
-              set vname $VPROPS(name)
-              if { $VPROPS(array) } {
-                incr argidx $VPROPS(dim)
-              } else {
-                incr argidx 1
-              }
-            }
-         }
+      puts $fhdr "#ifdef SAL_DEBUG_CSTRUCTS"
+      puts $fhdr "  [set subsys]_[set name]C()  \{ std::cout << \"[set subsys]_[set name]C()\"  << std::endl; \}"
+      puts $fhdr "  ~[set subsys]_[set name]C() \{ std::cout << \"~[set subsys]_[set name]C()\"  << std::endl; \}"
+      puts $fhdr "#endif"
+      set fin [open $SAL_WORK_DIR/[set subsys]/cpp/src/[set subsys]_[set name].hh r]
+      set rec ""
+      while { [string trim $rec] != "struct [set name] \{" } {
+        gets $fin rec
       }
-      close $fin
+      set done 0
+      while { $done == 0 } {
+        gets $fin rec
+        if { [string trim $rec] != "[set name]() :" } {
+      puts stdout "record = $rec"
+         if {  [lindex [split [lindex [string trim $rec] 1] "_"] 0] != "private" } {
+           if { $OPTIONS(verbose) } { stdlog "### processing $i : $rec" }
+           set VPROPS(idx) $argidx
+           set VPROPS(base) $subsys
+           set VPROPS(topic) "[set subsys]_[set name]"
+           set drec [typejsontoc $rec]
+           puts $fhdr $rec
+           puts $fhlv $rec
+           updatecfragments $fcod1 $fcod1b $fcod2 $fcod2b $fcod3 $fcod4 $fcod5 $fcod6 $fcod7 $fcod8 $fcod10 $fcod11 $fcod12 $fcod13
+           set vname $VPROPS(name)
+           if { $VPROPS(array) } {
+             incr argidx $VPROPS(dim)
+           } else {
+             incr argidx 1
+           }
+         }
+        } else {
+          set done 1
+        }
+      }
+      puts $fhdr "\};"
+      puts $fhlv "\} [set subsys]_[set name]_Ctl;"
       close $fcod1
       close $fcod1b
       close $fcod2
@@ -253,7 +263,7 @@ global SAL_DIR SAL_WORK_DIR SYSDIC VPROPS EVENT_ENUM OPTIONS CMD_ALIASES METADAT
    close $fhdr
    close $fhlv
    updateRevCodes $subsys
-   activeRevCodes $subsys
+##   activeRevCodes $subsys
    if { $OPTIONS(verbose) } {stdlog "###TRACE<<< makesalincl $subsys"}
    return $SAL_WORK_DIR/avro-templates/sal/sal_$subsys.json
 }
@@ -622,7 +632,7 @@ global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS CMD_ALIASES ONEDONEGEN AV
           }
           puts $frep "  -e 's/SAL_SALData/SAL_[set base]/g' \\"
           puts $frep "  -e 's/SALData.SALTopic/[set name]/g' \\"
-          puts $frep "  -e 's/SALData./[set AVRO_PREFIX].[set base]./g' \\"
+          puts $frep "  -e 's/SALData./[getAvroNamespace][set base]./g' \\"
           puts $frep "  -e 's/SALNAMESTRING/[set id]/g' \\"
           puts $frep "$SAL_DIR/code/templates/SALTopicDataPublisher.java.template > [set id]/java/src/[set id]DataPublisher.java"
 
@@ -634,7 +644,7 @@ global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS CMD_ALIASES ONEDONEGEN AV
           }
           puts $frep "  -e 's/SAL_SALData/SAL_[set base]/g' \\"
           puts $frep "  -e 's/SALData.SALTopic/[set name]/g' \\"
-         puts $frep "  -e 's/SALData./[set AVRO_PREFIX].[set base]./g' \\"
+         puts $frep "  -e 's/SALData./[getAvroNamespace][set base]./g' \\"
           puts $frep "  -e 's/SALNAMESTRING/[set id]/g' \\"
           puts $frep "$SAL_DIR/code/templates/SALTopicDataSubscriber.java.template > [set id]/java/src/[set id]DataSubscriber.java"
         }
@@ -687,11 +697,6 @@ global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS CMD_ALIASES ONEDONEGEN AV
         exec chmod 755 /tmp/sreplace2_[set base][set lang].sal
         catch { set result [exec /tmp/sreplace2_[set base][set lang].sal] } bad
       }
-      stdlog "calling salavrogen $base $lang"
-      if { $ONEDONEGEN == 0 } {
-         salavrogen $base $lang
-         stdlog "done salavrogen $base $lang"
-      }
       if { $lang == "cpp" } {
 ####        set incfiles [glob [set base]/cpp/*.h]
 ####        stdlog "Updating include files : $incfiles"
@@ -727,15 +732,19 @@ global SAL_WORK_DIR OPTIONS ONEDONEGEN SAL_DIR
        if { $lang == "cpp" } {
           set all [glob $SAL_WORK_DIR/avro-templates/[set base]_*.json]
           foreach i $all {
-             puts stdout "Processing $i"
-             exec avrogencpp -i $i -o $SAL_WORK_DIR/[set base]/cpp/src/[file rootname [file tail $i]].hh -n $base
+            if { [lindex [split [file tail $i] ._] 2] != "enums" } {
+              puts stdout "Processing $i"
+              exec avrogencpp -i $i -o $SAL_WORK_DIR/[set base]/cpp/src/[file rootname [file tail $i]].hh -n $base
+            }
           }
        }
        if { $lang == "java"} {
           set all [glob $SAL_WORK_DIR/avro-templates/[set base]_*.json]
           foreach i $all {
-             puts stdout "Processing $i"
-             catch {exec java -jar $SAL_DIR/../lib/avro-tools-1.11.1.jar compile schema $i $SAL_WORK_DIR/[set base]/java/src/}
+            if { [lindex [split [file tail $i] ._] 2] != "enums" } {
+              puts stdout "Processing $i"
+              catch {exec java -jar $SAL_DIR/../lib/avro-tools-1.11.1.jar compile schema $i $SAL_WORK_DIR/[set base]/java/src/}
+            }
           }
           catch {exec java -jar $SAL_DIR/../lib/avro-tools-1.11.1.jar compile schema $SAL_WORK_DIR/avro-templates/[set base]_ackcmd.json $SAL_WORK_DIR/[set base]/java/src/}
           cd $SAL_WORK_DIR/$base/$lang/src
@@ -840,4 +849,6 @@ source $SAL_DIR/gensalgetputKafka.tcl
 source $SAL_DIR/managetypesKafka.tcl
 source $SAL_DIR/activaterevcodesKafka.tcl
 source $SAL_DIR/add_private_json.tcl
+source $SAL_DIR/checkjson.tcl
+
 

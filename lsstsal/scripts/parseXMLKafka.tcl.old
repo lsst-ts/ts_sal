@@ -24,6 +24,7 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
 global TRAILINGITEMS
    if { $OPTIONS(verbose) } {stdlog "###TRACE>>> parseXMLtoJson $fname"}
    puts stdout "finding trails"
+   findTrailingItems $fname
    set fin [open $fname r]
    set fout ""
    set ctype ""
@@ -42,6 +43,7 @@ global TRAILINGITEMS
        }
      }
    }
+   set fsql [open $SAL_WORK_DIR/sql/[set subsys]_items.sql a]
    set tname none
    set itemid 0
    set tdesc 0
@@ -139,6 +141,11 @@ global TRAILINGITEMS
         }
       }
       if { $tag == "EFDB_Topic" } {
+        if { $fout != "" } {
+           puts $fout "\], \"description\": [set METADATA($tname,description)]
+\}"
+           close $fout
+        }
         set itemid 0
         if { [info exists topics([string tolower $value])] } { 
            puts stdout "****************************************************************"
@@ -152,10 +159,24 @@ global TRAILINGITEMS
         set tname $value
         puts stdout "Translating $tname"
         set atname [join [lrange [split $tname "_"] 1 end] "_"]
-        set fout $tname
+        set fout [open $SAL_WORK_DIR/avro-templates/[set tname].json w]
+        puts $fout "\{
+\"type\": \"record\", \"name\": \"[set atname]\", \"namespace\": \"lsst.sal.[set subsys]\", \"fields\": \["
+        if { $TRAILINGITEMS($tname) == "private_origin" } {
+          add_private_json $fout $subsys ""
+        } else {
+          add_private_json $fout $subsys ","
+        }
         add_private_metadata [set tname]
+        puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",1,\"private_revCode\",\"char\",32,\"unitless\",1,\"\",\"\",\"Revision code of topic\");"
+        puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",2,\"private_sndStamp\",\"double\",1,\"second\",1,\"\",\"\",\"TAI at sender\");"
+        puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",3,\"private_rcvStamp\",\"double\",1,\"second\",1,\"\",\"\",\"TAI at receiver\");"
+        puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",4,\"private_seqNum\",\"int\",1,\"unitless\",1,\"\",\"\",\"Sequence number\");"
+        puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",5,\"private_identity\",\"int\",1,\"unitless\",1,\"\",\"\",\"Identity of originator\");"
+        puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",6,\"private_origin\",\"int\",1,\"unitless\",1,\"\",\"\",\"PID code of sender\");"
         set itemid 6
         if { [info exists SYSDIC($subsys,keyedID)] } {
+           puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",8,\"salIndex\",\"int\",1,\"unitless\",1,\"\",\"\",\"Index of $subsys instance\");"
            set itemid 7
         }
         set tdesc 1
@@ -189,6 +210,7 @@ global TRAILINGITEMS
       }
       if { $tag == "/SALEvent" || $tag == "/SALCommand" || $tag == "/SALTelemetry" } {
          enumsToCPP $subsys $alias
+         puts $fsql "###Description $tname : $DESC($subsys,$alias,help)"
       }
       if { $tag == "IsJavaArray" } { set isjarray 1 }
       if { $tag == "IDL_Type"} {
@@ -222,7 +244,7 @@ global TRAILINGITEMS
          if { [info exists METADATA($tname,$item,size)] == 0 } {
             set METADATA($tname,$item,size) $value
          }
-      }
+     }
       if { $tag == "Units"}           {
          set unit [string trim $value]
       }
@@ -277,16 +299,26 @@ global TRAILINGITEMS
          if { $unit != "" } {
             set UNITS($subsys,$alias,$item) $unit
          }
+         if { $item == $TRAILINGITEMS($tname) } {
+            puts $fout "       \{\"name\": \"[set item]\", \"type\": \"[set type]\", \"default\": [set vdefault], \"description\": \"[set desc]\", \"units\": \"[set unit]\"\}"
+         } else {
+            puts $fout "       \{\"name\": \"[set item]\", \"type\": \"[set type]\", \"default\": [set vdefault], \"description\": \"[set desc]\", \"units\": \"[set unit]\"\},"
+         }
          set METADATA($tname,$item,description) "\"$desc\""
          set METADATA($tname,$item,units) "\"$unit\""
+         puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",$itemid,\"$item\",\"$type\",$idim,\"$unit\",$freq,\"$range\",\"$location\",\"$desc\");"
       }
    }
    if { $fout != "" } {
+      puts $fout "\], \"description\": [set METADATA($tname,description)]
+\}"
       enumsToCPP $subsys $alias
       indexedEnumsToCPP $subsys
+      close $fout
       set alias ""
    }
    close $fin
+   createackcmdjson $subsys
    puts stdout "itemid for $SAL_WORK_DIR/avro-templates/[set tname].json=  $itemid"
    if { [info exists CMD_ALIASES($subsys)] } {
     if { $CMD_ALIASES($subsys) != "" } {
@@ -330,6 +362,7 @@ global TRAILINGITEMS
     }
     genhtmltelemetrytable $subsys
    }
+   close $fsql
    updateMetaData $subsys
    if { $OPTIONS(verbose) } {stdlog "###TRACE<<< parseXMLtoJson $fname"}
 }
@@ -618,6 +651,45 @@ global AVRORESERVED SAL_WORK_DIR SAL_DIR TLMS TLM_ALIASES UNITS DESC
   }
   puts $fout "</TABLE><EFDB_Topic/UL><P>"
   close $fout
+}
+
+proc findTrailingItems { fname } {
+global TRAILINGITEMS
+  set ftrail [open $fname r]
+  set topic "NONE"
+  set item "private_origin"
+  while { [gets $ftrail rec] >  -1 } {
+      set st [string trim $rec]
+      if { [string range $st 0 3] == "<!--" } {
+         if { [string range [string reverse $st] 0 2] != ">--" } {
+            set skip 1
+            while { $skip } {
+               gets $ftrail rec
+               set st [string trim $rec]
+               if { [string range [string reverse $st] 0 2] == ">--" } {
+                  set skip 0
+                  gets $ftrail rec
+                  set st [string trim $rec]
+                  if { [string range $st 0 3] == "<!--" } {set skip 1}
+               }
+            }
+         }
+      }
+      set tag   [lindex [split $rec "<>"] 1]
+      set value [lindex [split $rec "<>"] 2]
+      if { $tag == "EFDB_Topic" } {
+         set TRAILINGITEMS($topic) $item
+         puts stdout "Last item in $topic is $item"
+         set topic $value
+         set item "private_origin"
+      }
+      if { $tag == "EFDB_Name" } {
+         set item $value
+      }
+   }
+   set TRAILINGITEMS($topic) $item
+   puts stdout "Last item in $topic is $item"
+   close $ftrail
 }
 
 

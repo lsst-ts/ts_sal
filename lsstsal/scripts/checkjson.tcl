@@ -125,8 +125,9 @@ global SAL_WORK_DIR OPTIONS env
   catch { set result [exec /tmp/genackcmdjson_[set base]] } bad
   if { $OPTIONS(verbose) } {stdlog "###TRACE<<< createackcmdjson $base $keyid"}
 }
+
 #
-## Documented proc \c getAvroMetod.
+## Documented proc \c getAvroMethod.
 # \param[in] item Name of SAL Topic item
 #
 #  Returns the name of the Avro method used to get/set values
@@ -141,6 +142,11 @@ proc getAvroMethod { item } {
    return $res
 }
 
+proc getAvroNamespace { } {
+global AVRO_PREFIX
+  if { $AVRO_PREFIX == "lsst.sal" } { return [set AVRO_PREFIX]. }
+  return [set AVRO_PREFIX]_
+}
 
 set SAL_WORK_DIR $env(SAL_WORK_DIR)
 set SAL_DIR $env(SAL_DIR)

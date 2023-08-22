@@ -1,0 +1,148 @@
+{
+    "type": "record",
+    "name": "command_setScalars",
+    "namespace": "lsst.sal.kafka_Test",
+    "fields": [
+        {
+            "name": "salIndex",
+            "type": "long",
+            "default": 0,
+            "description": "SAL index (only present for indexed SAL components)",
+            "units": "unitless"
+        },
+        {
+            "name": "private_sndStamp",
+            "type": "double",
+            "default": 0.0,
+            "description": "Time of instance publication",
+            "units": "second"
+        },
+        {
+            "name": "private_rcvStamp",
+            "type": "double",
+            "default": 0.0,
+            "description": "Time of instance reception",
+            "units": "second"
+        },
+        {
+            "name": "private_efdStamp",
+            "type": "double",
+            "default": 0.0,
+            "description": "UTC time for EFD timestamp. An integer (the number of leap seconds) different from private_sndStamp.",
+            "units": "second"
+        },
+        {
+            "name": "private_kafkaStamp",
+            "type": "double",
+            "default": 0.0,
+            "description": "TAI time at which the Kafka message was created.",
+            "units": "second"
+        },
+        {
+            "name": "private_seqNum",
+            "type": "long",
+            "default": 0,
+            "description": "Sequence number",
+            "units": "unitless"
+        },
+        {
+            "name": "private_identity",
+            "type": "string",
+            "default": "",
+            "description": "Identity of publisher: SAL component name for a CSC or user@host for a user",
+            "units": "unitless"
+        },
+        {
+            "name": "private_origin",
+            "type": "long",
+            "default": 0,
+            "description": "Process ID of publisher",
+            "units": "unitless"
+        },
+        {
+            "name": "boolean0",
+            "type": "boolean",
+            "default": false,
+            "description": "A boolean.",
+            "units": "unitless"
+        },
+        {
+            "name": "byte0",
+            "type": "int",
+            "default": 0,
+            "description": "A byte.",
+            "units": "unitless"
+        },
+        {
+            "name": "short0",
+            "type": "int",
+            "default": 0,
+            "description": "A short.",
+            "units": "unitless"
+        },
+        {
+            "name": "int0",
+            "type": "int",
+            "default": 0,
+            "description": "An int.",
+            "units": "unitless"
+        },
+        {
+            "name": "long0",
+            "type": "long",
+            "default": 0,
+            "description": "A long.",
+            "units": "unitless"
+        },
+        {
+            "name": "longLong0",
+            "type": "long",
+            "default": 0,
+            "description": "A long long.",
+            "units": "unitless"
+        },
+        {
+            "name": "unsignedShort0",
+            "type": "int",
+            "default": 0,
+            "description": "An unsigned short.",
+            "units": "unitless"
+        },
+        {
+            "name": "unsignedInt0",
+            "type": "int",
+            "default": 0,
+            "description": "An unsigned int.",
+            "units": "unitless"
+        },
+        {
+            "name": "unsignedLong0",
+            "type": "long",
+            "default": 0,
+            "description": "An unsigned long.",
+            "units": "unitless"
+        },
+        {
+            "name": "float0",
+            "type": "float",
+            "default": 0.0,
+            "description": "A float.",
+            "units": "unitless"
+        },
+        {
+            "name": "double0",
+            "type": "double",
+            "default": 0.0,
+            "description": "A double.",
+            "units": "unitless"
+        },
+        {
+            "name": "string0",
+            "type": "string",
+            "default": "",
+            "description": "A string.",
+            "units": "unitless"
+        }
+    ],
+    "description": "Set scalar values."
+}

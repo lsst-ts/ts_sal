@@ -568,7 +568,7 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE AVRO_PREFIX
   * @param data is the command payload $turl
   * @returns the sequence number aka command id
   */
-	public long issueCommand_[set i]( [set AVRO_PREFIX].[set subsys].command_[set i] data )
+	public long issueCommand_[set i]( [getAvroNamespace][set subsys].command_[set i] data )
 	\{
           Random randGen = new java.util.Random();
           command_[set i] Instance = new command_[set i]();
@@ -601,7 +601,7 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE AVRO_PREFIX
     and no cmdId will be returned to the caller (=0)
   * @param data is the command payload $turl
   */
-	public long acceptCommand_[set i]( [set AVRO_PREFIX].SALData.command_[set i] data )
+	public long acceptCommand_[set i]( [getAvroNamespace]SALData.command_[set i] data )
 	\{
     		long status = 0;
    		int numsamp = 0;
@@ -628,7 +628,7 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE AVRO_PREFIX
                       sal\[actorIdx\].activeorigin = Instance.get[getAvroMethod private_origin]();
                       sal\[actorIdx\].activeidentity = String.valueOf(Instance.get[getAvroMethod private_identity]());
                       sal\[actorIdx\].activecmdid = Instance.get[getAvroMethod private_seqNum]();
-                      [set AVRO_PREFIX].SALData.ackcmd ackdata = new [set AVRO_PREFIX].SALData.ackcmd();"
+                      [getAvroNamespace]SALData.ackcmd ackdata = new [getAvroNamespace]SALData.ackcmd();"
       if { [info exists SYSDIC($subsys,keyedID)] } {
          puts $fout "	              ackdata.set[getAvroMethod salIndex](subsystemID);"
       }
@@ -687,7 +687,7 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE AVRO_PREFIX
 	\{
 	   long status = 0;
            int actorIdx = SAL__SALData_command_[set i]_ACTOR;
-	   [set AVRO_PREFIX].SALData.ackcmd ackcmd = new [set AVRO_PREFIX].SALData.ackcmd();
+	   [getAvroNamespace]SALData.ackcmd ackcmd = new [getAvroNamespace]SALData.ackcmd();
            long finishBy = System.currentTimeMillis() + timeout*1000;
 
 	   while (status != SAL__CMD_COMPLETE && System.currentTimeMillis() < finishBy ) \{
@@ -726,11 +726,11 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE AVRO_PREFIX
 	\}
 "
     puts $fout "
-	public long waitForAck_[set i]( int timeout , [set AVRO_PREFIX].SALData.ackcmd ack)
+	public long waitForAck_[set i]( int timeout , [getAvroNamespace]SALData.ackcmd ack)
 	\{
 	   long status = 0;
            int actorIdx = SAL__SALData_ackcmd_ACTOR;
-	   [set AVRO_PREFIX].SALData.ackcmd ackcmd = new [set AVRO_PREFIX].SALData.ackcmd();
+	   [getAvroNamespace]SALData.ackcmd ackcmd = new [getAvroNamespace]SALData.ackcmd();
            long finishBy = System.currentTimeMillis() + timeout*1000;
 
 	   while (status == SAL__CMD_NOACK && System.currentTimeMillis() < finishBy ) \{
@@ -765,7 +765,7 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE AVRO_PREFIX
   * @param data is the ackCmd payload
   * @returns SAL__CMD_NOACK if no ackCmd is available, or SAL__OK if there is
   */
-	public long getResponse_[set i]([set AVRO_PREFIX].SALData.ackcmd data)
+	public long getResponse_[set i]([getAvroNamespace]SALData.ackcmd data)
 	\{
 	  long status =  -1;
           int lastsample = 0;
@@ -940,15 +940,15 @@ global SYSDIC AVRO_PREFIX
 	  if ( sal\[SAL__SALData_command_setAuthList_ACTOR\].isProcessor == false ) \{
      	    salProcessor(\"SALData_command_setAuthList\");
      	    salEventPub(\"SALData_logevent_authList\");
-            [set AVRO_PREFIX].SALData.logevent_authList myData = new [set AVRO_PREFIX].SALData.logevent_authList();
+            [getAvroNamespace]SALData.logevent_authList myData = new [getAvroNamespace]SALData.logevent_authList();
      	    authorizedUsers = \"\";
      	    nonAuthorizedCSCs = \"\";
      	    myData.set[getAvroMethod authorizedUsers](authorizedUsers);
      	    myData.set[getAvroMethod nonAuthorizedCSCs](nonAuthorizedCSCs);
      	    logEvent_authList(myData, 1);
   	  \}
-          [set AVRO_PREFIX].SALData.command_setAuthList Instance_setAuthList = new [set AVRO_PREFIX].SALData.command_setAuthList();
-          [set AVRO_PREFIX].SALData.logevent_authList myData = new [set AVRO_PREFIX].SALData.logevent_authList();
+          [getAvroNamespace]SALData.command_setAuthList Instance_setAuthList = new [getAvroNamespace]SALData.command_setAuthList();
+          [getAvroNamespace]SALData.logevent_authList myData = new [getAvroNamespace]SALData.logevent_authList();
   	  cmdId = acceptCommand_setAuthList(Instance_setAuthList);
   	  if (cmdId > 0) \{
       	    if (debugLevel > 0) \{
