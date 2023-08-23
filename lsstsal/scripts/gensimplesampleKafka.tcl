@@ -217,7 +217,6 @@ global SAL_DIR SAL_WORK_DIR SYSDIC VPROPS EVENT_ENUM OPTIONS CMD_ALIASES METADAT
       while { $done == 0 } {
         gets $fin rec
         if { [string trim $rec] != "[set name]() :" } {
-      puts stdout "record = $rec"
          if {  [lindex [split [lindex [string trim $rec] 1] "_"] 0] != "private" } {
            if { $OPTIONS(verbose) } { stdlog "### processing $i : $rec" }
            set VPROPS(idx) $argidx
