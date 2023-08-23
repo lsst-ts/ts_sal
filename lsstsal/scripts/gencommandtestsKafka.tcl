@@ -44,11 +44,26 @@ global CMD_ALIASES CMDS SAL_WORK_DIR SAL_DIR SYSDIC DONE_CMDEVT OPTIONS
 #include <iostream>
 #include \"SAL_[set subsys].h\"
 #include <stdlib.h>
+#include <time.h>
 
 int main (int argc, char *argv\[\])
 \{ 
   int cmdId;
   int status=0;
+  struct timespec delayms;
+  delayms.tv_sec = 0;
+  int deltams = 1;
+  int nsamples = 1;
+  char *deltaName = getenv(\"SAL_DEBUG_MS_DELTA\");
+  if ( deltaName != NULL ) \{
+    sscanf(deltaName,\"%d\",&deltams);
+    delayms.tv_nsec = deltams*1000000;
+  \}
+  char *nSamples = getenv(\"SAL_DEBUG_NSAMPLES\");
+  if ( nSamples != NULL ) \{
+    sscanf(nSamples,\"%d\",&nsamples);
+  \}
+  delayms.tv_nsec = deltams*1000000;
 
   [set subsys]_command_[set alias]C myData;
   if (argc < $numargs ) \{
@@ -88,15 +103,20 @@ int main (int argc, char *argv\[\])
   }
   close $fin
   puts $fcmd "
-  // generate command
-  cmdId = mgr->issueCommand_[set alias](&myData);
-  cout << \"=== command $alias issued = \" << cmdId << endl;"
+  // generate commands
+  int iseq = 0;
+  while (iseq <= nsamples) \{
+    iseq++;
+    cmdId = mgr->issueCommand_[set alias](&myData);
+    cout << \"=== command $alias issued = \" << cmdId << endl;"
   if { $alias == "setAuthList" } {
     puts $fcmd "  sleep(2);"
   } else {
     puts $fcmd "  status = mgr->waitForCompletion_[set alias](cmdId, 10);"
+    puts $fcmd "  nanosleep(&delayms,NULL);"
   } 
-  puts $fcmd "
+  puts $fcmd "  \}
+  
   /* Remove the DataWriters etc */
   mgr->salShutdown();
   if (status != SAL__CMD_COMPLETE) \{
