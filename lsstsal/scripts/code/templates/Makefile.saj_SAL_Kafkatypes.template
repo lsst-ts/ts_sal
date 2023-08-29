@@ -20,27 +20,28 @@ NUL           = /dev/null
 MKDIR         = mkdir -p
 TOUCH         = touch
 GENFLAGS      =  
-CLASSES       =  $(CLASSDIR)SALData/*$(CLASSEXT)
-JARCLASSES    =  $(AVRO_CLASSPATH)/SALData/*$(CLASSEXT)
+CLASSES       =  $(CLASSDIR)*/*$(CLASSEXT)
+JARCLASSES    =  $(AVRO_CLASSPATH)/*/*$(CLASSEXT)
 JAREXT        = .jar
 JARFILE       = $(LTARGETDIR)$(LIBPREFIX)saj_SALData_types$(LIBSUFFIX)$(JAREXT)
 MANIFEST      = saj_SALData_types.manifest
 JARFLAGS      = cvfm
-SRC           = $(AVRO_CLASSPATH)/SALData/*.java
+SRC           = $(AVRO_CLASSPATH)/*/*.java
 
 #----------------------------------------------------------------------------
 #       Local targets
 #----------------------------------------------------------------------------
 
-all: $(JARFILE) SAL_SALData.jar
+all: $(JARFILE) SAL_SALData.jar saj_SALData_types.jar
 
-SALData: $(AVRO_CLASSPATH)/SALData/*.java 
+SALData: $(AVRO_CLASSPATH)/*/*.java 
 
 $(JARFILE): $(CLASSES) $(CLASSDIR)$(MANIFEST)
 	cd $(CLASSDIR) && $(JAR) $(JARFLAGS) $(JARFILE) $(MANIFEST) $(JARCLASSES) 
 	$(MV) $(CLASSDIR)/$(JARFILE) .
 
 $(CLASSDIR)$(MANIFEST):
+	mkdir -p $(CLASSDIR)
 	echo Class-Path: $(AVRO_HOME)/avro-tools-$(AVRO_RELEASE).jar > $(CLASSDIR)$(MANIFEST)
 
 GENERATED_DIRTY = SALData
@@ -51,8 +52,8 @@ $(CLASSES): $(GENERATED_DIRTY)
 generated: $(GENERATED_DIRTY)
 	@-:
 
-$(CLASSDIR)SALData/*$(CLASSEXT): SALData
-	$(COMPILE.java) $(EXPORTFLAGS) $(OUTPUT_OPTION) $(AVRO_CLASSPATH)/SALData/*.java
+$(CLASSDIR)*/*$(CLASSEXT): SALData
+	$(COMPILE.java) $(EXPORTFLAGS) $(OUTPUT_OPTION) $(AVRO_CLASSPATH)/*/*.java
 
 SAL_SALData.jar:
 	$(COMPILE.java) $(EXPORTFLAGS) $(OUTPUT_OPTION) org/lsst/sal/*.java

@@ -9,10 +9,6 @@ import java.util.Properties;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-import org.lsst.sal.SAL_SALData;
-import org.lsst.sal.salActor;
-import org.lsst.sal.salUtils;
-
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;

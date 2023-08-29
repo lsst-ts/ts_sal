@@ -71,7 +71,8 @@ proc genTelemetryCodes { jsonfile targets } {
 global DONE_CMDEVT OPTIONS SAL_DIR
   if { $OPTIONS(verbose) } {stdlog "###TRACE>>> genTelemetryCodes $targets"}
   foreach subsys $targets {
-     set spl [file rootname [split $subsys _]]
+    set spl [file rootname [split $subsys _]]
+    if { [lindex $spl end] != "enums" } {
      set base [lindex $spl 0]
      if { [lindex $spl 1] != "command" && [lindex $spl 1] != "logevent" && [lindex $spl 1] != "ackcmd" } {
        set name [join [lrange $spl 1 end] _]
@@ -93,6 +94,7 @@ global DONE_CMDEVT OPTIONS SAL_DIR
          if { $OPTIONS(verbose) } {stdlog $result}
        }
      }
+    }
   }
   if { $OPTIONS(verbose) } {stdlog "###TRACE<<< genTelemetryCodes $targets"}
 }

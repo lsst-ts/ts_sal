@@ -348,11 +348,7 @@ salTIME SAL_SALData::currentTime()
 salReturn SAL_SALData::setDebugLevel( int level )
 {
    salReturn status = SAL__OK;
-   if (debugLevel >= SAL__LOG_ALLCALLS) {
-     logError(status);
-   } else {
-     debugLevel = level;
-   }
+   debugLevel = level;
    return status;
 }
 
