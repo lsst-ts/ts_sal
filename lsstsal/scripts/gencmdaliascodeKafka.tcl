@@ -217,7 +217,7 @@ int SAL_SALData::issueCommand_[set i]( SALData_command_[set i]C *data )
         writerFragment $fout $subsys [set subsys]_command_[set i]
         puts $fout "
   sal\[actorIdx\].sndSeqNum++;
-  if (debugLevel >= SAL__LOG_ROUTINES) \{
+  if (debugLevel >= SAL__LOG_ALLCALLS) \{
       logError(status);
   \}
   return (sal\[actorIdx\].sndSeqNum-1);
@@ -342,7 +342,7 @@ salReturn SAL_SALData::waitForCompletion_[set i]( int cmdSeqNum , unsigned int t
       countdown--;
    \}
    if (status != SAL__CMD_COMPLETE) \{
-      if (debugLevel >= SAL__LOG_ROUTINES) \{
+      if (debugLevel >= SAL__LOG_ALLCALLS) \{
           logError(status);
       \}
       if (debugLevel > 0) \{

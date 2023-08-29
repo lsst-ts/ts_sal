@@ -309,7 +309,8 @@ if { $OPTIONS(lib) == 0 || $OPTIONS(generate) == 1 } {
 
 if { $OPTIONS(sal) } {
   set DONE_CMDEVT 0
-  set ONEDONEGEN 0
+  set ONEDONECPP 0
+  set ONEDONEJAVA 0
   if { [expr $OPTIONS(cpp) + $OPTIONS(java) + $OPTIONS(idl)] == 0 } {
     stdlog "=========================================================================="
     stdlog "ERROR :  sal option requires a language choice , cpp/idl/java"

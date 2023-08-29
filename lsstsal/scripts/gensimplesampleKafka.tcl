@@ -153,7 +153,7 @@ typedef StrArray** StrArrayHdl;
 #  definitions
 #
 proc makesalincl { subsys } {
-global SAL_DIR SAL_WORK_DIR SYSDIC VPROPS EVENT_ENUM OPTIONS CMD_ALIASES METADATA ONEDONEGEN
+global SAL_DIR SAL_WORK_DIR SYSDIC VPROPS EVENT_ENUM OPTIONS CMD_ALIASES METADATA
    if { $OPTIONS(verbose) } {stdlog "###TRACE>>> makesalincl $subsys"}
    exec mkdir -p $SAL_WORK_DIR/avro-templates/sal
    exec mkdir -p $SAL_WORK_DIR/[set subsys]/cpp/src
@@ -161,11 +161,9 @@ global SAL_DIR SAL_WORK_DIR SYSDIC VPROPS EVENT_ENUM OPTIONS CMD_ALIASES METADAT
      set prev [glob $SAL_WORK_DIR/include/SAL_[set subsys]*]
      foreach f $prev {exec rm $f}
    }
-   if { $ONEDONEGEN == 0 } {
-     stdlog "calling salavrogen $subsys cpp"
-     salavrogen $subsys cpp
-     stdlog "done salavrogen $subsys cpp"
-   }
+   stdlog "calling salavrogen $subsys cpp"
+   salavrogen $subsys cpp
+   stdlog "done salavrogen $subsys cpp"
    set all [lsort [glob $SAL_WORK_DIR/[set subsys]/cpp/src/[set subsys]_*.hh]]
    set fhdr [open $SAL_WORK_DIR/[set subsys]/cpp/src/SAL_[set subsys]C.h w]
    set fhlv [open $SAL_WORK_DIR/[set subsys]/cpp/src/SAL_[set subsys]LV.h w]
@@ -558,8 +556,8 @@ global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS
 #   Generate the base SAL API code
 #
 proc makesalcode { jsonfile base name lang } {
-global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS CMD_ALIASES ONEDONEGEN AVRO_PREFIX
-      if { $OPTIONS(verbose) } {stdlog "###TRACE>>> makesalcode $jsonfile $base $name $lang $ONEDONEGEN"}
+global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS CMD_ALIASES AVRO_PREFIX
+      if { $OPTIONS(verbose) } {stdlog "###TRACE>>> makesalcode $jsonfile $base $name $lang"}
       stdlog "Processing $base $name in $SAL_WORK_DIR"
       cd $SAL_WORK_DIR
       catch {makesaldirs $base $name}
@@ -707,6 +705,7 @@ global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS CMD_ALIASES ONEDONEGEN AV
       }
       if { $lang == "java" } {
          if { [llength [split $base "_"]] == 1  } {
+           salavrogen $base java
            exec cp [set base]/java/src/saj_[set base]_types.jar $SAL_WORK_DIR/lib/.
          }
          saljavaclassgen $base $id
@@ -723,12 +722,11 @@ global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS CMD_ALIASES ONEDONEGEN AV
 #  Generate Avro files for a Subsystem/CSC
 #
 proc salavrogen { base lang } {
-global SAL_WORK_DIR OPTIONS ONEDONEGEN SAL_DIR
+global SAL_WORK_DIR OPTIONS ONEDONECPP ONEDONEJAVA SAL_DIR
    if { $OPTIONS(verbose) } {stdlog "###TRACE>>> salavrogen $base $lang"}
-   if { $ONEDONEGEN == 0 } {
        cd $SAL_WORK_DIR/$base/$lang
        stdlog "Generating $lang type support for $base"
-       if { $lang == "cpp" } {
+       if { $lang == "cpp" && $ONEDONECPP == 0} {
           set all [glob $SAL_WORK_DIR/avro-templates/[set base]_*.json]
           foreach i $all {
             if { [lindex [split [file tail $i] ._] 2] != "enums" } {
@@ -736,8 +734,9 @@ global SAL_WORK_DIR OPTIONS ONEDONEGEN SAL_DIR
               exec avrogencpp -i $i -o $SAL_WORK_DIR/[set base]/cpp/src/[file rootname [file tail $i]].hh -n $base
             }
           }
+          set ONEDONECPP 1
        }
-       if { $lang == "java"} {
+       if { $lang == "java" && $ONEDONEJAVA == 0} {
           set all [glob $SAL_WORK_DIR/avro-templates/[set base]_*.json]
           foreach i $all {
             if { [lindex [split [file tail $i] ._] 2] != "enums" } {
@@ -752,10 +751,9 @@ global SAL_WORK_DIR OPTIONS ONEDONEGEN SAL_DIR
           catch {stdlog "result = $result"}
           catch {stdlog "$bad"}
           stdlog "Avro : Java type support code generated"
+          set ONEDONEJAVA 1
       }
       cd $SAL_WORK_DIR
-      set ONEDONEGEN 1
-   }
    if { $OPTIONS(verbose) } {stdlog "###TRACE<<< salavrogen $base $lang"}
 }
 
@@ -774,10 +772,10 @@ global SAL_WORK_DIR OPTIONS
  if { $OPTIONS(fastest) == 0 } {
    cd $SAL_WORK_DIR/$base/java/src
    set result none
-   catch { set result [exec make -f Makefile.saj_[set base]_types] } bad
-   catch {stdlog "result = $result"}
-   catch {stdlog "bad = $bad"}
-   exec cp saj_[set base]_types.jar $SAL_WORK_DIR/lib/.
+#   catch { set result [exec make -f Makefile.saj_[set base]_types] } bad
+#   catch {stdlog "result = $result"}
+#   catch {stdlog "bad = $bad"}
+#   exec cp saj_[set base]_types.jar $SAL_WORK_DIR/lib/.
    stdlog "javac : Done types"
    if { $id != "[set base]_notused" } {
     cd $SAL_WORK_DIR/$id/java/standalone

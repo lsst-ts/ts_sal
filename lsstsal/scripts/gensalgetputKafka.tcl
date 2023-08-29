@@ -813,9 +813,10 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS
   puts stdout "Configuring [set base]/java/src/org/lsst/sal/SAL_[set base].java"
   while { [gets $fin rec] > -1 } {
      if { [string range $rec 0 20] == "// INSERT SAL IMPORTS" } {
+        puts $fout "import org.lsst.sal.SAL_[set base];"
         puts $fout "import org.lsst.sal.salActor;"
         puts $fout "import org.lsst.sal.salUtils;"
-        puts $fout "import $env(AVRO_PREFIX).[set base].*;"
+        puts $fout "import [getAvroNamespace][set base].*;"
      }
      if { [string range $rec 0 31] == "#ifdef SAL_SUBSYSTEM_ID_IS_KEYED" } {
          processifdefregion $fin $fout $base
