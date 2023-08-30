@@ -6,6 +6,11 @@
 Version History
 ###############
 
+Changes for 7.4.1
+=================
+
+Add timeout field inclusion for C++ ackCommand's
+
 Changes for 7.4.0
 =================
 
