@@ -510,7 +510,7 @@ salReturn SAL_SALData::getResponse_[set i]C(SALData_ackcmdC *response)
 \}
 "
    puts $fout "
-salReturn SAL_SALData::ackCommand_[set i]( int cmdId, salLONG ack, salLONG error, char *result, double timeout=0.0 )
+salReturn SAL_SALData::ackCommand_[set i]( int cmdId, salLONG ack, salLONG error, char *result, double timeout )
 \{
    ReturnCode_t istatus = -1;
    InstanceHandle_t ackHandle = DDS::HANDLE_NIL;
