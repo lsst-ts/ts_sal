@@ -20,7 +20,7 @@
 #  Create the POM file and directory structure for a Maven project
 #
 proc mavenize { subsys } {
-global env SAL_WORK_DIR SAL_DIR OSPL_VERSION XMLVERSION RELVERSION SALVERSION TS_SAL_DIR
+global env SAL_WORK_DIR SAL_DIR OSPL_VERSION XMLVERSION RELVERSION SALVERSION TS_SAL_DIR AVRO_RELEASE
   set mvnrelease [set XMLVERSION]_[set SALVERSION][set RELVERSION]
   exec mkdir -p $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/java/org/lsst/sal/[set subsys]
   exec mkdir -p $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/test/java
@@ -73,9 +73,9 @@ global env SAL_WORK_DIR SAL_DIR OSPL_VERSION XMLVERSION RELVERSION SALVERSION TS
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source> 
     <maven.compiler.target>1.8</maven.compiler.target>
-    <kafka.version>2.2.0</kafka.version>
-    <confluent.version>4.0.0</confluent.version>
-    <avro.version>1.8.2</avro.version>
+    <kafka.version>2.9.1</kafka.version>
+    <confluent.version>7.4.0</confluent.version>
+    <avro.version>$AVRO_RELEASE</avro.version>
   </properties>
     <reporting>
         <plugins>
@@ -101,7 +101,7 @@ global env SAL_WORK_DIR SAL_DIR OSPL_VERSION XMLVERSION RELVERSION SALVERSION TS
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin</artifactId>
-        <version>1.11.1</version>
+        <version>$AVRO_RELEASE</version>
         <configuration>
           <source>1.8</source>
           <target>1.8</target>
@@ -111,20 +111,7 @@ global env SAL_WORK_DIR SAL_DIR OSPL_VERSION XMLVERSION RELVERSION SALVERSION TS
 	  <groupId>org.apache.avro</groupId>
 	  <artifactId>avro-maven-plugin</artifactId>
 	  <version>1.9.2</version>
-	  <executions>
-	    <execution>
-	    <phase>generate-sources</phase>
-	      <goals>
-	        <goal>schema</goal>
-	      </goals>
-	     	 <configuration>
-	        <sourceDirectory>src/main/avro</sourceDirectory>
-	        <outputDirectory>${project.build.directory}/generated-sources</outputDirectory>
-	        <stringType>String</stringType>
-	      </configuration>
-	      </execution>
-	  </executions>
-    </plugin>
+      </plugin>
     </plugins>
     </build>
     <dependencies>
@@ -133,12 +120,6 @@ global env SAL_WORK_DIR SAL_DIR OSPL_VERSION XMLVERSION RELVERSION SALVERSION TS
             <artifactId>junit</artifactId>
             <version>3.8.1</version>
             <scope>test</scope>
-        </dependency>
-       <dependency>
-            <groupId>org.apache.kafka</groupId>
-            <artifactId>kafka-clients</artifactId>
-            <version>3.1.0</version>
-            <!--<scope>provided</scope> -->
         </dependency>
         <dependency>
             <groupId>org.testng</groupId>
@@ -159,12 +140,12 @@ global env SAL_WORK_DIR SAL_DIR OSPL_VERSION XMLVERSION RELVERSION SALVERSION TS
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
-            <version>[2.17.1,)</version>
+            <version>2.17.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>[2.17.1,)</version>
+            <version>2.17.1</version>
         </dependency>
         <dependency>
             <groupId>com.googlecode.json-simple</groupId>
@@ -174,12 +155,12 @@ global env SAL_WORK_DIR SAL_DIR OSPL_VERSION XMLVERSION RELVERSION SALVERSION TS
         <dependency>
             <groupId>org.apache.avro</groupId>
             <artifactId>avro-maven-plugin</artifactId>
-            <version>${avro.version}</version>
+            <version>\$\{avro.version\}</version>
         </dependency>
         <dependency>
             <groupId>io.confluent</groupId>
             <artifactId>kafka-avro-serializer</artifactId>
-            <version>${confluent.version}</version>
+            <version>\$\{confluent.version\}</version>
             <exclusions>
                 <exclusion>
                     <groupId>log4j</groupId>
@@ -194,7 +175,7 @@ global env SAL_WORK_DIR SAL_DIR OSPL_VERSION XMLVERSION RELVERSION SALVERSION TS
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-clients</artifactId>
-            <version>${kafka.version}</version>
+            <version>\$\{kafka.version\}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
@@ -210,7 +191,7 @@ global env SAL_WORK_DIR SAL_DIR OSPL_VERSION XMLVERSION RELVERSION SALVERSION TS
         </repository>
         <repository>
             <id>confluent</id>
-            <url>http://packages.confluent.io/maven/</url>
+            <url>https://packages.confluent.io/maven/</url>
         </repository>
     </repositories>
     <distributionManagement>
@@ -233,27 +214,25 @@ global env SAL_WORK_DIR SAL_DIR OSPL_VERSION XMLVERSION RELVERSION SALVERSION TS
   </project>
 "
   close $fout
-  foreach i [glob $SAL_WORK_DIR/idl-templates/validated/[set subsys]_*.idl] {
-     set id [join [lrange [split [file tail [file rootname $i]] _] 1 end] _]
-     set type [lindex [split $id _] 0]
-     if { $type != "command" && $type != "logevent" && $type != "ackcmd"} {
-       exec cp $SAL_WORK_DIR/[set subsys]_[set id]/java/src/[set subsys]_[set id]DataPublisher.java $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/test/java/.
-       exec cp $SAL_WORK_DIR/[set subsys]_[set id]/java/src/[set subsys]_[set id]DataSubscriber.java $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/test/java/.
-       puts stdout "Processed $id"
-     }
+  foreach i [glob $SAL_WORK_DIR/[set subsys]_*/java] {
+    set id [file tail [file dirname $i]]
+    exec cp $SAL_WORK_DIR/[set id]/java/src/[set id]DataPublisher.java $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/test/java/.
+    exec cp $SAL_WORK_DIR/[set id]/java/src/[set id]DataSubscriber.java $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/test/java/.
+    puts stdout "Processed $id"
   }
   set allj [glob $SAL_WORK_DIR/$subsys/java/src/*.java]
   foreach fj $allj {
      exec cp $fj $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/test/java/.
      puts stdout "Processed $fj"
   }
-  exec cp $SAL_WORK_DIR/$subsys/java/src/org/lsst/sal/SAL_[set subsys].java $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/java/org/lsst/sal/.
-  exec cp $SAL_WORK_DIR/$subsys/java/src/org/lsst/sal/salActor.java $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/java/org/lsst/sal/.
-  exec cp $SAL_WORK_DIR/$subsys/java/src/org/lsst/sal/salUtils.java $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/java/org/lsst/sal/.
-  exec cp -r $SAL_WORK_DIR/$subsys/java/$subsys $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/java/.
+  exec cp -r $SAL_WORK_DIR/$subsys/java/src/org $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/java/.
+  exec cp -r $SAL_WORK_DIR/$subsys/java/src/lsst $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/java/.
   exec mkdir -p $SAL_WORK_DIR/maven/libs
-  exec cp $env(OSPL_HOME)/jar/dcpssaj.jar $SAL_WORK_DIR/maven/libs/.
-  exec cp $SAL_DIR/../lib/junit.jar $SAL_WORK_DIR/maven/libs/.
+  exec cp -r $SAL_WORK_DIR/lib/SAL_[set subsys].jar  $SAL_WORK_DIR/maven/libs/.
+  exec cp -r $SAL_WORK_DIR/lib/saj_[set subsys]_types.jar  $SAL_WORK_DIR/maven/libs/.
+  foreach j [glob $SAL_DIR/../lib/*.jar] {
+    exec cp $j $SAL_WORK_DIR/maven/libs/.
+  }
   if { $subsys == "Test" } {
     exec cp $SAL_DIR/code/templates/TestWithSalobjTest.java $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/test/java/.
     exec cp $SAL_DIR/code/templates/TestWithSalobjTargetTest.java $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/test/java/.

@@ -186,27 +186,3 @@ global EVENT_ALIASES EVTS AVRO_PREFIX
 
 
 
-#
-## Documented proc \c geneventaliasisocpp .
-# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
-# \param[in] fout File handle of output file
-#
-#  Generates the Event handling code for a Subsystem/CSC.
-#  Code is generated for getEvent,logEvent
-#  per Event Topic type. This routine generates ISO C++ wrapper code.
-#  NOT YET IMPLEMENTED
-#
-proc geneventaliasisocpp { subsys fout } {
-global EVENT_ALIASES
-   foreach i $EVENT_ALIASES { 
-    if { [info exists EVTS($subsys,$i,param)] } {
-      stdlog "	: alias = $i"
-    } else {
-#      stdlog "Alias $i has no parameters - uses standard [set subsys]_logevent"
-    }
-   }
-}
-
-
-
-

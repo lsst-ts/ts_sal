@@ -102,7 +102,7 @@ global CMD_ALIASES CMDS DONE_CMDEVT ACKREVCODE REVCODE SAL_WORK_DIR OPTIONS
   * @param error is a more detailed per subssystem specific error code for failed commands
   * @param result is an informative message to be displayed to the operator,stored in the EFD etc
   */
-      salReturn ackCommand_[set i]( int cmdSeqNum, salLONG  ack, salLONG error, char *result );
+      salReturn ackCommand_[set i]( int cmdSeqNum, salLONG  ack, salLONG error, char *result, double timeout=0.0 );
 
 /** Acknowledge a command by sending an ackCmd message, this time with access to all the ackCmd message payload
   * @param data is the ackCmd topic data
@@ -457,7 +457,7 @@ salReturn SAL_SALData::getResponse_[set i]C(SALData_ackcmdC *response)
 \}
 "
    puts $fout "
-salReturn SAL_SALData::ackCommand_[set i]( int cmdId, salLONG ack, salLONG error, char *result )
+salReturn SAL_SALData::ackCommand_[set i]( int cmdId, salLONG ack, salLONG error, char *result, double timeout )
 \{
    int actorIdx = SAL__SALData_ackcmd_ACTOR;
 
@@ -471,6 +471,7 @@ salReturn SAL_SALData::ackCommand_[set i]( int cmdId, salLONG ack, salLONG error
    Instance.origin = sal\[actorIdx\].activeorigin;
    Instance.identity = sal\[actorIdx\].activeidentity.c_str();
    Instance.cmdtype = actorIdx;
+   Instance.timeout = timeout;
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
    Instance.salIndex = subsystemID;
 #endif
@@ -482,6 +483,7 @@ salReturn SAL_SALData::ackCommand_[set i]( int cmdId, salLONG ack, salLONG error
       cout << \"    origin    : \" << Instance.origin << endl;
       cout << \"    identity    : \" << Instance.identity << endl;
       cout << \"    result   : \" << Instance.result << endl;
+      cout << \"    timeout   : \" << Instance.timeout << endl;
    \}
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
    Instance.salIndex = subsystemID;
@@ -513,6 +515,7 @@ salReturn SAL_SALData::ackCommand_[set i]C(SALData_ackcmdC *response )
    Instance.origin = sal\[actorIdx\].activeorigin;
    Instance.identity = sal\[actorIdx\].activeidentity.c_str();
    Instance.cmdtype = actorIdx;
+   Instance.timeout = response->timeout;
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
    Instance.salIndex = subsystemID;
 #endif
@@ -524,6 +527,7 @@ salReturn SAL_SALData::ackCommand_[set i]C(SALData_ackcmdC *response )
       cout << \"    origin    : \" << Instance.origin << endl;
       cout << \"    identity    : \" << Instance.identity << endl;
       cout << \"    result   : \" << Instance.result << endl;
+      cout << \"    timeout   : \" << Instance.timeout << endl;
    \}
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
    Instance.salIndex = subsystemID;
@@ -797,8 +801,11 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE AVRO_PREFIX
 	\}
 "
    puts $fout "
-/** Acknowledge a command by sending an ackCmd message, this time with access to all the ackCmd message payload
-  * @param data is the ackCmd topic data
+/** Acknowledge a command by sending an ackCmd message
+  * @param cmdId is the command identifier
+  * @param ack is an ack code type
+  * @param error is an error code type
+  * @param result is the ascii message text
   */
 	public int ackCommand_[set i]( long cmdId, long ack, long error, String result )
 	\{
@@ -821,6 +828,46 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE AVRO_PREFIX
                 Instance.setPrivateKafkaStamp(getCurrentTime());
    		Instance.setResult(result);"
       if { [info exists SYSDIC($subsys,keyedID)] } {
+         puts $fout "   		Instance.setSalIndex(subsystemID);"
+      }
+      puts $fout "
+   		if (debugLevel > 0) \{
+      			System.out.println(  \"=== ackCommand_[set i] acknowledging a command with :\");
+      			System.out.println(  \"    seqNum   : \" + Instance.getPrivateSeqNum());
+      			System.out.println(  \"    ack      : \" + Instance.getAck());
+      			System.out.println(  \"    error    : \" + Instance.getError());
+      			System.out.println(  \"    origin : \" + Instance.getOrigin());
+      			System.out.println(  \"    identity : \" + Instance.getIdentity());
+      			System.out.println(  \"    result   : \" + Instance.getResult());
+   		\}"
+      if { [info exists SYSDIC($subsys,keyedID)] } {
+         puts $fout "   		Instance.setSalIndex(subsystemID);"
+       }
+      writerFragmentJava $fout $subsys ackcmd
+      puts $fout "
+   		return SAL__OK;
+	\}
+"
+   puts $fout "
+/** Acknowledge a command by sending an ackCmd message, this time with access to all the ackCmd message payload
+  * @param Instance is the ackCmd topic data
+  */
+	public int ackCommand_[set i]( ackcmd Instance )
+	\{
+   		int istatus = -1;
+   		long ackHandle = 0;
+                int actorIdx = SAL__SALData_command_[set i]_ACTOR;
+                int actorIdx2 = SAL__SALData_ackcmd_ACTOR;
+
+                Instance.setOrigin(sal\[actorIdx\].activeorigin);
+                Instance.setIdentity(sal\[actorIdx\].activeidentity);
+                Instance.setPrivateOrigin(origin);
+                Instance.setPrivateIdentity(CSC_identity);
+                Instance.setPrivateRevCode(\"[string trim $ACKREVCODE _]\");
+                Instance.setPrivateSndStamp(getCurrentTime());
+                Instance.setPrivateEfdStamp(getCurrentUTC());
+                Instance.setPrivateKafkaStamp(getCurrentTime());"
+       if { [info exists SYSDIC($subsys,keyedID)] } {
          puts $fout "   		Instance.setSalIndex(subsystemID);"
       }
       puts $fout "

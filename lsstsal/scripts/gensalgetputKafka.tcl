@@ -337,7 +337,7 @@ global SAL_WORK_DIR ACTIVETOPICS AVRO_PREFIX
    puts $fout "      sal\[i\].isActive = false;"
    puts $fout "      sal\[i\].maxSamples = 1000;"
    puts $fout "      sal\[i\].sampleAge = 1.0e20;"
-   puts $fout "      sal\[i\].hasSchema = false;"
+   puts $fout "      sal\[i\].hasSchema = true;"
    puts $fout "      sal\[i\].historyDepth = 100;" 
    puts $fout "    \}"
    set idx 0
@@ -897,28 +897,20 @@ proc writerFragmentJava { fout base name } {
 global AVRO_PREFIX OPTIONS
  if { $OPTIONS(verbose) } {stdlog "###TRACE>>> writerFragmentJava $base $name "}
    set avroname [set base]_[set name]
-   if { $name == "[set base]_ackcmd" } {
+   if { $name == "ackcmd" } {
      set avroname "ackcmd"
    }
-   puts $fout "  if (sal\[actorIdx\].publisher == null ) \{";
-   puts $fout "  Properties props = new Properties();"
-#props.put("bootstrap.servers", "localhost:9092");
-#props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,org.apache.kafka.common.serialization.StringSerializer.class);
-#props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,io.confluent.kafka.serializers.KafkaAvroSerializer.class);
-#props.put("schema.registry.url", "http://localhost:8081");
-#props.put("kafka.security.protocol","SASL_SSL");
-#props.put("kafka.sasl.mechanism","SCRAM-SHA=512");
-#props.put("kafka.sasl.username","ts-salkafka");
-#props.put("kafka.sasl.password","Arpd8QY9B8NI");                  
+   puts $fout "  if (sal\[actorIdx\].publisher == null ) \{"
+   puts $fout "    Properties props = new Properties();"
    puts $fout "     KafkaProducer<String, [set name]> producer = new KafkaProducer<String, [set name]>(props);"
-   puts $fout "     sal\[actorIdx\].publisher = producer;";
-   puts $fout "  \}";
-   puts $fout "  try \{";
-   puts $fout "     publisher.send(new ProducerRecord<String,[set name]>(\"[getAvroNamespace][set base].[set name]\", \"LSST\", Instance));";
-   puts $fout "  \} catch (Exception e) \{";
-   puts $fout "     System.out.println(\"An error occurred: \" + e.getMessage());";
-   puts $fout "  \}";
-   puts $fout "  publisher.flush();";
+   puts $fout "     sal\[actorIdx\].publisher = producer;"
+   puts $fout "  \}"
+   puts $fout "  try \{"
+   puts $fout "     publisher.send(new ProducerRecord<String,[set name]>(\"[getAvroNamespace][set base].[set name]\", \"LSST\", Instance));"
+   puts $fout "  \} catch (Exception e) \{"
+   puts $fout "     System.out.println(\"An error occurred: \" + e.getMessage());"
+   puts $fout "  \}"
+   puts $fout "  publisher.flush();"
  if { $OPTIONS(verbose) } {stdlog "###TRACE<<< writerFragmentJava $base $name "}
 }
 

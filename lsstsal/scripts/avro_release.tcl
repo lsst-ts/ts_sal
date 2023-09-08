@@ -11,6 +11,6 @@
 #
 #\code
 
-set AVRO_RELEASE 1.11.1
+set AVRO_RELEASE 1.11.0
 catch {set AVRO_RELEASE [exec $env(TS_SAL_DIR)/bin/avrogencpp --version]}
 puts stdout $AVRO_RELEASE
