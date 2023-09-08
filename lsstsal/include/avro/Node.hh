@@ -26,7 +26,6 @@
 #include <memory>
 #include <utility>
 
-#include "CustomFields.hh"
 #include "Exception.hh"
 #include "LogicalType.hh"
 #include "SchemaResolution.hh"
@@ -154,11 +153,6 @@ public:
     }
     virtual size_t fixedSize() const = 0;
 
-    void addCustomAttributesForField(const CustomFields& customAttributes) {
-        checkLock();
-        doAddCustomAttribute(customAttributes);
-    }
-
     virtual bool isValid() const = 0;
 
     virtual SchemaResolution resolve(const Node &reader) const = 0;
@@ -191,7 +185,6 @@ protected:
     virtual void doAddLeaf(const NodePtr &newLeaf) = 0;
     virtual void doAddName(const std::string &name) = 0;
     virtual void doSetFixedSize(size_t size) = 0;
-    virtual void doAddCustomAttribute(const CustomFields& customFields) = 0;
 
 private:
     const Type type_;

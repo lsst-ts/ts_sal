@@ -24,24 +24,26 @@
 proc makesaldirs { base name } {
 global SAL_WORK_DIR OPTIONS
    if { $OPTIONS(verbose) } {stdlog "###TRACE>>> makesaldirs $base $name"}
-   exec mkdir -p $SAL_WORK_DIR/[set base]_[set name]/cpp/src
-   exec mkdir -p $SAL_WORK_DIR/[set base]_[set name]/cpp/standalone
-   exec mkdir -p $SAL_WORK_DIR/[set base]_[set name]/java/src/org/lsst/sal
-   exec mkdir -p $SAL_WORK_DIR/[set base]_[set name]/java/src/org/lsst/sal/$base/$name
-   exec mkdir -p $SAL_WORK_DIR/[set base]/java/src
-   exec mkdir -p $SAL_WORK_DIR/[set base]/java/src/org/lsst/sal
-   exec mkdir -p $SAL_WORK_DIR/[set base]/cpp/src
-   exec mkdir -p $SAL_WORK_DIR/[set base]_[set name]/java/standalone
-   exec touch $SAL_WORK_DIR/[set base]/java/src/.depend.Makefile.saj_[set base]_cmdctl
-   exec touch $SAL_WORK_DIR/[set base]/java/src/.depend.Makefile.saj_[set base]_event
-   exec touch $SAL_WORK_DIR/[set base]_[set name]/java/standalone/.depend.Makefile.saj_[set base]_[set name]_pub
-   exec touch $SAL_WORK_DIR/[set base]_[set name]/java/standalone/.depend.Makefile.saj_[set base]_[set name]_sub
-   exec touch $SAL_WORK_DIR/[set base]_[set name]/cpp/standalone/.depend.Makefile.sacpp_[set base]_[set name]_pub
-   exec touch $SAL_WORK_DIR/[set base]_[set name]/cpp/standalone/.depend.Makefile.sacpp_[set base]_[set name]_sub
-   exec touch $SAL_WORK_DIR/[set base]/cpp/src/.depend.Makefile.sacpp_[set base]_cmd
-   exec touch $SAL_WORK_DIR/[set base]/cpp/src/.depend.Makefile.sacpp_[set base]_event
-   exec touch $SAL_WORK_DIR/[set base]/cpp/src/.depend.Makefile.sacpp_[set base]_testcommands
-   exec touch $SAL_WORK_DIR/[set base]/cpp/src/.depend.Makefile.sacpp_[set base]_testevents
+   if { [lindex [split $name "_"] end] != "enums" } {
+     exec mkdir -p $SAL_WORK_DIR/[set base]_[set name]/cpp/src
+     exec mkdir -p $SAL_WORK_DIR/[set base]_[set name]/cpp/standalone
+     exec mkdir -p $SAL_WORK_DIR/[set base]_[set name]/java/src/org/lsst/sal
+     exec mkdir -p $SAL_WORK_DIR/[set base]_[set name]/java/src/org/lsst/sal/$base/$name
+     exec mkdir -p $SAL_WORK_DIR/[set base]/java/src
+     exec mkdir -p $SAL_WORK_DIR/[set base]/java/src/org/lsst/sal
+     exec mkdir -p $SAL_WORK_DIR/[set base]/cpp/src
+     exec mkdir -p $SAL_WORK_DIR/[set base]_[set name]/java/standalone
+     exec touch $SAL_WORK_DIR/[set base]/java/src/.depend.Makefile.saj_[set base]_cmdctl
+     exec touch $SAL_WORK_DIR/[set base]/java/src/.depend.Makefile.saj_[set base]_event
+     exec touch $SAL_WORK_DIR/[set base]_[set name]/java/standalone/.depend.Makefile.saj_[set base]_[set name]_pub
+     exec touch $SAL_WORK_DIR/[set base]_[set name]/java/standalone/.depend.Makefile.saj_[set base]_[set name]_sub
+     exec touch $SAL_WORK_DIR/[set base]_[set name]/cpp/standalone/.depend.Makefile.sacpp_[set base]_[set name]_pub
+     exec touch $SAL_WORK_DIR/[set base]_[set name]/cpp/standalone/.depend.Makefile.sacpp_[set base]_[set name]_sub
+     exec touch $SAL_WORK_DIR/[set base]/cpp/src/.depend.Makefile.sacpp_[set base]_cmd
+     exec touch $SAL_WORK_DIR/[set base]/cpp/src/.depend.Makefile.sacpp_[set base]_event
+     exec touch $SAL_WORK_DIR/[set base]/cpp/src/.depend.Makefile.sacpp_[set base]_testcommands
+     exec touch $SAL_WORK_DIR/[set base]/cpp/src/.depend.Makefile.sacpp_[set base]_testevents
+   }
    if { $OPTIONS(verbose) } {stdlog "###TRACE<<< makesaldirs $base $name"}
 }
 
@@ -695,10 +697,6 @@ global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS CMD_ALIASES AVRO_PREFIX
         catch { set result [exec /tmp/sreplace2_[set base][set lang].sal] } bad
       }
       if { $lang == "cpp" } {
-####        set incfiles [glob [set base]/cpp/*.h]
-####        stdlog "Updating include files : $incfiles"
-####         catch { foreach i $incfiles {  exec cp $i $SAL_DIR/include/. } }
-####         exec cp [set base]/cpp/libsacpp_[set base]_types.so $SAL_WORK_DIR/lib/.
          exec ln -sf $SAL_WORK_DIR/[set base]/cpp/src/SAL_[set base].cpp $SAL_WORK_DIR/[set id]/cpp/src/.
          exec ln -sf $SAL_WORK_DIR/[set base]/cpp/src/SAL_[set base].h $SAL_WORK_DIR/[set id]/cpp/src/.
          salcpptestgen $base $id
@@ -707,6 +705,7 @@ global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS CMD_ALIASES AVRO_PREFIX
          if { [llength [split $base "_"]] == 1  } {
            salavrogen $base java
            exec cp [set base]/java/src/saj_[set base]_types.jar $SAL_WORK_DIR/lib/.
+           exec cp [set base]/java/src/SAL_[set base].jar $SAL_WORK_DIR/lib/.
          }
          saljavaclassgen $base $id
       }
@@ -722,7 +721,7 @@ global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS CMD_ALIASES AVRO_PREFIX
 #  Generate Avro files for a Subsystem/CSC
 #
 proc salavrogen { base lang } {
-global SAL_WORK_DIR OPTIONS ONEDONECPP ONEDONEJAVA SAL_DIR
+global SAL_WORK_DIR OPTIONS ONEDONECPP ONEDONEJAVA SAL_DIR AVRO_RELEASE
    if { $OPTIONS(verbose) } {stdlog "###TRACE>>> salavrogen $base $lang"}
        cd $SAL_WORK_DIR/$base/$lang
        stdlog "Generating $lang type support for $base"
@@ -741,10 +740,10 @@ global SAL_WORK_DIR OPTIONS ONEDONECPP ONEDONEJAVA SAL_DIR
           foreach i $all {
             if { [lindex [split [file tail $i] ._] 2] != "enums" } {
               puts stdout "Processing $i"
-              catch {exec java -jar $SAL_DIR/../lib/avro-tools-1.11.1.jar compile schema $i $SAL_WORK_DIR/[set base]/java/src/}
+              catch {exec java -jar $SAL_DIR/../lib/avro-tools-[set AVRO_RELEASE].jar compile schema $i $SAL_WORK_DIR/[set base]/java/src/}
             }
           }
-          catch {exec java -jar $SAL_DIR/../lib/avro-tools-1.11.1.jar compile schema $SAL_WORK_DIR/avro-templates/[set base]_ackcmd.json $SAL_WORK_DIR/[set base]/java/src/}
+          catch {exec java -jar $SAL_DIR/../lib/avro-tools-[set AVRO_RELEASE].jar compile schema $SAL_WORK_DIR/avro-templates/[set base]_ackcmd.json $SAL_WORK_DIR/[set base]/java/src/}
           cd $SAL_WORK_DIR/$base/$lang/src
           set result none
           catch { set result [exec make -f Makefile.saj_[set base]_types] } bad
@@ -772,10 +771,6 @@ global SAL_WORK_DIR OPTIONS
  if { $OPTIONS(fastest) == 0 } {
    cd $SAL_WORK_DIR/$base/java/src
    set result none
-#   catch { set result [exec make -f Makefile.saj_[set base]_types] } bad
-#   catch {stdlog "result = $result"}
-#   catch {stdlog "bad = $bad"}
-#   exec cp saj_[set base]_types.jar $SAL_WORK_DIR/lib/.
    stdlog "javac : Done types"
    if { $id != "[set base]_notused" } {
     cd $SAL_WORK_DIR/$id/java/standalone

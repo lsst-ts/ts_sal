@@ -254,8 +254,8 @@ if { $OPTIONS(apidoc) } {
 if { $OPTIONS(maven) } {
   cd $SAL_WORK_DIR
   source $SAL_DIR/gencommandtestsjava.tcl
-  source $SAL_DIR/mavenize.tcl
-  source $SAL_DIR/gensalcodes.tcl
+  source $SAL_DIR/mavenizeKafka.tcl
+  source $SAL_DIR/gensalcodesKafka.tcl
   set SALVERSION [lindex [split $SALVERSION "-"] 0]
   set XMLVERSION [lindex [split $XMLVERSION "-"] 0]
   set mvnrelease [set XMLVERSION]_[set SALVERSION][set RELVERSION]
@@ -267,10 +267,6 @@ if { $OPTIONS(maven) } {
     catch { set result [mavenize $subsys] } bad
     puts stdout "$result"
     puts stderr "$bad"
-#     puts stdout "Creating unit tests maven/[set subsys]-[set mvnrelease]"
-#     catch { set result [mavenunittests $subsys] } bad
-#     puts stdout "$result"
-#     puts stderr "$bad"
     cd maven/[set subsys]-[set mvnrelease]
     puts stdout "Running maven install"
     set result ""
