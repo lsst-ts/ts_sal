@@ -209,7 +209,7 @@ global TRAILINGITEMS
          if { [lindex [split $rec "/"] end] != "Description>" } {
            set desc [getTopicURL $subsys $tname]
          } else {
-           set desc [string map { \" '} $value]
+           set desc [string map { \" \\" \[ \\[  \] \\] } $value]
          }
          if { $tdesc } { set DESC($subsys,$alias,help) "$desc"}
          if { $tdesc } { set METADATA($tname,description) "\"$desc\"" ; set tdesc 0}

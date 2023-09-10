@@ -371,7 +371,7 @@ global SAL_WORK_DIR SALVERSION SALRELEASE RPMFILES AVRO_RELEASE RELVERSION XMLVE
      if { [string range $RELVERSION 0 0] == "_" } {
        set release [set SALVERSION][set RELVERSION]
      } else {
-       set release [set SALVERSION].[set RELVERSION]
+       set release [set SALVERSION][set RELVERSION]
      }
   } else {
      set release $SALVERSION
@@ -443,7 +443,7 @@ global SAL_WORK_DIR SALVERSION SALRELEASE RPMFILES AVRO_RELEASE RELVERSION XMLVE
      if { [string range $RELVERSION 0 0] == "_" } {
        set release [set SALVERSION][set RELVERSION]
      } else {
-       set release [set SALVERSION].[set RELVERSION]
+       set release [set SALVERSION][set RELVERSION]
      }
   } else {
      set release $SALVERSION
@@ -509,6 +509,7 @@ rm -fr \$RPM_BUILD_ROOT
 #
 proc generateUtilsrpm { } {
 global SYSDIC SALVERSION SAL_WORK_DIR AVRO_RELEASE SAL_DIR env
+   set version [join [lrange [split $SALVERSION ".-"] 0 2] .]
    set fout [open $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_utils.spec w]
    puts $fout "
 %global __os_install_post %{nil}
@@ -516,7 +517,7 @@ global SYSDIC SALVERSION SAL_WORK_DIR AVRO_RELEASE SAL_DIR env
 
 %define name			ts_sal_utils
 %define summary			SAL runtime utilities package
-%define version			$SALVERSION
+%define version			$version
 %define release			1
 
 Name:      %{name}
@@ -548,6 +549,7 @@ cp -fr %\{name\}-%\{version\}/* %{buildroot}/.
 /opt/lsst/ts_sal/lib/libsalUtils.so
 /opt/lsst/ts_sal/etc/leap-seconds.list
 /opt/lsst/ts_sal/setup.env
+/opt/lsst/ts_sal/lib
 "
   close $fout
   exec mkdir -p ts_sal_utils-$SALVERSION/etc/systemd/system
@@ -576,7 +578,11 @@ WantedBy=ts_sal_settai.service
   copyasset $env(TS_SAL_DIR)/bin/update_leapseconds ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/bin/.
   copyasset $SAL_WORK_DIR/lib/libsalUtils.so ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/lib/.
   copyasset $SAL_DIR/leap-seconds.list ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/etc/.
-  copyasset $env(TS_SAL_DIR)/setup.env ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/.
+  copyasset $env(TS_SAL_DIR)/setupKafka.env ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/setup.env
+  set all [glob $env(SAL_DIR)/../lib/*]
+  foreach f $all {
+    copyasset $f ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/lib/.
+  }
   exec tar cvzf $SAL_WORK_DIR/rpmbuild/SOURCES/ts_sal_utils-$SALVERSION.tgz ts_sal_utils-$SALVERSION
   exec rm -fr $SAL_WORK_DIR/rpmbuild/BUILD/ts_sal_utils-$SALVERSION/*
   exec cp -r ts_sal_utils-$SALVERSION $SAL_WORK_DIR/rpmbuild/BUILD/.

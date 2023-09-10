@@ -103,8 +103,8 @@ salReturn SAL_[set base]::getSample_[set name]([set base]_[set name]C *data)
     if ( (rcvdTime - Instance.private_sndStamp) < sal\[actorIdx\].sampleAge && Instance.private_origin != 0 ) \{
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
     data->salIndex = Instance.salIndex;
-    data->private_rcvStamp = rcvdTime;
 #endif
+    data->private_rcvStamp = rcvdTime;
 "
   set frag [open $SAL_WORK_DIR/include/SAL_[set base]_[set name]Cget.tmp r]
   while { [gets $frag rec] > -1} {puts $fout $rec}
