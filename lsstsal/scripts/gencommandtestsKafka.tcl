@@ -113,8 +113,8 @@ int main (int argc, char *argv\[\])
     puts $fcmd "  sleep(2);"
   } else {
     puts $fcmd "  status = mgr->waitForCompletion_[set alias](cmdId, 10);"
-    puts $fcmd "  nanosleep(&delayms,NULL);"
   } 
+  puts $fcmd "    nanosleep(&delayms,NULL);"
   puts $fcmd "  \}
   
   /* Remove the DataWriters etc */
