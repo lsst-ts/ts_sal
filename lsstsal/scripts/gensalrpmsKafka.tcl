@@ -123,6 +123,10 @@ global SAL_WORK_DIR XMLVERSION SAL_DIR SYSDIC SALVERSION env
       copyasset $SAL_WORK_DIR/[set subsys]/cpp/src/SAL_[set subsys]_actors.h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
       copyasset $SAL_WORK_DIR/[set subsys]/cpp/src/SAL_[set subsys]C.h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
       copyasset $SAL_DIR/code/templates/SAL_defines.h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
+      set incs [glob $SAL_WORK_DIR/[set subsys]/cpp/src/*.hh]
+      foreach i $incs {
+        copyasset $i [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
+      }
     }
     foreach dtype "Commands Events Telemetry" {
       if { [file exists $env(TS_XML_DIR)/python/lsst/ts/xml/data/sal_interfaces/$subsys/[set subsys]_[set dtype].xml] } {

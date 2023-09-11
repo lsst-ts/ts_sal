@@ -1,12 +1,12 @@
 #!/usr/bin/env tclsh
 
-foreach csc "ATPtg MTPtg MTMount MTRotator ESS ATMCS Guider MTM1M3 MTVMS Test" {
+foreach csc "ATMCS ATPtg ESS Guider MTM1M3 MTMount MTPtg MTRotator MTVMS Test" {
    puts stdout "Building $csc"
    exec salgeneratorKafka $csc validate
    exec salgeneratorKafka $csc sal cpp
-   exec salgeneratorKafka $csc sal java
+##   exec salgeneratorKafka $csc sal java
    exec salgeneratorKafka $csc lib
-   if { [lindex $argv 2] != "" } {
+   if { [string length [lindex $argv 2]] > 0 } {
      exec salgeneratorKafka $csc rpm [lindex $argv 2]
    } else {
      exec salgeneratorKafka $csc rpm
