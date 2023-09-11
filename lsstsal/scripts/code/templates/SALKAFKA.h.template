@@ -48,7 +48,7 @@
   #define _SAL_SALActorMGR_
 
 /// The maximum number of Actors for a SAL_SALData object, equal to the number of Kafka topic types for SALData
-  #define SAL__ACTORS_MAXCOUNT	256
+  #define SAL__ACTORS_MAXCOUNT	1000
 
 /// The maximum length of a Actor (aka Kafka topic) name
   #define SAL__ACTORS_NAMESIZE	128

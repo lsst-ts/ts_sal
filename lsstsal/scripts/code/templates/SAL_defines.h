@@ -114,8 +114,8 @@ typedef int	        salReturn;
 
 #define salDebugOutputString(__X__) fprintf(stderr,__X__)
 #define SAL__MAX_DBGMSG_SIZE   1024
-#define SAL__MAX_HANDLES       128
-#define SAL__MAX_NAMESIZE      128
+#define SAL__MAX_HANDLES       1000
+#define SAL__MAX_NAMESIZE      256
 
 
 #endif
