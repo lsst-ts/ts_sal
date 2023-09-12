@@ -122,7 +122,6 @@ global SAL_WORK_DIR XMLVERSION SAL_DIR SYSDIC SALVERSION env
       copyasset $SAL_WORK_DIR/[set subsys]/cpp/src/SAL_[set subsys].h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
       copyasset $SAL_WORK_DIR/[set subsys]/cpp/src/SAL_[set subsys]_actors.h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
       copyasset $SAL_WORK_DIR/[set subsys]/cpp/src/SAL_[set subsys]C.h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
-      copyasset $SAL_DIR/code/templates/SAL_defines.h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
       set incs [glob $SAL_WORK_DIR/[set subsys]/cpp/src/*.hh]
       foreach i $incs {
         copyasset $i [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
@@ -554,12 +553,14 @@ cp -fr %\{name\}-%\{version\}/* %{buildroot}/.
 /opt/lsst/ts_sal/etc/leap-seconds.list
 /opt/lsst/ts_sal/setup.env
 /opt/lsst/ts_sal/lib
+/opt/lsst/ts_sal/include
 "
   close $fout
   exec mkdir -p ts_sal_utils-$SALVERSION/etc/systemd/system
   exec mkdir -p ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/bin
   exec mkdir -p ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/lib
   exec mkdir -p ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/etc
+  exec mkdir -p ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/include
   set fser [open ts_sal_utils-$SALVERSION/etc/systemd/system/ts_sal_settai.service w]
      puts $fser "
 \[Unit\]
@@ -587,9 +588,10 @@ WantedBy=ts_sal_settai.service
   foreach f $all {
     copyasset $f ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/lib/.
   }
+  exec cp -r $env(SAL_DIR)/../include ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/.
   exec tar cvzf $SAL_WORK_DIR/rpmbuild/SOURCES/ts_sal_utils-$SALVERSION.tgz ts_sal_utils-$SALVERSION
-  exec rm -fr $SAL_WORK_DIR/rpmbuild/BUILD/ts_sal_utils-$SALVERSION/*
   exec cp -r ts_sal_utils-$SALVERSION $SAL_WORK_DIR/rpmbuild/BUILD/.
+###  exec rm -fr $SAL_WORK_DIR/rpmbuild/BUILD/ts_sal_utils-$SALVERSION/*
   set frpm [open /tmp/makerpm-utils w]
   puts $frpm "#!/bin/sh
 export QA_RPATHS=0x001F
