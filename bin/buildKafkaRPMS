@@ -1,6 +1,6 @@
 #!/usr/bin/env tclsh
 
-foreach csc "ATMCS ATPtg ESS Guider MTM1M3 MTMount MTPtg MTRotator MTVMS Test" {
+foreach csc "ATMCS ATPtg Guider MTM1M3 MTMount MTPtg MTRotator MTVMS Test" {
    puts stdout "Building $csc"
    exec salgeneratorKafka $csc validate
    exec salgeneratorKafka $csc sal cpp
