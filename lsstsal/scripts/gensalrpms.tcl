@@ -279,7 +279,6 @@ global SYSDIC SALRELEASE SALVERSION SAL_WORK_DIR OSPL_VERSION RELVERSION env XML
    } else {
      set rpmversion $XMLVERSION
    }
-   set xmldist $XMLVERSION
    set fout [open $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_runtime.spec w]
    set rpmversion [join [split $rpmversion "-"] "~"]
    set release $SALVERSION
@@ -351,7 +350,6 @@ global SYSDIC SALRELEASE SALVERSION SAL_WORK_DIR OSPL_VERSION RELVERSION env XML
    } else {
      set rpmversion $XMLVERSION
    }
-   set xmldist $XMLVERSION
    set fout [open $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_ATruntime.spec w]
    set rpmversion [join [split $rpmversion "-"] "~"]
    set release $SALVERSION
@@ -417,7 +415,6 @@ proc generaterpm { subsys } {
 global SAL_WORK_DIR SALVERSION SALRELEASE RPMFILES OSPL_VERSION RELVERSION XMLVERSION env
   exec rm -fr $SAL_WORK_DIR/rpm_[set subsys]
   exec mkdir -p $SAL_WORK_DIR/rpm_[set subsys]
-  set xmldist $XMLVERSION
   set fout [open $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_[set subsys].spec w]
   if { $RELVERSION != "" } {
      set rpmversion [set XMLVERSION]~[set RELVERSION]
@@ -491,7 +488,6 @@ proc generatetestrpm { subsys } {
 global SAL_WORK_DIR SALVERSION SALRELEASE RPMFILES OSPL_VERSION RELVERSION XMLVERSION env
   exec rm -fr $SAL_WORK_DIR/rpm_[set subsys]
   exec mkdir -p $SAL_WORK_DIR/rpm_[set subsys]
-  set xmldist $XMLVERSION
   set fout [open $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_[set subsys]_test.spec w]
   if { $RELVERSION != "" } {
      set rpmversion [set XMLVERSION]~[set RELVERSION]
