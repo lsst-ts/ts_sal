@@ -849,7 +849,11 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS
        gets $finh rec ; puts $fouth $rec
 ###       puts $fouth "using namespace avro"
        foreach name $ACTIVETOPICS {
-          puts $fouth "#include \"[set base]_[set name].hh\""
+          puts $fouth "  #include \"[set base]_[set name].hh\""
+       }
+       if { [file exists $SAL_WORK_DIR/SAL_[set base]_enums.h] } {
+          exec cp $SAL_WORK_DIR/SAL_[set base]_enums.h $SAL_WORK_DIR/[set base]/cpp/src/.
+          puts $fouth "  #include \"SAL_[set base]_enums.h\""
        }
      } else {
        gets $finh rec

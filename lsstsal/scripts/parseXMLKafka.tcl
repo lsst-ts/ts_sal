@@ -344,7 +344,7 @@ global TRAILINGITEMS
 proc indexedEnumsToCPP { subsys } {
 global SYSDIC IDXENUMDONE SAL_WORK_DIR
    if { [info exists SYSDIC($subsys,IndexEnumeration)] && $IDXENUMDONE($subsys) == 0 } {
-      set fenum [open $SAL_WORK_DIR/[set subsys]_enums.h a]
+      set fenum [open $SAL_WORK_DIR/SAL_[set subsys]_enums.h a]
       foreach e $SYSDIC($subsys,IndexEnumeration) {
          set enum [string trim $e "\{\}"]
          set id [lindex [split $enum :] 0]
@@ -366,7 +366,7 @@ global SYSDIC IDXENUMDONE SAL_WORK_DIR
 proc indexedEnumsToJava { subsys } {
 global SYSDIC IDXENUMDONE SAL_WORK_DIR
    if { [info exists SYSDIC($subsys,IndexEnumeration)] && $IDXENUMDONE($subsys) == 0 } {
-      set fenum [open $SAL_WORK_DIR/[set subsys]_enums.java a]
+      set fenum [open $SAL_WORK_DIR/SAL_[set subsys]_enums.java a]
       foreach e $SYSDIC($subsys,IndexEnumeration) {
          set enum [string trim $e "\{\}"]
          set id [lindex [split $enum :] 0]
@@ -449,7 +449,7 @@ global METADATA
 proc enumsToCPP { subsys alias } {
 global EVENT_ENUM EDONE SAL_WORK_DIR
    if { [info exists EVENT_ENUM($alias)] && [info exists EDONE($alias)] == 0} {
-      set fenum [open $SAL_WORK_DIR/[set subsys]_enums.h a]
+      set fenum [open $SAL_WORK_DIR/SAL_[set subsys]_enums.h a]
       foreach e $EVENT_ENUM($alias) {
           set i 1
           set enum [string trim $e "\{\}"]
@@ -467,7 +467,7 @@ global EVENT_ENUM EDONE SAL_WORK_DIR
       close $fenum
    }
    if { [info exists EVENT_ENUM([set subsys]_shared)] && [info exists EDONE([set subsys]_shared)] == 0 } {
-     set fenum [open $SAL_WORK_DIR/[set subsys]_enums.h a]
+     set fenum [open $SAL_WORK_DIR/SAL_[set subsys]_enums.h a]
      foreach e $EVENT_ENUM([set subsys]_shared) {
           set i 1
           set enum [string trim $e "\{\}"]

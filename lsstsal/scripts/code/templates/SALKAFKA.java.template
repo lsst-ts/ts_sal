@@ -198,26 +198,33 @@ public class SAL_SALData {
                Properties props = new Properties();
                props.put("bootstrap.servers", server);
                props.put("schema.registry.url", schemaRegistry );
-               props.put("kafka.security.protocol",securityProtocol);
-               props.put("kafka.sasl.mechanism",securityMechanism);
-               props.put("kafka.sasl.username",securityUserName);
-               props.put("kafka.sasl.password",securityPassword);                  
+               if (securityPassword != null) {
+                 props.put("kafka.security.protocol",securityProtocol);
+                 props.put("kafka.sasl.mechanism",securityMechanism);
+                 props.put("kafka.sasl.username",securityUserName);
+                 props.put("kafka.sasl.password",securityPassword);                  
+               }
 //               props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
 //                         org.apache.kafka.common.serialization.StringSerializer.class);
 //               props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
 //                         io.confluent.kafka.serializers.KafkaAvroSerializer.class);
-               props.put("schema.registry.url", schemaRegistry);
 //               props.put(AbstractKafkaSchemaSerDeConfig.AUTO_REGISTER_SCHEMAS, true);
 //               props.put(AbstractKafkaSchemaSerDeConfig.USE_LATEST_VERSION, true);
 
                KafkaProducer publisher = new KafkaProducer(props);
 
                Properties cprops = new Properties();               
-               cprops.put(ConsumerConfig.GROUP_ID_CONFIG, "LSST");
 //               cprops.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
 //               cprops.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
                cprops.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
                cprops.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
+               cprops.put("schema.registry.url", schemaRegistry);
+               if (securityPassword != null) {
+                 cprops.put("kafka.security.protocol",securityProtocol);
+                 cprops.put("kafka.sasl.mechanism",securityMechanism);
+                 cprops.put("kafka.sasl.username",securityUserName);
+                 cprops.put("kafka.sasl.password",securityPassword);                  
+               }
       	       KafkaConsumer subscriber = new KafkaConsumer(cprops);
       	       
                 long historySync = 1000;
