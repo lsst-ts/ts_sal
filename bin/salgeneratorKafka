@@ -210,6 +210,7 @@ if { $OPTIONS(validate) || $OPTIONS(idl) } {
       source $SAL_DIR/processgenerics.tcl
       generategenerics $i
     }
+    exec rm -f $SAL_WORK_DIR/SAL_[set i]_enums.h
     foreach t "Telemetry Commands Events" {
       if { [file exists $env(TS_XML_DIR)/python/lsst/ts/xml/data/sal_interfaces/$i/[set i]_[set t].xml] } {
         if { [file size $env(TS_XML_DIR)/python/lsst/ts/xml/data/sal_interfaces/$i/[set i]_[set t].xml] > 0 } {
@@ -364,13 +365,13 @@ if { $OPTIONS(rpm) } {
       catch { set result [updateruntime $s] } bad
       if { $result == "none" } {stdlog $bad}
       if { $OPTIONS(verbose) } {stdlog $result}
-#      if { [info exists SYSDIC([set s],cpp)] } {
-#        stdlog "Building test runtime RPM for $s subsystem"
-#        set result none
-#        catch { set result [updateruntime $s 1] } bad
-#        if { $result == "none" } {stdlog $bad}
-#        if { $OPTIONS(verbose) } {stdlog $result}
-#      }
+      if { [info exists SYSDIC([set s],cpp)] } {
+        stdlog "Building test runtime RPM for $s subsystem"
+        set result none
+        catch { set result [updateruntime $s 1] } bad
+        if { $result == "none" } {stdlog $bad}
+        if { $OPTIONS(verbose) } {stdlog $result}
+      }
     }
   }
 }

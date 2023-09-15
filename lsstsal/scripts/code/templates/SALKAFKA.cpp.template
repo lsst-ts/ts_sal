@@ -68,19 +68,22 @@ void SAL_SALData::initSalEnvironment(int aKey)
 
   configuration = RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL);
   configuration->set("bootstrap.servers",server, errstr);
-//  configuration->set("kafka.security.protocol",securityProtocol, errstr);
-//  configuration->set("kafka.sasl.mechanism",securityMechanism, errstr);
-//  configuration->set("kafka.sasl.username",securityUserName, errstr);
-//  configuration->set("kafka.sasl.password",securityPassword, errstr);   
+  if (securityPassword != NULL) {
+    configuration->set("kafka.security.protocol",securityProtocol, errstr);
+    configuration->set("kafka.sasl.mechanism",securityMechanism, errstr);
+    configuration->set("kafka.sasl.username",securityUserName, errstr);
+    configuration->set("kafka.sasl.password",securityPassword, errstr);   
 //  configuration->set("key.serializer", "org.apache.kafka.common.serialization.StringSerializer", errstr);  // Serialize the Avro object
 //  configuration->set("value.serializer", "io.confluent.kafka.serializers.KafkaAvroSerializer", errstr);  // Serialize the Avro object
-  
+  }
   consumerConfiguration = RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL);
   consumerConfiguration->set("bootstrap.servers",server, errstr);
-//  consumerConfiguration->set("kafka.security.protocol",securityProtocol, errstr);
-//  consumerConfiguration->set("kafka.sasl.mechanism",securityMechanism, errstr);
-//  consumerConfiguration->set("kafka.sasl.username",securityUserName, errstr);
-//  consumerConfiguration->set("kafka.sasl.password",securityPassword, errstr);   
+  if (securityPassword != NULL) {
+    consumerConfiguration->set("kafka.security.protocol",securityProtocol, errstr);
+    consumerConfiguration->set("kafka.sasl.mechanism",securityMechanism, errstr);
+    consumerConfiguration->set("kafka.sasl.username",securityUserName, errstr);
+    consumerConfiguration->set("kafka.sasl.password",securityPassword, errstr);   
+  }
 //  consumerConfiguration->set("key.serializer", "org.apache.kafka.common.serialization.StringSerializer", errstr);  // Serialize the Avro object
 //  consumerConfiguration->set("value.serializer", "io.confluent.kafka.serializers.KafkaAvroSerializer", errstr);  // Serialize the Avro object
 
