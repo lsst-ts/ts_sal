@@ -50,7 +50,7 @@ proc updatetests { subsys rpmname } {
 global SAL_WORK_DIR XMLVERSION RELVERSION
    if { $RELVERSION != "" } {
      set rpmversion [set XMLVERSION]~[set RELVERSION]
-     if { [string range $RELVERSION 0 0] == "_" } {
+     if { [string range $RELVERSION 0 0] == "-" } {
        set rpmversion [set XMLVERSION]~[set RELVERSION]
      } else {
        set rpmversion [set XMLVERSION]~[set RELVERSION]
@@ -93,7 +93,7 @@ global SAL_WORK_DIR XMLVERSION RELVERSION SAL_DIR SYSDIC SALVERSION env
   set rpmname $subsys
   if { $RELVERSION != "" } {
     set rpmversion [set XMLVERSION]~[set RELVERSION]
-    if { [string range $RELVERSION 0 0] == "_" } {
+    if { [string range $RELVERSION 0 0] == "-" } {
       set rpmversion [set XMLVERSION]~[set RELVERSION]
     } else {
       set rpmversion [set XMLVERSION]~[set RELVERSION]
@@ -244,7 +244,7 @@ global XMLVERSION RELVERSION env RPMFILES SAL_WORK_DIR
    set RPMFILES ""
    if { $RELVERSION != "" } {
      set rpmversion [set XMLVERSION]~[set RELVERSION]
-     if { [string range $RELVERSION 0 0] == "_" } {
+     if { [string range $RELVERSION 0 0] == "-" } {
        set rpmversion [set XMLVERSION]~[set RELVERSION]
      } else {
        set rpmversion [set XMLVERSION]~[set RELVERSION]
@@ -271,7 +271,7 @@ proc generatemetarpm { } {
 global SYSDIC SALRELEASE SALVERSION SAL_WORK_DIR OSPL_VERSION RELVERSION env XMLVERSION
    if { $RELVERSION != "" } {
      set rpmversion [set XMLVERSION]~[set RELVERSION]
-     if { [string range $RELVERSION 0 0] == "_" } {
+     if { [string range $RELVERSION 0 0] == "-" } {
        set rpmversion [set XMLVERSION]~[set RELVERSION]
      } else {
        set rpmversion [set XMLVERSION]~[set RELVERSION]
@@ -342,7 +342,7 @@ proc generateATmetarpm { } {
 global SYSDIC SALRELEASE SALVERSION SAL_WORK_DIR OSPL_VERSION RELVERSION env XMLVERSION
    if { $RELVERSION != "" } {
      set rpmversion [set XMLVERSION]~[set RELVERSION]
-     if { [string range $RELVERSION 0 0] == "_" } {
+     if { [string range $RELVERSION 0 0] == "-" } {
        set rpmversion [set XMLVERSION]~[set RELVERSION]
      } else {
        set rpmversion [set XMLVERSION]~[set RELVERSION]
@@ -418,7 +418,7 @@ global SAL_WORK_DIR SALVERSION SALRELEASE RPMFILES OSPL_VERSION RELVERSION XMLVE
   set fout [open $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_[set subsys].spec w]
   if { $RELVERSION != "" } {
      set rpmversion [set XMLVERSION]~[set RELVERSION]
-     if { [string range $RELVERSION 0 0] == "_" } {
+     if { [string range $RELVERSION 0 0] == "-" } {
        set rpmversion [set XMLVERSION]~[set RELVERSION]
      } else {
        set rpmversion [set XMLVERSION]~[set RELVERSION]
@@ -491,7 +491,7 @@ global SAL_WORK_DIR SALVERSION SALRELEASE RPMFILES OSPL_VERSION RELVERSION XMLVE
   set fout [open $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_[set subsys]_test.spec w]
   if { $RELVERSION != "" } {
      set rpmversion [set XMLVERSION]~[set RELVERSION]
-     if { [string range $RELVERSION 0 0] == "_" } {
+     if { [string range $RELVERSION 0 0] == "-" } {
        set rpmversion [set XMLVERSION]~[set RELVERSION]
      } else {
        set rpmversion [set XMLVERSION]~[set RELVERSION]
