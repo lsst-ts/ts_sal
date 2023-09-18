@@ -1,4 +1,4 @@
-#!/mnt/p5/lsst/lsst_stack/conda/envs/lsst-scipipe-5.1.0/bin/python3.10
+#!/home/rfactory/lsst-stack/conda/envs/lsst-scipipe-7.0.1/bin/python3.11
 # -*- coding: utf-8 -*-
 import re
 import sys
