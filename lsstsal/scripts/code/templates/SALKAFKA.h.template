@@ -269,10 +269,10 @@
 // INSERT TYPE SUPPORT  
 
 /// Return the text string corresponding to a Kafka internal error code
-      string getErrorName(RdKafka::Error status);
+///      string getErrorName(RdKafka::ErrorCode *status);
 
 /// Check the status of any Kafka methods return code, can cause the program to throw Kafka exceptions
-      void checkStatus(RdKafka::Error status, const char *info);
+///      void checkStatus(RdKafka::ErrorCode *status, const char *info);
 
 /** Get the time from the system. The TAI time will be used, which assumes that the kernel 
   * leap seconds offset has been correctly set. The getLeapSeconds method can be used to 

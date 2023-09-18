@@ -813,7 +813,7 @@ global SAL_WORK_DIR SAL_DIR OPTIONS DONE_CMDEVT
      stdlog "cpp : Done Publisher"
     }
   }
-  if { $DONE_CMDEVT == 0 } {
+  if { $DONE_CMDEVT == 0 && $OPTIONS(fastest) == 0 } {
    cd $SAL_WORK_DIR/$base/cpp/src
    catch { exec make -f Makefile.sacpp_[set base]_testcommands all } bad
    catch {stdlog "result = $result"}
