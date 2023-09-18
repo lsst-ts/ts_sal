@@ -178,10 +178,10 @@ if { $RELVERSION != "" } {
 set OSPL_RELEASE $env(OSPL_RELEASE)
 
 if { $OPTIONS(idl) && $OPTIONS(sal) == 0 } {
-   errorexit "Use the sal option in conjunction with the idl option"
+   errorexit "IDL no longer supported by SAL Kafka"
 }
 
-if { $OPTIONS(validate) || $OPTIONS(idl) } {
+if { $OPTIONS(validate) } {
   exec mkdir -p $SAL_WORK_DIR/avro-templates
   source $SAL_DIR/parseXMLKafka.tcl
   set all $TSUBSYSTEMS
@@ -297,7 +297,7 @@ if { $OPTIONS(lib) == 0 || $OPTIONS(generate) == 1 } {
     set TARGETS "$TARGETS [file tail $f]"
   }
   if { $TARGETS == "" } {
-    errorexit "No valid Interface Definition files match $TSUBSYSTEMS"
+    errorexit "No valid SAL Topic Definition files match $TSUBSYSTEMS"
   } else {
     stdlog "Targets for build : $TARGETS"
   }
