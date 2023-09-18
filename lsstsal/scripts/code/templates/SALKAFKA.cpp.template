@@ -87,11 +87,11 @@ void SAL_SALData::initSalEnvironment(int aKey)
 //  consumerConfiguration->set("key.serializer", "org.apache.kafka.common.serialization.StringSerializer", errstr);  // Serialize the Avro object
 //  consumerConfiguration->set("value.serializer", "io.confluent.kafka.serializers.KafkaAvroSerializer", errstr);  // Serialize the Avro object
 
-  serdesConfiguration = Serdes::Conf::create();
-  serdesConfiguration->set("serializer.framing", "cp1", errstr);
-  serdesConfiguration->set("deserializer.framing", "cp1", errstr);
-  serdesConfiguration->set("schema.registry.url", schemaRegistry, errstr);
-  serdes = Serdes::Avro::create(serdesConfiguration, errstr);
+//  serdesConfiguration = Serdes::Conf::create();
+//  serdesConfiguration->set("serializer.framing", "cp1", errstr);
+//  serdesConfiguration->set("deserializer.framing", "cp1", errstr);
+//  serdesConfiguration->set("schema.registry.url", schemaRegistry, errstr);
+//  serdes = Serdes::Avro::create(serdesConfiguration, errstr);
 
   publisher = RdKafka::Producer::create(configuration, errstr); 
 
@@ -446,7 +446,7 @@ void SAL_SALData::createTopic(int actorIdx)
     std::stringstream buffer;
     buffer << ifs.rdbuf();
     std::string svname = sal[actorIdx].avroName + "-value";
-    sal[actorIdx].avroSchema = Serdes::Schema::add(serdes, svname, buffer.str(), errstr);
+//    sal[actorIdx].avroSchema = Serdes::Schema::add(serdes, svname, buffer.str(), errstr);
     sal[actorIdx].hasSchema = true;
   }
 }
@@ -470,7 +470,7 @@ void SAL_SALData::createTopic2(int actorIdx)
     std::stringstream buffer;
     buffer << ifs.rdbuf();
     std::string svname = sal[actorIdx].avroName2 + "-value";
-    sal[actorIdx].avroSchema2 = Serdes::Schema::add(serdes, svname, buffer.str(), errstr);
+//    sal[actorIdx].avroSchema2 = Serdes::Schema::add(serdes, svname, buffer.str(), errstr);
     sal[actorIdx].hasSchema = true;
   }
 }
@@ -494,7 +494,7 @@ void SAL_SALData::createTopic(int actorIdx, char *topicName)
     std::stringstream buffer;
     buffer << ifs.rdbuf();
     std::string svname = sal[actorIdx].avroName + "-value";
-    sal[actorIdx].avroSchema = Serdes::Schema::add(serdes, svname, buffer.str(), errstr);
+//    sal[actorIdx].avroSchema = Serdes::Schema::add(serdes, svname, buffer.str(), errstr);
     sal[actorIdx].hasSchema = true;
   }
  }
@@ -518,7 +518,7 @@ void SAL_SALData::createTopic2(int actorIdx, char *topicName)
     std::stringstream buffer;
     buffer << ifs.rdbuf();
     std::string svname = sal[actorIdx].avroName2 + "-value";
-    sal[actorIdx].avroSchema2 = Serdes::Schema::add(serdes, svname, buffer.str(), errstr);
+//   sal[actorIdx].avroSchema2 = Serdes::Schema::add(serdes, svname, buffer.str(), errstr);
     sal[actorIdx].hasSchema = true;
   }
  }
