@@ -89,8 +89,8 @@ void SAL_SALData::initSalEnvironment(int aKey)
   consumerConfiguration->set("value.serializer", "io.confluent.kafka.serializers.KafkaAvroDeserializer", errstr);  // Serialize the Avro object
 
   serdesConfiguration = Serdes::Conf::create();
-  serdesConfiguration->set("serializer.framing", "none", errstr);
-  serdesConfiguration->set("deserializer.framing", "none", errstr);
+  serdesConfiguration->set("serializer.framing", "cp1", errstr);
+  serdesConfiguration->set("deserializer.framing", "cp1", errstr);
   serdesConfiguration->set("schema.registry.url", schemaRegistry, errstr);
   serdes = Serdes::Avro::create(serdesConfiguration, errstr);
 
