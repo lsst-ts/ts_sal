@@ -142,14 +142,16 @@ global AVRO_PREFIX
 
 proc writerFragment { fout base name } {
 global AVRO_PREFIX
-  puts $fout "     avro::EncoderPtr e = avro::binaryEncoder();"
+  puts $fout "     auto avro_schema = sal\[actorIdx\].avroSchema->object();"
+  puts $fout "     avro::EncoderPtr e = avro::validatingEncoder(*avro_schema, avro::binaryEncoder());"
   puts $fout "     const avro::OutputStreamPtr out = avro::memoryOutputStream();"
   puts $fout "     e->init(*out.get());"
   puts $fout "     unsigned long outsize;"
   puts $fout "     avro::encode(*e,Instance);"
-  puts $fout "     std::vector<uint8_t> buffer;"
-  puts $fout "     std::shared_ptr<std::vector<uint8_t> > v = avro::snapshot(*out.get());"
-  puts $fout "     buffer.insert(buffer.end(), v->begin(), v->end());"
+  puts $fout "     std::vector<char> buffer;"
+  puts $fout "     auto v = avro::snapshot(*out.get());"
+  puts $fout "     sal\[actorIdx\].avroSchema->framing_write(buffer);"
+  puts $fout "     buffer.insert(buffer.begin(), v->begin(), v->end());"
   puts $fout "     outsize = buffer.size();"
   puts $fout "     RdKafka::Headers *headers = RdKafka::Headers::create();"
   puts $fout "     RdKafka::ErrorCode resp ="
@@ -174,14 +176,16 @@ global AVRO_PREFIX
 
 proc writerFragmentAck { fout base name } {
 global AVRO_PREFIX
-  puts $fout "     avro::EncoderPtr e = avro::binaryEncoder();"
+  puts $fout "     auto avro_schema = sal\[actorIdx\].avroSchema->object();"
+  puts $fout "     avro::EncoderPtr e = avro::validatingEncoder(*avro_schema, avro::binaryEncoder());"
   puts $fout "     const avro::OutputStreamPtr out = avro::memoryOutputStream();"
   puts $fout "     e->init(*out.get());"
   puts $fout "     unsigned long outsize;"
   puts $fout "     avro::encode(*e,ackdata);"
-  puts $fout "     std::vector<uint8_t> buffer;"
-  puts $fout "     std::shared_ptr<std::vector<uint8_t> > v = avro::snapshot(*out.get());"
-  puts $fout "     buffer.insert(buffer.end(), v->begin(), v->end());"
+  puts $fout "     std::vector<char> buffer;"
+  puts $fout "     auto v = avro::snapshot(*out.get());"
+  puts $fout "     sal\[actorIdx\].avroSchema->framing_write(buffer);"
+  puts $fout "     buffer.insert(buffer.begin(), v->begin(), v->end());"
   puts $fout "     outsize = buffer.size();"
   puts $fout "     RdKafka::Headers *headers = RdKafka::Headers::create();"
   puts $fout "     RdKafka::ErrorCode resp ="

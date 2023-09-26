@@ -34,7 +34,7 @@ EXEEXT        =
 LIBPREFIX     = lib
 LIBSUFFIX     = 
 GENFLAGS      = -g
-LDLIBS        = -ldl -lrt -lpthread -lboost_filesystem -lboost_iostreams -lboost_program_options -lboost_system -lcurl -ljansson -lrdkafka++ -lavrocpp -lavro
+LDLIBS        = -ldl -lrt -lpthread -lboost_filesystem -lboost_iostreams -lboost_program_options -lboost_system $(SAL_DIR)/../lib/libserdes++.a $(SAL_DIR)/../lib/libserdes.a  -lcurl -ljansson -lrdkafka++ -lavrocpp -lavro
 LINK.cc       = $(LD) $(LDFLAGS)
 EXPORTFLAGS   = 
 endif

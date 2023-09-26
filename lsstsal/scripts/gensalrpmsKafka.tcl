@@ -48,8 +48,6 @@ global OPTIONS
 proc updatetests { subsys rpmname } {
 global SAL_WORK_DIR XMLVERSION
    catch {
-    copyasset $SAL_WORK_DIR/lib/libSAL_[set subsys].so [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/lib/.
-    copyasset $SAL_WORK_DIR/lib/libSAL_[set subsys].a [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/lib/.
     set all ""
     catch {set all [glob [set subsys]_*/cpp]}
     foreach i $all {

@@ -61,37 +61,38 @@ void SAL_SALData::initSalEnvironment(int aKey)
   securityMechanism = getenv("LSST_KAFKA_SECURITY_MECHANISM");
   securityUserName = getenv("LSST_KAFKA_SECURITY_USERNAME");
   securityPassword = getenv("LSST_KAFKA_SECURITY_PASSWORD");
-  schemaRegistry = getenv("LSST_KAFKA_SCHEMA_REGISTRY");
+  schemaRegistry = getenv("LSST_SCHEMA_REGISTRY_URL");
   localSchemaDir = getenv("LSST_KAFKA_LOCAL_SCHEMAS");
   std::string colon = ":";
   std::string server = khost + colon + kport;
 
   configuration = RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL);
   configuration->set("bootstrap.servers",server, errstr);
+  configuration->set("schema.registry.url", schemaRegistry, errstr);
   if (securityPassword != NULL) {
-    configuration->set("kafka.security.protocol",securityProtocol, errstr);
-    configuration->set("kafka.sasl.mechanism",securityMechanism, errstr);
-    configuration->set("kafka.sasl.username",securityUserName, errstr);
-    configuration->set("kafka.sasl.password",securityPassword, errstr);   
-//  configuration->set("key.serializer", "org.apache.kafka.common.serialization.StringSerializer", errstr);  // Serialize the Avro object
-//  configuration->set("value.serializer", "io.confluent.kafka.serializers.KafkaAvroSerializer", errstr);  // Serialize the Avro object
+    configuration->set("security.protocol",securityProtocol, errstr);
+    configuration->set("sasl.mechanism",securityMechanism, errstr);
+    configuration->set("sasl.username",securityUserName, errstr);
+    configuration->set("sasl.password",securityPassword, errstr);   
   }
+  configuration->set("value.serializer", "io.confluent.kafka.serializers.KafkaAvroSerializer", errstr);  // Serialize the Avro object
+
   consumerConfiguration = RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL);
   consumerConfiguration->set("bootstrap.servers",server, errstr);
+  consumerConfiguration->set("schema.registry.url", schemaRegistry, errstr);
   if (securityPassword != NULL) {
-    consumerConfiguration->set("kafka.security.protocol",securityProtocol, errstr);
-    consumerConfiguration->set("kafka.sasl.mechanism",securityMechanism, errstr);
-    consumerConfiguration->set("kafka.sasl.username",securityUserName, errstr);
-    consumerConfiguration->set("kafka.sasl.password",securityPassword, errstr);   
+    consumerConfiguration->set("security.protocol",securityProtocol, errstr);
+    consumerConfiguration->set("sasl.mechanism",securityMechanism, errstr);
+    consumerConfiguration->set("sasl.username",securityUserName, errstr);
+    consumerConfiguration->set("sasl.password",securityPassword, errstr);   
   }
-//  consumerConfiguration->set("key.serializer", "org.apache.kafka.common.serialization.StringSerializer", errstr);  // Serialize the Avro object
-//  consumerConfiguration->set("value.serializer", "io.confluent.kafka.serializers.KafkaAvroSerializer", errstr);  // Serialize the Avro object
+  consumerConfiguration->set("value.serializer", "io.confluent.kafka.serializers.KafkaAvroDeserializer", errstr);  // Serialize the Avro object
 
-//  serdesConfiguration = Serdes::Conf::create();
-//  serdesConfiguration->set("serializer.framing", "cp1", errstr);
-//  serdesConfiguration->set("deserializer.framing", "cp1", errstr);
-//  serdesConfiguration->set("schema.registry.url", schemaRegistry, errstr);
-//  serdes = Serdes::Avro::create(serdesConfiguration, errstr);
+  serdesConfiguration = Serdes::Conf::create();
+  serdesConfiguration->set("serializer.framing", "none", errstr);
+  serdesConfiguration->set("deserializer.framing", "none", errstr);
+  serdesConfiguration->set("schema.registry.url", schemaRegistry, errstr);
+  serdes = Serdes::Avro::create(serdesConfiguration, errstr);
 
   publisher = RdKafka::Producer::create(configuration, errstr); 
 
@@ -435,18 +436,20 @@ void SAL_SALData::createTopic(int actorIdx)
   sal[actorIdx].topicConfiguration = topicConfiguration;
   topic = RdKafka::Topic::create(publisher, sal[actorIdx].avroName, sal[actorIdx].topicConfiguration, errstr);
   sal[actorIdx].topic = topic;
+  std::string svname = sal[actorIdx].avroName + "-value";
   if (sal[actorIdx].topicConfiguration == NULL) 
   {
      throw std::runtime_error(string(errstr + sal[actorIdx].topicName));
   }
-  if (!sal[actorIdx].hasSchema) {
+  sal[actorIdx].avroSchema = Serdes::Schema::get(serdes, svname, errstr);
+  if (!sal[actorIdx].avroSchema) {
     std::string adir = "/avro-templates/"; 
     std::string schema = localSchemaDir + adir + sal[actorIdx].topicName + ".json";
     std::ifstream ifs(schema);
     std::stringstream buffer;
     buffer << ifs.rdbuf();
     std::string svname = sal[actorIdx].avroName + "-value";
-//    sal[actorIdx].avroSchema = Serdes::Schema::add(serdes, svname, buffer.str(), errstr);
+    sal[actorIdx].avroSchema = Serdes::Schema::add(serdes, svname, buffer.str(), errstr);
     sal[actorIdx].hasSchema = true;
   }
 }
@@ -459,18 +462,20 @@ void SAL_SALData::createTopic2(int actorIdx)
   sal[actorIdx].topicConfiguration2 = topicConfiguration;
   topic = RdKafka::Topic::create(publisher, sal[actorIdx].avroName, sal[actorIdx].topicConfiguration2, errstr);
   sal[actorIdx].topic2 = topic;
+  std::string svname = sal[actorIdx].avroName2 + "-value";
   if (sal[actorIdx].topicConfiguration2 == NULL) 
   {
      throw std::runtime_error(string(errstr + sal[actorIdx].topicName2));
   }
-  if (!sal[actorIdx].hasSchema) {
+  sal[actorIdx].avroSchema2 = Serdes::Schema::get(serdes, svname, errstr);
+  if (!sal[actorIdx].avroSchema2) {
     std::string adir = "/avro-templates/"; 
     std::string schema = localSchemaDir + adir + sal[actorIdx].topicName2 + ".json";
-    std::ifstream ifs("schema");
+    std::ifstream ifs(schema);
     std::stringstream buffer;
     buffer << ifs.rdbuf();
     std::string svname = sal[actorIdx].avroName2 + "-value";
-//    sal[actorIdx].avroSchema2 = Serdes::Schema::add(serdes, svname, buffer.str(), errstr);
+    sal[actorIdx].avroSchema2 = Serdes::Schema::add(serdes, svname, buffer.str(), errstr);
     sal[actorIdx].hasSchema = true;
   }
 }
@@ -483,18 +488,20 @@ void SAL_SALData::createTopic(int actorIdx, char *topicName)
   sal[actorIdx].topicConfiguration = topicConfiguration;
   topic = RdKafka::Topic::create(publisher, sal[actorIdx].avroName, sal[actorIdx].topicConfiguration, errstr);
   sal[actorIdx].topic = topic;
+  std::string svname = sal[actorIdx].avroName + "-value";
   if (sal[actorIdx].topicConfiguration == NULL) 
   {
      throw std::runtime_error(string(errstr + topicName));
   }
-  if (!sal[actorIdx].hasSchema) {
+  sal[actorIdx].avroSchema = Serdes::Schema::get(serdes, svname, errstr);
+  if (!sal[actorIdx].avroSchema) {
     std::string adir = "/avro-templates/"; 
     std::string schema = localSchemaDir + adir + sal[actorIdx].topicName + ".json";
-    std::ifstream ifs("schema");
+    std::ifstream ifs(schema);
     std::stringstream buffer;
     buffer << ifs.rdbuf();
     std::string svname = sal[actorIdx].avroName + "-value";
-//    sal[actorIdx].avroSchema = Serdes::Schema::add(serdes, svname, buffer.str(), errstr);
+    sal[actorIdx].avroSchema = Serdes::Schema::add(serdes, svname, buffer.str(), errstr);
     sal[actorIdx].hasSchema = true;
   }
  }
@@ -507,21 +514,23 @@ void SAL_SALData::createTopic2(int actorIdx, char *topicName)
   sal[actorIdx].topicConfiguration2 = topicConfiguration;
   topic = RdKafka::Topic::create(publisher, sal[actorIdx].avroName, sal[actorIdx].topicConfiguration2, errstr);
   sal[actorIdx].topic2 = topic;
+  std::string svname = sal[actorIdx].avroName2 + "-value";
   if (sal[actorIdx].topicConfiguration2 == NULL) 
   {
      throw std::runtime_error(string(errstr + sal[actorIdx].topicName2));
   }
-  if (!sal[actorIdx].hasSchema) {
+  sal[actorIdx].avroSchema2 = Serdes::Schema::get(serdes, svname, errstr);
+  if (!sal[actorIdx].avroSchema2) {
     std::string adir = "/avro-templates/"; 
     std::string schema = localSchemaDir + adir + sal[actorIdx].topicName2 + ".json";
-    std::ifstream ifs("schema");
+    std::ifstream ifs(schema);
     std::stringstream buffer;
     buffer << ifs.rdbuf();
     std::string svname = sal[actorIdx].avroName2 + "-value";
-//   sal[actorIdx].avroSchema2 = Serdes::Schema::add(serdes, svname, buffer.str(), errstr);
+    sal[actorIdx].avroSchema2 = Serdes::Schema::add(serdes, svname, buffer.str(), errstr);
     sal[actorIdx].hasSchema = true;
   }
- }
+}
 
 
 void SAL_SALData::deleteTopics()
