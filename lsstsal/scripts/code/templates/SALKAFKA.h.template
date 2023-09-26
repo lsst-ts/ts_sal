@@ -36,7 +36,7 @@
   #include <avro/Specific.hh>
   #include <avro/Exception.hh>
   #include <avro/Compiler.hh>
-//  #include "libserdes/serdescpp-avro.h"
+  #include "libserdes/serdescpp-avro.h"
   #include <avro/Schema.hh>
   #include <avro/ValidSchema.hh>
  
@@ -90,8 +90,8 @@
     RdKafka::KafkaConsumer      *subscriber;
     std::string avroName;
     std::string avroName2;
-//    Serdes::Schema 		*avroSchema;
-//    Serdes::Schema 		*avroSchema2;
+    Serdes::Schema 		*avroSchema;
+    Serdes::Schema 		*avroSchema2;
 ///    avro::ValidSchema 		avroSchema;
 ///    avro::ValidSchema 		avroSchema2;
     bool hasSchema;
@@ -163,9 +163,9 @@
       RdKafka::Producer *publisher;
       RdKafka::KafkaConsumer *subscriber;
       RdKafka::Headers *headers;
-//      Serdes::Conf *serdesConfiguration;
-//      Serdes::Avro *serdes;
-//      Serdes::Schema *schema;
+      Serdes::Conf *serdesConfiguration;
+      Serdes::Avro *serdes;
+      Serdes::Schema *schema;
       std::string schema_name;
       std::string schema_def;
       int domain;
