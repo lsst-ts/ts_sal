@@ -414,7 +414,7 @@ salReturn SAL_SALData::getResponse_[set i]C(SALData_ackcmdC *response)
   if ( response == NULL ) \{
      throw std::runtime_error(\"NULL pointer for getResponse_[set i]\");
   \}"
-  readerFragment $fout SALData command_[set i]
+  readerFragment $fout SALData ackcmd
   puts $fout "
   if (numSamples > 0) \{
   sal\[actorIdxCmd\].rcvSeqNum = 0;
