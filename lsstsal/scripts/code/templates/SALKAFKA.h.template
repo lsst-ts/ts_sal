@@ -386,6 +386,7 @@
       salReturn salTypeSupport(int actorIdx);
       salReturn salCommand(char *cmdAlias);
       salReturn salProcessor(char *cmdAlias);
+      void checkSchema(int actorIdx);
       void createTopic(int actorIdx);
       void createTopic2(int actorIdx);
       void createTopic(int actorIdx, char *topicName);

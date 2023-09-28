@@ -42,7 +42,8 @@ salReturn SAL_[set base]::putSample_[set name]([set base]_[set name]C *data)
   [set base]::[set name] Instance;
   if ( data == NULL ) \{
      throw std::runtime_error(\"NULL pointer for putSample_[set name]\");
-  \}"
+  \}
+  checkSchema(actorIdx);"
   set frag [open $SAL_WORK_DIR/include/SAL_[set base]_[set name]Cchk.tmp r]
   while { [gets $frag rec] > -1} {puts $fout $rec}
   close $frag
@@ -83,7 +84,8 @@ salReturn SAL_[set base]::getSample_[set name]([set base]_[set name]C *data)
   if ( data == NULL ) \{
      throw std::runtime_error(\"NULL pointer for getSample_[set name]\");
   \}
-  int actorIdx = SAL__[set base]_[set name]_ACTOR;"
+  int actorIdx = SAL__[set base]_[set name]_ACTOR;
+  checkSchema(actorIdx);"
      readerFragment $fout $base $name
      puts $fout "
   for (int j = 0; j < numSamples; j++)
