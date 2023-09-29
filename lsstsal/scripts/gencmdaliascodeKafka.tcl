@@ -188,7 +188,7 @@ int SAL_SALData::issueCommand_[set i]( SALData_command_[set i]C *data )
   if (sal\[actorIdx\].isCommand == false) \{
      throw std::runtime_error(\"No commander for issueCommand_[set i]\");
   \}
-
+  checkSchema(actorIdx);
   Instance.private_revCode =  \"[string trim $revcode _]\";
   Instance.private_sndStamp = getCurrentTime();
   Instance.private_efdStamp = getCurrentUTC();
@@ -426,6 +426,9 @@ salReturn SAL_SALData::getResponse_[set i]C(SALData_ackcmdC *response)
       cout << \"    seqNum   : \" << Instance.private_seqNum << endl;
       cout << \"    error    : \" << Instance.error << endl;
       cout << \"    ack      : \" << Instance.ack << endl;
+      cout << \"    origin   : \" << Instance.origin << endl;
+      cout << \"    identity : \" << Instance.identity << endl;
+      cout << \"    timeout  : \" << Instance.timeout << endl;
       cout << \"    result   : \" << Instance.result << endl;
      \}
 // check identity, cmdtype here
@@ -460,6 +463,7 @@ salReturn SAL_SALData::getResponse_[set i]C(SALData_ackcmdC *response)
 salReturn SAL_SALData::ackCommand_[set i]( int cmdId, salLONG ack, salLONG error, char *result, double timeout )
 \{
    int actorIdx = SAL__SALData_ackcmd_ACTOR;
+   int actorCmdIdx = SAL__SALData_command_[set i]_ACTOR;
 
    SALData::ackcmd Instance;
 
@@ -468,8 +472,8 @@ salReturn SAL_SALData::ackCommand_[set i]( int cmdId, salLONG ack, salLONG error
    Instance.error = error;
    Instance.ack = ack;
    Instance.result = result;
-   Instance.origin = sal\[actorIdx\].activeorigin;
-   Instance.identity = sal\[actorIdx\].activeidentity.c_str();
+   Instance.origin = sal\[actorCmdIdx\].activeorigin;
+   Instance.identity = sal\[actorCmdIdx\].activeidentity.c_str();
    Instance.cmdtype = actorIdx;
    Instance.timeout = timeout;
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
@@ -480,10 +484,10 @@ salReturn SAL_SALData::ackCommand_[set i]( int cmdId, salLONG ack, salLONG error
       cout << \"    seqNum   : \" << Instance.private_seqNum << endl;
       cout << \"    ack      : \" << Instance.ack << endl;
       cout << \"    error    : \" << Instance.error << endl;
-      cout << \"    origin    : \" << Instance.origin << endl;
-      cout << \"    identity    : \" << Instance.identity << endl;
+      cout << \"    origin   : \" << Instance.origin << endl;
+      cout << \"    identity : \" << Instance.identity << endl;
       cout << \"    result   : \" << Instance.result << endl;
-      cout << \"    timeout   : \" << Instance.timeout << endl;
+      cout << \"    timeout  : \" << Instance.timeout << endl;
    \}
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
    Instance.salIndex = subsystemID;

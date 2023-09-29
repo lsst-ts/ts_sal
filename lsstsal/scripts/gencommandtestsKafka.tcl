@@ -105,7 +105,7 @@ int main (int argc, char *argv\[\])
   puts $fcmd "
   // generate commands
   int iseq = 0;
-  while (iseq <= nsamples) \{
+  while (iseq < nsamples) \{
     iseq++;
     cmdId = mgr->issueCommand_[set alias](&myData);
     cout << \"=== command $alias issued = \" << cmdId << endl;"

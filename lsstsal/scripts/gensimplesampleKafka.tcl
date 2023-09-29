@@ -223,8 +223,8 @@ global SAL_DIR SAL_WORK_DIR SYSDIC VPROPS EVENT_ENUM OPTIONS CMD_ALIASES METADAT
            set VPROPS(base) $subsys
            set VPROPS(topic) "[set subsys]_[set name]"
            set drec [typejsontoc $rec]
-           puts $fhdr $rec
-           puts $fhlv $rec
+           puts $fhdr $drec
+           puts $fhlv $drec
            updatecfragments $fcod1 $fcod1b $fcod2 $fcod2b $fcod3 $fcod4 $fcod5 $fcod6 $fcod7 $fcod8 $fcod10 $fcod11 $fcod12 $fcod13
            set vname $VPROPS(name)
            if { $VPROPS(array) } {
@@ -292,10 +292,16 @@ proc updatecfragments { fcod1 fcod1b fcod2 fcod2b fcod3 fcod4 fcod5 fcod6 fcod7 
 global VPROPS TYPEFORMAT METADATA
    set idx $VPROPS(idx)
    if { $VPROPS(array) } {
+#      puts $fcod1 "    data->$VPROPS(name).insert(data->$VPROPS(name).end(), Instance.$VPROPS(name).begin(), Instance.$VPROPS(name).end());"
+#      puts $fcod1 "    lastSample_[set VPROPS(topic)].$VPROPS(name).insert(lastSample_[set VPROPS(topic)].$VPROPS(name).end(), Instance.$VPROPS(name).begin(), Instance.$VPROPS(name).end());"
+#      puts $fcod1b "    data->$VPROPS(name).insert(data->$VPROPS(name).end(), lastSample_[set VPROPS(topic)].$VPROPS(name).begin(), lastSample_[set VPROPS(topic)].$VPROPS(name).end());"
+      puts $fcod2 "    Instance.$VPROPS(name).insert(Instance.$VPROPS(name).end() ,data->$VPROPS(name).begin(), data->$VPROPS(name).end());"
+#      puts $fcod4 "    for (int i=0;i<$VPROPS(dim);i++)\{myData.$VPROPS(name).push_back(i+iseq);\}"
+
       puts $fcod1 "    for (int iseq=0;iseq<$VPROPS(dim);iseq++) \{data->$VPROPS(name)\[iseq\] = Instance.$VPROPS(name)\[iseq\];\}"
       puts $fcod1 "    for (int iseq=0;iseq<$VPROPS(dim);iseq++) \{lastSample_[set VPROPS(topic)].$VPROPS(name)\[iseq\] = Instance.$VPROPS(name)\[iseq\];\}"
       puts $fcod1b "    for (int iseq=0;iseq<$VPROPS(dim);iseq++) \{data->$VPROPS(name)\[iseq\] = lastSample_[set VPROPS(topic)].$VPROPS(name)\[iseq\];\}"
-      puts $fcod2 "    for (int iseq=0;iseq<$VPROPS(dim);iseq++) \{Instance.$VPROPS(name)\[iseq\] = data->$VPROPS(name)\[iseq\];\}"
+#      puts $fcod2 "    for (int iseq=0;iseq<$VPROPS(dim);iseq++) \{Instance.$VPROPS(name)\[iseq\] = data->$VPROPS(name)\[iseq\];\}"
       puts $fcod3 "       cout << \"    $VPROPS(name) : \" << SALInstance.$VPROPS(name)\[0\] << endl;"
       puts $fcod4 "    for (int i=0;i<$VPROPS(dim);i++)\{myData.$VPROPS(name)\[i\] = i+iseq;\}"
       puts $fcod6 "       cout << \"    $VPROPS(name) : \" << data->$VPROPS(name)\[0\] << endl;"
