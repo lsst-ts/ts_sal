@@ -88,7 +88,7 @@ int main (int argc, char *argv\[\])
   }
   close $fin
   puts $fevt "
-  int iseq = 1;
+  int iseq = 0;
   while (iseq < numsamples) {
   // generate event
     priority = 0;

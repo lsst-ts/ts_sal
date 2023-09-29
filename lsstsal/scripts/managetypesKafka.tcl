@@ -148,11 +148,15 @@ global TYPESUBS VPROPS OPTIONS METADATA
    set VPROPS(byte) 0
    set VPROPS(double) 0
    set VPROPS(lvres) 0
+   
+   set arrdim ""
    set spl [string trim $rec " ;"]
    set type [lindex $spl 0]
    if { [string range $spl 0 10] == "std::vector" } {
      set VPROPS(name) [lindex $spl 2]
      set VPROPS(array) 1
+     set type "$type>"
+     set arrdim "\{0[string repeat ",0" [expr $METADATA($VPROPS(topic),$VPROPS(name),size)-1]]\}"
    } else {
      set VPROPS(name) [lindex $spl 1]
    }
@@ -174,9 +178,9 @@ global TYPESUBS VPROPS OPTIONS METADATA
      if { $type == "long" } {set VPROPS(int) 1; set VPROPS(longlong) 1; set VPROPS(lvres) 4  }
      if { $type == "boolean" } {set VPROPS(boolean) 1; set VPROPS(lvres) 5  }
      if { $VPROPS(boolean) } {
-       set res "  bool	$VPROPS(name);"
+       set res "  bool	$VPROPS(name)[set arrdim];"
      } else {
-       set res "  $type	$VPROPS(name);"
+       set res "  $type	$VPROPS(name)[set arrdim];"
      }
    }
    return $res
