@@ -16,7 +16,6 @@ public final class TestUtils {
         public long longLong0;
         public short unsignedShort0;
         public int unsignedInt0;
-        public int unsignedLong0;
         public float float0;
         public double double0;
         public String string0;
@@ -31,7 +30,6 @@ public final class TestUtils {
         public long[] longLong0 = new long[5];
         public short[] unsignedShort0 = new short[5];
         public int[] unsignedInt0 = new int[5];
-        public int[] unsignedLong0 = new int[5];
         public float[] float0 = new float[5];
         public double[] double0 = new double[5];
     }
@@ -90,7 +88,6 @@ public final class TestUtils {
         cls.getField("longLong0").set(data, longs);
         cls.getField("unsignedShort0").set(data, shorts);
         cls.getField("unsignedInt0").set(data, ints);
-        cls.getField("unsignedLong0").set(data, ints);
         cls.getField("float0").set(data, floats);
         cls.getField("double0").set(data, doubles);
     }
@@ -115,7 +112,6 @@ public final class TestUtils {
         cls.getField("longLong0").set(data, random.nextLong());
         cls.getField("unsignedShort0").set(data, (short) random.nextInt(1 << 16));
         cls.getField("unsignedInt0").set(data, random.nextInt());
-        cls.getField("unsignedLong0").set(data, random.nextInt());
         cls.getField("float0").set(data, random.nextFloat());
         cls.getField("double0").set(data, random.nextDouble());
     }
@@ -135,7 +131,7 @@ public final class TestUtils {
         Class<?> cls1 = scalars1.getClass();
         Class<?> cls2 = scalars2.getClass();
         String[] fieldNames = {"boolean0", "byte0", "short0", "int0", "long0", "longLong0", "unsignedShort0",
-                "unsignedInt0", "unsignedLong0", "float0", "double0"};
+                "unsignedInt0", "float0", "double0"};
         for (String fieldName : fieldNames) {
             if (!cls1.getField(fieldName).get(scalars1).equals(cls2.getField(fieldName).get(scalars2))) {
                 throw new RuntimeException("Values for field " + fieldName + " are not the same.");
@@ -173,8 +169,6 @@ public final class TestUtils {
                 "unsignedShort0").get(arrays2));
         Assert.assertArrayEquals((int[]) cls1.getField("unsignedInt0").get(arrays1), (int[]) cls2.getField(
                 "unsignedInt0").get(arrays2));
-        Assert.assertArrayEquals((int[]) cls1.getField("unsignedLong0").get(arrays1), (int[]) cls2.getField(
-                "unsignedLong0").get(arrays2));
         Assert.assertTrue(Arrays.equals((float[]) cls1.getField("float0").get(arrays1), (float[]) cls2.getField(
                 "float0").get(arrays2)));
         Assert.assertTrue(Arrays.equals((double[]) cls1.getField("double0").get(arrays1), (double[]) cls2.getField(
