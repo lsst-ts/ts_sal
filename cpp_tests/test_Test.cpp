@@ -50,7 +50,6 @@ void fillScalarsWithRandom(scalar *data) {
     data->longLong0 = random();
     data->unsignedShort0 = random() & 0xFFFF;
     data->unsignedInt0 = random() & 0xFFFFFFFF;
-    data->unsignedLong0 = random();
     data->float0 = random() / 10000.0;
     data->double0 = random() / 10000.0;
     data->string0 = "Test";
@@ -81,7 +80,6 @@ void fillArraysWithRandomValues(array *data) {
 	data->longLong0[i] = random();
 	data->unsignedShort0[i] = random() & 0xFFFF;
 	data->unsignedInt0[i] = random() & 0xFFFFFFFF;
-	data->unsignedLong0[i] = random();
 	data->float0[i] = random() / 10000.0;
 	data->double0[i] = random() / 10000.0;
     }
