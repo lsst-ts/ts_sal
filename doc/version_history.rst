@@ -6,6 +6,12 @@
 Version History
 ###############
 
+Changes for 7.4.1
+=================
+
+* Add timeout field inclusion for C++ ackCommand's
+* Removed references from C++ and Java unit tests
+
 Changes for 7.4.0
 =================
 

@@ -101,7 +101,7 @@ global CMD_ALIASES CMDS DONE_CMDEVT ACKREVCODE REVCODE SAL_WORK_DIR OPTIONS
   * @param error is a more detailed per subssystem specific error code for failed commands
   * @param result is an informative message to be displayed to the operator,stored in the EFD etc
   */
-      salReturn ackCommand_[set i]( int cmdSeqNum, salLONG  ack, salLONG error, char *result );
+      salReturn ackCommand_[set i]( int cmdSeqNum, salLONG  ack, salLONG error, char *result, double timeout=0.0 );
 
 /** Acknowledge a command by sending an ackCmd message, this time with access to all the ackCmd message payload
   * @param data is the ackCmd topic data
@@ -510,9 +510,9 @@ salReturn SAL_SALData::getResponse_[set i]C(SALData_ackcmdC *response)
 \}
 "
    puts $fout "
-salReturn SAL_SALData::ackCommand_[set i]( int cmdId, salLONG ack, salLONG error, char *result )
+salReturn SAL_SALData::ackCommand_[set i]( int cmdId, salLONG ack, salLONG error, char *result, double timeout )
 \{
-     ReturnCode_t istatus = -1;
+   ReturnCode_t istatus = -1;
    InstanceHandle_t ackHandle = DDS::HANDLE_NIL;
    int actorIdx = SAL__SALData_ackcmd_ACTOR;
    int actorIdxCmd = SAL__SALData_command_[set i]_ACTOR;
@@ -529,6 +529,7 @@ salReturn SAL_SALData::ackCommand_[set i]( int cmdId, salLONG ack, salLONG error
    ackdata.origin = sal\[actorIdxCmd\].activeorigin;
    ackdata.identity = DDS::string_dup(sal\[actorIdxCmd\].activeidentity.c_str());
    ackdata.cmdtype = actorIdxCmd;
+   ackdata.timeout = timeout;
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
    ackdata.salIndex = subsystemID;
 #endif
@@ -540,6 +541,7 @@ salReturn SAL_SALData::ackCommand_[set i]( int cmdId, salLONG ack, salLONG error
       cout << \"    origin    : \" << ackdata.origin << endl;
       cout << \"    identity    : \" << ackdata.identity << endl;
       cout << \"    result   : \" << ackdata.result << endl;
+      cout << \"    timeout  : \" << ackdata.timeout << endl;
    \}
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
    ackHandle = SALWriter->register_instance(ackdata);
@@ -577,6 +579,7 @@ salReturn SAL_SALData::ackCommand_[set i]C(SALData_ackcmdC *response )
    ackdata.origin = sal\[actorIdxCmd\].activeorigin;
    ackdata.identity = DDS::string_dup(sal\[actorIdxCmd\].activeidentity.c_str());
    ackdata.cmdtype = actorIdxCmd;
+   ackdata.timeout = response->timeout;
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
    ackdata.salIndex = subsystemID;
 #endif
@@ -588,6 +591,7 @@ salReturn SAL_SALData::ackCommand_[set i]C(SALData_ackcmdC *response )
       cout << \"    origin    : \" << ackdata.origin << endl;
       cout << \"    identity    : \" << ackdata.identity << endl;
       cout << \"    result   : \" << ackdata.result << endl;
+      cout << \"    timeout  : \" << ackdata.timeout << endl;
    \}
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
    ackHandle = SALWriter->register_instance(ackdata);
