@@ -161,7 +161,7 @@ if { $OPTIONS(generate) } {
 puts stdout "XMLVERSION = $XMLVERSION"
 
 if { $RELVERSION != "" } {
-  set SALRELEASE "[set XMLVERSION]-[set SALVERSION].$RELVERSION"
+  set SALRELEASE "[set XMLVERSION].$RELVERSION-[set SALVERSION]"
 } else {
   set SALRELEASE "[set XMLVERSION]-[set SALVERSION]"
 }
