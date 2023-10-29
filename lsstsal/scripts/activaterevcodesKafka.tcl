@@ -24,7 +24,7 @@ set SAL_WORK_DIR $env(SAL_WORK_DIR)
 #
 proc updateRevCodes { subsys } {
 global SAL_WORK_DIR REVCODE
-  set ljson [glob $SAL_WORK_DIR/avro-templates/[set subsys]_*.json]
+  set ljson [glob $SAL_WORK_DIR/avro-templates/[set subsys]/[set subsys]_*.json]
   set fmd5 [open $SAL_WORK_DIR/avro-templates/[set subsys]_revCodes.tcl w]
   foreach i [lsort $ljson] {
     set c [lindex [exec md5sum $i] 0]

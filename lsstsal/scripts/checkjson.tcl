@@ -117,9 +117,9 @@ global SAL_WORK_DIR
 proc createackcmdjson { base {keyid 0} } {
 global SAL_WORK_DIR OPTIONS env
   if { $OPTIONS(verbose) } {stdlog "###TRACE>>> createackcmdjson $base $keyid"}
-  exec cp $env(SAL_DIR)/code/templates/subsys_ackcmd.json $SAL_WORK_DIR/avro-templates/[set base]_ackcmd.json
+  exec cp $env(SAL_DIR)/code/templates/subsys_ackcmd.json $SAL_WORK_DIR/avro-templates/[set base]/[set base]_ackcmd.json
   set frep [open /tmp/genackcmdjson_[set base] w]
-  puts $frep "perl -pi -w -e 's/lsst.sal.kafka_Test/lsst.sal.[set base]/g;' $SAL_WORK_DIR/avro-templates/[set base]_ackcmd.json"
+  puts $frep "perl -pi -w -e 's/lsst.sal.kafka_Test/lsst.sal.[set base]/g;' $SAL_WORK_DIR/avro-templates/[set base]/[set base]_ackcmd.json"
   close $frep
   exec chmod 755 /tmp/genackcmdjson_[set base]
   catch { set result [exec /tmp/genackcmdjson_[set base]] } bad

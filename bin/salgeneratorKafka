@@ -295,7 +295,7 @@ exec mkdir -p .salwork
 set TARGETS ""
 if { $OPTIONS(lib) == 0 || $OPTIONS(generate) == 1 } {
   set matches $TSUBSYSTEMS
-  foreach f [glob $SAL_WORK_DIR/avro-templates/[set matches]_*.json] {
+  foreach f [glob $SAL_WORK_DIR/avro-templates/[set matches]/[set matches]_*.json] {
     set TARGETS "$TARGETS [file tail $f]"
   }
   if { $TARGETS == "" } {
@@ -317,7 +317,7 @@ if { $OPTIONS(sal) } {
     exit 6
   }
   cd $SAL_WORK_DIR
-  set base [lindex [split [lindex $TARGETS 0] _] 0]
+  set base $TSUBSYSTEMS
   clearAssets $base
   source $SAL_DIR/gensimplesampleKafka.tcl
   source $SAL_DIR/gensalcodesKafka.tcl

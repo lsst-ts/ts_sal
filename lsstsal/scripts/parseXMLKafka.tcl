@@ -402,14 +402,14 @@ global METADATA
   set METADATA([set topic],private_seqNum,description) "\"Sequence number\""
   set METADATA([set topic],private_identity,description) "\"Identity of publisher\""
   set METADATA([set topic],private_origin,description) "\"PID of publisher\""
-  set METADATA([set topic],private_revCode,size) 1"
-  set METADATA([set topic],private_sndStamp,size) 1"
-  set METADATA([set topic],private_rcvStamp,size) 1"
-  set METADATA([set topic],private_efdStamp,size) 1"
-  set METADATA([set topic],private_kafkaStamp,size) 1"
-  set METADATA([set topic],private_seqNum,size) 1"
-  set METADATA([set topic],private_identity,size) 1"
-  set METADATA([set topic],private_origin,size) 1"
+  set METADATA([set topic],private_revCode,size) 1
+  set METADATA([set topic],private_sndStamp,size) 1
+  set METADATA([set topic],private_rcvStamp,size) 1
+  set METADATA([set topic],private_efdStamp,size) 1
+  set METADATA([set topic],private_kafkaStamp,size) 1
+  set METADATA([set topic],private_seqNum,size) 1
+  set METADATA([set topic],private_identity,size) 1
+  set METADATA([set topic],private_origin,size) 1
 }
 
 #

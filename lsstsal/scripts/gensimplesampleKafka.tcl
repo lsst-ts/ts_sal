@@ -25,6 +25,7 @@ proc makesaldirs { base name } {
 global SAL_WORK_DIR OPTIONS
    if { $OPTIONS(verbose) } {stdlog "###TRACE>>> makesaldirs $base $name"}
    if { [lindex [split $name "_"] end] != "enums" } {
+    if { $name != "hash_table" } { 
      exec mkdir -p $SAL_WORK_DIR/[set base]_[set name]/cpp/src
      exec mkdir -p $SAL_WORK_DIR/[set base]_[set name]/cpp/standalone
      exec mkdir -p $SAL_WORK_DIR/[set base]_[set name]/java/src/org/lsst/sal
@@ -43,6 +44,7 @@ global SAL_WORK_DIR OPTIONS
      exec touch $SAL_WORK_DIR/[set base]/cpp/src/.depend.Makefile.sacpp_[set base]_event
      exec touch $SAL_WORK_DIR/[set base]/cpp/src/.depend.Makefile.sacpp_[set base]_testcommands
      exec touch $SAL_WORK_DIR/[set base]/cpp/src/.depend.Makefile.sacpp_[set base]_testevents
+    }
    }
    if { $OPTIONS(verbose) } {stdlog "###TRACE<<< makesaldirs $base $name"}
 }
@@ -732,24 +734,28 @@ global SAL_WORK_DIR OPTIONS ONEDONECPP ONEDONEJAVA SAL_DIR AVRO_RELEASE
        cd $SAL_WORK_DIR/$base/$lang
        stdlog "Generating $lang type support for $base"
        if { $lang == "cpp" && $ONEDONECPP == 0} {
-          set all [glob $SAL_WORK_DIR/avro-templates/[set base]_*.json]
+          set all [glob $SAL_WORK_DIR/avro-templates/[set base]/[set base]_*.json]
           foreach i $all {
             if { [lindex [split [file tail $i] ._] 2] != "enums" } {
+             if { [file tail $i] != "[set base]_hash_table.json" } {
               puts stdout "Processing $i"
               exec avrogencpp -i $i -o $SAL_WORK_DIR/[set base]/cpp/src/[file rootname [file tail $i]].hh -n $base
+             }
             }
           }
           set ONEDONECPP 1
        }
        if { $lang == "java" && $ONEDONEJAVA == 0} {
-          set all [glob $SAL_WORK_DIR/avro-templates/[set base]_*.json]
+          set all [glob $SAL_WORK_DIR/avro-templates/[set base]/[set base]_*.json]
           foreach i $all {
             if { [lindex [split [file tail $i] ._] 2] != "enums" } {
+             if { [file tail $i] != "[set base]_hash_table.json" } {
               puts stdout "Processing $i"
               catch {exec java -jar $SAL_DIR/../lib/avro-tools-[set AVRO_RELEASE].jar compile schema $i $SAL_WORK_DIR/[set base]/java/src/}
+             }
             }
           }
-          catch {exec java -jar $SAL_DIR/../lib/avro-tools-[set AVRO_RELEASE].jar compile schema $SAL_WORK_DIR/avro-templates/[set base]_ackcmd.json $SAL_WORK_DIR/[set base]/java/src/}
+          catch {exec java -jar $SAL_DIR/../lib/avro-tools-[set AVRO_RELEASE].jar compile schema $SAL_WORK_DIR/avro-templates/[set base]/[set base]_ackcmd.json $SAL_WORK_DIR/[set base]/java/src/}
           cd $SAL_WORK_DIR/$base/$lang/src
           set result none
           catch { set result [exec make -f Makefile.saj_[set base]_types] } bad
