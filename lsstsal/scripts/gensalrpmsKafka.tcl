@@ -37,6 +37,21 @@ global OPTIONS
     }
 }
 
+#
+## Documented proc \c updateversioning .
+#
+#  Update the RPM naming version info
+#
+proc updateversioning { } {
+global SAL_WORK_DIR XMLVERSION RELVERSION
+   if { $RELVERSION != "" } {
+     set rpmversion [set XMLVERSION]~[set RELVERSION]
+   } else {
+     set rpmversion $XMLVERSION
+   }
+   return $rpmversion
+}
+
 
 #
 ## Documented proc \c updatetests .
@@ -223,20 +238,12 @@ global XMLVERSION env RPMFILES SAL_WORK_DIR
 #
 proc generatemetarpm { } {
 global SYSDIC SALRELEASE SALVERSION SAL_WORK_DIR AVRO_RELEASE RELVERSION env XMLVERSION
-   if { $RELVERSION != "" } {
-     set release [set SALVERSION].[set RELVERSION]
-     if { [string range $RELVERSION 0 0] == "_" } {
-       set release [set SALVERSION][set RELVERSION]
-     } else {
-       set release [set SALVERSION].[set RELVERSION]
-     }
-   } else {
-     set release $SALVERSION
-   }
+   set release [updateversioning]
    set xmldist $XMLVERSION
    set fout [open $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_runtime.spec w]
-   set rpmversion $XMLVERSION
-   set release [join [split $release "-"] "."]
+   set rpmversion [updateversioning]
+   set rpmversion [join [split $rpmversion "-"] "~"]
+   set release $SALVERSION
    puts $fout "
 %global __os_install_post %{nil}
 %define debug_package %{nil}
@@ -294,20 +301,12 @@ rpmbuild -ba -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_runtime.spec
 #
 proc generateATmetarpm { } {
 global SYSDIC SALRELEASE SALVERSION SAL_WORK_DIR AVRO_RELEASE RELVERSION env XMLVERSION
-   if { $RELVERSION != "" } {
-     set release [set SALVERSION].[set RELVERSION]
-     if { [string range $RELVERSION 0 0] == "_" } {
-       set release [set SALVERSION][set RELVERSION]
-     } else {
-       set release [set SALVERSION].[set RELVERSION]
-     }
-   } else {
-     set release $SALVERSION
-   }
+   set release [updateversioning]
    set xmldist $XMLVERSION
    set fout [open $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_ATruntime.spec w]
-   set rpmversion $XMLVERSION
-   set release [join [split $release "-"] "."]
+   set rpmversion [updateversioning]
+   set rpmversion [join [split $rpmversion "-"] "~"]
+   set release $SALVERSION
    puts $fout "
 %global __os_install_post %{nil}
 %define debug_package %{nil}
@@ -371,16 +370,9 @@ global SAL_WORK_DIR SALVERSION SALRELEASE RPMFILES AVRO_RELEASE RELVERSION XMLVE
   exec mkdir -p $SAL_WORK_DIR/rpm_[set subsys]
   set xmldist $XMLVERSION
   set fout [open $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_[set subsys].spec w]
-  if { $RELVERSION != "" } {
-     if { [string range $RELVERSION 0 0] == "_" } {
-       set release [set SALVERSION][set RELVERSION]
-     } else {
-       set release [set SALVERSION][set RELVERSION]
-     }
-  } else {
-     set release $SALVERSION
-  }
-  set release [join [split $release "-"] "."]
+  set rpmversion [updateversioning]
+  set rpmversion [join [split $rpmversion "-"] "~"]
+  set release $SALVERSION
   puts $fout "Name: $subsys
 Version: $XMLVERSION
 Release: [set release]%\{?dist\}
@@ -442,18 +434,9 @@ global SAL_WORK_DIR SALVERSION SALRELEASE RPMFILES AVRO_RELEASE RELVERSION XMLVE
   exec mkdir -p $SAL_WORK_DIR/rpm_[set subsys]
   set xmldist $XMLVERSION
   set fout [open $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_[set subsys]_test.spec w]
-  if { $RELVERSION != "" } {
-     set release [set SALVERSION].[set RELVERSION]
-     if { [string range $RELVERSION 0 0] == "_" } {
-       set release [set SALVERSION][set RELVERSION]
-     } else {
-       set release [set SALVERSION][set RELVERSION]
-     }
-  } else {
-     set release $SALVERSION
-  }
-  set rpmversion $XMLVERSION
-  set release [join [split $release "-"] "."]
+  set rpmversion [updateversioning]
+  set rpmversion [join [split $rpmversion "-"] "~"]
+  set release $SALVERSION
   puts $fout "Name: [set subsys]_test
 Version: [set rpmversion]
 Release: [set release]%\{?dist\}
