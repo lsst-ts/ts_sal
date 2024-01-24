@@ -64,7 +64,7 @@ if { [info exists env(LSST_KAFKA_SECURITY_PASSWORD)] } {
   set LSST_KAFKA_SECURITY_MECHANISM $env(LSST_KAFKA_SECURITY_MECHANISM)
   set LSST_KAFKA_SECURITY_USERNAME $env(LSST_KAFKA_SECURITY_USERNAME)
   set LSST_KAFKA_SECURITY_PASSWORD $env(LSST_KAFKA_SECURITY_PASSWORD)
-}
+}  
 set LSST_KAFKA_HOST $env(LSST_KAFKA_HOST)
 set LSST_KAFKA_BROKER_PORT $env(LSST_KAFKA_BROKER_PORT)
 set LSST_KAFKA_PREFIX $env(LSST_KAFKA_PREFIX)
@@ -186,6 +186,7 @@ if { $OPTIONS(idl) && $OPTIONS(sal) == 0 } {
 if { $OPTIONS(validate) } {
   exec mkdir -p $SAL_WORK_DIR/avro-templates
   source $SAL_DIR/parseXMLKafka.tcl
+  source $SAL_DIR/checkjson.tcl
   set all $TSUBSYSTEMS
   stdlog "Processing $all"
   foreach i $all {
@@ -197,9 +198,10 @@ if { $OPTIONS(validate) } {
       }
       stdlog "Validating $i interface Json format definitions"
       set result none
-      catch { set result [exec get_component_info -o $SAL_WORK_DIR/avro-templates $i] } bad
+      catch { set result [exec get_component_info --use-simple-schema -o $SAL_WORK_DIR/avro-templates $i] } bad
       if { $result == "none" } {stdlog $bad}
       if { $OPTIONS(verbose) } {stdlog $result}
+      createackcmdjson $i
     }
     puts stdout "****************************************************************************"
     exec ls -l avro-templates
@@ -317,7 +319,7 @@ if { $OPTIONS(sal) } {
     exit 6
   }
   cd $SAL_WORK_DIR
-  set base $TSUBSYSTEMS
+  set base [lindex [split [lindex $TARGETS 0] _] 0]
   clearAssets $base
   source $SAL_DIR/gensimplesampleKafka.tcl
   source $SAL_DIR/gensalcodesKafka.tcl

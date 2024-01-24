@@ -21,14 +21,14 @@
 proc testAvroCodeGen { subsys lang } {
 global SAL_WORK_DIR AVRO_RELEASE SAL_DIR
       if { $lang == "cpp" } {
-          set all [glob $SAL_WORK_DIR/avro-templates/[set subsys]_*.json]
+          set all [glob $SAL_WORK_DIR/avro-templates/[set subsys]/[set subsys]_*.json]
           foreach i $all {
              puts stdout "Processing $i"
              exec avrogencpp -i $i -o $SAL_WORK_DIR/[set subsys]/cpp/src/[file rootname [file tail $i]].hh
           }
        }
        if { $lang == "java"} {
-          set all [glob $SAL_WORK_DIR/avro-templates/[set subsys]_*.json]
+          set all [glob $SAL_WORK_DIR/avro-templates/[set subsys]/[set subsys]_*.json]
           foreach i $all {
              puts stdout "Processing $i"
              catch {exec java -jar $SAL_DIR/../lib/avro-tools-[set AVRO_RELEASE].jar compile schema $i $SAL_WORK_DIR/[set subsys]/java/src/ }

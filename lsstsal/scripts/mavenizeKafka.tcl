@@ -380,5 +380,28 @@ public class [set subsys]Controller_[set alias]Test extends TestCase \{
   close $fout
 }
 
+proc generateSchemaSupport { subsys } {
+global env SAL_WORK_DIR SAL_DIR OSPL_VERSION XMLVERSION RELVERSION SALVERSION TS_SAL_DIR AVRO_RELEASE
+  set mvnrelease [set XMLVERSION]_[set SALVERSION][set RELVERSION]
+  exec mkdir -p $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/avro
+  set all [glob $SAL_WORK_DIR/avro-templates/[set subsys]/[set subsys]_*.json]
+  foreach j $all {
+    set id [file tail [file rootname $j]]
+    if { [lindex [split $id "_"] end] != "enums" } {
+     if { $id != "[set subsys]_hash_table.json" } {
+      exec cp  $SAL_WORK_DIR/avro-templates/[set subsys]/[set id].json $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/avro/[set id].avsc
+     }
+    }
+  }
+# make pom.xml
+  cd $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]
+  set result none
+  catch { set result [exec mvn compile] } bad
+  catch {stdlog "result = $result"}
+}
+
+
+
+
 source $env(SAL_DIR)/activaterevcodes.tcl
 source $env(SAL_DIR)/ospl_version.tcl
