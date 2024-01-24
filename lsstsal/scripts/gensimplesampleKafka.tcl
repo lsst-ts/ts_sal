@@ -25,7 +25,7 @@ proc makesaldirs { base name } {
 global SAL_WORK_DIR OPTIONS
    if { $OPTIONS(verbose) } {stdlog "###TRACE>>> makesaldirs $base $name"}
    if { [lindex [split $name "_"] end] != "enums" } {
-    if { $name != "hash_table" } { 
+    if { $name != "hash_table" } {
      exec mkdir -p $SAL_WORK_DIR/[set base]_[set name]/cpp/src
      exec mkdir -p $SAL_WORK_DIR/[set base]_[set name]/cpp/standalone
      exec mkdir -p $SAL_WORK_DIR/[set base]_[set name]/java/src/org/lsst/sal
@@ -220,6 +220,7 @@ global SAL_DIR SAL_WORK_DIR SYSDIC VPROPS EVENT_ENUM OPTIONS CMD_ALIASES METADAT
         gets $fin rec
         if { [string trim $rec] != "[set name]() :" } {
          if {  [lindex [split [lindex [string trim $rec] 1] "_"] 0] != "private" } {
+          if { [lindex $rec 0] != "typedef" } {
            if { $OPTIONS(verbose) } { stdlog "### processing $i : $rec" }
            set VPROPS(idx) $argidx
            set VPROPS(base) $subsys
@@ -234,6 +235,7 @@ global SAL_DIR SAL_WORK_DIR SYSDIC VPROPS EVENT_ENUM OPTIONS CMD_ALIASES METADAT
            } else {
              incr argidx 1
            }
+          }
          }
         } else {
           set done 1
@@ -418,7 +420,11 @@ global VPROPS TYPEFORMAT METADATA
          puts $fcod1 "    data->$VPROPS(name) = Instance.$VPROPS(name);"
          puts $fcod1 "    lastSample_[set VPROPS(topic)].$VPROPS(name) = Instance.$VPROPS(name);"
          puts $fcod1b "   data->$VPROPS(name) = lastSample_[set VPROPS(topic)].$VPROPS(name);"
-         puts $fcod2 "    Instance.$VPROPS(name) = data->$VPROPS(name);"
+         if { $VPROPS(double) || $VPROPS(float) } {
+           puts $fcod2 "    if (data->$VPROPS(name)) \{Instance.$VPROPS(name) = *data->$VPROPS(name);\}"
+         } else {
+           puts $fcod2 "    Instance.$VPROPS(name) = data->$VPROPS(name);"
+         }
          puts $fcod3 "    cout << \"    $VPROPS(name) : \" << SALInstance.$VPROPS(name) << endl;"
          puts $fcod6 "    cout << \"    $VPROPS(name) : \" << data->$VPROPS(name) << endl;"
          puts $fcod7 "           [set VPROPS(base)]_memIO->client\[LVClient\].shmemOutgoing_[set VPROPS(topic)].$VPROPS(name) = data->$VPROPS(name);

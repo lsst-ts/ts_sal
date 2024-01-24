@@ -2,7 +2,7 @@
 
 Provides tools to turn ts_xml interface description into C++, Python, Java and
 LabView interfaces. Turns XMLs with the interface description into Data
-Distribution Service (DDS) or Kafka Avro schemas and language bindings. Without going into
+Distribution Service (DDS) schemas and language bindings. Without going into
 details, it can be said binding for the following primitives are generated:
 
 

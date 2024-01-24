@@ -22,7 +22,7 @@
   #include <iomanip>
   
   #include "SAL_defines.h"
-
+  #include <boost/optional/optional_io.hpp>
 // INSERT TYPE INCLUDES
 
   #include "SAL_SALDataC.h"
@@ -39,7 +39,7 @@
   #include "libserdes/serdescpp-avro.h"
   #include <avro/Schema.hh>
   #include <avro/ValidSchema.hh>
- 
+
   using namespace std;
   using namespace avro;
   using namespace RdKafka;
