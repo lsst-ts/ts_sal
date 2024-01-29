@@ -606,7 +606,7 @@ void SAL_SALData::createSubscriber(int actorIdx)
   std::vector<std::string> topics;
   topics.push_back(sal[actorIdx].avroName);
   consumerConfiguration->set("group.id",randomString(15), errstr);
-  consumerConfiguration->set("auto.reset.offset","earliest", errstr);
+  consumerConfiguration->set("auto.offset.reset","earliest", errstr);
   sal[actorIdx].subscriber = RdKafka::KafkaConsumer::create(consumerConfiguration, errstr); 
   if (sal[actorIdx].subscriber == NULL) {
      throw std::runtime_error("Failed to create a Kafka subscriber");
