@@ -76,7 +76,7 @@ global SAL_WORK_DIR XMLVERSION
 #  Copies the necessary files into rpm base directory
 #
 proc updateruntime { subsys {withtest 0} } {
-global SAL_WORK_DIR XMLVERSION SAL_DIR SYSDIC SALVERSION env
+global SAL_WORK_DIR XMLVERSION SAL_DIR SYSDIC SALVERSION LSST_SAL_PREFIX env
   set rpmname $subsys
   if { $withtest } {set rpmname [set subsys]_test}
   exec rm -fr [set rpmname]-$XMLVERSION
@@ -92,7 +92,7 @@ global SAL_WORK_DIR XMLVERSION SAL_DIR SYSDIC SALVERSION env
   if { $withtest == 0 } {
     exec mkdir -p [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include
     exec mkdir -p [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/scripts
-    exec mkdir -p [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/avro
+    exec mkdir -p [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/avro-templates
     exec mkdir -p [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/lib
     exec mkdir -p [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/doc
     if { [info exists SYSDIC([set subsys],labview)] } {
@@ -126,6 +126,11 @@ global SAL_WORK_DIR XMLVERSION SAL_DIR SYSDIC SALVERSION env
       set incs [glob $SAL_WORK_DIR/[set subsys]/cpp/src/*.hh]
       foreach i $incs {
         copyasset $i [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
+      }
+      exec get_component_info -o $LSST_SAL_PREFIX/avro-templates $subsys
+      set jsons [glob $LSST_SAL_PREFIX/avro/[set subsys]/*.json]
+      foreach i $jsons {
+        copyasset $i [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/avro-templates/set subsys]/.
       }
     }
     foreach dtype "Commands Events Telemetry" {
@@ -512,7 +517,7 @@ rm -fr \$RPM_BUILD_ROOT
 #  Generate the SPEC file for ts_sal_utils
 #
 proc generateUtilsrpm { } {
-global SYSDIC SALVERSION SAL_WORK_DIR AVRO_RELEASE SAL_DIR env
+global SYSDIC SALVERSION SAL_WORK_DIR AVRO_RELEASE SAL_DIR LSST_SAL_PREFIX env
    set version [join [lrange [split $SALVERSION ".-"] 0 2] .]
    set fout [open $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_utils.spec w]
    puts $fout "
@@ -585,11 +590,11 @@ WantedBy=ts_sal_settai.service
   copyasset $SAL_WORK_DIR/lib/libsalUtils.so ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/lib/.
   copyasset $SAL_DIR/leap-seconds.list ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/etc/.
   copyasset $env(TS_SAL_DIR)/setupKafka.env ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/setup.env
-  set all [glob $env(SAL_DIR)/../lib/*]
+  set all [glob $env(LSST_SAL_PREFIX)/lib/*]
   foreach f $all {
     copyasset $f ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/lib/.
   }
-  exec cp -r $env(SAL_DIR)/../include ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/.
+  exec cp -r $env(LSST_SAL_PREFIX)/include ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/.
   exec tar cvzf $SAL_WORK_DIR/rpmbuild/SOURCES/ts_sal_utils-$SALVERSION.tgz ts_sal_utils-$SALVERSION
   exec cp -r ts_sal_utils-$SALVERSION $SAL_WORK_DIR/rpmbuild/BUILD/.
 ###  exec rm -fr $SAL_WORK_DIR/rpmbuild/BUILD/ts_sal_utils-$SALVERSION/*

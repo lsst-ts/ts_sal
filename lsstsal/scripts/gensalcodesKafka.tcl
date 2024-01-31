@@ -74,7 +74,8 @@ global DONE_CMDEVT OPTIONS SAL_DIR
     set spl [file rootname [split $subsys _]]
     if { [lindex $spl end] != "enums" } {
      set base [lindex $spl 0]
-     if { [lindex $spl 1] != "command" && [lindex $spl 1] != "logevent" && [lindex $spl 1] != "ackcmd" } {
+     if { $subsys != "[set base]_hash_table.json" } {
+      if { [lindex $spl 1] != "command" && [lindex $spl 1] != "logevent" && [lindex $spl 1] != "ackcmd" } {
        set name [join [lrange $spl 1 end] _]
        if { $OPTIONS(cpp) } {
          stdlog "Generating SAL CPP code for $subsys"
@@ -93,6 +94,7 @@ global DONE_CMDEVT OPTIONS SAL_DIR
          if { $result == "none" } {puts stderr $bad}
          if { $OPTIONS(verbose) } {stdlog $result}
        }
+      }
      }
     }
   }

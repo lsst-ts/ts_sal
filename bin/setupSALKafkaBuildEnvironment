@@ -1,0 +1,111 @@
+#!/bin/sh
+
+# kafka/avro support
+# java needs maven 3.8.1+
+echo "Setting up SAL Kafka build environment"
+
+export MAVEN_RELEASE=3.9.6
+export AVRO_RELEASE=1.11.1
+export BOOST_RELEASE=1.78
+export JDK_RELEASE=11
+export LSST_SDK_INSTALL=$HOME/lsst/ts_sal
+export LSST_SAL_PREFIX=/opt/lsst/ts_sal
+
+echo "Using : "
+echo "        Avro version = $AVRO_RELEASE"
+echo "        Boost version = $BOOST_RELEASE"
+echo "        Java version = $JDK_RELEASE"
+echo "        Maven version = $MAVEN_RELEASE"
+
+echo "Updating dependencies available from repo's"
+sudo mkdir -p /opt/lsst/ts_sal
+sudo chown -R $USER  /opt/lsst
+sudo chgrp -R $USER  /opt/lsst
+sudo dnf install epel-release
+sudo dnf install -y yum-utils
+sudo dnf config-manager --set-enabled powertools
+sudo dnf update
+sudo dnf install -y python3.11 python3.11-devel python3.11-pip
+sudo ln -sf /usr/bin/python3.11 /etc/alternatives/python3
+sudo dnf install -y ant cmake boost${BOOST_RELEASE}-devel jansson-devel libcurl-devel csnappy-devel zlib-devel maven snappy-devel doxygen
+sudo dnf install -y java-${JDK_RELEASE}-openjdk java-${JDK_RELEASE}-openjdk-devel
+
+echo "Downloading and building Maven"
+mkdir external-packages
+cd external-packages
+wget https://dlcdn.apache.org/maven/maven-3/${MAVEN_RELEASE}/source/apache-maven-${MAVEN_RELEASE}-src.tar.gz
+tar xzf apache-maven-${MAVEN_RELEASE}-src.tar.gz
+cd apache-maven-${MAVEN_RELEASE}
+mvn -DdistributionTargetDir="$LSST_SAL_PREFIX/../maven/apache-maven-${MAVEN_RELEASE}-SNAPSHOT" clean package
+
+export PATH=/opt/lsst/maven/apache-maven-${MAVEN_RELEASE}-SNAPSHOT/bin/:${PATH}
+mkdir -p /opt/lsst/ts_sal/bin
+mkdir -p /opt/lsst/ts_sal/include
+mkdir -p /opt/lsst/ts_sal/lib
+ln -sf /opt/lsst/maven/apache-maven-${MAVEN_RELEASE}-SNAPSHOT/bin/mvn /opt/lsst/ts_sal/bin/mvn
+
+echo "Downloading and building Avro"
+cd $HOME/external-packages
+wget https://archive.apache.org/dist/avro/avro-${AVRO_RELEASE}/avro-src-${AVRO_RELEASE}.tar.gz
+tar xvzf avro-src-${AVRO_RELEASE}.tar.gz
+cd $HOME/external-packages/avro-src-${AVRO_RELEASE}/lang/c++
+./build.sh test
+cd build
+cp lib* $LSST_SAL_PREFIX/lib/.
+cp avrogencpp $LSST_SAL_PREFIX/bin/.
+mkdir  -p $LSST_SAL_PREFIX/include/avro
+cp -r ../api/* $LSST_SAL_PREFIX/include/avro/.
+cp -r ../impl /opt/lsst/ts_sal/include/.
+
+
+/avro-src-${AVRO_RELEASE}/lang/c
+./build.sh test
+./cmake_avrolib.sh
+cd build/avrolib/lib64
+cp lib* $LSST_SAL_PREFIX/lib/.
+cd ../include
+cp -r * $LSST_SAL_PREFIX/include/.
+
+cd $HOME/external-packages/avro-src-${AVRO_RELEASE}/lang/java
+./build.sh test
+./build.sh dist
+cp ./avro/target/avro-1.11.1.jar $LSST_SAL_PREFIX/lib/.
+cp ./compiler/target/avro-compiler-1.11.1.jar $LSST_SAL_PREFIX/lib/.
+cp ./maven-plugin/target/avro-maven-plugin-1.11.1.jar $LSST_SAL_PREFIX/lib/.
+cp ./tools/target/avro-tools-1.11.1.jar $LSST_SAL_PREFIX/lib/.
+
+echo "Downloading and building librdkafka"
+cd $HOME/external-packages
+git clone https://github.com/confluentinc/librdkafka
+cd librdkafka
+./configure --prefix=/opt/lsst/ts_sal
+make 
+make install
+
+echo "Downloading and building libserdes"
+ln -sf /usr/include/boost$BOOST_RELEASE/boost /opt/lsst/ts_sal/include/boost
+cd $HOME/external-packages
+git clone https://github.com/confluentinc/libserdes
+cd libserdes
+export LD_LIBRARY_PATH=/opt/lsst/ts_sal/lib
+/configure --prefix=/opt/lsst/ts_sal --includedir=/opt/lsst/ts_sal/include --libdir=/opt/lsst/ts_sal/lib
+export CPPFLAGS=-I/opt/lsst/ts_sal/include/avro
+make
+make install
+
+echo "Used external packages : "
+echo "        Avro version = $AVRO_RELEASE"
+echo "        Boost version = $BOOST_RELEASE"
+echo "        Java version = $JDK_RELEASE"
+echo "        Maven version = $MAVEN_RELEASE"
+echo "----------------------------------------------------------"
+echo "----------------------------------------------------------"
+echo "----------------------------------------------------------"
+echo "------- SAL Kafka Build Environment setup complete -------"
+echo "----------------------------------------------------------"
+echo "----------------------------------------------------------"
+echo "----------------------------------------------------------"
+
+
+
+
