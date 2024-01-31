@@ -437,7 +437,7 @@ void SAL_SALData::checkSchema(int actorIdx)
   if (sal[actorIdx].avroSchema == NULL) {
     sal[actorIdx].avroSchema = Serdes::Schema::get(serdes, svname, errstr);
     if (!sal[actorIdx].avroSchema) {
-      std::string adir = "/avro-templates/"; 
+      std::string adir = "/avro-templates/SALData/"; 
       std::string schema = localSchemaDir + adir + sal[actorIdx].topicName + ".json";
       std::ifstream ifs(schema);
       std::stringstream buffer;
@@ -465,7 +465,7 @@ void SAL_SALData::createTopic(int actorIdx)
   }
   sal[actorIdx].avroSchema = Serdes::Schema::get(serdes, svname, errstr);
   if (!sal[actorIdx].avroSchema) {
-    std::string adir = "/avro-templates/"; 
+    std::string adir = "/avro-templates/SALData/"; 
     std::string schema = localSchemaDir + adir + sal[actorIdx].topicName + ".json";
     std::ifstream ifs(schema);
     std::stringstream buffer;
@@ -491,7 +491,7 @@ void SAL_SALData::createTopic2(int actorIdx)
   }
   sal[actorIdx].avroSchema2 = Serdes::Schema::get(serdes, svname, errstr);
   if (!sal[actorIdx].avroSchema2) {
-    std::string adir = "/avro-templates/"; 
+    std::string adir = "/avro-templates/SALData/"; 
     std::string schema = localSchemaDir + adir + sal[actorIdx].topicName2 + ".json";
     std::ifstream ifs(schema);
     std::stringstream buffer;
@@ -517,7 +517,7 @@ void SAL_SALData::createTopic(int actorIdx, char *topicName)
   }
   sal[actorIdx].avroSchema = Serdes::Schema::get(serdes, svname, errstr);
   if (!sal[actorIdx].avroSchema) {
-    std::string adir = "/avro-templates/"; 
+    std::string adir = "/avro-templates/SALData/"; 
     std::string schema = localSchemaDir + adir + sal[actorIdx].topicName + ".json";
     std::ifstream ifs(schema);
     std::stringstream buffer;
@@ -543,7 +543,7 @@ void SAL_SALData::createTopic2(int actorIdx, char *topicName)
   }
   sal[actorIdx].avroSchema2 = Serdes::Schema::get(serdes, svname, errstr);
   if (!sal[actorIdx].avroSchema2) {
-    std::string adir = "/avro-templates/"; 
+    std::string adir = "/avro-templates/SALData/"; 
     std::string schema = localSchemaDir + adir + sal[actorIdx].topicName2 + ".json";
     std::ifstream ifs(schema);
     std::stringstream buffer;
@@ -629,8 +629,10 @@ void SAL_SALData::createSubscriber(int actorIdx)
     if ( debugLevel > 0 ) {
       err = sal[actorIdx].subscriber->committed(parts,0);
       cout << "topic committed for " << sal[actorIdx].avroName << " is " << parts[0]->offset() << endl;
+      cout << "  error = " << err << endl;
       err = sal[actorIdx].subscriber->position(parts);
       cout << "topic position for " << sal[actorIdx].avroName << " is " <<  parts[0]->offset() << endl;
+      cout << "  error = " << err << endl;
     }
     parts[0]->set_offset(startOffset);
   }

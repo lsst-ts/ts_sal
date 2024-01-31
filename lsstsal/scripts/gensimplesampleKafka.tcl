@@ -161,6 +161,7 @@ global SAL_DIR SAL_WORK_DIR SYSDIC VPROPS EVENT_ENUM OPTIONS CMD_ALIASES METADAT
    if { $OPTIONS(verbose) } {stdlog "###TRACE>>> makesalincl $subsys"}
    exec mkdir -p $SAL_WORK_DIR/avro-templates/sal
    exec mkdir -p $SAL_WORK_DIR/[set subsys]/cpp/src
+   exec cp $SAL_DIR/code/templates/SAL_defines.h $SAL_WORK_DIR/include/.
    catch {
      set prev [glob $SAL_WORK_DIR/include/SAL_[set subsys]*]
      foreach f $prev {exec rm $f}
@@ -536,7 +537,7 @@ global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS
 
       if { $lang == "cpp" } {
         puts $frep "sed \\"
-        puts $frep "  -e 's/_SAL_/_[set base]_/g' \\"
+        puts $frep "  -e 's/sacpp_SAL_/sacpp__[set base]_/g' \\"
         puts $frep "  -e 's/SALSubsys/[set base]/g' \\"
         puts $frep "  -e 's/SALData/[set base]/g' \\"
         if { [info exists SYSDIC($base,keyedID)] } {
@@ -545,7 +546,7 @@ global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS
         puts $frep "$SAL_DIR/code/templates/Makefile.sacpp_SALKafka_testcommands.template > [set base]/cpp/src/Makefile.sacpp_[set base]_testcommands"
 
         puts $frep "sed \\"
-        puts $frep "  -e 's/_SAL_/_[set base]_/g' \\"
+        puts $frep "  -e 's/sacpp_SAL_/sacpp_[set base]_/g' \\"
         puts $frep "  -e 's/SALSubsys/[set base]/g' \\"
         puts $frep "  -e 's/SALData/[set base]/g' \\"
         if { [info exists SYSDIC($base,keyedID)] } {
@@ -587,7 +588,7 @@ global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS CMD_ALIASES AVRO_PREFIX
         puts $frep "$SAL_DIR/code/templates/Makefile-cppKafka.template > [set id]/cpp/standalone/Makefile"
         if { $name != "notused" } {
           puts $frep "sed \\"
-          puts $frep "  -e 's/_SAL_/_[set base]_/g' \\"
+          puts $frep "  -e 's/sacpp_SAL_/sacpp_[set base]_/g' \\"
           puts $frep "  -e 's/SALSubsys/[set base]/g' \\"
           puts $frep "  -e 's/SALData/[set id]/g' \\"
           if { [info exists SYSDIC($base,keyedID)] } {
@@ -596,7 +597,7 @@ global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS CMD_ALIASES AVRO_PREFIX
           puts $frep "$SAL_DIR/code/templates/Makefile.sacpp_SALKafka_sub.template > [set id]/cpp/standalone/Makefile.sacpp_[set id]_sub"
 
           puts $frep "sed \\"
-          puts $frep "  -e 's/_SAL_/_[set base]_/g' \\"
+          puts $frep "  -e 's/sacpp_SAL_/sacpp_[set base]_/g' \\"
           puts $frep "  -e 's/SALSubsys/[set base]/g' \\"
           puts $frep "  -e 's/SALData/[set id]/g' \\"
           if { [info exists SYSDIC($base,keyedID)] } {
@@ -818,7 +819,7 @@ proc salcpptestgen { base id } {
 global SAL_WORK_DIR SAL_DIR OPTIONS DONE_CMDEVT
   if { $OPTIONS(verbose) } {stdlog "###TRACE>>> salcpptestgen $base $id"}
   if { $OPTIONS(fastest) == 0 } {
-    if { $id != "[set base]_notused" } {
+    if { $id != "[set base]_notused" && $id != "[set base]_hash_table.json" } {
      stdlog "Generating cpp test programs for $id"
      cd $SAL_WORK_DIR/$id/cpp/standalone
      catch { set result [exec make -f Makefile.sacpp_[set id]_sub] } bad

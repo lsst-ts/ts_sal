@@ -44,7 +44,7 @@ global SAL_DIR SAL_WORK_DIR
   cd $SAL_WORK_DIR/[set subsys]/labview
   exec ln -sf ../cpp/src/SAL_[set subsys].cpp .
   exec ln -sf ../cpp/src/SAL_[set subsys]_actors.h .
-  exec ln -sf ../../../lsstsal/include/SAL_defines.h .
+  exec cp $SAL_DIR/code/templates/SAL_defines.h .
   exec rm -fr lib
   set bad [catch {exec make -f Makefile.sacpp_[set subsys]_labview} result]
   removeshmem [calcshmid $base]
