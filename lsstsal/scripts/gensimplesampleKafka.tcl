@@ -736,7 +736,7 @@ global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS CMD_ALIASES AVRO_PREFIX
 #  Generate Avro files for a Subsystem/CSC
 #
 proc salavrogen { base lang } {
-global SAL_WORK_DIR OPTIONS ONEDONECPP ONEDONEJAVA SAL_DIR AVRO_RELEASE
+global SAL_WORK_DIR OPTIONS ONEDONECPP ONEDONEJAVA SAL_DIR AVRO_RELEASE LSST_SAL_PREFIX
    if { $OPTIONS(verbose) } {stdlog "###TRACE>>> salavrogen $base $lang"}
        cd $SAL_WORK_DIR/$base/$lang
        stdlog "Generating $lang type support for $base"
@@ -758,11 +758,11 @@ global SAL_WORK_DIR OPTIONS ONEDONECPP ONEDONEJAVA SAL_DIR AVRO_RELEASE
             if { [lindex [split [file tail $i] ._] 2] != "enums" } {
              if { [file tail $i] != "[set base]_hash_table.json" } {
               puts stdout "Processing $i"
-              catch {exec java -jar $SAL_DIR/../lib/avro-tools-[set AVRO_RELEASE].jar compile schema $i $SAL_WORK_DIR/[set base]/java/src/}
+              catch {exec java -jar $LSST_SAL_PREFIX/lib/avro-tools-[set AVRO_RELEASE].jar compile schema $i $SAL_WORK_DIR/[set base]/java/src/}
              }
             }
           }
-          catch {exec java -jar $SAL_DIR/../lib/avro-tools-[set AVRO_RELEASE].jar compile schema $SAL_WORK_DIR/avro-templates/[set base]/[set base]_ackcmd.json $SAL_WORK_DIR/[set base]/java/src/}
+          catch {exec java -jar $LSST_SAL_PREFIX/../lib/avro-tools-[set AVRO_RELEASE].jar compile schema $SAL_WORK_DIR/avro-templates/[set base]/[set base]_ackcmd.json $SAL_WORK_DIR/[set base]/java/src/}
           cd $SAL_WORK_DIR/$base/$lang/src
           set result none
           catch { set result [exec make -f Makefile.saj_[set base]_types] } bad
