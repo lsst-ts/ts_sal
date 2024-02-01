@@ -33,7 +33,7 @@ proc copyasset { asset dest } {
 global OPTIONS
     if { $OPTIONS(verbose) } {puts stdout "###TRACE copyasset for $asset $dest"}
     if { [file exists $asset] } {
-       exec cp $asset $dest
+       exec cp -r $asset $dest
     }
 }
 
@@ -559,12 +559,13 @@ cp -fr %\{name\}-%\{version\}/* %{buildroot}/.
 /opt/lsst/ts_sal/etc/leap-seconds.list
 /opt/lsst/ts_sal/setup.env
 /opt/lsst/ts_sal/lib
+/opt/lsst/ts_sal/lib/pkgconfig
 /opt/lsst/ts_sal/include
 "
   close $fout
   exec mkdir -p ts_sal_utils-$SALVERSION/etc/systemd/system
   exec mkdir -p ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/bin
-  exec mkdir -p ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/lib
+  exec mkdir -p ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/lib/pkgconfig
   exec mkdir -p ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/etc
   exec mkdir -p ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/include
   set fser [open ts_sal_utils-$SALVERSION/etc/systemd/system/ts_sal_settai.service w]
