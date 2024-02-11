@@ -173,8 +173,8 @@ global TYPESUBS VPROPS OPTIONS METADATA
       set res "  std::string	$VPROPS(name);"
    } else {
      if { $type != "float" && $type != "double" } {set VPROPS(int) 1; set VPROPS(lvres) 9}
-     if { $type == "double" } {set VPROPS(double) 1; set VPROPS(lvres) 10 ; set type "boost::optional<double>"}
-     if { $type == "float" } { set VPROPS(float) 1; set type "boost::optional<float>" }
+     if { $type == "double" } {set VPROPS(double) 1; set VPROPS(lvres) 10}
+     if { $type == "float" } { set VPROPS(float) 1}
      if { $type == "byte" } {set VPROPS(byte) 1; set VPROPS(lvres) 1  }
      if { $type == "long" } {set VPROPS(int) 1; set VPROPS(long); set VPROPS(lvres) 3  }
      if { $type == "long" } {set VPROPS(int) 1; set VPROPS(longlong) 1; set VPROPS(lvres) 4  }

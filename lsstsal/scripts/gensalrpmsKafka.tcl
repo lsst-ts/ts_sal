@@ -34,6 +34,8 @@ global OPTIONS
     if { $OPTIONS(verbose) } {puts stdout "###TRACE copyasset for $asset $dest"}
     if { [file exists $asset] } {
        exec cp -r $asset $dest
+    } else {
+       puts stdout "Missing asset for RPM - $asset"
     }
 }
 
@@ -92,7 +94,7 @@ global SAL_WORK_DIR XMLVERSION SAL_DIR SYSDIC SALVERSION LSST_SAL_PREFIX env
   if { $withtest == 0 } {
     exec mkdir -p [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include
     exec mkdir -p [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/scripts
-    exec mkdir -p [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/avro-templates
+    exec mkdir -p [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/avro-templates/[set subsys]
     exec mkdir -p [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/lib
     exec mkdir -p [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/doc
     if { [info exists SYSDIC([set subsys],labview)] } {
@@ -115,7 +117,6 @@ global SAL_WORK_DIR XMLVERSION SAL_DIR SYSDIC SALVERSION LSST_SAL_PREFIX env
       copyasset $SAL_WORK_DIR/lib/libSAL_[set subsys].a [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/lib/.
      }
     copyasset $SAL_WORK_DIR/avro-templates/[set subsys]_revCodes.tcl [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/scripts/.
-    copyasset $SAL_WORK_DIR/avro-templates/sal/sal_revCoded_[set subsys].json [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/avro/.
     if { [info exists SYSDIC([set subsys],cpp)] } {
       copyasset $SAL_WORK_DIR/[set subsys]/cpp/src/SAL_[set subsys].h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
       copyasset $SAL_WORK_DIR/[set subsys]/cpp/src/SAL_[set subsys]_actors.h [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
@@ -127,10 +128,9 @@ global SAL_WORK_DIR XMLVERSION SAL_DIR SYSDIC SALVERSION LSST_SAL_PREFIX env
       foreach i $incs {
         copyasset $i [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/include/.
       }
-      exec get_component_info -o $LSST_SAL_PREFIX/avro-templates $subsys
-      set jsons [glob $LSST_SAL_PREFIX/avro/[set subsys]/*.json]
+      set jsons [glob $SAL_WORK_DIR/avro-templates/[set subsys]/*.json]
       foreach i $jsons {
-        copyasset $i [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/avro-templates/set subsys]/.
+        copyasset $i [set rpmname]-$XMLVERSION/opt/lsst/ts_sal/avro-templates/[set subsys]/.
       }
     }
     foreach dtype "Commands Events Telemetry" {
@@ -586,6 +586,7 @@ WantedBy=ts_sal_settai.service
 "
   close $fser
   exec make_salUtils
+  copyasset $SAL_WORK_DIR/include/SAL_defines.h ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/include/.
   copyasset $SAL_WORK_DIR/salUtils/set-tai ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/bin/.
   copyasset $env(TS_SAL_DIR)/bin/update_leapseconds ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/bin/.
   copyasset $SAL_WORK_DIR/lib/libsalUtils.so ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/lib/.
