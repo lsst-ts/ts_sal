@@ -200,7 +200,7 @@ if { $OPTIONS(validate) } {
       }
       stdlog "Validating $i interface Json format definitions"
       set result none
-      catch { set result [exec get_component_info --use-simple-schema -o $SAL_WORK_DIR/avro-templates $i] } bad
+      catch { set result [exec get_component_info -o $SAL_WORK_DIR/avro-templates $i] } bad
       if { $result == "none" } {stdlog $bad}
       if { $OPTIONS(verbose) } {stdlog $result}
       createackcmdjson $i

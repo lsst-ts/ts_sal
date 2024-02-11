@@ -421,11 +421,7 @@ global VPROPS TYPEFORMAT METADATA
          puts $fcod1 "    data->$VPROPS(name) = Instance.$VPROPS(name);"
          puts $fcod1 "    lastSample_[set VPROPS(topic)].$VPROPS(name) = Instance.$VPROPS(name);"
          puts $fcod1b "   data->$VPROPS(name) = lastSample_[set VPROPS(topic)].$VPROPS(name);"
-         if { $VPROPS(double) || $VPROPS(float) } {
-           puts $fcod2 "    if (data->$VPROPS(name)) \{Instance.$VPROPS(name) = *data->$VPROPS(name);\}"
-         } else {
-           puts $fcod2 "    Instance.$VPROPS(name) = data->$VPROPS(name);"
-         }
+         puts $fcod2 "    Instance.$VPROPS(name) = data->$VPROPS(name);"
          puts $fcod3 "    cout << \"    $VPROPS(name) : \" << SALInstance.$VPROPS(name) << endl;"
          puts $fcod6 "    cout << \"    $VPROPS(name) : \" << data->$VPROPS(name) << endl;"
          puts $fcod7 "           [set VPROPS(base)]_memIO->client\[LVClient\].shmemOutgoing_[set VPROPS(topic)].$VPROPS(name) = data->$VPROPS(name);
