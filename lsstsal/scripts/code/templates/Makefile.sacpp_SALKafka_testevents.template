@@ -9,7 +9,7 @@ CXX           = g++
 LD            = $(CXX) $(CCFLAGS) $(CPPFLAGS)
 AR            = ar
 PICFLAGS      = -fPIC
-CPPFLAGS      = $(PICFLAGS) $(GENFLAGS) -fpermissive -g $(SAL_CPPFLAGS) -D_REENTRANT -Wall -Wno-format -I"." -I"$(AVRO_INCL)" -I../../SALSubsys/cpp/src -I"$(LSST_SAL_PREFIX)/include" -I.. -I"$(SAL_WORK_DIR)/include" -Wno-write-strings #-DSAL_SUBSYSTEM_ID_IS_KEYED
+CPPFLAGS      = $(PICFLAGS) $(GENFLAGS) -fpermissive -g $(SAL_CPPFLAGS) -D_REENTRANT -Wall -Wno-format -I"." -I"$(AVRO_INCL)" -I../../SALSubsys/cpp/src -I"$(LSST_SAL_PREFIX)/include" -I.. -I"$(SAL_WORK_DIR)/include"  -I"$(LSST_SAL_PREFIX)/include/avro" -Wno-write-strings #-DSAL_SUBSYSTEM_ID_IS_KEYED
 OBJEXT        = .o
 OUTPUT_OPTION = -o "$@"
 COMPILE.c     = $(CC) $(CFLAGS) $(CPPFLAGS) -c
@@ -34,7 +34,7 @@ EXEEXT        =
 LIBPREFIX     = lib
 LIBSUFFIX     = 
 GENFLAGS      = -g
-LDLIBS        = -ldl -lrt -lpthread -L"/usr/lib64/boost$(BOOST_RELEASE)" -lboost_filesystem -lboost_iostreams -lboost_program_options -lboost_system $(LSST_SAL_PREFIX)/lib/libserdes++.a $(LSST_SAL_PREFIX)/lib/libserdes.a -lcurl -ljansson -lrdkafka++ -lavrocpp -lavro
+LDLIBS        = -ldl -lrt -lpthread -L"/usr/lib64/boost$(BOOST_RELEASE)" -lboost_filesystem -lboost_iostreams -lboost_program_options -lboost_system $(LSST_SAL_PREFIX)/lib/libserdes++.a $(LSST_SAL_PREFIX)/lib/libserdes.a -L$(LSST_SAL_PREFIX)/lib -lcurl -ljansson -lrdkafka++ -lavrocpp -lavro
 LINK.cc       = $(LD) $(LDFLAGS)
 EXPORTFLAGS   = 
 endif

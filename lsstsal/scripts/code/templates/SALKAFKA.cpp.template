@@ -584,7 +584,7 @@ void SAL_SALData::deletePublisher()
   if (publisher != NULL) { delete publisher; }
 }
 
-std::string randomString( size_t length )
+std::string SAL_SALData::randomString( size_t length )
 {
     auto randchar = []() -> char
     {
@@ -612,30 +612,28 @@ void SAL_SALData::createSubscriber(int actorIdx)
      throw std::runtime_error("Failed to create a Kafka subscriber");
   }
   sal[actorIdx].subscriber->subscribe(topics);
-  if (sal[actorIdx].historyDepth != 0) {
-    const int partition = 0;
-    RdKafka::ErrorCode err;
-    int64_t low;
-    int64_t high;
-    sal[actorIdx].subscriber->query_watermark_offsets(sal[actorIdx].avroName, partition,&low,&high, 1000);
-    cout << "topic offsets for " << sal[actorIdx].avroName << low << ":" << high << endl;
-    int64_t startOffset = high - sal[actorIdx].historyDepth;
-    if (startOffset < low) {
-       startOffset = low;
-    }
-    std::vector<RdKafka::TopicPartition*> parts;
-    parts.push_back(RdKafka::TopicPartition::create(sal[actorIdx].avroName, partition, startOffset));
-    err = sal[actorIdx].subscriber->assign(parts);
-    if ( debugLevel > 0 ) {
-      err = sal[actorIdx].subscriber->committed(parts,0);
-      cout << "topic committed for " << sal[actorIdx].avroName << " is " << parts[0]->offset() << endl;
-      cout << "  error = " << err << endl;
-      err = sal[actorIdx].subscriber->position(parts);
-      cout << "topic position for " << sal[actorIdx].avroName << " is " <<  parts[0]->offset() << endl;
-      cout << "  error = " << err << endl;
-    }
-    parts[0]->set_offset(startOffset);
+  const int partition = 0;
+  RdKafka::ErrorCode err;
+  int64_t low;
+  int64_t high;
+  sal[actorIdx].subscriber->query_watermark_offsets(sal[actorIdx].avroName, partition,&low,&high, 1000);
+  cout << "topic offsets for " << sal[actorIdx].avroName << low << ":" << high << endl;
+  int64_t startOffset = high - sal[actorIdx].historyDepth;
+  if (startOffset < low) {
+     startOffset = low;
   }
+  std::vector<RdKafka::TopicPartition*> parts;
+  parts.push_back(RdKafka::TopicPartition::create(sal[actorIdx].avroName, partition, startOffset));
+  err = sal[actorIdx].subscriber->assign(parts);
+  if ( debugLevel > 0 ) {
+    err = sal[actorIdx].subscriber->committed(parts,0);
+    cout << "topic committed for " << sal[actorIdx].avroName << " is " << parts[0]->offset() << endl;
+    cout << "  error = " << err << endl;
+    err = sal[actorIdx].subscriber->position(parts);
+    cout << "topic position for " << sal[actorIdx].avroName << " is " <<  parts[0]->offset() << endl;
+    cout << "  error = " << err << endl;
+  }
+  parts[0]->set_offset(startOffset);
 }
 
 

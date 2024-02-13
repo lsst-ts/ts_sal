@@ -362,6 +362,7 @@
 
 /// Placeholder routine to be replaced by system wide logging once available
       void logError(salReturn status);
+      std::string randomString(size_t length);
 
 /// Close down the Kafka support for this SAL_SALData object
       void salShutdown();
