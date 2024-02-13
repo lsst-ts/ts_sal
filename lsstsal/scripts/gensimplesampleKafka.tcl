@@ -176,6 +176,7 @@ global SAL_DIR SAL_WORK_DIR SYSDIC VPROPS EVENT_ENUM OPTIONS CMD_ALIASES METADAT
    puts $fhdr "#ifndef _SAL_[set subsys]C_"
    puts $fhdr "#define _SAL_[set subsys]C_"
    puts $fhdr "#include <string>"
+   puts $fhdr "#include <vector>"
    puts $fhdr "using namespace std;"
    foreach i $all {
      stdlog "Adding $i to sal_$subsys code fragments"
