@@ -77,6 +77,7 @@ void SAL_SALData::initSalEnvironment(int aKey)
     configuration->set("sasl.password",securityPassword, errstr);   
   }
   configuration->set("value.serializer", "io.confluent.kafka.serializers.KafkaAvroSerializer", errstr);  // Serialize the Avro object
+  configuration->set("queue.buffering.max.ms", "0", errstr);
 
   if (kafkaProducerWaitAcks != NULL) {
     configuration->set("acks", kafkaProducerWaitAcks, errstr);
