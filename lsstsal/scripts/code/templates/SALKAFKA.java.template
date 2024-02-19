@@ -194,6 +194,7 @@ public class SAL_SALData {
                String securityUserName = System.getenv("LSST_KAFKA_SECURITY_USERNAME");
                String securityPassword = System.getenv("LSST_KAFKA_SECURITY_PASSWORD");
                String avroPrefix = System.getenv("AVRO_PREFIX");
+               String kafkaProducerWaitAcks = System.getenv("LSST_KAFKA_PRODUCER_WAIT_ACKS");
                server = khost + ":" + kport;
                Properties props = new Properties();
                props.put("bootstrap.servers", server);
@@ -210,6 +211,11 @@ public class SAL_SALData {
 //                         io.confluent.kafka.serializers.KafkaAvroSerializer.class);
 //               props.put(AbstractKafkaSchemaSerDeConfig.AUTO_REGISTER_SCHEMAS, true);
 //               props.put(AbstractKafkaSchemaSerDeConfig.USE_LATEST_VERSION, true);
+               if (kafkaProducerWaitAcks != null) {
+                  props.put("acks", kafkaProducerWaitAcks);
+               } else {
+                  props.put("acks", "all");
+               }
 
                KafkaProducer publisher = new KafkaProducer(props);
 

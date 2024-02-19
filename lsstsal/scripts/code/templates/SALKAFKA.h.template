@@ -208,6 +208,7 @@
       char *securityPassword;
       char *schemaRegistry;
       char *localSchemaDir;
+      char *kafkaProducerWaitAcks;
 
 ///   Holds the private_identity of this SAL Object, set at creation
       char CSC_identity[128];
