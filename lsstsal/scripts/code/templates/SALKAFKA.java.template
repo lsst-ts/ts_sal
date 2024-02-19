@@ -216,6 +216,7 @@ public class SAL_SALData {
                } else {
                   props.put("acks", "all");
                }
+               props.put("queue.buffering.max.ms", "0");
 
                KafkaProducer publisher = new KafkaProducer(props);
 
