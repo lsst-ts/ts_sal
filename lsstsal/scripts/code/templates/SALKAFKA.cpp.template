@@ -57,6 +57,7 @@ void SAL_SALData::initSalEnvironment(int aKey)
   khost = getenv("LSST_KAFKA_HOST");
   sname = getenv("LSST_KAFKA_HISTORYSYNC");
   aname = getenv("LSST_KAFKA_ENABLE_AUTHLIST");
+  kafkaProducerWaitAcks = getenv("LSST_KAFKA_PRODUCER_WAIT_ACKS");
   securityProtocol = getenv("LSST_KAFKA_SECURITY_PROTOCOL");
   securityMechanism = getenv("LSST_KAFKA_SECURITY_MECHANISM");
   securityUserName = getenv("LSST_KAFKA_SECURITY_USERNAME");
@@ -76,6 +77,12 @@ void SAL_SALData::initSalEnvironment(int aKey)
     configuration->set("sasl.password",securityPassword, errstr);   
   }
   configuration->set("value.serializer", "io.confluent.kafka.serializers.KafkaAvroSerializer", errstr);  // Serialize the Avro object
+
+  if (kafkaProducerWaitAcks != NULL) {
+    configuration->set("acks", kafkaProducerWaitAcks, errstr);
+  } else {
+    configuration->set("acks", "all", errstr);
+  }
 
   consumerConfiguration = RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL);
   consumerConfiguration->set("bootstrap.servers",server, errstr);
