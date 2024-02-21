@@ -614,34 +614,41 @@ void SAL_SALData::createSubscriber(int actorIdx)
   std::vector<std::string> topics;
   topics.push_back(sal[actorIdx].avroName);
   consumerConfiguration->set("group.id",randomString(15), errstr);
-  consumerConfiguration->set("auto.offset.reset","earliest", errstr);
+  if (sal[actorIdx].historyDepth == 0) {
+    consumerConfiguration->set("auto.offset.reset","latest", errstr);
+  } else {
+    consumerConfiguration->set("auto.offset.reset","earliest", errstr);
+  }
   sal[actorIdx].subscriber = RdKafka::KafkaConsumer::create(consumerConfiguration, errstr); 
   if (sal[actorIdx].subscriber == NULL) {
      throw std::runtime_error("Failed to create a Kafka subscriber");
   }
-  sal[actorIdx].subscriber->subscribe(topics);
   const int partition = 0;
   RdKafka::ErrorCode err;
   int64_t low;
   int64_t high;
   sal[actorIdx].subscriber->query_watermark_offsets(sal[actorIdx].avroName, partition,&low,&high, 1000);
-  cout << "topic offsets for " << sal[actorIdx].avroName << low << ":" << high << endl;
+  cout << "topic offsets for " << sal[actorIdx].avroName << " " << low << ":" << high << endl;
   int64_t startOffset = high - sal[actorIdx].historyDepth;
   if (startOffset < low) {
      startOffset = low;
   }
+  if (sal[actorIdx].historyDepth == 0) {
+     startOffset = RD_KAFKA_OFFSET_END;
+  }
   std::vector<RdKafka::TopicPartition*> parts;
   parts.push_back(RdKafka::TopicPartition::create(sal[actorIdx].avroName, partition, startOffset));
+  parts[0]->set_offset(startOffset);
   err = sal[actorIdx].subscriber->assign(parts);
   if ( debugLevel > 0 ) {
-    err = sal[actorIdx].subscriber->committed(parts,0);
+    err = sal[actorIdx].subscriber->committed(parts,10);
     cout << "topic committed for " << sal[actorIdx].avroName << " is " << parts[0]->offset() << endl;
     cout << "  error = " << err << endl;
     err = sal[actorIdx].subscriber->position(parts);
     cout << "topic position for " << sal[actorIdx].avroName << " is " <<  parts[0]->offset() << endl;
     cout << "  error = " << err << endl;
   }
-  parts[0]->set_offset(startOffset);
+  sal[actorIdx].subscriber->subscribe(topics);
 }
 
 

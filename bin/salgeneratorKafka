@@ -205,7 +205,7 @@ if { $OPTIONS(validate) } {
       if { $OPTIONS(verbose) } {stdlog $result}
     }
     puts stdout "****************************************************************************"
-    exec ls -l avro-templates
+    exec ls -l $SAL_WORK_DIR/avro-templates/[set i]
     puts stdout "****************************************************************************"
     set IDXENUMDONE($i) 0
     if { [file exists $env(TS_XML_DIR)/python/lsst/ts/xml/data/sal_interfaces/SALGenerics.xml] } {
