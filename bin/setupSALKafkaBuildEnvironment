@@ -8,7 +8,7 @@ export MAVEN_RELEASE=3.9.6
 export AVRO_RELEASE=1.11.1
 export BOOST_RELEASE=1.78
 export JDK_RELEASE=11
-export LSST_SDK_INSTALL=$HOME/lsst/ts_sal
+export LSST_SDK_INSTALL=/opt/lsst/tssw/ts_sal
 export LSST_SAL_PREFIX=/opt/lsst/ts_sal
 
 echo "Using : "
@@ -18,18 +18,21 @@ echo "        Java version = $JDK_RELEASE"
 echo "        Maven version = $MAVEN_RELEASE"
 
 echo "Updating dependencies available from repo's"
-sudo mkdir -p /opt/lsst/ts_sal
-sudo chown -R $USER  /opt/lsst
-sudo chgrp -R $USER  /opt/lsst
-sudo dnf install epel-release
-sudo dnf install -y yum-utils
-sudo dnf config-manager --set-enabled powertools
-sudo dnf update
-sudo dnf install -y python3.11 python3.11-devel python3.11-pip
-sudo ln -sf /usr/bin/python3.11 /etc/alternatives/python3
-sudo dnf install -y ant cmake boost${BOOST_RELEASE}-devel jansson-devel libcurl-devel csnappy-devel zlib-devel maven snappy-devel doxygen
-sudo dnf install -y java-${JDK_RELEASE}-openjdk java-${JDK_RELEASE}-openjdk-devel
-
+mkdir -p /opt/lsst/ts_sal
+chown -R $USER  /opt/lsst
+chgrp -R $USER  /opt/lsst
+dnf install =y epel-release
+dnf install -y yum-utils
+dnf config-manager -y --set-enabled powertools
+dnf update
+if [ -f /.dockerenv ]; then
+  dnf install -y python3.11 python3.11-devel python3.11-pip
+  ln -sf /usr/bin/python3.11 /etc/alternatives/python3
+fi
+dnf install -y ant cmake boost${BOOST_RELEASE}-devel jansson-devel asciidoc libcurl-devel csnappy-devel zlib-devel maven snappy-devel doxygen
+if [ -f /.dockerenv ]; then
+  dnf install -y java-${JDK_RELEASE}-openjdk java-${JDK_RELEASE}-openjdk-devel
+fi
 echo "Downloading and building Maven"
 mkdir external-packages
 cd external-packages
@@ -58,7 +61,12 @@ cp -r ../api/* $LSST_SAL_PREFIX/include/avro/.
 cp -r ../impl /opt/lsst/ts_sal/include/.
 
 
-/avro-src-${AVRO_RELEASE}/lang/c
+cd $HOME/external-packages/avro-src-${AVRO_RELEASE}/lang/c
+if [ -f /.dockerenv ]; then
+  cp /usr/include/jansson*.h $CONDA_PREFIX/include/.
+  cp /usr/include/jansson*.h $LSST_SAL_PREFIX/include/.
+  cp /usr/lib64/libjansson* $CONDA_PREFIX/lib/.
+fi
 ./build.sh test
 ./cmake_avrolib.sh
 cd build/avrolib/lib64
@@ -82,16 +90,55 @@ cd librdkafka
 make 
 make install
 
+if [ -f /.dockerenv ]; then
+   cd $HOME/external-packages
+   git clone https://github.com/google/snappy
+  cd snappy
+  git submodule update --init
+  mkdir build
+  cd build
+  cmake ../.
+  make
+  make install
+  ar x libsnappy.a
+  gcc -fPIC -shared -o libsnappy.so.1 *.o -lc -lc++
+  cp libsnappy.so.1 /opt/lsst/ts_sal/lib/.
+fi
+
+
 echo "Downloading and building libserdes"
 ln -sf /usr/include/boost$BOOST_RELEASE/boost /opt/lsst/ts_sal/include/boost
+cp $CONDA_PREFIX/lib/libstdc++.so.6.0.32  /opt/lsst/ts_sal/lib/libstdc++.so.6
 cd $HOME/external-packages
 git clone https://github.com/confluentinc/libserdes
 cd libserdes
-export LD_LIBRARY_PATH=/opt/lsst/ts_sal/lib
-/configure --prefix=/opt/lsst/ts_sal --includedir=/opt/lsst/ts_sal/include --libdir=/opt/lsst/ts_sal/lib
+export LD_LIBRARY_PATH=/opt/lsst/ts_sal/lib:$LD_LIBRARY_PATH
+./configure --prefix=/opt/lsst/ts_sal --includedir=/opt/lsst/ts_sal/include --libdir=/opt/lsst/ts_sal/lib
 export CPPFLAGS=-I/opt/lsst/ts_sal/include/avro
 make
 make install
+
+# Extras for M1M3
+cd $HOME/external-packages
+if [ -f /.dockerenv ]; then
+  tar xzf Catch2.tgz
+else
+  git clone https://github.com/catch/Catch2
+fi
+cd Catch2
+rm -fr build
+mkdir build
+cd build
+cmake ../.
+make
+make install
+if [ -f /.dockerenv ]; then
+  echo "Do NOT install spdlog,libyaml,yaml-cpp as lsst-scipipe already has them"
+else
+  dnf install spdlog spdlog-devel
+  dnf install libyaml-devel yaml-cpp yaml-cpp-devel
+  export PKG_CONFIG_PATH=/usr/local/share/pkgconfig
+fi
 
 echo "Used external packages : "
 echo "        Avro version = $AVRO_RELEASE"
