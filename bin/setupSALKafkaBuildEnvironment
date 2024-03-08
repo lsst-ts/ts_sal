@@ -31,7 +31,7 @@ if [ -f /.dockerenv ]; then
 fi
 dnf install -y ant cmake boost${BOOST_RELEASE}-devel jansson-devel asciidoc libcurl-devel csnappy-devel zlib-devel maven snappy-devel doxygen
 if [ -f /.dockerenv ]; then
-  dnf install -y java-${JDK_RELEASE}-openjdk java-${JDK_RELEASE}-openjdk-devel
+  dnf install -y java-${JDK_RELEASE}-openjdk java-${JDK_RELEASE}-openjdk-devel java-${JDK_RELEASE}-openjdk-javadoc
 fi
 echo "Downloading and building Maven"
 mkdir external-packages
@@ -68,7 +68,7 @@ if [ -f /.dockerenv ]; then
   cp /usr/lib64/libjansson* $CONDA_PREFIX/lib/.
 fi
 ./build.sh test
-./cmake_avrolib.sh
+./cmake_avrolib.sh || true
 cd build/avrolib/lib64
 cp lib* $LSST_SAL_PREFIX/lib/.
 cd ../include
