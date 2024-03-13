@@ -4,7 +4,6 @@ Provides tools to turn ts_xml interface description into C++, Java and
 LabView interfaces. Turns XMLs with the interface description into Avro schemas and language bindings.
 Without going into details, it can be said binding for the following primitives are generated:
 
-
 * **Telemetry** messages that a SAL component writes at regular intervals, e.g.
  to report data that varies continuously or slowly over time. Examples include
  measured temperatures and encoder readings.
