@@ -214,10 +214,10 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
          if { [lindex [split $rec "/"] end] != "Description>" } {
            set desc [getTopicURL $subsys $tname]
          } else {
-           set desc $value
+           set desc [string map { \" '} $value]
          }
          if { $tdesc } { set DESC($subsys,$alias,help) "$desc"}
-         if { $tdesc } { set METADATA($tname,description) "$desc" ; set tdesc 0}
+         if { $tdesc } { set METADATA($tname,description) "\"$desc\"" ; set tdesc 0}
       }
       if { $tag == "Frequency"}       {set freq $value}
       if { $tag == "Range"}           {set range $value}
@@ -275,8 +275,8 @@ global TLMS TLM_ALIASES EVENT_ENUM EVENT_ENUMS UNITS ENUM_DONE SYSDIC DESC OPTIO
          if { $unit != "" } {
             set UNITS($subsys,$alias,$item) $unit
          }
-         set METADATA($tname,$item,description) $desc
-         set METADATA($tname,$item,units) $unit
+         set METADATA($tname,$item,description) "\"$desc\""
+         set METADATA($tname,$item,units) "\"$unit\""
          puts $fsql "INSERT INTO [set subsys]_items VALUES (\"$tname\",$itemid,\"$item\",\"$type\",$idim,\"$unit\",$freq,\"$range\",\"$location\",\"$desc\");"
       }
    }
@@ -364,18 +364,18 @@ global SYSDIC IDXENUMDONE
 #
 proc add_private_metadata { topic } {
 global METADATA
-  set METADATA([set topic],private_revCode,units) "unitless"
-  set METADATA([set topic],private_sndStamp,units) "second"
-  set METADATA([set topic],private_rcvStamp,units) "second"
-  set METADATA([set topic],private_seqNum,units) "unitless"
-  set METADATA([set topic],private_identity,units) "unitless"
-  set METADATA([set topic],private_origin,units) "unitless"
-  set METADATA([set topic],private_revCode,description) "Revision hashcode"
-  set METADATA([set topic],private_sndStamp,description) "Time of instance publication"
-  set METADATA([set topic],private_rcvStamp,description) "Time of instance reception"
-  set METADATA([set topic],private_seqNum,description) "Sequence number"
-  set METADATA([set topic],private_identity,description) "Identity of publisher"
-  set METADATA([set topic],private_origin,description) "PID of publisher"
+  set METADATA([set topic],private_revCode,units) "\"unitless\""
+  set METADATA([set topic],private_sndStamp,units) "\"second\""
+  set METADATA([set topic],private_rcvStamp,units) "\"second\""
+  set METADATA([set topic],private_seqNum,units) "\"unitless\""
+  set METADATA([set topic],private_identity,units) "\"unitless\""
+  set METADATA([set topic],private_origin,units) "\"unitless\""
+  set METADATA([set topic],private_revCode,description) "\"Revision hashcode\""
+  set METADATA([set topic],private_sndStamp,description) "\"Time of instance publication\""
+  set METADATA([set topic],private_rcvStamp,description) "\"Time of instance reception\""
+  set METADATA([set topic],private_seqNum,description) "\"Sequence number\""
+  set METADATA([set topic],private_identity,description) "\"Identity of publisher\""
+  set METADATA([set topic],private_origin,description) "\"PID of publisher\""
 }
 
 #
@@ -387,20 +387,20 @@ global METADATA
 proc add_ackcmd_metadata { subsys } {
 global METADATA
   add_private_metadata [set subsys]_ackcmd
-  set METADATA([set subsys]_ackcmd,ack,units) "unitless"
-  set METADATA([set subsys]_ackcmd,error,units) "second"
-  set METADATA([set subsys]_ackcmd,result,units) "second"
-  set METADATA([set subsys]_ackcmd,identity,units) "unitless"
-  set METADATA([set subsys]_ackcmd,origin,units) "unitless"
-  set METADATA([set subsys]_ackcmd,cmdtype,units) "unitless"
-  set METADATA([set subsys]_ackcmd,timeout,units) "unitless"
-  set METADATA([set subsys]_ackcmd,ack,description) "unitless"
-  set METADATA([set subsys]_ackcmd,error,description) "second"
-  set METADATA([set subsys]_ackcmd,result,description) "second"
-  set METADATA([set subsys]_ackcmd,identity,description) "unitless"
-  set METADATA([set subsys]_ackcmd,origin,description) "unitless"
-  set METADATA([set subsys]_ackcmd,cmdtype,description) "unitless"
-  set METADATA([set subsys]_ackcmd,timeout,description) "unitless"
+  set METADATA([set subsys]_ackcmd,ack,units) "\"unitless\""
+  set METADATA([set subsys]_ackcmd,error,units) "\"second\""
+  set METADATA([set subsys]_ackcmd,result,units) "\"second\""
+  set METADATA([set subsys]_ackcmd,identity,units) "\"unitless\""
+  set METADATA([set subsys]_ackcmd,origin,units) "\"unitless\""
+  set METADATA([set subsys]_ackcmd,cmdtype,units) "\"unitless\""
+  set METADATA([set subsys]_ackcmd,timeout,units) "\"unitless\""
+  set METADATA([set subsys]_ackcmd,ack,description) "\"unitless\""
+  set METADATA([set subsys]_ackcmd,error,description) "\"second\""
+  set METADATA([set subsys]_ackcmd,result,description) "\"second\""
+  set METADATA([set subsys]_ackcmd,identity,description) "\"unitless\""
+  set METADATA([set subsys]_ackcmd,origin,description) "\"unitless\""
+  set METADATA([set subsys]_ackcmd,cmdtype,description) "\"unitless\""
+  set METADATA([set subsys]_ackcmd,timeout,description) "\"unitless\""
 }
 
 

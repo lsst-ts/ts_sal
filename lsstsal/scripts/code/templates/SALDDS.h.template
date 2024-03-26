@@ -29,7 +29,7 @@
   #define _SAL_SALActorMGR_
 
 /// The maximum number of Actors for a SAL_SALData object, equal to the number of DDS topic types for SALData
-  #define SAL__ACTORS_MAXCOUNT	256
+  #define SAL__ACTORS_MAXCOUNT	1000
 
 /// The maximum length of a Actor (aka DDS topic) name
   #define SAL__ACTORS_NAMESIZE	128

@@ -28,3 +28,14 @@ JNIEXPORT jdouble JNICALL Java_org_lsst_sal_salUtils_getTAISeconds
    return taiTime;
 }
 
+JNIEXPORT jdouble JNICALL Java_org_lsst_sal_salUtils_getUTCSeconds
+  (JNIEnv *env, jobject obj) {
+   struct timex tx;
+   struct timespec now;
+   double utcTime;
+
+   clock_gettime(CLOCK_REALTIME,&now);
+   utcTime = (double)now.tv_sec + (double)now.tv_nsec/1000000000.;
+   return utcTime;
+}
+

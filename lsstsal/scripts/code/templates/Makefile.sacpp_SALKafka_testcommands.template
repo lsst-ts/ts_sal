@@ -1,0 +1,108 @@
+#----------------------------------------------------------------------------
+#       Macros
+#----------------------------------------------------------------------------
+CFG = Release
+
+ifeq ($(CFG), Release)
+CC            = gcc
+CXX           = g++
+LD            = $(CXX) $(CCFLAGS) $(CPPFLAGS)
+AR            = ar
+PICFLAGS      = -fPIC
+CPPFLAGS      = $(PICFLAGS) $(GENFLAGS) -fpermissive -g $(SAL_CPPFLAGS) -D_REENTRANT -Wall -Wno-format -I"." -I"$(AVRO_INCL)" -I../../SALSubsys/cpp/src -I"$(LSST_SAL_PREFIX)/include" -I"$(LSST_SAL_PREFIX)/include/avro" -I"$(LSST_SAL_PREFIX)/include/boost" -I.. -I"$(SAL_WORK_DIR)/include" -Wno-write-strings #-DSAL_SUBSYSTEM_ID_IS_KEYED
+OBJEXT        = .o
+OUTPUT_OPTION = -o "$@"
+COMPILE.c     = $(CC) $(CFLAGS) $(CPPFLAGS) -c
+COMPILE.cc    = $(CXX) $(CCFLAGS) $(CPPFLAGS) -c
+LDFLAGS       = -L"."  -L"$(LSST_SAL_PREFIX)/lib"  -L"$(SAL_WORK_DIR)/lib"
+CCC           = $(CXX)
+MAKEFILE      = Makefile.sacpp_SAL_testcommands
+DEPENDENCIES  = 
+BTARGETDIR    = ./
+OBJS1          = .obj/SAL_SALSubsys$(OBJEXT)
+## INSERT COMMANDS TEST SRC
+CAT           = cat
+MV            = mv -f
+RM            = rm -rf
+CP            = cp -p
+NUL           = /dev/null
+MKDIR         = mkdir -p
+TESTDIRSTART  = test -d
+TESTDIREND    = ||
+TOUCH         = touch
+EXEEXT        = 
+LIBPREFIX     = lib
+LIBSUFFIX     = 
+GENFLAGS      = -g
+LDLIBS        = -ldl -lrt -lpthread -L/usr/lib64/boost${BOOST_RELEASE}  -lboost_filesystem -lboost_iostreams -lboost_program_options -lboost_system $(LSST_SAL_PREFIX)/lib/libserdes++.a $(LSST_SAL_PREFIX)/lib/libserdes.a  -L$(LSST_SAL_PREFIX)/lib -lcurl -ljansson -lrdkafka++ -lavrocpp -lavro
+LINK.cc       = $(LD) $(LDFLAGS)
+EXPORTFLAGS   = 
+endif
+ifeq ($(CFG), Debug)
+CC            = gcc
+CXX           = g++
+LD            = $(CXX) $(CCFLAGS) $(CPPFLAGS)
+AR            = ar
+PICFLAGS      = -fPIC
+CPPFLAGS      = $(PICFLAGS) $(GENFLAGS) $(SAL_CPPFLAGS) -D_REENTRANT -Wall -I"." -I"$(AVRO_INCL)"
+OBJEXT        = .o
+OUTPUT_OPTION = -o "$@"
+COMPILE.c     = $(CC) $(CFLAGS) $(CPPFLAGS) -c
+COMPILE.cc    = $(CXX) $(CCFLAGS) $(CPPFLAGS) -c
+LDFLAGS       = -L"." 
+CCC           = $(CXX)
+MAKEFILE      = Makefile.sacpp_SAL_testcommands
+DEPENDENCIES  =
+BTARGETDIR    = ./
+CAT           = cat
+MV            = mv -f
+RM            = rm -rf
+CP            = cp -p
+NUL           = /dev/null
+MKDIR         = mkdir -p
+TESTDIRSTART  = test -d
+TESTDIREND    = ||
+TOUCH         = touch
+EXEEXT        = 
+LIBPREFIX     = lib
+LIBSUFFIX     = 
+GENFLAGS      = -g
+SRC           = ../src/SAL_SALSubsys.cpp ../src/SALDataCommander.cpp ../src/SALDataController.cpp
+LINK.cc       = $(LD) $(LDFLAGS)
+EXPORTFLAGS   = 
+endif
+
+#----------------------------------------------------------------------------
+#       Local targets
+#----------------------------------------------------------------------------
+.obj/SAL_SALData$(OBJEXT): ../src/SAL_SALSubsys.cpp
+	@$(TESTDIRSTART) ".obj/../src" $(TESTDIREND) $(MKDIR) ".obj/../src"
+	$(COMPILE.cc) $(EXPORTFLAGS) $(OUTPUT_OPTION) ../src/SAL_SALSubsys.cpp
+
+## INSERT COMMANDS TEST BIN
+
+
+generated: $(GENERATED_DIRTY)
+	@-:
+
+clean:
+	-$(RM) $(OBJS)
+
+realclean: clean
+	-$(RM) $(BIN)
+	-$(RM) .obj/
+
+check-syntax:
+	$(COMPILE.cc) $(EXPORTFLAGS) -Wall -Wextra -pedantic -fsyntax-only $(CHK_SOURCES)
+
+#----------------------------------------------------------------------------
+#       Dependencies
+#----------------------------------------------------------------------------
+
+$(DEPENDENCIES):
+	@$(TOUCH) $(DEPENDENCIES)
+
+depend:
+	-VDIR=.obj/ $(MPC_ROOT)/depgen.pl  $(CFLAGS) $(CCFLAGS) $(CPPFLAGS) -f $(DEPENDENCIES) $(SRC) 2> $(NUL)
+
+include $(DEPENDENCIES)

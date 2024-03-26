@@ -1,0 +1,120 @@
+#----------------------------------------------------------------------------
+#       Macros
+#----------------------------------------------------------------------------
+CFG = Release
+
+ifeq ($(CFG), Release)
+CC            = gcc
+CXX           = g++
+LD            = $(CXX) $(CCFLAGS) $(CPPFLAGS)
+AR            = ar
+PICFLAGS      = -fPIC
+CPPFLAGS      = $(PICFLAGS) $(GENFLAGS) -fpermissive -g $(SAL_CPPFLAGS) -D_REENTRANT -Wall -Wno-switch -Wno-format -I"." -I"$(LSST_SAL_PREFIX)/include" -I"$(LSST_SAL_PREFIX)/include/boost" -I"$(LSST_SAL_PREFIX)/include/avro" -I../../../SALSubsys/cpp/src -I../../../SALSubsys/cpp -I"$(SAL_WORK_DIR)/include" -Wno-write-strings #-DSAL_SUBSYSTEM_ID_IS_KEYED
+OBJEXT        = .o
+OUTPUT_OPTION = -o "$@"
+COMPILE.c     = $(CC) $(CFLAGS) $(CPPFLAGS) -c
+COMPILE.cc    = $(CXX) $(CCFLAGS) $(CPPFLAGS) -c
+LDFLAGS       = -L"." -L"$(LSST_SAL_PREFIX)/lib" -L"$(SAL_WORK_DIR)/lib"
+CCC           = $(CXX)
+MAKEFILE      = Makefile.sacpp_SALData_pub
+DEPENDENCIES  = 
+BTARGETDIR    = ./
+BIN           = $(BTARGETDIR)sacpp_SAL_pub$(EXESUFFIX)$(EXEEXT)
+CAT           = cat
+MV            = mv -f
+RM            = rm -rf
+CP            = cp -p
+NUL           = /dev/null
+MKDIR         = mkdir -p
+TESTDIRSTART  = test -d
+TESTDIREND    = ||
+TOUCH         = touch
+EXEEXT        = 
+LIBPREFIX     = lib
+LIBSUFFIX     = 
+GENFLAGS      = -g
+LDLIBS        = -ldl -lrt -lpthread -L"/usr/lib64/boost$(BOOST_RELEASE)" -lboost_filesystem -lboost_iostreams -lboost_program_options -lboost_system $(LSST_SAL_PREFIX)/lib/libserdes++.a $(LSST_SAL_PREFIX)/lib/libserdes.a -L$(LSST_SAL_PREFIX)/lib -lcurl -ljansson -lrdkafka++ -lavrocpp -lavro
+OBJS          = .obj/SAL_SALSubsys$(OBJEXT) .obj/SALDataDataPublisher$(OBJEXT)
+SRC           =  ../src/SAL_SALSubsys.cpp ../src/SALDataDataPublisher.cpp
+LINK.cc       = $(LD) $(LDFLAGS)
+EXPORTFLAGS   = 
+endif
+ifeq ($(CFG), Debug)
+CC            = gcc
+CXX           = g++
+LD            = $(CXX) $(CCFLAGS) $(CPPFLAGS)
+AR            = ar
+PICFLAGS      = -fPIC
+CPPFLAGS      = $(PICFLAGS) $(GENFLAGS) $(SAL_CPPFLAGS) -D_REENTRANT -Wall -I"." -I"$(AVRO_INCL)"
+OBJEXT        = .o
+OUTPUT_OPTION = -o "$@"
+COMPILE.c     = $(CC) $(CFLAGS) $(CPPFLAGS) -c
+COMPILE.cc    = $(CXX) $(CCFLAGS) $(CPPFLAGS) -c
+LDFLAGS       = -L"." 
+CCC           = $(CXX)
+MAKEFILE      = Makefile.sacpp_SAL_pub
+DEPENDENCIES  =
+BTARGETDIR    = ./
+BIN           = $(BTARGETDIR)sacpp_SAL_pub$(EXESUFFIX)$(EXEEXT)
+CAT           = cat
+MV            = mv -f
+RM            = rm -rf
+CP            = cp -p
+NUL           = /dev/null
+MKDIR         = mkdir -p
+TESTDIRSTART  = test -d
+TESTDIREND    = ||
+TOUCH         = touch
+EXEEXT        = 
+LIBPREFIX     = lib
+LIBSUFFIX     = 
+GENFLAGS      = -g
+OBJS          =  .obj/SAL_SALSubsys$(OBJEXT) .obj/SALDataDataPublisher$(OBJEXT)
+SRC           = ../src/SAL_SALSubsys.cpp ../src/SALDataDataPublisher.cpp
+LINK.cc       = $(LD) $(LDFLAGS)
+EXPORTFLAGS   = 
+endif
+
+#----------------------------------------------------------------------------
+#       Local targets
+#----------------------------------------------------------------------------
+
+all: $(BIN)
+
+$(BIN): $(OBJS)
+	@$(TESTDIRSTART) "$(BTARGETDIR)" $(TESTDIREND) $(MKDIR) "$(BTARGETDIR)"
+	$(LINK.cc) $(OBJS) $(LDLIBS) $(OUTPUT_OPTION)
+
+generated: $(GENERATED_DIRTY)
+	@-:
+
+
+.obj/SAL_SALSubsys$(OBJEXT): ../src/SAL_SALSubsys.cpp
+	@$(TESTDIRSTART) ".obj/../src" $(TESTDIREND) $(MKDIR) ".obj/../src"
+	$(COMPILE.cc) $(EXPORTFLAGS) $(OUTPUT_OPTION) ../src/SAL_SALSubsys.cpp
+
+.obj/SALDataDataPublisher$(OBJEXT): ../src/SALDataDataPublisher.cpp
+	@$(TESTDIRSTART) ".obj/../src" $(TESTDIREND) $(MKDIR) ".obj/../src"
+	$(COMPILE.cc) $(EXPORTFLAGS) $(OUTPUT_OPTION) ../src/SALDataDataPublisher.cpp
+
+clean:
+	-$(RM) $(OBJS)
+
+realclean: clean
+	-$(RM) $(BIN)
+	-$(RM) .obj/
+
+check-syntax:
+	$(COMPILE.cc) $(EXPORTFLAGS) -Wall -Wextra -pedantic -fsyntax-only $(CHK_SOURCES)
+
+#----------------------------------------------------------------------------
+#       Dependencies
+#----------------------------------------------------------------------------
+
+$(DEPENDENCIES):
+	@$(TOUCH) $(DEPENDENCIES)
+
+depend:
+	-VDIR=.obj/ $(MPC_ROOT)/depgen.pl  $(CFLAGS) $(CCFLAGS) $(CPPFLAGS) -f $(DEPENDENCIES) $(SRC) 2> $(NUL)
+
+include $(DEPENDENCIES)

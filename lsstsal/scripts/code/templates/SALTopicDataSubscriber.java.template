@@ -23,7 +23,6 @@ public class SALNAMESTRINGDataSubscriber {
                         samples = mgr.getSample(SALInstance);
                         if (samples == SAL_SALData.SAL__OK) {
                            count++;
-  			   System.out.println("=== [SALTopic Subscriber] samples " + SALInstance.private_sndStamp);
 			   System.out.println("=== [SALTopic Subscriber] message received :" + count);
 			}
 			try

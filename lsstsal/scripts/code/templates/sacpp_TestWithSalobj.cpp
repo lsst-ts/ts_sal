@@ -28,18 +28,17 @@
 #include <sstream>
 #include <iostream>
 #include "SAL_Test.h"
-#include "ccpp_sal_Test.h"
-#include "os.h"
 #include <stdlib.h>
+#include <time.h>
 
-
-using namespace DDS;
 using namespace Test;
 
 int test_TestWithSalobj(int index, int logLevel)
 { 
   int cmdid;
-  os_time delay_10ms = { 0, 10000000 };
+  struct timespec delay_10ms;
+  delay_10ms.tv_sec = 0;
+  delay_10ms.tv_nsec = 10000;
 
   Test_logevent_logLevelC SALEvent;
   Test_command_setLogLevelC SALCommand;
@@ -65,7 +64,7 @@ int test_TestWithSalobj(int index, int logLevel)
       if ( cmdid > 0 ) {
         cout << "SALController: read setLogLevel(cmdid=" << cmdid << ";level=" << SALCommand.level << endl;
         mgr.ackCommand_setLogLevel(cmdid, SAL__CMD_COMPLETE, 0, "Done : OK");
-        os_nanoSleep(delay_10ms);
+        nanosleep(&elay_10ms,NULL);
         cout << "SALController: writing logLevel=" << SALCommand.level << " event and the same value in scalars.int0 telemetry" << endl;
         SALTelemetry.int0 = SALCommand.level;
         SALEvent.level = SALCommand.level;
@@ -75,7 +74,7 @@ int test_TestWithSalobj(int index, int logLevel)
         if (SALCommand.level == 0) break;
       }
     }
-    os_nanoSleep(delay_10ms);
+    nanosleep(&delay_10ms,NULL);
   }
 
   // Remove the DataWriters etc
