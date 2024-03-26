@@ -8,6 +8,9 @@ export MAVEN_RELEASE=3.9.6
 export AVRO_RELEASE=1.11.1
 export BOOST_RELEASE=1.78
 export JDK_RELEASE=11
+export KAFKA_RELEASE=7.6
+export JACKSON_RELEASE=2.15.2
+
 export LSST_SDK_INSTALL=/opt/lsst/tssw/ts_sal
 export LSST_SAL_PREFIX=/opt/lsst/ts_sal
 
@@ -16,6 +19,7 @@ echo "        Avro version = $AVRO_RELEASE"
 echo "        Boost version = $BOOST_RELEASE"
 echo "        Java version = $JDK_RELEASE"
 echo "        Maven version = $MAVEN_RELEASE"
+echo "        Kafka version = $KAFKA_RELEASE"
 
 echo "Updating dependencies available from repo's"
 mkdir -p /opt/lsst/ts_sal
@@ -73,6 +77,24 @@ cd build/avrolib/lib64
 cp lib* $LSST_SAL_PREFIX/lib/.
 cd ../include
 cp -r * $LSST_SAL_PREFIX/include/.
+
+cd $HOME/external-packages
+curl -O https://packages.confluent.io/archive/${KAFKA_RELEASE}/confluent-community-${KAFKA_RELEASE}.0.tar.gz
+tar xzf confluent-community-${KAFKA_RELEASE}.0.tar.gz
+cd confluent-${KAFKA_RELEASE}.0/share/java
+cp kafka-rest-lib/common-config*.jar ${LSST_SAL_PREFIX}/lib/.
+cp kafka-rest-lib/common-utils*.jar ${LSST_SAL_PREFIX}/lib/.
+cp kafka-rest-lib/kafka_*.jar ${LSST_SAL_PREFIX}/lib/.
+cp kafka-rest-lib/kafka-clients*.jar ${LSST_SAL_PREFIX}/lib/.
+cp kafka-rest-lib/kafka-schema-registry-client*.jar ${LSST_SAL_PREFIX}/lib/.
+cp kafka-rest-lib/kafka-avro-serializer*.jar ${LSST_SAL_PREFIX}/lib/.
+cp kafka-rest-lib/lz4-java*.jar ${LSST_SAL_PREFIX}/lib/.
+cp kafka-rest-bin/slf4j-api*.jar ${LSST_SAL_PREFIX}/lib/.
+cp kafka-rest-lib/snappy-java*.jar ${LSST_SAL_PREFIX}/lib/.
+cp kafka-rest-lib/zstd-jni*.jar ${LSST_SAL_PREFIX}/lib/.
+
+curl -O https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-avro/${JACKSON_RELEASE}/jackson-dataformat-avro-${JACKSON_RELEASE}.jar
+mv jackson-dataformat-avro-${JACKSON_RELEASE}.jar ${LSST_SAL_PREFIX}/lib/.
 
 cd $HOME/external-packages/avro-src-${AVRO_RELEASE}/lang/java
 ./build.sh test
