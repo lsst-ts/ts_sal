@@ -71,7 +71,6 @@ if [ -f /.dockerenv ]; then
   cp /usr/include/jansson*.h $LSST_SAL_PREFIX/include/.
   cp /usr/lib64/libjansson* $CONDA_PREFIX/lib/.
 fi
-./build.sh test
 ./cmake_avrolib.sh || true
 cd build/avrolib/lib64
 cp lib* $LSST_SAL_PREFIX/lib/.
@@ -113,13 +112,15 @@ make
 make install
 
 if [ -f /.dockerenv ]; then
-   cd $HOME/external-packages
-   git clone https://github.com/google/snappy
+  echo "Do NOT install snappy, lsst-scipipe already has it"
+else
+  cd $HOME/external-packages
+  git clone https://github.com/google/snappy
   cd snappy
   git submodule update --init
   mkdir build
   cd build
-  cmake ../.
+  cmake -DCMAKE_INSTALL_PREFIX=$LSST_PREFIX_DIR ../.
   make
   make install
   ar x libsnappy.a
@@ -145,13 +146,13 @@ cd $HOME/external-packages
 if [ -f /.dockerenv ]; then
   tar xzf Catch2.tgz
 else
-  git clone https://github.com/catch/Catch2
+  git clone https://github.com/catchorg/Catch2
 fi
 cd Catch2
 rm -fr build
 mkdir build
 cd build
-cmake ../.
+cmake -DCMAKE_INSTALL_PREFIX=$LSST_PREFIX_DIR ../.
 make
 make install
 if [ -f /.dockerenv ]; then

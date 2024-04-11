@@ -641,7 +641,7 @@ void SAL_SALData::createSubscriber(int actorIdx)
   parts[0]->set_offset(startOffset);
   err = sal[actorIdx].subscriber->assign(parts);
   if ( debugLevel > 0 ) {
-    err = sal[actorIdx].subscriber->committed(parts,10);
+    err = sal[actorIdx].subscriber->committed(parts,100);
     cout << "topic committed for " << sal[actorIdx].avroName << " is " << parts[0]->offset() << endl;
     cout << "  error = " << err << endl;
     err = sal[actorIdx].subscriber->position(parts);
