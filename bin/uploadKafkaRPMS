@@ -1,0 +1,11 @@
+#!/usr/bin/env tclsh
+
+foreach csc "ATPtg MTPtg MTMount MTRotator ESS ATMCS Guider MTM1M3 MTVMS Test" {
+   puts stdout "Uploading $csc"
+   set rpms [glob rpmbuild/RPMS/x86_64/$csc*]
+   foreach rpm $rpms {
+     exec mvn deploy:deploy-file -DgroupId=lsst.org -DartifactId=project -Dversion=1.0.0 -DgeneratePom=true -Dpackaging=rpm -DrepositoryId=nexus -Durl=https://repo-nexus.lsst.org/nexus/content/repositories/ts_yum/test -Dfile=$rpm
+   }
+ }
+
+

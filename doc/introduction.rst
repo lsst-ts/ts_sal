@@ -7,12 +7,21 @@ Middleware Overview
 
 This document describes the middleware (software stack) used for
 subsystem communications. The publish-subscribe architecture is used as
-the basis. Open standards (OMG Data Distribution Service) describe the
+the basis. 
+
+Two versions are supported
+
+Legacy : Open standards (OMG Data Distribution Service) describe the
 low level protocols and API's. The OpenSplice DDS implementation is
+being used to provide this framework. This is expected to be retired
+before commisioning of the full system starts.
+
+Latest : Open standards (Apache Avro and Kafka) describe the
+low level protocols and API's. The Strimzi Kafka implementation is
 being used to provide this framework.
 
 An additional "Service Abstraction Layer" will provide application
-developers with a simplified interface to the DDS facilities. It also
+developers with a simplified interface to the low-level facilities. It also
 facilitates the logging of all subsystem telemetry and command history.
 to the Engineering and Facility Database (EFD).
 
@@ -21,7 +30,7 @@ Telemetry and Command definitions, which are described using "Interface
 definition Language".
 
 A System Dictionary describes the syntax and naming schemes used in the
-IDL, thus establishing system-wide consistency.
+IDL/Avro, thus establishing system-wide consistency.
 
 The required network bandwidth for each subsystem , and the accompanying
 EFD table sizes are described.
@@ -81,27 +90,27 @@ implemented using the event features of the publish-subscribe model.
 |image1|
 
 Information flows with the aid of the following constructs : Publisher
-and DataWriter on the sending side, Subscriber, and DataReader on the
+and Writer/Producer on the sending side, Subscriber, and Reader/Consumer on the
 receiving side.
 
 A Publisher is an object responsible for data distribution. It may
-publish data of different data types. A DataWriter acts as a typed4
-accessor to a publisher. The DataWriter is the object the application
+publish data of different data types. A Writer acts as a typed
+accessor to a publisher. The Writer is the object the application
 must use to communicate to a publisher the existence and value of
 data-objects of a given type. When data-object values have been
-communicated to the publisher through the appropriate data-writer, it is
+communicated to the publisher through the appropriate Writer, it is
 the publisher's responsibility to perform the distribution (the
 publisher will do this according to its own QoS, or the QoS attached to
-the corresponding data-writer). A publication is defined by the
-association of a data-writer to a publisher. This association expresses
+the corresponding Writer). A publication is defined by the
+association of a Writer to a publisher. This association expresses
 the intent of the application to publish the data described by the
-data-writer in the context provided by the publisher.
+Writer in the context provided by the publisher.
 
 A Subscriber is an object responsible for receiving published data and
 making it available (according to the Subscribers QoS) to the receiving
 application. It may receive and dispatch data of different specified
 types. To access the received data, the application must use a typed
-DataReader attached to the subscriber. Thus, a subscription is defined
+Reader attached to the subscriber. Thus, a subscription is defined
 by the association of a data-reader with a subscriber. This association
 expresses the intent of the application to subscribe to the data
 described by the data-reader in the context provided by the subscriber.
@@ -111,16 +120,16 @@ Publications must be known in such a way that subscriptions can refer to
 them unambiguously. A Topic is meant to fulfill that purpose: it
 associates a name (unique in the domain), a data-type, and QoS related
 to the data itself. In addition to the topic QoS, the QoS of the
-DataWriter associated with that Topic and the QoS of the Publisher
-associated to the DataWriter control the behavior on the publisher's
-side, while the corresponding Topic, DataReader, and Subscriber QoS
+Writer associated with that Topic and the QoS of the Publisher
+associated to the Writer control the behavior on the publisher's
+side, while the corresponding Topic, Reader, and Subscriber QoS
 control the behavior on the subscribers side.
 
 When an application wishes to publish data of a given type, it must
-create a Publisher (or reuse an already created one) and a DataWriter
+create a Publisher (or reuse an already created one) and a Writer
 with all the characteristics of the desired publication. Similarly, when
 an application wishes to receive data, it must create a Subscriber (or
-reuse an already created one) and a DataReader to define the
+reuse an already created one) and a Reader to define the
 subscription.
 
 QoS (Quality of Service) is a general concept that is used to specify
@@ -157,10 +166,9 @@ be utilized whenever possible.
 The access levels are :
 
 -  SAL (Service abstraction layer)
--  OMG DDS (Data Distribution Service)
--  OMG RTPS (Real-time Publish Subscribe) - not used directly at present
+-  OMG DDS (Data Distribution Service) OR Apache Kafka
 
-Each subsequent layer provides more detailed access to the low-level
+Each layer provides more detailed access to the low-level
 details of the configuration and control of the datastream definitions
 and/or tuning of real-time behavior.
 
@@ -177,19 +185,12 @@ subsystem is provided via means of automatic shared memory mapping of
 the underlying data objects.
 
 The lower level objects are managed using an implementation of the OMG's
-DDS.
-
-The currently selected implementation is OpenSplice DDS, but the
-existence of the SAL permits flexibility in migrating to other DDS
-solutions if required.
+DDS or Apache Kafka.
 
 The SAL provides direct access to only a small subset of the total
-functionality provided by the DDS, reducing both the amount of code
+functionality provided by the transport layers, reducing both the amount of code
 required, and it's complexity, as seen by the application programmer.
 
-The OMG DDS standard is an evolving entity. It is expected that the
-prototype SIMD/jSIMD API's referenced below, will be replaced by agreed
-OMG standards of equivalent functionality.
 
 The SAL framework is designed to make this, and other similar
 transitions, transparent to the application level developers.
@@ -225,23 +226,12 @@ Invocation with no arguments will result in display of the on-line help.
 
             generate - all steps to generate SAL wrappers for specified language
             validate - check the XML Telemetry/Command/LogEvent definitions
-                    sal      - generate SAL wrappers for specified language : cpp, idl, java
-                    apidoc   - generate interface documentation for the specified language : cpp, java
-                    lib      - generate shared library
+            sal      - generate SAL wrappers for specified language : cpp, idl, java
+            apidoc   - generate interface documentation for the specified language : cpp, java
+            lib      - generate shared library
             labview  - generate LabVIEW low-level interface
             maven    - generate a maven project
-            db       - generate telemetry database table
-
-                        Arguments required are
-     
-                db start-time end-time interval
-
-                        where the times are formatted like "2019-11-12 16:20:01"
-                        and the interval is in seconds
-
-            sim      - generate simulation configuration
-            link     - link a SAL program
-                    rpm  - generate runtime RPM
+            rpm      - generate runtime RPM
             verbose  - be more verbose ;-)
 
 OMG DDS
@@ -431,7 +421,10 @@ This specification defines the message formats, interpretation, and
 usage scenarios that underlie all messages exchanged by applications
 that use the RTPS protocol.
 
-| 
+**********************************************
+***********TODO - Add Kafka instroduction here
+**********************************************
+
 
 General policies
 ^^^^^^^^^^^^^^^^
@@ -690,8 +683,8 @@ the domain and their entities happens automatically behind the scenes
 -  Participants discover each other
 -  Best-effort communication
 -  Endpoint discovery phase
--  Participants exchange information about their datawriter and
-   datareader entities
+-  Participants exchange information about their Writer and
+   Reader entities
 -  Reliable communication
 -  Steady state traffic to maintain liveliness of participants
 -  Participants periodically announce their presence using RTPS VAR
@@ -701,7 +694,7 @@ the domain and their entities happens automatically behind the scenes
    periodically to all discovered participants
 -  Sent using best-effort
 
-DataWriter/DataReader discovery
+Writer/Reader discovery
 
 -  Send out pub/sub VAR to every new participant
 -  NACK for pub/sub info if not received from a known participant

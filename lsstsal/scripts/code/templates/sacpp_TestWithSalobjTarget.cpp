@@ -27,19 +27,19 @@
 #include <sstream>
 #include <iostream>
 #include "SAL_Test.h"
-#include "ccpp_sal_Test.h"
-#include "os.h"
 #include <stdlib.h>
+#include <time.h>
 
 #define STD_TIMEOUT 60
 
-using namespace DDS;
 using namespace Test;
 
 int test_TestWithSalobjTarget(int index, int logLevel)
 { 
   int cmdid;
-  os_time delay_10ms = { 0, 10000000 };
+  struct timespec delay_10ms;
+  delay_10ms.tv_sec = 0;
+  delay_10ms.tv_nsec = 10000;
   int loglevels[] = { 10, 52, 0 };
   int ilevel;
   int itimer;
@@ -61,7 +61,7 @@ int test_TestWithSalobjTarget(int index, int logLevel)
   itimer = 0;
   while (status != SAL__OK) {
     status = mgr.getEvent_logLevel(&SALEvent);
-    os_nanoSleep(delay_10ms);
+    nanosleep(&delay_10ms,NULL);
     itimer++;
     if (itimer > STD_TIMEOUT*100) {
       cout << "SALCommmander: timed out for getEvent_logLevel" << endl;
@@ -89,9 +89,9 @@ int test_TestWithSalobjTarget(int index, int logLevel)
     status = SAL__ERR;
     itimer = 0;
     while (status != SAL__OK) {
-      status = mgr.getEvent_logLevel(&SALEvent);
-      os_nanoSleep(delay_10ms);
-      itimer++;
+     status = mgr.getEvent_logLevel(&SALEvent);
+     nanosleep(&delay_10ms,NULL);
+     itimer++;
       if (itimer > STD_TIMEOUT*100) {
         cout << "SALCommmander: timed out for getEvent_logLevel" << endl;
         exit(-4);
@@ -106,7 +106,7 @@ int test_TestWithSalobjTarget(int index, int logLevel)
     itimer = 0;
     while (status != SAL__OK) {
       status = mgr.getSample_scalars(&SALTelemetry);
-      os_nanoSleep(delay_10ms);
+      nanosleep(&delay_10ms,NULL);
       itimer++;
       if (itimer > STD_TIMEOUT*100) {
         cout << "SALCommmander: timed out for getSample_scalars" << endl;
