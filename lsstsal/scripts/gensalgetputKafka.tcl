@@ -340,7 +340,7 @@ global SAL_WORK_DIR ACTIVETOPICS AVRO_PREFIX
    puts $fout "      sal\[i\].maxSamples = 1000;"
    puts $fout "      sal\[i\].sampleAge = 1.0e20;"
    puts $fout "      sal\[i\].hasSchema = true;"
-   puts $fout "      sal\[i\].historyDepth = 100;" 
+   puts $fout "      sal\[i\].historyDepth = 0;" 
    puts $fout "    \}"
    set idx 0
    foreach name $ACTIVETOPICS {

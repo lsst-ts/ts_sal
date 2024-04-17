@@ -69,23 +69,23 @@ public class salActor {
 /// sndSeqNum holds the sequence number of the most recent Kafka message sent for this topic
         public int sndSeqNum;
 /// cmdSeqNum holds the sequence number of the most recent Kafka command sent for this topic
-        public long cmdSeqNum;
+        public int cmdSeqNum;
 /// sndSeqNum holds the sequence number of the most recent Kafka message received for this topic
-        public long rcvSeqNum;
+        public int rcvSeqNum;
 /// rcvOrigin holds the private_origin from the last received message for this topic 
-        public long rcvOrigin;
+        public int rcvOrigin;
 /// rcvIdentity holds the private_identity filled from the last Kafka message received for this topic
         public String rcvIdentity;
 /// error is the error field for the most recent ackCmd message (commands)
-        public long error;
+        public int error;
 /// ack is the ack field for the most recent ackCmd message (commands)
-        public long ack;
+        public int ack;
 /// activeorigin is the private_origin field of the most recent command
-        public long activeorigin;
+        public int activeorigin;
 /// activeidentity is the private_identity field of the most recent command
         public String activeidentity;
 /// activecmdid is the command sequence number of the most recent command
-        public long activecmdid;
+        public int activecmdid;
 /// timeout is the number of seconds the command is expected to take to execute
         public double timeout;
 /// result is the text message result of the most recent command

@@ -16,7 +16,7 @@
 set SAL_DIR $env(SAL_DIR)
 source $SAL_DIR/gencommandtestsKafka.tcl
 source $SAL_DIR/gencommandtestssinglefileKafka.tcl 
-source $SAL_DIR/gencommandtestsjava.tcl
+source $SAL_DIR/gencommandtestsjavaKafka.tcl
 source $SAL_DIR/gencommandtestssinglefilejavaKafka.tcl
 source $SAL_DIR/activaterevcodesKafka.tcl 
 
@@ -609,9 +609,9 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE AVRO_PREFIX
     and no cmdId will be returned to the caller (=0)
   * @param data is the command payload $turl
   */
-	public long acceptCommand_[set i]( [getAvroNamespace]SALData.command_[set i] data )
+	public int acceptCommand_[set i]( [getAvroNamespace]SALData.command_[set i] data )
 	\{
-    		long status = 0;
+    		int status = 0;
    		int numsamp = 0;
    		int istatus =  -1;
                 String dummy=\"\";
@@ -811,7 +811,7 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE AVRO_PREFIX
   * @param error is an error code type
   * @param result is the ascii message text
   */
-	public int ackCommand_[set i]( long cmdId, long ack, long error, String result )
+	public int ackCommand_[set i]( int cmdId, int ack, int error, String result )
 	\{
    		int istatus = -1;
    		long ackHandle = 0;
@@ -975,7 +975,7 @@ global SYSDIC AVRO_PREFIX
       puts $fout "
 	public int checkAuthList(String private_identity)
 	\{
-          long cmdId;
+          int cmdId;
           int iat = 0;
   	  String my_identity = CSC_identity;
 

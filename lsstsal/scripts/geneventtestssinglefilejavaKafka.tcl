@@ -58,7 +58,7 @@ proc insertEventHeaderJava { subsys file_writer } {
 
     puts $file_writer "package org.lsst.sal.junit.[set subsys];"
     puts $file_writer "import junit.framework.TestCase;"
-    puts $file_writer "import [set subsys].*;"
+    puts $file_writer "import lsst.sal.[set subsys].*;"
     puts $file_writer "import org.lsst.sal.SAL_[set subsys];\n"
 }
 
@@ -92,7 +92,7 @@ proc insertSendersJava { subsys file_writer } {
         puts $file_writer "            System.out.println(\"=== [set subsys]_[set alias] start of topic ===\");"
         puts $file_writer "            int status = 0;"
         puts $file_writer "            int priority = 0;"
-        puts $file_writer "            [set subsys].logevent_[set alias] event  = new [set subsys].logevent_[set alias]();"
+        puts $file_writer "            lsst.sal.[set subsys].logevent_[set alias] event  = new lsst.sal.[set subsys].logevent_[set alias]();"
         
         set revcode [getRevCode [set subsys]_logevent_[set alias] short]
         puts $file_writer "            event.private_revCode = \"[string trim $revcode _]\";"

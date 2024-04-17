@@ -57,7 +57,7 @@ proc insertCommandHeaderJava { subsys file_writer } {
 
     puts $file_writer "package org.lsst.sal.junit.[set subsys];"
     puts $file_writer "import junit.framework.TestCase;"
-    puts $file_writer "import [set subsys].*;"
+    puts $file_writer "import lsst.sal.[set subsys].*;"
     puts $file_writer "import org.lsst.sal.SAL_[set subsys];\n"
 }
 

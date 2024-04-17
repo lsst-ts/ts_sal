@@ -73,8 +73,8 @@ global env SAL_WORK_DIR SAL_DIR OSPL_VERSION XMLVERSION RELVERSION SALVERSION TS
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source> 
     <maven.compiler.target>1.8</maven.compiler.target>
-    <kafka.version>2.9.1</kafka.version>
-    <confluent.version>7.4.0</confluent.version>
+    <kafka.version>2.6.0</kafka.version>
+    <confluent.version>7.6.0</confluent.version>
     <avro.version>$AVRO_RELEASE</avro.version>
   </properties>
     <reporting>
@@ -214,29 +214,27 @@ global env SAL_WORK_DIR SAL_DIR OSPL_VERSION XMLVERSION RELVERSION SALVERSION TS
   </project>
 "
   close $fout
-  foreach i [glob $SAL_WORK_DIR/[set subsys]_*/java] {
-    set id [file tail [file dirname $i]]
-    exec cp $SAL_WORK_DIR/[set id]/java/src/[set id]DataPublisher.java $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/test/java/.
-    exec cp $SAL_WORK_DIR/[set id]/java/src/[set id]DataSubscriber.java $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/test/java/.
-    puts stdout "Processed $id"
-  }
-  set allj [glob $SAL_WORK_DIR/$subsys/java/src/*.java]
-  foreach fj $allj {
-     exec cp $fj $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/test/java/.
-     puts stdout "Processed $fj"
-  }
+#  foreach i [glob $SAL_WORK_DIR/[set subsys]_*/java] {
+#    set id [file tail [file dirname $i]]
+#    exec cp $SAL_WORK_DIR/[set id]/java/src/[set id]DataPublisher.java $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/test/java/.
+#    exec cp $SAL_WORK_DIR/[set id]/java/src/[set id]DataSubscriber.java $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/test/java/.
+#    puts stdout "Processed $id"
+#  }
+#  set allj [glob $SAL_WORK_DIR/$subsys/java/src/*.java]
+#  foreach fj $allj {
+#     exec cp $fj $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/test/java/.
+#     puts stdout "Processed $fj"
+#  }
   exec cp -r $SAL_WORK_DIR/$subsys/java/src/org $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/java/.
   exec cp -r $SAL_WORK_DIR/$subsys/java/src/lsst $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/java/.
   exec mkdir -p $SAL_WORK_DIR/maven/libs
   exec cp -r $SAL_WORK_DIR/lib/SAL_[set subsys].jar  $SAL_WORK_DIR/maven/libs/.
   exec cp -r $SAL_WORK_DIR/lib/saj_[set subsys]_types.jar  $SAL_WORK_DIR/maven/libs/.
-  foreach j [glob $SAL_DIR/../lib/*.jar] {
-    exec cp $j $SAL_WORK_DIR/maven/libs/.
-  }
-  if { $subsys == "Test" } {
-    exec cp $SAL_DIR/code/templates/TestWithSalobjTest.java $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/test/java/.
-    exec cp $SAL_DIR/code/templates/TestWithSalobjTargetTest.java $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/test/java/.
-  }
+  generateSchemaSupport $subsys
+#  if { $subsys == "Test" } {
+#    exec cp $SAL_DIR/code/templates/TestWithSalobjTest.java $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/test/java/.
+#    exec cp $SAL_DIR/code/templates/TestWithSalobjTargetTest.java $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/test/java/.
+#  }
 }
 
 
@@ -259,7 +257,7 @@ global env SAL_WORK_DIR SAL_DIR CMD_ALIASES CMDS SYSDIC XMLVERSION SALVERSION RE
 package org.lsst.sal.junit.[set subsys];
 
 import junit.framework.TestCase;
-import [set subsys].*;
+import lsst.sal.[set subsys].*;
 import org.lsst.sal.SAL_[set subsys];
 
 public class [set subsys]CommanderTest extends TestCase \{
@@ -319,7 +317,7 @@ public class [set subsys]CommanderTest extends TestCase \{
 package org.lsst.sal.junit.[set subsys];
 
 import junit.framework.TestCase;
-import [set subsys].*;
+import lsst.sal.[set subsys].*;
 import org.lsst.sal.SAL_[set subsys];
 
 public class [set subsys]ControllerTest extends TestCase \{
@@ -394,10 +392,10 @@ global env SAL_WORK_DIR SAL_DIR OSPL_VERSION XMLVERSION RELVERSION SALVERSION TS
     }
   }
 # make pom.xml
-  cd $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]
-  set result none
-  catch { set result [exec mvn compile] } bad
-  catch {stdlog "result = $result"}
+##  cd $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]
+##  set result none
+##  catch { set result [exec mvn compile] } bad
+##  catch {stdlog "result = $result"}
 }
 
 

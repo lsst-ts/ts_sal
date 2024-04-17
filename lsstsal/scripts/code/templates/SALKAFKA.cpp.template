@@ -625,15 +625,21 @@ void SAL_SALData::createSubscriber(int actorIdx)
   }
   const int partition = 0;
   RdKafka::ErrorCode err;
-  int64_t low;
-  int64_t high;
-  sal[actorIdx].subscriber->query_watermark_offsets(sal[actorIdx].avroName, partition,&low,&high, 1000);
+  int64_t low = 0;
+  int64_t high = 0;
+  err = sal[actorIdx].subscriber->query_watermark_offsets(sal[actorIdx].avroName, partition,&low,&high, 1000);
+  if ( debugLevel > 0 ) {
+    cout << "  query_watermark_offsets error = " << err << endl;
+  }
   cout << "topic offsets for " << sal[actorIdx].avroName << " " << low << ":" << high << endl;
   int64_t startOffset = high - sal[actorIdx].historyDepth;
   if (startOffset < low) {
      startOffset = low;
   }
-  if (sal[actorIdx].historyDepth == 0) {
+  if (startOffset < 0) {
+     startOffset = 0;
+  }
+  if (sal[actorIdx].historyDepth == 0 || err != 0 ) {
      startOffset = RD_KAFKA_OFFSET_END;
   }
   std::vector<RdKafka::TopicPartition*> parts;
@@ -641,7 +647,7 @@ void SAL_SALData::createSubscriber(int actorIdx)
   parts[0]->set_offset(startOffset);
   err = sal[actorIdx].subscriber->assign(parts);
   if ( debugLevel > 0 ) {
-    err = sal[actorIdx].subscriber->committed(parts,10);
+    err = sal[actorIdx].subscriber->committed(parts,100);
     cout << "topic committed for " << sal[actorIdx].avroName << " is " << parts[0]->offset() << endl;
     cout << "  error = " << err << endl;
     err = sal[actorIdx].subscriber->position(parts);

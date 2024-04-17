@@ -17,7 +17,7 @@
 set SAL_DIR $env(SAL_DIR)
 source $SAL_DIR/geneventtestsKafka.tcl 
 source $SAL_DIR/geneventtestssinglefileKafka.tcl
-source $SAL_DIR/geneventtestsjava.tcl 
+source $SAL_DIR/geneventtestsjavaKafka.tcl 
 source $SAL_DIR/geneventtestssinglefilejavaKafka.tcl
 
 ## Documented proc \c geneventaliascode .
