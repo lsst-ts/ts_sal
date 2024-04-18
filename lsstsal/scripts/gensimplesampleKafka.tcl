@@ -759,7 +759,7 @@ global SAL_WORK_DIR OPTIONS ONEDONECPP ONEDONEJAVA SAL_DIR AVRO_RELEASE LSST_SAL
              }
             }
           }
-          catch {exec java -jar $LSST_SAL_PREFIX/../lib/avro-tools-[set AVRO_RELEASE].jar compile schema $SAL_WORK_DIR/avro-templates/[set base]/[set base]_ackcmd.json $SAL_WORK_DIR/[set base]/java/src/}
+          catch {exec java -jar $LSST_SAL_PREFIX/lib/avro-tools-[set AVRO_RELEASE].jar compile schema $SAL_WORK_DIR/avro-templates/[set base]/[set base]_ackcmd.json $SAL_WORK_DIR/[set base]/java/src/}
           cd $SAL_WORK_DIR/$base/$lang/src
           set result none
           catch { set result [exec make -f Makefile.saj_[set base]_types] } bad

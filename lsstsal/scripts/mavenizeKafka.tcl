@@ -382,9 +382,11 @@ proc generateSchemaSupport { subsys } {
 global env SAL_WORK_DIR SAL_DIR OSPL_VERSION XMLVERSION RELVERSION SALVERSION TS_SAL_DIR AVRO_RELEASE
   set mvnrelease [set XMLVERSION]_[set SALVERSION][set RELVERSION]
   exec mkdir -p $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/avro
-  set all [glob $SAL_WORK_DIR/avro-templates/[set subsys]/[set subsys]_*.json]
+  exec mkdir -p $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/resources/avro
+ set all [glob $SAL_WORK_DIR/avro-templates/[set subsys]/[set subsys]_*.json]
   foreach j $all {
     set id [file tail [file rootname $j]]
+    exec cp  $SAL_WORK_DIR/avro-templates/[set subsys]/[set id].json $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/resources/avro/[set id].avsc
     if { [lindex [split $id "_"] end] != "enums" } {
      if { $id != "[set subsys]_hash_table.json" } {
       exec cp  $SAL_WORK_DIR/avro-templates/[set subsys]/[set id].json $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/avro/[set id].avsc
