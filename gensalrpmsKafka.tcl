@@ -310,7 +310,6 @@ rpmbuild -ba -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_runtime.spec
 #
 proc generateATmetarpm { } {
 global SYSDIC SALRELEASE SALVERSION SAL_WORK_DIR AVRO_RELEASE RELVERSION env XMLVERSION
-   set fout [open $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_ATruntime.spec w]
    set rpmversion [updateversioning]
    set rpmversion [join [split $rpmversion "-"] "~"]
    set release $SALVERSION
@@ -380,7 +379,7 @@ global SAL_WORK_DIR SALVERSION SALRELEASE RPMFILES AVRO_RELEASE RELVERSION XMLVE
   set rpmversion [join [split $rpmversion "-"] "~"]
   set release $SALVERSION
   puts $fout "Name: $subsys
-Version: $rpmversion
+Version: $XMLVERSION
 Release: [set release]%\{?dist\}
 Summary: SAL runtime for $subsys Subsystem
 Vendor: LSST
