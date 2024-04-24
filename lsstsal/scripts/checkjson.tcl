@@ -151,7 +151,7 @@ global AVRO_PREFIX
 set SAL_WORK_DIR $env(SAL_WORK_DIR)
 set SAL_DIR $env(SAL_DIR)
 source $env(SAL_DIR)/streamutilsKafka.tcl
-source $env(SAL_DIR)/utilities.tcl
+source $env(SAL_DIR)/utilitiesKafka.tcl
 source $env(SAL_DIR)/add_system_dictionary.tcl
 source $env(SAL_DIR)/add_private_json.tcl
 

@@ -34,7 +34,7 @@ cd $SAL_WORK_DIR/docbuild_[set csc]
 
 source $SAL_DIR/activaterevcodesKafka.tcl
 source $SAL_DIR/update_ts_xml_dictionary.tcl
-source $SAL_DIR/utilities.tcl
+source $SAL_DIR/utilitiesKafka.tcl
 parseSystemDictionary
 
 if { $argv != "upload" } {

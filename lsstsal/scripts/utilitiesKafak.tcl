@@ -101,13 +101,15 @@ global SAL_WORK_DIR SALVERSION OPTIONS
 #  Check for SAL generated files expected as salgenerator output
 #
 proc checkAssets { subsys } {
-global SAL_WORK_DIR OPTIONS CMD_ALIASES EVENT_ALIASES TLM_ALIASES
+global SAL_WORK_DIR OPTIONS CMD_ALIASES EVENT_ALIASES TLM_ALIASES env
    if { $OPTIONS(verbose) } {stdlog "###TRACE>>> checkAssets $subsys"}
    if { $OPTIONS(idl) } {
         checkFileAsset $SAL_WORK_DIR/[set subsys]/sal_revCoded_[set subsys].idl
    }
    if { $OPTIONS(cpp) } {
-        checkFileAsset $SAL_WORK_DIR/[set subsys]/cpp/libsacpp_[set subsys]_types.so
+        if { [info exists env(LSST_KAFKA_PREFIX)] == 0 } {
+          checkFileAsset $SAL_WORK_DIR/[set subsys]/cpp/libsacpp_[set subsys]_types.so
+        }
         checkFileAsset $SAL_WORK_DIR/[set subsys]/cpp/src/SAL_[set subsys].cpp
         checkFileAsset $SAL_WORK_DIR/[set subsys]/cpp/src/SAL_[set subsys].h
         checkFileAsset $SAL_WORK_DIR/[set subsys]/cpp/src/SAL_[set subsys]C.h
@@ -125,8 +127,12 @@ global SAL_WORK_DIR OPTIONS CMD_ALIASES EVENT_ALIASES TLM_ALIASES
         }
    }
    if { $OPTIONS(java) } {
-        checkFileAsset $SAL_WORK_DIR/[set subsys]/java/saj_[set subsys]_types.jar
-        checkFileAsset $SAL_WORK_DIR/[set subsys]/java/src/org/lsst/sal/SAL_[set subsys].java
+        if { [info exists env(LSST_KAFKA_PREFIX)] == 0 } {
+           checkFileAsset $SAL_WORK_DIR/[set subsys]/java/saj_[set subsys]_types.jar
+           checkFileAsset $SAL_WORK_DIR/[set subsys]/java/src/org/lsst/sal/SAL_[set subsys].java
+        } else {
+           checkFileAsset $SAL_WORK_DIR/[set subsys]/java/src/saj_[set subsys]_types.jar
+        }
    }
    if { $OPTIONS(labview) } {
         checkFileAsset $SAL_WORK_DIR/[set subsys]/labview/SALLV_[set subsys].so
@@ -219,7 +225,7 @@ global SAL_WORK_DIR
 #
 proc getTopicURL  { base topic } {
   set anchor [string tolower [lindex [split $topic _] end]]
-  set linktext [set base]_[join [lrange [split $topic _] 0 end] _]
+  set linktext [join [lrange [split $topic _] 0 end] _]
   set url "<A HREF=https://ts-xml.lsst.io/python/lsst/ts/xml/data/sal_interfaces/[set base].html#[set anchor]>$linktext</A>"
 }
 
@@ -232,9 +238,9 @@ proc getTopicURL  { base topic } {
 #
 proc updateMetaData { subsys } {
 global METADATA SAL_WORK_DIR
-  set fmeta [open $SAL_WORK_DIR/idl-templates/validated/[set subsys]_metadata.dat w]
+  set fmeta [open $SAL_WORK_DIR/avro-templates/[set subsys]_metadata.tcl w]
   foreach i [lsort [array names METADATA]] {
-     puts $fmeta "$i $METADATA($i)"
+     puts $fmeta "set METADATA($i) $METADATA($i)"
   }
   close $fmeta
 }
@@ -247,12 +253,7 @@ global METADATA SAL_WORK_DIR
 #
 proc readMetaData { subsys } {
 global METADATA SAL_WORK_DIR
-  set fmeta [open $SAL_WORK_DIR/idl-templates/validated/[set subsys]_metadata.dat r]
-  while { [gets $fmeta rec] > -1 } {
-    set id [lindex [split $rec " "] 0]
-    set METADATA($id) [join [safeString [lrange [split $rec " "] 1 end]] " "]
-  }
-  close $fmeta
+  source $SAL_WORK_DIR/avro-templates/[set subsys]_metadata.tcl
 }
 
 
