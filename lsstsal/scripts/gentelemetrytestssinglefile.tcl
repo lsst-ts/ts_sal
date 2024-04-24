@@ -61,10 +61,12 @@ proc insertTelemetryHeader { subsys file_writer } {
 
     puts $file_writer "#include <string>"
     puts $file_writer "#include <sstream>"
-    puts $file_writer "#include <string>"
-    puts $file_writer "#include <time.h>"
+    puts $file_writer "#include <iostream>"
     puts $file_writer "#include <stdlib.h>"
     puts $file_writer "#include \"SAL_[set subsys].h\""
+    puts $file_writer "#include \"ccpp_sal_[set subsys].h\""
+    puts $file_writer "#include \"os.h\""
+    puts $file_writer "using namespace DDS;"
     puts $file_writer "using namespace [set subsys];"
 }
 
@@ -94,7 +96,7 @@ proc insertPublishers { subsys file_writer } {
         puts $file_writer "\n  \{"
         puts $file_writer "    cout << \"=== [set subsys]_[set alias] start of topic ===\" << endl;"
         puts $file_writer "    int iseq = 0;"
-        puts $file_writer "    timespec os_time delay_1s = { 1, 0 };"
+        puts $file_writer "    os_time delay_1s = { 1, 0 };"
         puts $file_writer "    [set subsys]_[set alias]C myData;"
         puts $file_writer "    while (iseq < 10) \{"
 
@@ -123,6 +125,7 @@ proc insertSubscribers { subsys file_writer } {
     puts $file_writer "\n/* entry point exported and demangled so symbol can be found in shared library */"
     puts $file_writer "extern \"C\""
     puts $file_writer "\{"
+    puts $file_writer "  OS_API_EXPORT"
     puts $file_writer "  int test_[set subsys]_all_telemetry();"
     puts $file_writer "\}"
 
@@ -151,9 +154,7 @@ proc insertSubscribers { subsys file_writer } {
         puts $file_writer "    [set subsys]_[set alias]C SALInstance;"
         puts $file_writer "    ReturnCode_t status = -1;"
         puts $file_writer "    int count = 0;"
-        puts $file_writer "  struct timespec delay_10ms;"
-        puts $file_writer "  delay_10ms.tv_sec = 0;"
-        puts $file_writer "  delay_10ms.tv_nsec = 10000000;"
+        puts $file_writer "    os_time delay_10ms = \{ 0, 10000000 \};"
 
         puts $file_writer "    while (count < 10) \{"
         puts $file_writer "      status = mgr.getNextSample_[set alias](&SALInstance);"
@@ -164,7 +165,7 @@ proc insertSubscribers { subsys file_writer } {
             puts $file_writer "        [string trim $line ]"
         }
         close $fragment_reader
-        puts $file_writer "        nanosleep(&delay_10ms,NULL);"
+        puts $file_writer "        os_nanoSleep(delay_10ms);"
         puts $file_writer "        ++count;"
 
         puts $file_writer "      \}"
@@ -186,10 +187,6 @@ proc insertSubscribers { subsys file_writer } {
 }
 
 proc insertTelemetryMakeFile { subsys file_writer } {
-    set keyed ""
-    if { [info exists SYSDIC($subsys,keyedID)] } {
-       set keyed "-DSAL_SUBSYSTEM_ID_IS_KEYED"
-    }
     puts $file_writer "#----------------------------------------------------------------------------"
     puts $file_writer "#       Macros"
     puts $file_writer "#----------------------------------------------------------------------------"
@@ -201,12 +198,12 @@ proc insertTelemetryMakeFile { subsys file_writer } {
     puts $file_writer "LD            = \$(CXX) \$(CCFLAGS) \$(CPPFLAGS)"
     puts $file_writer "AR            = ar"
     puts $file_writer "PICFLAGS      = -fPIC"
-    puts $file_writer "CPPFLAGS      = \$(PICFLAGS) \$(GENFLAGS) -g \$(SAL_CPPFLAGS) -D_REENTRANT -Wall -I\".\"  -I\"\$(AVRO_INCL)\" -I../../[set subsys]/cpp/src -I\"\$(SAL_HOME)/include\" -I.. -I\"\$(SAL_WORK_DIR)/include\" -Wno-write-strings $keyed"
+    puts $file_writer "CPPFLAGS      = \$(PICFLAGS) \$(GENFLAGS) -g \$(SAL_CPPFLAGS) -D_REENTRANT -Wall -I\".\" -I\"\$(OSPL_HOME)/examples/include\" -I\"\$(OSPL_HOME)/examples\" -I\"\$(OSPL_HOME)/include\" -I\"\$(OSPL_HOME)/include/sys\" -I\"\$(OSPL_HOME)/include/dcps/C++/SACPP\" -I../../[set subsys]/cpp/src -I\"\$(SAL_HOME)/include\" -I.. -I\"\$(SAL_WORK_DIR)/include\" -Wno-write-strings -DSAL_SUBSYSTEM_ID_IS_KEYED"
     puts $file_writer "OBJEXT        = .o"
     puts $file_writer "OUTPUT_OPTION = -o \"\$@\""
     puts $file_writer "COMPILE.c     = \$(CC) \$(CFLAGS) \$(CPPFLAGS) -c"
     puts $file_writer "COMPILE.cc    = \$(CXX) \$(CCFLAGS) \$(CPPFLAGS) -c"
-    puts $file_writer "LDFLAGS       = -L\".\" -L\"\$(SAL_WORK_DIR)/lib\""
+    puts $file_writer "LDFLAGS       = -L\".\" -L\"\$(OSPL_HOME)/lib\" -Wl,-rpath,\$\$ORIGIN -Wl,-rpath,\$\$ORIGIN/\$(OSPL_HOME)/lib -L\"\$(SAL_WORK_DIR)/lib\""
     puts $file_writer "CCC           = \$(CXX)"
     puts $file_writer "MAKEFILE      = Makefile.sacpp_[set subsys]_testcommands // may be not needed"
     puts $file_writer "DEPENDENCIES  ="
@@ -231,9 +228,9 @@ proc insertTelemetryMakeFile { subsys file_writer } {
     puts $file_writer "TOUCH         = touch"
     puts $file_writer "EXEEXT        ="
     puts $file_writer "LIBPREFIX     = lib"
-    puts $file_writer "LIBSUFFIX     = .so"
+    puts $file_writer "LIBSUFFIX     ="
     puts $file_writer "GENFLAGS      = -g"
-    puts $file_writer "LDLIBS        = -l\"sacpp_SAL_types\$(LIBSUFFIX)\" -ldl -lrt -lpthread -lrdkafka -lboost"
+    puts $file_writer "LDLIBS        = -l\"sacpp_[set subsys]_types\$(LIBSUFFIX)\" -l\"dcpssacpp\" -l\"dcpsgapi\" -l\"ddsuser\" -l\"ddskernel\" -l\"ddsserialization\" -l\"ddsconfparser\" -l\"ddsconf\" -l\"ddsdatabase\" -l\"ddsutil\" -l\"ddsos\" -ldl \$(subst lib,-l,\$(sort \$(basename \$(notdir \$(wildcard /usr/lib/librt.so /lib/librt.so))))) -lrt -lpthread"
     puts $file_writer "LINK.cc       = \$(LD) \$(LDFLAGS)"
     puts $file_writer "EXPORTFLAGS   ="
     puts $file_writer "endif"
