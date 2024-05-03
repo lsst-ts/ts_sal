@@ -5,6 +5,16 @@
 ###############
 Version History
 ###############
+Changes for 8.0.0
+=================
+
+* Add suppport for Kafka as the middleware transport
+
+=======
+Changes for 7.5.0
+=================
+
+* Add new ~ based scheme for RPM naming
 
 Changes for 7.5.0
 =================

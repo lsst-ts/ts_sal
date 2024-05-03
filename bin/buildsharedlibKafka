@@ -1,0 +1,13 @@
+#!/bin/sh
+#
+# Build a SAL shared library using specified subsystem components
+#
+cd $SAL_WORK_DIR
+echo "work dir is $SAL_WORK_DIR"
+
+set -x
+ar -rus -v lib/libSAL_$1.a $1/cpp/src/.obj/SAL_$1.o
+g++ $1/cpp/src/.obj/SAL_$1.o -o lib/libSAL_$1.so -shared  -fPIC -ldl -lrt -lpthread -L/usr/lib64/boost1.78 -lboost_filesystem -lboost_iostreams -lboost_program_options -lboost_system -L/opt/lsst/ts_sal/lib -lavrocpp -lrdkafka++
+
+echo "Copying includes"
+cp -v $1/cpp/src/*.h include
