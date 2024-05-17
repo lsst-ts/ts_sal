@@ -84,8 +84,6 @@ global CMD_ALIASES CMDS DONE_CMDEVT ACKREVCODE REVCODE SAL_WORK_DIR OPTIONS
       int issueCommand_[set i]( SALData_command_[set i]C *data );
 
 /** Accept the [set i] command. The
-  * unless commanding is currently blocked by the authList setting (in which case the command will be ack = SAL__CMD_NOPERM
-  * and no cmdId will be returned to the caller (=0)
   * @param data is the command payload $turl
   */
       int acceptCommand_[set i]( SALData_command_[set i]C *data );
@@ -132,9 +130,6 @@ global CMD_ALIASES CMDS DONE_CMDEVT ACKREVCODE REVCODE SAL_WORK_DIR OPTIONS
        if { $result == "none" } {stdlog $bad ; errorexit "failure in gencommandtestscpp" }
        stdlog "$result"
        set result none
-       catch { set result [genauthlisttestscpp $subsys] } bad
-       if { $result == "none" } {stdlog $bad ; errorexit "failure in genauthlisttestscpp" }
-       stdlog "$result"
      }
   }
   if { $lang == "java" }  {
@@ -240,9 +235,6 @@ int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
   if (sal\[actorIdx\].isProcessor == false) \{
       throw std::runtime_error(\"No controller for acceptCommand_[set i]\");
   \}"
-  if { $i != "setAuthList" } {
-     puts $fout "	checkAuthList(sal\[actorIdx\].activeidentity);"
-  }
   readerFragment $fout SALData command_[set i] 
   puts $fout "  
    if ( numSamples > 0) \{
@@ -288,18 +280,6 @@ int SAL_SALData::acceptCommand_[set i]( SALData_command_[set i]C *data )
     ackdata.salIndex = subsystemID;
 #endif
 "
-     if { $subsys != "LOVE" } {
-       puts $fout "
-    if ( actorIdx != SAL__SALData_command_setAuthList_ACTOR ) \{
-      if (checkAuthList(sal\[actorIdx\].activeidentity) != SAL__OK) \{
-        ackdata.ack = SAL__CMD_NOPERM;
-        ackdata.error = 1;
-        ackdata.result = \"Commanding not permitted by authList setting\";
-        status = 0;
-      \}
-    \}
-"
-     }
      puts $fout "    
      if ( ackdata.ack != SAL__CMD_ACK ) \{
        actorIdx = SAL__SALData_ackcmd_ACTOR;"
@@ -327,12 +307,6 @@ salReturn SAL_SALData::waitForCompletion_[set i]( int cmdSeqNum , unsigned int t
    double start = getCurrentTime();
    while (status != SAL__CMD_COMPLETE && countdown != 0) \{
       status = getResponse_[set i](response);
-      if (status == SAL__CMD_NOPERM) \{
-        if (debugLevel > 0) \{
-          cout << \"=== waitForCompletion_[set i] command \" << cmdSeqNum <<  \" Not permitted by authList\" << endl;
-        \}
-        return status;
-      \}
       if (status != SAL__CMD_NOACK) \{
         if (sal\[actorIdx\].rcvSeqNum != cmdSeqNum) \{ 
            status = SAL__CMD_NOACK;
@@ -605,8 +579,6 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE AVRO_PREFIX
 "
       puts $fout "
 /** Accept the [set i] command.
-    unless commanding is currently blocked by the authList setting, in which case the command will be ack = SAL__CMD_NOPERM
-    and no cmdId will be returned to the caller (=0)
   * @param data is the command payload $turl
   */
 	public int acceptCommand_[set i]( [getAvroNamespace]SALData.command_[set i] data )
@@ -617,9 +589,6 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE AVRO_PREFIX
                 String dummy=\"\";
                 int actorIdx = SAL__SALData_command_[set i]_ACTOR;
 "
-      if { $i != "setAuthList" } { 
-         puts $fout "		checkAuthList(dummy);"
-      }
       puts $fout "
   		// create processor :"
       readerFragmentJava $fout SALData command_[set i]
@@ -657,18 +626,6 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE AVRO_PREFIX
 		      rcvIdentity = String.valueOf(Instance.get[getAvroMethod private_identity]());
 		      ackdata.setAck(SAL__CMD_ACK);
 "
-           if { $subsys != "LOVE" } {
-              puts $fout "
-                      if ( actorIdx != SAL__SALData_command_setAuthList_ACTOR ) \{
-		        if (checkAuthList(sal\[actorIdx\].activeidentity) != SAL__OK) \{
-       			  ackdata.setAck(SAL__CMD_NOPERM);
-       			  ackdata.setError(1);
-       			  ackdata.setResult(\"Commanding not permitted by authList setting\");
-       			  status = 0;
-    		        \}
-                       \}
-"
-           }
       puts $fout "
                  if ( ackdata.getAck() != SAL__CMD_ACK ) \{"
       if { [info exists SYSDIC($subsys,keyedID)] } {
@@ -700,12 +657,6 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE AVRO_PREFIX
 
 	   while (status != SAL__CMD_COMPLETE && System.currentTimeMillis() < finishBy ) \{
 	      status = getResponse_[set i](ackcmd);
-              if (status == SAL__CMD_NOPERM) \{
-                if (debugLevel > 0) \{
-                  System.out.println( \"=== waitForCompletion_[set i] command \" + cmdSeqNum +  \" Not permitted by authList\");
-                \}
-                return status;
-              \}
 	      if (status != SAL__CMD_NOACK) \{
 	        if (sal\[actorIdx\].rcvSeqNum != cmdSeqNum) \{ 
 	           status = SAL__CMD_NOACK;
@@ -953,8 +904,6 @@ global SYSDIC AVRO_PREFIX
 
 	  //create a reader for commands
 "
-#   set cmdrevcode [getRevCode [set subsys]_command_setAuthList short]
-#   set evtrevcode [getRevCode [set subsys]_logevent_authList short]
    puts $fout "
           if (sal\[actorIdx\].isProcessor == false) \{
  	    createTopic2(SAL__SALData_ackcmd_ACTOR,sresponse);
@@ -964,106 +913,6 @@ global SYSDIC AVRO_PREFIX
           sal\[actorIdx\].sampleAge = 1.0;
 	\}
 "
-   if { $subsys == "LOVE" } {
-      puts $fout "
-	public int checkAuthList(String private_identity);
-	\{
-             return SAL__OK;
-        \}
-"
-   } else {
-      puts $fout "
-	public int checkAuthList(String private_identity)
-	\{
-          int cmdId;
-          int iat = 0;
-  	  String my_identity = CSC_identity;
-
-          if ( !authListEnabled ) \{
-             return SAL__OK;
-          \}
-
-          boolean defaultCheck = private_identity.equals(CSC_identity);
-          if (defaultCheck) \{
-             return SAL__OK;
-          \}
-
-	  if ( sal\[SAL__SALData_command_setAuthList_ACTOR\].isProcessor == false ) \{
-     	    salProcessor(\"SALData_command_setAuthList\");
-     	    salEventPub(\"SALData_logevent_authList\");
-            [getAvroNamespace]SALData.logevent_authList myData = new [getAvroNamespace]SALData.logevent_authList();
-     	    authorizedUsers = \"\";
-     	    nonAuthorizedCSCs = \"\";
-     	    myData.set[getAvroMethod authorizedUsers](authorizedUsers);
-     	    myData.set[getAvroMethod nonAuthorizedCSCs](nonAuthorizedCSCs);
-     	    logEvent_authList(myData, 1);
-  	  \}
-          [getAvroNamespace]SALData.command_setAuthList Instance_setAuthList = new [getAvroNamespace]SALData.command_setAuthList();
-          [getAvroNamespace]SALData.logevent_authList myData = new [getAvroNamespace]SALData.logevent_authList();
-  	  cmdId = acceptCommand_setAuthList(Instance_setAuthList);
-  	  if (cmdId > 0) \{
-      	    if (debugLevel > 0) \{
-              System.out.println( \"=== command setAuthList received = \");
-              System.out.println( \"    authorizedUsers : \" + Instance_setAuthList.get[getAvroMethod authorizedUsers]());
-              System.out.println( \"    nonAuthorizedCSCs : \" + Instance_setAuthList.get[getAvroMethod nonAuthorizedCSCs]());
-            \}
-     	    authorizedUsers = String.valueOf(Instance_setAuthList.get[getAvroMethod authorizedUsers]());
-     	    authorizedUsers.replaceAll(\"\\\\s+\",\"\");
-     	    nonAuthorizedCSCs = String.valueOf(Instance_setAuthList.get[getAvroMethod nonAuthorizedCSCs]());
-     	    nonAuthorizedCSCs.replaceAll(\"\\\\s+\",\"\");
-     	    myData.set[getAvroMethod authorizedUsers](Instance_setAuthList.get[getAvroMethod authorizedUsers]());
-     	    myData.set[getAvroMethod nonAuthorizedCSCs](Instance_setAuthList.get[getAvroMethod nonAuthorizedCSCs]());
-            ackCommand_setAuthList( cmdId, SAL__CMD_COMPLETE, 0, \"OK\" );
-     	    logEvent_authList(myData, 1);
-          \}
-          boolean ignoreCheck = private_identity.equals(\"\");
-          if (ignoreCheck == false) \{
-           StringTokenizer tokenizer2 = new StringTokenizer(nonAuthorizedCSCs, \",\");        
-           while (tokenizer2.hasMoreTokens()) \{
-            String next2 = tokenizer2.nextToken();
-            boolean ok1 = next2.equals(my_identity);
-            if (ok1) \{ 
-              if ( debugLevel > 1) \{ System.out.println(\"authList check : \" + next2 + \" allowed\"); \}
-              return SAL__OK;
-            \} else \{
-              boolean ok2 = next2.equals(private_identity);
-              if (ok2) \{ 
-                if ( debugLevel > 1) \{ System.out.println(\"authList check : \" + next2 + \" forbidden\"); \}
-                return SAL__CMD_NOPERM;
-              \}
-              StringTokenizer tokenizer3 = new StringTokenizer(private_identity, \":\");        
-              while (tokenizer3.hasMoreTokens()) \{
-                String next3 = tokenizer3.nextToken();
-                boolean ok3 = next3.equals(next2);
-                if ( debugLevel > 1) \{ System.out.println(\"authList check : \" + next3 + \" \" + ok3); \}
-                if (ok3) \{ 
-                  if ( debugLevel > 1) \{ System.out.println(\"authList check : \" + next3 + \" forbidden\"); \}
-                  return SAL__CMD_NOPERM;
-                \}
-              \}
-            \}
-           \}
-           StringTokenizer tokenizer4 = new StringTokenizer(authorizedUsers, \",\");        
-           while (tokenizer4.hasMoreTokens()) \{
-            String next = tokenizer4.nextToken();
-            boolean ok = next.equals(private_identity);
-            if (ok) \{ 
-              if ( debugLevel > 1) \{ System.out.println(\"authList check : \" + next + \" allowed\"); \}
-              return SAL__OK;
-            \}
-           \}        
-           StringTokenizer tokenizer5 = new StringTokenizer(private_identity, \"@\");        
-           while (tokenizer5.hasMoreTokens()) \{
-            iat++;
-            if (iat > 1) \{
-              return SAL__CMD_NOPERM;
-            \}
-           \}
-          \}
-          return SAL__OK;      
-        \}
-"
-   }
 }
 
 

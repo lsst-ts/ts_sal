@@ -196,7 +196,6 @@
       int lastActor_telemetry;
       int lastActor_command;
       int lastActor_event;
-      bool authListEnabled;
       char *pname;
       char *aname;
       char *sname;
@@ -212,13 +211,6 @@
 
 ///   Holds the private_identity of this SAL Object, set at creation
       char CSC_identity[128];
-
-///   Holds the current authList authorizedUsers list
-      std::string authorizedUsers;
-
-///   Holds the current authList nonAuthorizedCSCs list
-      std::string nonAuthorizedCSCs;
-
     public:
 
 /** Constructor for the SAL_SALData object.
@@ -327,9 +319,6 @@
 
 ///  Remove whitespace from the a string
      std::string removeSpaces(std::string list);
-
-///  Check the current commands private_identity against the authList
-      salReturn checkAuthList(std::string private_identity);
 
 /// Set the debug message output verbosity level for this SAL_SALData object
       salReturn setDebugLevel( int level );

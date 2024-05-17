@@ -109,11 +109,7 @@ int main (int argc, char *argv\[\])
     iseq++;
     cmdId = mgr->issueCommand_[set alias](&myData);
     cout << \"=== command $alias issued = \" << cmdId << endl;"
-  if { $alias == "setAuthList" } {
-    puts $fcmd "  sleep(2);"
-  } else {
-    puts $fcmd "  status = mgr->waitForCompletion_[set alias](cmdId, 10);"
-  } 
+  puts $fcmd "  status = mgr->waitForCompletion_[set alias](cmdId, 10);"
   puts $fcmd "    nanosleep(&delayms,NULL);"
   puts $fcmd "  \}
   
@@ -174,7 +170,6 @@ int test_[set subsys]_[set alias]_controller()
   cout << \"=== [set subsys]_[set alias] controller ready \" << endl;
 
   while (1) \{
-    mgr.checkAuthList(\"\");
     // receive command
     cmdId = mgr.acceptCommand_[set alias](&SALInstance);
     if (cmdId > 0) \{
@@ -271,86 +266,6 @@ SRC           = ../src/SAL_[set subsys].cpp $extrasrc"
    close $fout
    exec cp /tmp/Makefile.sacpp_[set subsys]_testcommands $SAL_WORK_DIR/$subsys/cpp/src/Makefile.sacpp_[set subsys]_testcommands
  }
- if { [lsearch $CMD_ALIASES([set subsys]) "setLogLevel"] > -1 } {
-   genauthlisttestscpp $subsys
- }
  if { $OPTIONS(verbose) } {stdlog "###TRACE<<< gencommandtestscpp $subsys"}
 }
-
- 
-#
-## Documented proc \c genauthlisttestscpp .
-# \param[in] subsys Name of CSC/Subsystem as defined in SALSubsystems.xml
-#
-#  Generates the authList test script for a Subsystem/CSC.
-#  The test starts a controller, and then sends a set of
-#  authList's and tries to issue a command with each.
-#
-proc genauthlisttestscpp { subsys } {
-global CMD_ALIASES CMDS SAL_WORK_DIR SYSDIC DONE_CMDEVT SAL_DIR OPTIONS
-  if { $OPTIONS(verbose) } {stdlog "###TRACE>>> genauthlisttestscpp $subsys"}
-  set fout [open $SAL_WORK_DIR/[set subsys]/cpp/src/testAuthList.sh w]
-  set testnoauth "MTM1M3"
-  if { $subsys == "MTM1M3" } {set testnoauth "MTRotator"}
-  puts $fout "#!/bin/sh
-export LSST_DDS_ENABLE_AUTHLIST=1
-echo \"=====================================================================\"
-echo \"Starting sacpp_[set subsys]_setLogLevel_controller\"
-$SAL_WORK_DIR/[set subsys]/cpp/src/sacpp_[set subsys]_setLogLevel_controller &
-sleep 10
-echo \"=====================================================================\"
-echo \"Test with authList not set at all, default identity=[set subsys]\"
-echo \"Expect : completed ok\"
-unset LSST_IDENTITY
-$SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_setAuthList_commander   \"\" \"\"
-$SAL_WORK_DIR/[set subsys]/cpp/src/sacpp_[set subsys]_setLogLevel_commander 1 \"\"
-echo \"=====================================================================\"
-echo \"Test with authList not set at all, identity=user@host\"
-echo \"Expect : Not permitted by authList\"
-export LSST_IDENTITY=user@host
-$SAL_WORK_DIR/[set subsys]/cpp/src/sacpp_[set subsys]_setLogLevel_commander 1 \"\"
-echo \"=====================================================================\"
-echo \"Test with authList authorizedUsers=user@host, identity=user@host\"
-echo \"Expect : completed ok\"
-$SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_setAuthList_commander   \"user@host\" \"\"
-$SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_setLogLevel_commander 1 \"\"
-echo \"=====================================================================\"
-echo \"Test with authList authorizedUsers=user@host,user2@other, identity=user@host\"
-echo \"Expect : completed ok\"
-$SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_setAuthList_commander   \"user@host,user2@other\" \"\"
-$SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_setLogLevel_commander 1 \"\"
-echo \"=====================================================================\"
-echo \"Test with authList authorizedUsers=user@host,user2@other, identity=user2@other\"
-echo \"Expect : completed ok\"
-export LSST_IDENTITY=user2@other
-$SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_setAuthList_commander   \"user@host,user2@other\" \"\"
-$SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_setLogLevel_commander 1 \"\"
-echo \"=====================================================================\"
-echo \"Test with authList authorizedUsers=user@host,user2@other, nonAuthorizedCSCs=Test identity=user2@other\"
-echo \"Expect : completed ok\"
-export LSST_IDENTITY=user2@other
-$SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_setAuthList_commander   \"user@host,user2@other\" \"Test\"
-$SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_setLogLevel_commander 1 \"\"
-echo \"=====================================================================\"
-echo \"Test with authList authorizedUsers=user@host,user2@other, nonAuthorizedCSCs=Test identity=Test\"
-echo \"Expect : Not permitted by authList\"
-export LSST_IDENTITY=Test
-$SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_setLogLevel_commander 1 \"\"
-echo \"=====================================================================\"
-echo \"Test with authList authorizedUsers=user@host,user2@other, nonAuthorizedCSCs=[set testnoauth],Test identity=[set testnoauth]\"
-echo \"Expect : Not permitted by authList\"
-export LSST_IDENTITY=[set testnoauth]
-$SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_setAuthList_commander   \"user@host,user2@other\" \"[set testnoauth],Test\"
-$SAL_WORK_DIR/$subsys/cpp/src/sacpp_[set subsys]_setLogLevel_commander 1 \"\"
-sleep 10
-pkill -9 sacpp_[set subsys]
-echo \"=====================================================================\"
-echo \"Finished testing authList with $subsys\"
-echo \"=====================================================================\"
-"
-  close $fout
-  exec chmod 755 $SAL_WORK_DIR/[set subsys]/cpp/src/testAuthList.sh
-  if { $OPTIONS(verbose) } {stdlog "###TRACE<<< genauthlisttestscpp $subsys"}
-}
-
 
