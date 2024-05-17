@@ -63,9 +63,6 @@ public class SAL_SALData {
         private int lastActor_command;
         private int lastActor_event;
         private String CSC_identity;
-        private String authorizedUsers;
-        private String nonAuthorizedCSCs;
-        private Boolean authListEnabled;
 
         salUtils salUtil = new salUtils();
         salActor[] sal = new salActor[SAL__ACTORS_MAXCOUNT];
@@ -186,7 +183,6 @@ public class SAL_SALData {
                String kport = System.getenv("LSST_KAFKA_BROKER_PORT");
                String khost = System.getenv("LSST_KAFKA_HOST");
                String sname = System.getenv("LSST_KAFKA_HISTORYSYNC");
-               String aname = System.getenv("LSST_KAFKA_ENABLE_AUTHLIST");
                String schemaRegistry = System.getenv("LSST_KAFKA_SCHEMA_REGISTRY");
                String localSchemaDir = System.getenv("LSST_KAFKA_LOCAL_SCHEMAS");
                String securityProtocol = System.getenv("LSST_KAFKA_SECURITY_PROTOCOL");
@@ -235,12 +231,6 @@ public class SAL_SALData {
       	       KafkaConsumer subscriber = new KafkaConsumer(cprops);
       	       
                 long historySync = 1000;
-                authListEnabled = false;
-                if (aname != null) {
-                  if (Integer.valueOf(aname) == 1) {
-                    authListEnabled = true;
-                  } 
-                }
                 origin = (int)randGen.nextInt(99999999);
 		hasReader = false;
 		hasWriter = false;
