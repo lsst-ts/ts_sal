@@ -9,6 +9,7 @@ Changes for 8.0.0
 =================
 
 * Add suppport for Kafka as the middleware transport
+* Remove AuthList testing
 
 =======
 Changes for 7.5.0
