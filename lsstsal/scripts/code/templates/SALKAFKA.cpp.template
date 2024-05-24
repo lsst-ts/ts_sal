@@ -1,0 +1,664 @@
+
+//#include <chrono>
+#include <sys/time.h>
+#include <stdexcept>
+#include <time.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include "SAL_SALData.h"
+#include "SAL_SALData_actors.h"
+
+SAL_SALData::SAL_SALData()
+{
+   strncpy(CSC_identity, "SALData", 128);
+   initSalEnvironment(0);
+}
+
+SAL_SALData::SAL_SALData(int aKey, char *identity)
+{
+   char *id = (char *)malloc(128);
+   if (identity == NULL) {
+     sprintf(id,"SALData:%d",aKey);
+   } else {
+     sprintf(id,"%s",identity);
+   }
+   strncpy(CSC_identity, id, 128);
+   initSalEnvironment(aKey);
+}
+
+SAL_SALData::SAL_SALData(int aKey)
+{
+   char *id = (char *)malloc(128);
+   sprintf(id,"SALData:%d",aKey);
+   strncpy(CSC_identity, id, 128);
+   initSalEnvironment(aKey);
+}
+
+SAL_SALData::SAL_SALData(char *identity)
+{
+   if (identity == NULL) {
+     strncpy(CSC_identity, "SALData", 128);
+   } else {
+     strncpy(CSC_identity, identity, 128);
+   }
+   initSalEnvironment(0);
+}
+
+
+void SAL_SALData::initSalEnvironment(int aKey)
+{
+  int aenable;
+  std::string errstr;
+  char partitionPrefix[128];
+//  char serrstr[512];
+
+  pname = getenv("LSST_KAFKA_PREFIX");
+  kport = getenv("LSST_KAFKA_BROKER_PORT");
+  khost = getenv("LSST_KAFKA_HOST");
+  sname = getenv("LSST_KAFKA_HISTORYSYNC");
+  kafkaProducerWaitAcks = getenv("LSST_KAFKA_PRODUCER_WAIT_ACKS");
+  securityProtocol = getenv("LSST_KAFKA_SECURITY_PROTOCOL");
+  securityMechanism = getenv("LSST_KAFKA_SECURITY_MECHANISM");
+  securityUserName = getenv("LSST_KAFKA_SECURITY_USERNAME");
+  securityPassword = getenv("LSST_KAFKA_SECURITY_PASSWORD");
+  schemaRegistry = getenv("LSST_SCHEMA_REGISTRY_URL");
+  localSchemaDir = getenv("LSST_KAFKA_LOCAL_SCHEMAS");
+  std::string colon = ":";
+  std::string server = khost + colon + kport;
+
+  configuration = RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL);
+  configuration->set("bootstrap.servers",server, errstr);
+  configuration->set("schema.registry.url", schemaRegistry, errstr);
+  if (securityPassword != NULL) {
+    configuration->set("security.protocol",securityProtocol, errstr);
+    configuration->set("sasl.mechanism",securityMechanism, errstr);
+    configuration->set("sasl.username",securityUserName, errstr);
+    configuration->set("sasl.password",securityPassword, errstr);   
+  }
+  configuration->set("value.serializer", "io.confluent.kafka.serializers.KafkaAvroSerializer", errstr);  // Serialize the Avro object
+  configuration->set("queue.buffering.max.ms", "0", errstr);
+
+  if (kafkaProducerWaitAcks != NULL) {
+    configuration->set("acks", kafkaProducerWaitAcks, errstr);
+  } else {
+    configuration->set("acks", "all", errstr);
+  }
+
+  consumerConfiguration = RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL);
+  consumerConfiguration->set("bootstrap.servers",server, errstr);
+  consumerConfiguration->set("schema.registry.url", schemaRegistry, errstr);
+  if (securityPassword != NULL) {
+    consumerConfiguration->set("security.protocol",securityProtocol, errstr);
+    consumerConfiguration->set("sasl.mechanism",securityMechanism, errstr);
+    consumerConfiguration->set("sasl.username",securityUserName, errstr);
+    consumerConfiguration->set("sasl.password",securityPassword, errstr);   
+  }
+  consumerConfiguration->set("value.serializer", "io.confluent.kafka.serializers.KafkaAvroDeserializer", errstr);  // Serialize the Avro object
+
+  serdesConfiguration = Serdes::Conf::create();
+  serdesConfiguration->set("serializer.framing", "cp1", errstr);
+  serdesConfiguration->set("deserializer.framing", "cp1", errstr);
+  serdesConfiguration->set("schema.registry.url", schemaRegistry, errstr);
+  serdes = Serdes::Avro::create(serdesConfiguration, errstr);
+
+  publisher = RdKafka::Producer::create(configuration, errstr); 
+
+   if ( pname != NULL ) {
+      strncpy(partitionPrefix, pname, 128);
+   } else {
+      throw std::runtime_error("ERROR : Cannot find envvar LSST_KAFKA_PREFIX");
+   }
+    if ( sname != NULL ) {
+      sscanf(sname,"%d",&historySync);
+   } else {
+      historySync = 0;
+   }
+   hasReader = false;
+   hasWriter = false;
+   hasCommand = false;
+   hasEventReader = false;
+   hasEventWriter = false;
+   hasProcessor = false;
+   subsystemID = aKey;
+   debugLevel = 1;
+   initSalActors();
+}
+
+
+double SAL_SALData::getCurrentTime()
+{
+   struct timex tx;
+   struct timespec now;
+   double taiTime;
+
+   memset(&tx, 0, sizeof(tx));
+   adjtimex(&tx);
+   clock_gettime(CLOCK_TAI,&now);
+   taiTime = (double)now.tv_sec + (double)now.tv_nsec/1000000000.;
+   return taiTime;
+}
+
+double SAL_SALData::getCurrentUTC()
+{
+   struct timex tx;
+   struct timespec now;
+   double utcTime;
+
+   memset(&tx, 0, sizeof(tx));
+   adjtimex(&tx);
+   clock_gettime(CLOCK_REALTIME,&now);
+   utcTime = (double)now.tv_sec + (double)now.tv_nsec/1000000000.;
+   return utcTime;
+}
+
+int SAL_SALData::getLeapSeconds()
+{
+   struct timex tx;
+
+   memset(&tx, 0, sizeof(tx));
+   adjtimex(&tx);
+   return tx.tai;
+}
+
+
+double SAL_SALData::getRcvdTime(char *topicName)
+{
+    int actorIdx;
+    actorIdx = getActorIndex(topicName);
+    return sal[actorIdx].rcvStamp;
+}
+
+double SAL_SALData::getSentTime(char *topicName)
+{
+    int actorIdx;
+    actorIdx = getActorIndex(topicName);
+    return sal[actorIdx].sndStamp;
+}
+
+
+int SAL_SALData::getActorIndex (char *topicName)
+{
+  string topicError = "Unknown topic : ";
+  for (int i=0; i<SAL__ACTORS_MAXCOUNT;i++) {
+     if ( strlen(topicName) == strlen(sal[i].topicName) )  {
+       if ( strcmp(topicName,sal[i].topicName) == 0 )  {
+          return i;
+       }
+     }
+  }
+  throw std::runtime_error(string(topicError + topicName));
+  return SAL__ERROR;
+}
+
+bool SAL_SALData::actorActive(int actorIdx) {
+  if ( sal[actorIdx].isActive ) {
+     return true;
+  }
+  return false;
+}
+
+bool SAL_SALData::actorReader(int actorIdx) {
+  if ( sal[actorIdx].isReader ) {
+     return true;
+  }
+  return false;
+}
+
+bool SAL_SALData::actorWriter(int actorIdx) {
+  if ( sal[actorIdx].isWriter ) {
+     return true;
+  }
+  return false;
+}
+
+bool SAL_SALData::actorCommand(int actorIdx) {
+  if ( sal[actorIdx].isCommand ) {
+     return true;
+  }
+  return false;
+}
+
+bool SAL_SALData::actorEventReader(int actorIdx) {
+  if ( sal[actorIdx].isEventReader ) {
+     return true;
+  }
+  return false;
+}
+
+bool SAL_SALData::actorEventWriter(int actorIdx) {
+  if ( sal[actorIdx].isEventWriter ) {
+     return true;
+  }
+  return false;
+}
+
+bool SAL_SALData::actorProcessor(int actorIdx) {
+  if ( sal[actorIdx].isProcessor ) {
+     return true;
+  }
+  return false;
+}
+
+
+int SAL_SALData::getIntProperty(int actorIdx,salCHAR *property)
+{
+  if (strcmp("ack", property) == 0) {return sal[actorIdx].ack;}
+  if (strcmp("error", property) == 0) {return sal[actorIdx].error;}
+  if (strcmp("rcvSeqNum", property) == 0) {return sal[actorIdx].rcvSeqNum;}
+  return SAL__OK;
+}
+
+
+
+
+// INSERT TYPE SUPPORT      
+
+salReturn SAL_SALData::salTelemetryPub(char *topicName)
+{
+  string topicError = "Unknown topic : ";
+  int actorIdx = -1;
+  int status = 0;
+
+  actorIdx = getActorIndex(topicName);
+  if (actorIdx > -1) {
+     status = salTelemetryPub(actorIdx);
+  } else {
+     status = SAL__ERROR;
+     throw std::runtime_error(string(topicError + topicName));
+  }
+  return status;
+}
+
+salReturn SAL_SALData::salTelemetrySub(char *topicName)
+{
+  string topicError = "Unknown topic : ";
+  int actorIdx = -1;
+  int status = 0;
+
+  actorIdx = getActorIndex(topicName);
+  if (actorIdx > -1) {
+     status = salTelemetrySub(actorIdx);
+  } else {
+     status = SAL__ERROR;
+     throw std::runtime_error(string(topicError + topicName));
+  }
+  return status;
+}
+ 
+
+salReturn SAL_SALData::salTelemetryPub(int actorIdx)
+{
+  // create domain participant
+  createParticipant(domainName);
+
+  //create type
+  salTypeSupport(actorIdx);
+
+  //create Topic
+  createTopic(actorIdx);
+
+  //create Publisher
+  createPublisher(actorIdx);
+
+  sal[actorIdx].isWriter = true;
+  return SAL__OK;
+}
+
+
+
+       
+salReturn SAL_SALData::salTelemetrySub(int actorIdx)
+{
+   // create domain participant
+   createParticipant(domainName);
+
+   //create type
+   salTypeSupport(actorIdx);
+
+   //create Topic
+   createTopic(actorIdx);
+
+   //create Subscriber
+   createSubscriber(actorIdx);
+
+   sal[actorIdx].isReader = true;
+   return SAL__OK;
+}
+
+
+
+void SAL_SALData::logError(salReturn status) 
+{
+   cerr << "=== ERROR return value = " << status << endl; 
+}
+
+/**
+using Clock = std::chrono::high_resolution_clock;
+using Time_point = Clock::time_point;
+using std::chrono::milliseconds;
+using std::chrono::duration_cast;
+
+salTIME SAL_SALData::currentTime()
+{
+    Time_point tp = Clock::now();   
+    return (salTIME duration_cast<milliseconds>tp.count());
+}
+*/
+
+
+// INSERT CMDALIAS SUPPORT  for issueCommandC and acceptCommandC, acceptAnyCommand   
+
+
+salReturn SAL_SALData::setDebugLevel( int level )
+{
+   salReturn status = SAL__OK;
+   debugLevel = level;
+   return status;
+}
+
+int SAL_SALData::getDebugLevel( int level )
+{
+   return debugLevel;
+}
+
+      
+void SAL_SALData::setMaxSamples(int actorIdx, int n)
+{
+    if ( n < 0 ) {
+       sal[actorIdx].maxSamples = 500;
+    } else {
+       sal[actorIdx].maxSamples = n;
+    }
+}
+
+
+
+// INSERT EVENTALIAS SUPPORT
+
+
+salReturn SAL_SALData::salEventPub(char *topicName)
+{
+  int actorIdx = getActorIndex(topicName);
+
+  if ( actorIdx < 0) {return SAL__ERROR;}
+  salTelemetryPub(actorIdx);
+  sal[actorIdx].isEventWriter = true;
+  return SAL__OK;
+}
+
+
+salReturn SAL_SALData::salEventSub(char *topicName)
+{
+  int actorIdx = getActorIndex(topicName);
+
+  if ( actorIdx < 0) {return SAL__ERROR;}
+
+  // create domain participant
+  createParticipant(domainName);
+
+  //create type
+  salTypeSupport(actorIdx);
+
+  //create Topic
+  createTopic(actorIdx);
+  createSubscriber(actorIdx);
+
+   sal[actorIdx].isEventReader = true;
+   return SAL__OK;
+}
+
+
+void SAL_SALData::salShutdown()
+{
+  if (participant != 0) {
+    participant = 0;
+  }
+}
+
+void SAL_SALData::createParticipant(const char *partitiontName)
+{
+  std::string errstr;
+  if (participant == 0) {
+    partition = 1;
+    RdKafka::Conf *configuration  = RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL);
+    configuration->set("metadata.broker.list", server, errstr);
+    participant = 1;
+    sleep(1);
+  }
+}
+
+void SAL_SALData::checkSchema(int actorIdx)
+{
+  std::string errstr;
+  std::string svname = sal[actorIdx].avroName + "-value";
+  if (sal[actorIdx].topicConfiguration == NULL)  {
+     throw std::runtime_error(string(errstr + sal[actorIdx].topicName));
+  }
+  if (sal[actorIdx].avroSchema == NULL) {
+    sal[actorIdx].avroSchema = Serdes::Schema::get(serdes, svname, errstr);
+    if (!sal[actorIdx].avroSchema) {
+      std::string adir = "/avro-templates/SALData/"; 
+      std::string schema = localSchemaDir + adir + sal[actorIdx].topicName + ".json";
+      std::ifstream ifs(schema);
+      std::stringstream buffer;
+      buffer << ifs.rdbuf();
+      std::string svname = sal[actorIdx].avroName + "-value";
+      sal[actorIdx].avroSchema = Serdes::Schema::add(serdes, svname, buffer.str(), errstr);
+      sal[actorIdx].hasSchema = true;
+    }
+  }
+}
+
+
+void SAL_SALData::createTopic(int actorIdx)
+{
+  std::string errstr;
+  RdKafka::Topic *topic = NULL;
+  RdKafka::Conf *topicConfiguration = RdKafka::Conf::create(RdKafka::Conf::CONF_TOPIC);
+  sal[actorIdx].topicConfiguration = topicConfiguration;
+  topic = RdKafka::Topic::create(publisher, sal[actorIdx].avroName, sal[actorIdx].topicConfiguration, errstr);
+  sal[actorIdx].topic = topic;
+  std::string svname = sal[actorIdx].avroName + "-value";
+  if (sal[actorIdx].topicConfiguration == NULL) 
+  {
+     throw std::runtime_error(string(errstr + sal[actorIdx].topicName));
+  }
+  sal[actorIdx].avroSchema = Serdes::Schema::get(serdes, svname, errstr);
+  if (!sal[actorIdx].avroSchema) {
+    std::string adir = "/avro-templates/SALData/"; 
+    std::string schema = localSchemaDir + adir + sal[actorIdx].topicName + ".json";
+    std::ifstream ifs(schema);
+    std::stringstream buffer;
+    buffer << ifs.rdbuf();
+    std::string svname = sal[actorIdx].avroName + "-value";
+    sal[actorIdx].avroSchema = Serdes::Schema::add(serdes, svname, buffer.str(), errstr);
+    sal[actorIdx].hasSchema = true;
+  }
+}
+
+void SAL_SALData::createTopic2(int actorIdx)
+{
+  std::string errstr;
+  RdKafka::Topic *topic = NULL;
+  RdKafka::Conf *topicConfiguration = RdKafka::Conf::create(RdKafka::Conf::CONF_TOPIC);
+  sal[actorIdx].topicConfiguration2 = topicConfiguration;
+  topic = RdKafka::Topic::create(publisher, sal[actorIdx].avroName, sal[actorIdx].topicConfiguration2, errstr);
+  sal[actorIdx].topic2 = topic;
+  std::string svname = sal[actorIdx].avroName2 + "-value";
+  if (sal[actorIdx].topicConfiguration2 == NULL) 
+  {
+     throw std::runtime_error(string(errstr + sal[actorIdx].topicName2));
+  }
+  sal[actorIdx].avroSchema2 = Serdes::Schema::get(serdes, svname, errstr);
+  if (!sal[actorIdx].avroSchema2) {
+    std::string adir = "/avro-templates/SALData/"; 
+    std::string schema = localSchemaDir + adir + sal[actorIdx].topicName2 + ".json";
+    std::ifstream ifs(schema);
+    std::stringstream buffer;
+    buffer << ifs.rdbuf();
+    std::string svname = sal[actorIdx].avroName2 + "-value";
+    sal[actorIdx].avroSchema2 = Serdes::Schema::add(serdes, svname, buffer.str(), errstr);
+    sal[actorIdx].hasSchema = true;
+  }
+}
+
+void SAL_SALData::createTopic(int actorIdx, char *topicName)
+{
+  std::string errstr;
+  RdKafka::Topic *topic = NULL;
+  RdKafka::Conf *topicConfiguration = RdKafka::Conf::create(RdKafka::Conf::CONF_TOPIC);
+  sal[actorIdx].topicConfiguration = topicConfiguration;
+  topic = RdKafka::Topic::create(publisher, sal[actorIdx].avroName, sal[actorIdx].topicConfiguration, errstr);
+  sal[actorIdx].topic = topic;
+  std::string svname = sal[actorIdx].avroName + "-value";
+  if (sal[actorIdx].topicConfiguration == NULL) 
+  {
+     throw std::runtime_error(string(errstr + topicName));
+  }
+  sal[actorIdx].avroSchema = Serdes::Schema::get(serdes, svname, errstr);
+  if (!sal[actorIdx].avroSchema) {
+    std::string adir = "/avro-templates/SALData/"; 
+    std::string schema = localSchemaDir + adir + sal[actorIdx].topicName + ".json";
+    std::ifstream ifs(schema);
+    std::stringstream buffer;
+    buffer << ifs.rdbuf();
+    std::string svname = sal[actorIdx].avroName + "-value";
+    sal[actorIdx].avroSchema = Serdes::Schema::add(serdes, svname, buffer.str(), errstr);
+    sal[actorIdx].hasSchema = true;
+  }
+ }
+
+void SAL_SALData::createTopic2(int actorIdx, char *topicName)
+{
+  std::string errstr;
+  RdKafka::Topic *topic = NULL;
+  RdKafka::Conf *topicConfiguration = RdKafka::Conf::create(RdKafka::Conf::CONF_TOPIC);
+  sal[actorIdx].topicConfiguration2 = topicConfiguration;
+  topic = RdKafka::Topic::create(publisher, sal[actorIdx].avroName, sal[actorIdx].topicConfiguration2, errstr);
+  sal[actorIdx].topic2 = topic;
+  std::string svname = sal[actorIdx].avroName2 + "-value";
+  if (sal[actorIdx].topicConfiguration2 == NULL) 
+  {
+     throw std::runtime_error(string(errstr + sal[actorIdx].topicName2));
+  }
+  sal[actorIdx].avroSchema2 = Serdes::Schema::get(serdes, svname, errstr);
+  if (!sal[actorIdx].avroSchema2) {
+    std::string adir = "/avro-templates/SALData/"; 
+    std::string schema = localSchemaDir + adir + sal[actorIdx].topicName2 + ".json";
+    std::ifstream ifs(schema);
+    std::stringstream buffer;
+    buffer << ifs.rdbuf();
+    std::string svname = sal[actorIdx].avroName2 + "-value";
+    sal[actorIdx].avroSchema2 = Serdes::Schema::add(serdes, svname, buffer.str(), errstr);
+    sal[actorIdx].hasSchema = true;
+  }
+}
+
+
+void SAL_SALData::deleteTopics()
+{
+  for (int i=0; i<SAL__ACTORS_MAXCOUNT;i++) {
+    if ( sal[i].topic != NULL) {
+      delete sal[i].topic;
+      delete sal[i].topicConfiguration;
+    }
+    if ( sal[i].topic2 != NULL) {
+      delete sal[i].topic2;
+      delete sal[i].topicConfiguration2;
+    }
+  }  
+}
+
+
+void SAL_SALData::createPublisher(int actorIdx)
+{
+  std::string errstr;
+  if (publisher == NULL) {
+     throw std::runtime_error("Failed to create a Kafka producder");
+  }
+}
+
+
+void SAL_SALData::deletePublisher()
+{
+  if (publisher != NULL) { delete publisher; }
+}
+
+std::string SAL_SALData::randomString( size_t length )
+{
+    auto randchar = []() -> char
+    {
+        const char charset[] =
+        "0123456789"
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        "abcdefghijklmnopqrstuvwxyz";
+        const size_t max_index = (sizeof(charset) - 1);
+        return charset[ rand() % max_index ];
+    };
+    std::string str(length,0);
+    std::generate_n( str.begin(), length, randchar );
+    return str;
+}
+
+void SAL_SALData::createSubscriber(int actorIdx)
+{
+  std::string errstr;
+  std::vector<std::string> topics;
+  topics.push_back(sal[actorIdx].avroName);
+  consumerConfiguration->set("group.id",randomString(15), errstr);
+  if (sal[actorIdx].historyDepth == 0) {
+    consumerConfiguration->set("auto.offset.reset","latest", errstr);
+  } else {
+    consumerConfiguration->set("auto.offset.reset","earliest", errstr);
+  }
+  sal[actorIdx].subscriber = RdKafka::KafkaConsumer::create(consumerConfiguration, errstr); 
+  if (sal[actorIdx].subscriber == NULL) {
+     throw std::runtime_error("Failed to create a Kafka subscriber");
+  }
+  const int partition = 0;
+  RdKafka::ErrorCode err;
+  int64_t low = 0;
+  int64_t high = 0;
+  err = sal[actorIdx].subscriber->query_watermark_offsets(sal[actorIdx].avroName, partition,&low,&high, 1000);
+  if ( debugLevel > 0 ) {
+    cout << "  query_watermark_offsets error = " << err << endl;
+  }
+  cout << "topic offsets for " << sal[actorIdx].avroName << " " << low << ":" << high << endl;
+  int64_t startOffset = high - sal[actorIdx].historyDepth;
+  if (startOffset < low) {
+     startOffset = low;
+  }
+  if (startOffset < 0) {
+     startOffset = 0;
+  }
+  if (sal[actorIdx].historyDepth == 0 || err != 0 ) {
+     startOffset = RD_KAFKA_OFFSET_END;
+  }
+  std::vector<RdKafka::TopicPartition*> parts;
+  parts.push_back(RdKafka::TopicPartition::create(sal[actorIdx].avroName, partition, startOffset));
+  parts[0]->set_offset(startOffset);
+  err = sal[actorIdx].subscriber->assign(parts);
+  if ( debugLevel > 0 ) {
+    err = sal[actorIdx].subscriber->committed(parts,100);
+    cout << "topic committed for " << sal[actorIdx].avroName << " is " << parts[0]->offset() << endl;
+    cout << "  error = " << err << endl;
+    err = sal[actorIdx].subscriber->position(parts);
+    cout << "topic position for " << sal[actorIdx].avroName << " is " <<  parts[0]->offset() << endl;
+    cout << "  error = " << err << endl;
+  }
+  sal[actorIdx].subscriber->subscribe(topics);
+}
+
+
+void SAL_SALData::deleteSubscriber()
+{
+  if (subscriber != NULL) { delete subscriber; }
+}
+
+SAL_SALData::~SAL_SALData(){
+    salShutdown();
+}
+
+
+
+

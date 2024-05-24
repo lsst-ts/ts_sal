@@ -1,0 +1,92 @@
+
+
+salReturn SAL_SALData::salCommand(char *cmdAlias)
+{
+  time_t sTime;
+  int actorIdx = getActorIndex(cmdAlias);
+  if (actorIdx < 0) {return SAL__ERROR;}
+  string stopic1="keyedCommand";
+  string stopic2="keyedResponse";
+  string response="SALData_ackcmd";
+
+  // create domain participant
+  createParticipant(domainName);
+
+ 
+  //create types
+  salTypeSupport(actorIdx);
+  salTypeSupport(SAL__SALData_ackcmd_ACTOR);
+
+  createTopic(actorIdx,cmdAlias);
+
+  if (sal[SAL__SALData_ackcmd_ACTOR].isReader == false) { 
+     //create Topics
+     createTopic(SAL__SALData_ackcmd_ACTOR,const_cast<char*>(response.c_str()));
+
+     //create a reader for responses
+     sal[SAL__SALData_ackcmd_ACTOR].sampleAge = 1.0e20;
+     sal[SAL__SALData_ackcmd_ACTOR].isReader = true;
+  }
+
+  //create Publisher
+  createPublisher(actorIdx);
+  createSubscriber(SAL__SALData_ackcmd_ACTOR);
+  sleep(1);
+
+  sal[actorIdx].isCommand = true;
+  sal[actorIdx].isWriter = true;
+  sal[actorIdx].sndSeqNum = time(&sTime) + 32768*actorIdx;
+  return SAL__OK;
+}
+
+
+salReturn SAL_SALData::salProcessor(char *cmdAlias)
+{
+  int actorIdx = getActorIndex(cmdAlias);
+  if (actorIdx < 0) {return SAL__ERROR;}
+  string stopic1="keyedCommand";
+  string stopic2="keyedResponse";
+  string response="SALData_ackcmd";
+
+  // create domain participant
+  createParticipant(domainName);
+
+  createSubscriber(actorIdx);
+
+  //create types
+  salTypeSupport(actorIdx);
+
+
+  //create Topics
+  createTopic(actorIdx,cmdAlias);
+
+  //create a reader for commands
+  sal[actorIdx].isProcessor = true;
+  sal[actorIdx].isReader = true;
+  sal[actorIdx].sampleAge = 1.0e20;
+
+
+  if ( sal[SAL__SALData_ackcmd_ACTOR].isWriter == false) {
+    //create Publisher
+    createPublisher(SAL__SALData_ackcmd_ACTOR);
+    createTopic(SAL__SALData_ackcmd_ACTOR,const_cast<char*>(response.c_str()));
+    sal[SAL__SALData_ackcmd_ACTOR].isWriter = true;
+  }
+
+  return SAL__OK;
+}
+
+// NOT FOR LOVE CSC
+
+std::string SAL_SALData::removeSpaces(std::string word) {
+    std::string newWord;
+    for (unsigned int i = 0; i < word.length(); i++) {
+        if (word[i] != ' ') {
+            newWord += word[i];
+        }
+    }
+
+    return newWord;
+}
+
+

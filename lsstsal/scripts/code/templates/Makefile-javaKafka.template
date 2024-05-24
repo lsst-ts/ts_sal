@@ -1,0 +1,32 @@
+#----------------------------------------------------------------------------
+#       Make Workspace
+#
+# $Id$
+#
+#
+#----------------------------------------------------------------------------
+
+
+all: saj_SAL_types saj_SAL_pub saj_SAL_sub
+
+clean depend generated realclean check-syntax $(CUSTOM_TARGETS):
+	@$(MAKE) -f Makefile.saj_SAL_Kafkatypes $(@)
+	@$(MAKE) -f Makefile.saj_SAL_Kafkapub $(@)
+	@$(MAKE) -f Makefile.saj_SAL_Kafkasub $(@)
+
+.PHONY: saj_SAL_types
+saj_SAL_types:
+	@$(MAKE) -f Makefile.saj_SAL_Kafkatypes all
+
+.PHONY: saj_SAL_pub
+saj_SAL_pub: saj_SAL_types
+	@$(MAKE) -f Makefile.saj_SAL_Kafkapub all
+
+.PHONY: saj_SAL_sub
+saj_SAL_sub: saj_SAL_types
+	@$(MAKE) -f Makefile.saj_SAL_Kafkasub all
+
+project_name_list:
+	@echo saj_SAL_Kafkapub
+	@echo saj_SAL_Kafkasub
+	@echo saj_SAL_Kafkatypes

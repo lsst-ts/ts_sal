@@ -1,0 +1,513 @@
+
+
+
+package org.lsst.sal;
+import java.time.Duration;  
+import java.util.Arrays;  
+import java.util.Collections;  
+import java.util.Properties;
+import java.util.Random;
+import java.util.StringTokenizer;
+
+import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericData;
+import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.generic.GenericRecordBuilder;
+
+import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.admin.*;
+import org.apache.kafka.common.KafkaFuture;
+import org.apache.kafka.clients.consumer.*;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.serialization.StringSerializer;
+
+// MAY NOT NEED import io.confluent.kafka.serializers.KafkaAvroSerializer;
+
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.dataformat.avro.AvroMapper;
+import com.fasterxml.jackson.dataformat.avro.AvroSchema;
+
+// INSERT SAL IMPORTS
+
+public class SAL_SALData {
+
+	private String participant;
+	private String topic;
+        private String topic2;
+ 
+        private String server;
+	private Producer publisher;
+	private Consumer subscriber;
+	private String typeName;
+	private String typeName2;
+	private String partitionName;
+        private Boolean hasReader;
+        private Boolean hasWriter;
+        private Boolean hasEventReader;
+        private Boolean hasEventWriter;
+        private Boolean hasProcessor;
+        private Boolean hasCommand;
+        private int debugLevel;
+        private int sndSeqNum;
+        private int rcvSeqNum;
+        private int rcvOrigin;
+        private int historySync;
+        private String rcvIdentity;
+        private int subsystemID;
+        private int origin;
+        private String domainName;
+        private String partitionPrefix;
+        private int lastActor_telemetry;
+        private int lastActor_command;
+        private int lastActor_event;
+        private String CSC_identity;
+
+        salUtils salUtil = new salUtils();
+        salActor[] sal = new salActor[SAL__ACTORS_MAXCOUNT];
+
+// INSERT TYPE SUPPORT      
+
+
+        public int getActorIndex (String topicName) {
+          for (int i=0; i<SAL__ACTORS_MAXCOUNT;i++) {
+             if ( topicName.length() == sal[i].topicName.length() )  {
+                if ( topicName.equals(sal[i].topicName) )  {
+                   return i;
+                }
+             }
+          }
+          throw new RuntimeException("Unknown Topic");
+        }
+
+/** Sets up the Kafka Publisher support for the indexed SAL Actor
+  @param actorIdx is the index of the Kafka topic's salActor
+ */    
+        public int salTelemetryPub(int actorIdx)
+	{
+		String partitionName = domainName;
+
+		// create Type
+		salTypeSupport(actorIdx);
+
+
+		// create Topic
+		createTopic(actorIdx);
+
+		sal[actorIdx].isWriter = true;
+                return SAL__OK;
+        }
+
+
+        
+
+/** Sets up the Kafka Subscriber support for the indexed SAL Actor
+  @param actorIdx is the index of the Kafka topic's salActor
+ */    
+        public int salTelemetrySub(int actorIdx)
+	{
+		String partitionName = domainName;
+                String errstr;
+                
+ 
+                if (subscriber == null) {
+                   return SAL__ERROR;
+                 
+                } else {
+		  // create Type
+		  salTypeSupport(actorIdx);
+                  sal[actorIdx].isReader = true;
+                }
+                  
+                return SAL__OK;
+	}
+
+
+
+/// Placeholder routine to be replaced by system wide logging once available
+	public void logError(long status) 
+	{
+		System.out.println("=== ERROR return value = " + status); 
+	}
+
+/** Constructor for the SAL_SALData object.
+  *
+  @param aKey is used to specify the index of an indexed component, or 0 for non-indexed ones
+  @param identity is used to specify the private_identity of a commander
+
+ */
+        
+        public SAL_SALData(int aKey, String identity)
+	{
+                if (identity == null) {
+                   CSC_identity = String.format("SALData:%d" , aKey);
+                } else {
+                   CSC_identity = String.format("%s" , identity);
+                }
+		initSalEnvironment(aKey);
+	}
+
+        public SAL_SALData(int aKey)
+	{
+                CSC_identity = String.format("SALData:%d" , aKey);
+		initSalEnvironment(aKey);
+	}
+
+        public SAL_SALData(String identity)
+	{
+                if (identity == null) {
+                  CSC_identity = "SALData";
+                } else {
+                  CSC_identity = String.format("%s" , identity);
+                }
+		initSalEnvironment(0);
+	}
+	public SAL_SALData()
+	{
+                CSC_identity = "SALData";
+		initSalEnvironment(0);
+	}
+
+
+/** Environment setup for a SAL_SALData object.
+  *
+  * + LSST_KAFKA_HISTORYSYNC is the maximum number of seconds to wait to obtain historical messages on a topic
+  *
+  @param aKey is used to specify the index of an indexed component, or 0 for non-indexed ones
+ */
+        public void initSalEnvironment(int aKey)
+	{
+ 	       Random randGen = new java.util.Random();
+               String kafkaPrefix = System.getenv("LSST_KAFKA_PREFIX");
+               String kport = System.getenv("LSST_KAFKA_BROKER_PORT");
+               String khost = System.getenv("LSST_KAFKA_HOST");
+               String sname = System.getenv("LSST_KAFKA_HISTORYSYNC");
+               String schemaRegistry = System.getenv("LSST_KAFKA_SCHEMA_REGISTRY");
+               String localSchemaDir = System.getenv("LSST_KAFKA_LOCAL_SCHEMAS");
+               String securityProtocol = System.getenv("LSST_KAFKA_SECURITY_PROTOCOL");
+               String securityMechanism = System.getenv("LSST_KAFKA_SECURITY_MECHANISM");
+               String securityUserName = System.getenv("LSST_KAFKA_SECURITY_USERNAME");
+               String securityPassword = System.getenv("LSST_KAFKA_SECURITY_PASSWORD");
+               String avroPrefix = System.getenv("AVRO_PREFIX");
+               String kafkaProducerWaitAcks = System.getenv("LSST_KAFKA_PRODUCER_WAIT_ACKS");
+               server = khost + ":" + kport;
+               Properties props = new Properties();
+               props.put("bootstrap.servers", server);
+               props.put("schema.registry.url", schemaRegistry );
+               if (securityPassword != null) {
+                 props.put("kafka.security.protocol",securityProtocol);
+                 props.put("kafka.sasl.mechanism",securityMechanism);
+                 props.put("kafka.sasl.username",securityUserName);
+                 props.put("kafka.sasl.password",securityPassword);                  
+               }
+//               props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
+//                         org.apache.kafka.common.serialization.StringSerializer.class);
+//               props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
+//                         io.confluent.kafka.serializers.KafkaAvroSerializer.class);
+//               props.put(AbstractKafkaSchemaSerDeConfig.AUTO_REGISTER_SCHEMAS, true);
+//               props.put(AbstractKafkaSchemaSerDeConfig.USE_LATEST_VERSION, true);
+               if (kafkaProducerWaitAcks != null) {
+                  props.put("acks", kafkaProducerWaitAcks);
+               } else {
+                  props.put("acks", "all");
+               }
+               props.put("queue.buffering.max.ms", "0");
+
+               KafkaProducer publisher = new KafkaProducer(props);
+
+               Properties cprops = new Properties();               
+//               cprops.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
+//               cprops.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
+               cprops.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+               cprops.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
+               cprops.put("schema.registry.url", schemaRegistry);
+               if (securityPassword != null) {
+                 cprops.put("kafka.security.protocol",securityProtocol);
+                 cprops.put("kafka.sasl.mechanism",securityMechanism);
+                 cprops.put("kafka.sasl.username",securityUserName);
+                 cprops.put("kafka.sasl.password",securityPassword);                  
+               }
+      	       KafkaConsumer subscriber = new KafkaConsumer(cprops);
+      	       
+                long historySync = 1000;
+                origin = (int)randGen.nextInt(99999999);
+		hasReader = false;
+		hasWriter = false;
+		hasCommand = false;
+		hasEventReader = false;
+		hasEventWriter = false;
+		hasProcessor = false;
+		subsystemID = aKey;
+		debugLevel = 0;
+                System.loadLibrary("salUtils");
+                initSalActors();
+	}
+
+
+/** Get the time from the system. The TAI time will be used, which assumes that the kernel 
+  * leap seconds offset has been correctly set. The getLeapSeconds method can be used to 
+  * do a simple sanity check
+  @return The current TAI system time
+ */
+	public double getCurrentTime()
+	{
+  		double ts = salUtil.getTAISeconds();
+		return ts;
+	}
+
+	public double getCurrentUTC()
+	{
+  		double ts = salUtil.getUTCSeconds();
+		return ts;
+	}
+
+
+
+// INSERT CMDALIAS SUPPORT  for issueCommand and acceptCommand  
+
+
+
+	public int cancelCommand( int cmdSeqNum )
+	{
+	   int status = 0;
+	   return status;
+	}
+
+
+	public int abortCommand( int cmdSeqNum )
+	{
+	   int status = 0;
+	   return status;
+	}
+
+        public static final int SAL__SLOWPOLL= 		   1;
+        public static final int SAL__OK = 		   0;
+        public static final int SAL__ERR = 		  -1;
+        public static final int SAL__ERROR = 		  -1;
+        public static final int SAL__NO_UPDATES = 	-100;
+        public static final int SAL__LOG_ROUTINES = 	   1;
+        public static final int SAL__CMD_ACK =      	 300;
+        public static final int SAL__CMD_INPROGRESS = 	 301;
+        public static final int SAL__CMD_STALLED =    	 302;
+        public static final int SAL__CMD_COMPLETE =   	 303;
+        public static final int SAL__CMD_NOPERM =   	-300;
+        public static final int SAL__CMD_NOACK =    	-301;
+        public static final int SAL__CMD_FAILED =   	-302;
+        public static final int SAL__CMD_ABORTED =  	-303;
+        public static final int SAL__CMD_TIMEOUT =  	-304;
+        public static final int SAL__DATA_AVAIL	=	400;
+        public static final int SAL__DEADLINE_MISS =	401;
+        public static final int SAL__INCOMPAT_QOS =	402;
+        public static final int SAL__SAMPLE_REJ	=	403;
+        public static final int SAL__LIVELINESS_CHG =	404;
+        public static final int SAL__SAMPLELOST	=	405;
+        public static final int SAL__SUBSCR_MATCH =	406;
+        public static final int SAL__STATE_DISABLED = 	1;
+        public static final int SAL__STATE_ENABLED = 	2;
+        public static final int SAL__STATE_FAULT = 	3;
+        public static final int SAL__STATE_OFFLINE = 	4;
+        public static final int SAL__STATE_STANDBY = 	5;
+        public static final int SAL__STATE_COUNT = 	5;
+
+
+
+
+
+// INSERT EVENTALIAS SUPPORT
+
+
+
+/// Set the debug message output verbosity level for this SAL_SALData object
+	public int setDebugLevel( int level )
+	{
+           int status = 0;
+	   debugLevel = level;
+	   return status;	
+	}
+
+/// Get the current value of the debug message verbosity level for this SAL_SALData object
+	public int getDebugLevel( int level )
+	{
+	   return debugLevel;
+	}
+
+/// Get the current IP address
+	public int getOrigin()
+	{
+	   int status = 0;
+	   return status;
+	}
+
+/// Generic method to read the value of a SAL_SALData object internal state
+	public int getProperty(String property, String value)
+	{
+	   int status = SAL__OK;
+	   value = "UNKNOWN";
+	   if (status != SAL__OK) {
+	      if (debugLevel >= SAL__LOG_ROUTINES) {
+	          logError(status);
+	      }
+	   }
+	   return status;
+	}
+
+/// Generic method to set the value of a SAL_SALData object internal state
+	public int setProperty(String property, String value)
+	{
+           int status = SAL__OK;
+	   if (status != SAL__OK) {
+	      if (debugLevel >= SAL__LOG_ROUTINES) {
+	          logError(status);
+	      }
+	   }
+	   return status;
+	}
+ 
+
+/// Close down the Kafka support for this SAL_SALData object
+	public void salShutdown()
+	{
+          if (participant != null) {
+             participant = null;
+          }
+	}
+
+
+/** Sets up the Kafka Subscriber support for the named Kafka event topic
+  @param topicName is the name of the Kafka topic
+  @throws RuntimeException if the topic is not defined
+ */    
+	public int salEventSub(String topicName)
+	{	        
+		int status = SAL__OK;
+                int actorIdx = getActorIndex(topicName);
+		status = salTelemetrySub(actorIdx);
+                sal[actorIdx].isEventReader = true;
+		return status;
+	}
+	
+/** Sets up the Kafka Subscriber support for the named Kafka event topic
+  @param topicName is the name of the Kafka topic
+  @throws RuntimeException if the topic is not defined
+ */    
+	public int salTelemetrySub(String topicName)
+	{
+		int status = SAL__OK;
+                int actorIdx = getActorIndex(topicName);
+                if ( actorIdx < 0) {
+                  throw new RuntimeException("Unknown Topic");
+		}
+                sal[actorIdx].isReader = true;
+//		sal[actorIdx].topic = subscriber.subscribe(Collections.singleton(sal[actorIdx].avroName));
+		return status;
+	}
+
+/** Sets up the Kafka Publisher support for the named Kafka event topic
+  @param topicName is the name of the Kafka topic
+  @throws RuntimeException if the topic is not defined
+ */    
+	public int salTelemetryPub(String topicName)
+	{
+		int status = SAL__OK;
+                int actorIdx = getActorIndex(topicName);
+                if ( actorIdx < 0) {
+                  throw new RuntimeException("Unknown Topic");
+		}
+		status = salTelemetryPub(actorIdx);
+		return status;
+	}
+
+/** Sets up the Kafka Publisher support for the named Kafka event topic
+  @param topicName is the name of the Kafka topic
+  @throws RuntimeException if the topic is not defined
+ */    
+	public int salEventPub(String topicName)
+	{
+		int status = SAL__ERROR;
+                int actorIdx = getActorIndex(topicName);
+		status = salTelemetryPub(actorIdx);
+                sal[actorIdx].isEventWriter = true;
+		return status;
+	}
+
+
+	public void createTopic(int actorIdx) {
+                String kafkaPrefix = System.getenv("LSST_KAFKA_PREFIX");
+		sal[actorIdx].avroName = "lsst.ts.sal." + kafkaPrefix + "." + sal[actorIdx].topicName;
+                if (debugLevel > 1) {
+  		  System.out.println("=== [createTopic] : topicName " + sal[actorIdx].topicName + " type = " + sal[actorIdx].typeName);
+                }
+	}
+
+	public void createTopic2(int actorIdx) {
+                String kafkaPrefix = System.getenv("LSST_KAFKA_PREFIX");
+		sal[actorIdx].avroName2 = "lsst.ts.sal." + kafkaPrefix + "." + sal[actorIdx].topicName;
+                if (debugLevel > 1) {
+		  System.out.println("=== [createTopic2] : topicName " + sal[actorIdx].topicName + " type = " + sal[actorIdx].typeName2);
+                }
+	}
+
+	public void createTopic(int actorIdx, String topicName) {
+                String kafkaPrefix = System.getenv("LSST_KAFKA_PREFIX");
+ 		sal[actorIdx].avroName = "lsst.ts.sal." + kafkaPrefix + "." + sal[actorIdx].topicName;
+                if (debugLevel > 1) {
+		  System.out.println("=== [createTopic] : topicName " + topicName + " type = " + sal[actorIdx].typeName);
+                }
+	}
+
+	public void createTopic2(int actorIdx, String topicName) {
+                String kafkaPrefix = System.getenv("LSST_KAFKA_PREFIX");
+		sal[actorIdx].avroName2 = "lsst.ts.sal." + kafkaPrefix + "." + sal[actorIdx].topicName;
+                if (debugLevel > 1) {
+		  System.out.println("=== [createTopic2] : topicName " + topicName + " type = " + sal[actorIdx].typeName2);
+                }
+	}
+
+
+
+	public void deleteTopics() {
+            for (int i=0;  i<SAL__ACTORS_MAXCOUNT; i++) {
+             if (sal[i] != null) {
+              if (sal[i].topic != null) {
+		  sal[i].topic = null;
+              }
+              if (sal[i].topic2 != null) {
+		  sal[i].topic2 = null;
+              }
+             }
+            }
+	}
+
+
+	public void deletePublisher() {
+            if (publisher != null) {
+		publisher  = null;
+            }
+            for (int i=0;  i<SAL__ACTORS_MAXCOUNT; i++) {
+                   if (sal[i] != null) {
+                      if (sal[i].publisher != null) {
+		         sal[i].publisher = null;
+                      }
+                   }
+            }
+	}
+
+
+
+	public void deleteSubscriber() {
+                if (subscriber != null) {
+  		   subscriber = null;
+                }
+                for (int i=0;  i<SAL__ACTORS_MAXCOUNT; i++) {
+                   if (sal[i] != null) {
+                      if (sal[i].subscriber != null) {
+		         sal[i].subscriber = null;
+                      }
+                   }
+                }
+	}
+
+
+}
+

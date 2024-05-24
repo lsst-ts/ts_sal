@@ -1,0 +1,78 @@
+
+/*
+ * This file contains the implementation for the 'SALNAMESTRINGPublisher' executable.
+ *
+ ***/
+
+#include <string>
+#include <sstream>
+#include <iostream>
+#include "SAL_SALData.h"
+#include <stdlib.h>
+#include <time.h>
+
+using namespace SALData;
+
+/* entry point exported and demangled so symbol can be found in shared library */
+extern "C"
+{
+  int SALTelemetryPublisher(int argc, char *argv[]);
+}
+
+int SALTelemetryPublisher(char *topic_name)
+{
+  int numsamples = 10;
+  int deltams = 1000;
+  struct timespec delay_1s;
+  delay_1s.tv_sec = 0;
+  delay_1s.tv_nsec = deltams*1000000;
+    
+  char *deltaName = getenv("SAL_DEBUG_MS_DELTA");
+  if ( deltaName != NULL ) {
+    sscanf(deltaName,"%d",&deltams);
+    delay_1s.tv_nsec = deltams*1000000;
+ }
+  char *nSamples = getenv("SAL_DEBUG_NSAMPLES");
+  if ( nSamples != NULL ) {
+    sscanf(nSamples,"%d",&numsamples);
+ }
+
+
+  SALSTRUCTSTRINGC myData;
+  long iseq;
+
+  // Publish Events
+  //create Topic
+#ifdef SAL_SUBSYSTEM_ID_IS_KEYED
+  int SALDataID = 1;
+  if (getenv("LSST_SALData_ID") != NULL) {
+     sscanf(getenv("LSST_SALData_ID"),"%d",&SALDataID);
+  } 
+  SAL_SALData mgr = SAL_SALData(SALDataID);
+#else
+  SAL_SALData mgr = SAL_SALData();
+#endif
+
+  mgr.setDebugLevel(9);
+  mgr.salTelemetryPub(topic_name);
+  iseq = 1;
+  while (iseq < numsamples) {
+// INSERT_SAL_PUBC
+    iseq++;
+    mgr.putSample_SALTopic(&myData);
+    nanosleep(&delay_1s,NULL);
+  }
+
+  /* Remove the DataWriters etc */
+  mgr.salShutdown();
+
+  return 0;
+}
+
+
+int main (int argc, char *argv[])
+{
+  return SALTelemetryPublisher ("SALNAMESTRING");
+}
+
+

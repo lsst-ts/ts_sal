@@ -1,0 +1,180 @@
+#!/bin/sh
+
+# kafka/avro support
+# java needs maven 3.8.1+
+echo "Setting up SAL Kafka build environment"
+
+export MAVEN_RELEASE=3.9.6
+export AVRO_RELEASE=1.11.1
+export BOOST_RELEASE=1.78
+export JDK_RELEASE=11
+export KAFKA_RELEASE=7.6
+export JACKSON_RELEASE=2.15.2
+
+export LSST_SDK_INSTALL=/opt/lsst/tssw/ts_sal
+export LSST_SAL_PREFIX=/opt/lsst/ts_sal
+
+echo "Using : "
+echo "        Avro version = $AVRO_RELEASE"
+echo "        Boost version = $BOOST_RELEASE"
+echo "        Java version = $JDK_RELEASE"
+echo "        Maven version = $MAVEN_RELEASE"
+echo "        Kafka version = $KAFKA_RELEASE"
+
+echo "Updating dependencies available from repo's"
+mkdir -p /opt/lsst/ts_sal
+chown -R $USER  /opt/lsst
+chgrp -R $USER  /opt/lsst
+dnf install =y epel-release
+dnf install -y yum-utils
+dnf config-manager -y --set-enabled powertools
+dnf update
+if [ -f /.dockerenv ]; then
+  dnf install -y python3.11 python3.11-devel python3.11-pip
+  ln -sf /usr/bin/python3.11 /etc/alternatives/python3
+fi
+dnf install -y ant cmake boost${BOOST_RELEASE}-devel jansson-devel asciidoc libcurl-devel csnappy-devel zlib-devel maven snappy-devel doxygen
+if [ -f /.dockerenv ]; then
+  dnf install -y java-${JDK_RELEASE}-openjdk java-${JDK_RELEASE}-openjdk-devel java-${JDK_RELEASE}-openjdk-javadoc
+fi
+echo "Downloading and building Maven"
+mkdir external-packages
+cd external-packages
+wget https://dlcdn.apache.org/maven/maven-3/${MAVEN_RELEASE}/source/apache-maven-${MAVEN_RELEASE}-src.tar.gz
+tar xzf apache-maven-${MAVEN_RELEASE}-src.tar.gz
+cd apache-maven-${MAVEN_RELEASE}
+mvn -DdistributionTargetDir="$LSST_SAL_PREFIX/../maven/apache-maven-${MAVEN_RELEASE}-SNAPSHOT" clean package
+
+export PATH=/opt/lsst/maven/apache-maven-${MAVEN_RELEASE}-SNAPSHOT/bin/:${PATH}
+mkdir -p /opt/lsst/ts_sal/bin
+mkdir -p /opt/lsst/ts_sal/include
+mkdir -p /opt/lsst/ts_sal/lib
+ln -sf /opt/lsst/maven/apache-maven-${MAVEN_RELEASE}-SNAPSHOT/bin/mvn /opt/lsst/ts_sal/bin/mvn
+
+echo "Downloading and building Avro"
+cd $HOME/external-packages
+wget https://archive.apache.org/dist/avro/avro-${AVRO_RELEASE}/avro-src-${AVRO_RELEASE}.tar.gz
+tar xvzf avro-src-${AVRO_RELEASE}.tar.gz
+cd $HOME/external-packages/avro-src-${AVRO_RELEASE}/lang/c++
+./build.sh test
+cd build
+cp lib* $LSST_SAL_PREFIX/lib/.
+cp avrogencpp $LSST_SAL_PREFIX/bin/.
+mkdir  -p $LSST_SAL_PREFIX/include/avro
+cp -r ../api/* $LSST_SAL_PREFIX/include/avro/.
+cp -r ../impl /opt/lsst/ts_sal/include/.
+
+
+cd $HOME/external-packages/avro-src-${AVRO_RELEASE}/lang/c
+if [ -f /.dockerenv ]; then
+  cp /usr/include/jansson*.h $CONDA_PREFIX/include/.
+  cp /usr/include/jansson*.h $LSST_SAL_PREFIX/include/.
+  cp /usr/lib64/libjansson* $CONDA_PREFIX/lib/.
+fi
+./build.sh test
+./cmake_avrolib.sh || true
+cd build/avrolib/lib64
+cp lib* $LSST_SAL_PREFIX/lib/.
+cd ../include
+cp -r * $LSST_SAL_PREFIX/include/.
+
+cd $HOME/external-packages
+curl -O https://packages.confluent.io/archive/${KAFKA_RELEASE}/confluent-community-${KAFKA_RELEASE}.0.tar.gz
+tar xzf confluent-community-${KAFKA_RELEASE}.0.tar.gz
+cd confluent-${KAFKA_RELEASE}.0/share/java
+cp kafka-rest-lib/common-config*.jar ${LSST_SAL_PREFIX}/lib/.
+cp kafka-rest-lib/common-utils*.jar ${LSST_SAL_PREFIX}/lib/.
+cp kafka-rest-lib/kafka_*.jar ${LSST_SAL_PREFIX}/lib/.
+cp kafka-rest-lib/kafka-clients*.jar ${LSST_SAL_PREFIX}/lib/.
+cp kafka-rest-lib/kafka-schema-registry-client*.jar ${LSST_SAL_PREFIX}/lib/.
+cp kafka-rest-lib/kafka-avro-serializer*.jar ${LSST_SAL_PREFIX}/lib/.
+cp kafka-rest-lib/lz4-java*.jar ${LSST_SAL_PREFIX}/lib/.
+cp kafka-rest-bin/slf4j-api*.jar ${LSST_SAL_PREFIX}/lib/.
+cp kafka-rest-lib/snappy-java*.jar ${LSST_SAL_PREFIX}/lib/.
+cp kafka-rest-lib/zstd-jni*.jar ${LSST_SAL_PREFIX}/lib/.
+
+curl -O https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-avro/${JACKSON_RELEASE}/jackson-dataformat-avro-${JACKSON_RELEASE}.jar
+mv jackson-dataformat-avro-${JACKSON_RELEASE}.jar ${LSST_SAL_PREFIX}/lib/.
+
+cd $HOME/external-packages/avro-src-${AVRO_RELEASE}/lang/java
+./build.sh test
+./build.sh dist
+cp ./avro/target/avro-1.11.1.jar $LSST_SAL_PREFIX/lib/.
+cp ./compiler/target/avro-compiler-1.11.1.jar $LSST_SAL_PREFIX/lib/.
+cp ./maven-plugin/target/avro-maven-plugin-1.11.1.jar $LSST_SAL_PREFIX/lib/.
+cp ./tools/target/avro-tools-1.11.1.jar $LSST_SAL_PREFIX/lib/.
+
+echo "Downloading and building librdkafka"
+cd $HOME/external-packages
+git clone https://github.com/confluentinc/librdkafka
+cd librdkafka
+./configure --prefix=/opt/lsst/ts_sal
+make 
+make install
+
+if [ -f /.dockerenv ]; then
+   cd $HOME/external-packages
+   git clone https://github.com/google/snappy
+  cd snappy
+  git submodule update --init
+  mkdir build
+  cd build
+  cmake ../.
+  make
+  make install
+  ar x libsnappy.a
+  gcc -fPIC -shared -o libsnappy.so.1 *.o -lc -lc++
+  cp libsnappy.so.1 /opt/lsst/ts_sal/lib/.
+fi
+
+
+echo "Downloading and building libserdes"
+ln -sf /usr/include/boost$BOOST_RELEASE/boost /opt/lsst/ts_sal/include/boost
+cp $CONDA_PREFIX/lib/libstdc++.so.6.0.32  /opt/lsst/ts_sal/lib/libstdc++.so.6
+cd $HOME/external-packages
+git clone https://github.com/confluentinc/libserdes
+cd libserdes
+export LD_LIBRARY_PATH=/opt/lsst/ts_sal/lib:$LD_LIBRARY_PATH
+./configure --prefix=/opt/lsst/ts_sal --includedir=/opt/lsst/ts_sal/include --libdir=/opt/lsst/ts_sal/lib
+export CPPFLAGS=-I/opt/lsst/ts_sal/include/avro
+make
+make install
+
+# Extras for M1M3
+cd $HOME/external-packages
+if [ -f /.dockerenv ]; then
+  tar xzf Catch2.tgz
+else
+  git clone https://github.com/catch/Catch2
+fi
+cd Catch2
+rm -fr build
+mkdir build
+cd build
+cmake ../.
+make
+make install
+if [ -f /.dockerenv ]; then
+  echo "Do NOT install spdlog,libyaml,yaml-cpp as lsst-scipipe already has them"
+else
+  dnf install spdlog spdlog-devel
+  dnf install libyaml-devel yaml-cpp yaml-cpp-devel
+  export PKG_CONFIG_PATH=/usr/local/share/pkgconfig
+fi
+
+echo "Used external packages : "
+echo "        Avro version = $AVRO_RELEASE"
+echo "        Boost version = $BOOST_RELEASE"
+echo "        Java version = $JDK_RELEASE"
+echo "        Maven version = $MAVEN_RELEASE"
+echo "----------------------------------------------------------"
+echo "----------------------------------------------------------"
+echo "----------------------------------------------------------"
+echo "------- SAL Kafka Build Environment setup complete -------"
+echo "----------------------------------------------------------"
+echo "----------------------------------------------------------"
+echo "----------------------------------------------------------"
+
+
+
+

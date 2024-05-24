@@ -84,9 +84,6 @@ public class SAL_SALData {
         private int lastActor_command;
         private int lastActor_event;
         private String CSC_identity;
-        private String authorizedUsers;
-        private String nonAuthorizedCSCs;
-        private Boolean authListEnabled;
 
         salUtils salUtil = new salUtils();
         salActor[] sal = new salActor[SAL__ACTORS_MAXCOUNT];
@@ -270,7 +267,6 @@ public class SAL_SALData {
                 String pname = System.getenv("LSST_DDS_PARTITION_PREFIX");
                 String hname = System.getenv("LSST_DDS_HISTORYSYNC");
                 String qname = System.getenv("LSST_DDS_QOS");
-                String aname = System.getenv("LSST_DDS_ENABLE_AUTHLIST");
                 if (pname != null) {
                    partitionPrefix = pname;
                 } else {
@@ -294,12 +290,6 @@ public class SAL_SALData {
                 } else {
                    throw new RuntimeException("ERROR : Cannot find envvar LSST_DDS_QOS profiles");
 		}
-                authListEnabled = false;
-                if (aname != null) {
-                  if (Integer.valueOf(aname) == 1) {
-                    authListEnabled = true;
-                  } 
-                }
                 origin = (int)randGen.nextInt(99999999);
 		hasReader = false;
 		hasWriter = false;

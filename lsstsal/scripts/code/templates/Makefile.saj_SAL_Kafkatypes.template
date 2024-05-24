@@ -1,0 +1,84 @@
+#----------------------------------------------------------------------------
+#       Macros
+#----------------------------------------------------------------------------
+JAVAC         = javac
+JAR           = jar
+JAVACFLAGS    = $(GENFLAGS)
+CLASSEXT      = .class
+CLASSDIR      = classes/
+OUTPUT_OPTION = -d $(CLASSDIR)
+JAVACCPATH    = "${SAL_WORK_DIR}/lib/saj_SALData_types.jar:$(CLASSDIR):${LSST_KAFKA_CLASSDIR}/avro-tools-$(AVRO_RELEASE).jar:${LSST_KAFKA_CLASSDIR}/kafka-clients-${KAFKA_RELEASE}.0-ccs.jar:${LSST_KAFKA_CLASSDIR}/kafka-avro-serializer-${KAFKA_RELEASE}.0.jar:${LSST_KAFKA_CLASSDIR}/jackson-dataformat-avro-${JACKSON_RELEASE}.jar:${LSST_KAFKA_CLASSDIR}/kafka-schema-registry-client-${KAFKA_RELEASE}.0.jar:${LSST_KAFKA_CLASSDIR}/kafka_2.13-${KAFKA_RELEASE}.0-ccs.jar:${LSST_KAFKA_CLASSDIR}/kafka-clients-${KAFKA_RELEASE}.0.jar:${LSST_KAFKA_CLASSDIR}/common-config-${KAFKA_RELEASE}.0.jar:${LSST_KAFKA_CLASSDIR}/common-utils-${KAFKA_RELEASE}.0.jar"
+COMPILE.java  = $(JAVAC) $(JAVACFLAGS) -cp $(JAVACCPATH) 
+MAKEFILE      = Makefile.saj_SALData_types
+DEPENDENCIES  =
+LTARGETDIR    = ./
+CAT           = cat
+MV            = mv -f
+RM            = rm -rf
+CP            = cp -p
+NUL           = /dev/null
+MKDIR         = mkdir -p
+TOUCH         = touch
+GENFLAGS      =  
+CLASSES       =  $(CLASSDIR)*/*$(CLASSEXT)
+JARCLASSES    =  $(AVRO_CLASSPATH)/*/*$(CLASSEXT)
+JAREXT        = .jar
+JARFILE       = $(LTARGETDIR)$(LIBPREFIX)saj_SALData_types$(LIBSUFFIX)$(JAREXT)
+MANIFEST      = saj_SALData_types.manifest
+JARFLAGS      = cvfm
+SRC           = $(AVRO_CLASSPATH)/*/*.java
+
+#----------------------------------------------------------------------------
+#       Local targets
+#----------------------------------------------------------------------------
+
+all: $(JARFILE) SAL_SALData.jar saj_SALData_types.jar
+
+SALData: $(AVRO_CLASSPATH)/*/*.java 
+
+$(JARFILE): $(CLASSES) $(CLASSDIR)$(MANIFEST)
+	cd $(CLASSDIR) && $(JAR) $(JARFLAGS) $(JARFILE) $(MANIFEST) $(JARCLASSES) 
+	$(MV) $(CLASSDIR)/$(JARFILE) .
+
+$(CLASSDIR)$(MANIFEST):
+	mkdir -p $(CLASSDIR)
+	echo Class-Path: $(AVRO_HOME)/avro-tools-$(AVRO_RELEASE).jar > $(CLASSDIR)$(MANIFEST)
+
+GENERATED_DIRTY = SALData
+
+.PRECIOUS: $(GENERATED_DIRTY)
+$(CLASSES): $(GENERATED_DIRTY)
+
+generated: $(GENERATED_DIRTY)
+	@-:
+
+$(CLASSDIR)*/*$(CLASSEXT): SALData
+	$(COMPILE.java) $(EXPORTFLAGS) $(OUTPUT_OPTION) $(AVRO_CLASSPATH)/*/*.java
+
+SAL_SALData.jar:
+	$(COMPILE.java) $(EXPORTFLAGS) $(OUTPUT_OPTION) org/lsst/sal/*.java
+	cd $(CLASSDIR) && jar -cvf SAL_SALData.jar org/lsst/sal/*.class
+	mv $(CLASSDIR)/SAL_SALData.jar .
+
+clean:
+	-$(RM) $(CLASSES)
+
+realclean: clean
+	-$(RM) $(SHLIB) $(JARFILE)
+	-$(RM) $(GENERATED_DIRTY)
+	-$(RM) $(CLASSDIR)$(MANIFEST)
+
+check-syntax:
+	$(COMPILE.java) $(EXPORTFLAGS) $(CHK_SOURCES)
+
+#----------------------------------------------------------------------------
+#       Dependencies
+#----------------------------------------------------------------------------
+
+$(DEPENDENCIES):
+	@$(TOUCH) $(DEPENDENCIES)
+
+depend:
+	-$(MPC_ROOT)/depgen.pl  $(JAVACFLAGS) $(JAVAJAVACFLAGS) $(CPPFLAGS) -f $(DEPENDENCIES) $(SRC) 2> $(NUL)
+
+include $(DEPENDENCIES)
