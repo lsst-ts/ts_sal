@@ -226,10 +226,10 @@ global env SAL_WORK_DIR SAL_DIR OSPL_VERSION XMLVERSION RELVERSION SALVERSION TS
 #     puts stdout "Processed $fj"
 #  }
   exec cp -r $SAL_WORK_DIR/$subsys/java/src/org $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/java/.
-  exec cp -r $SAL_WORK_DIR/$subsys/java/src/lsst $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/java/.
+###  exec cp -r $SAL_WORK_DIR/$subsys/java/src/lsst $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/java/.
   exec mkdir -p $SAL_WORK_DIR/maven/libs
-  exec cp -r $SAL_WORK_DIR/lib/SAL_[set subsys].jar  $SAL_WORK_DIR/maven/libs/.
-  exec cp -r $SAL_WORK_DIR/lib/saj_[set subsys]_types.jar  $SAL_WORK_DIR/maven/libs/.
+###  exec cp -r $SAL_WORK_DIR/lib/SAL_[set subsys].jar  $SAL_WORK_DIR/maven/libs/.
+###  exec cp -r $SAL_WORK_DIR/lib/saj_[set subsys]_types.jar  $SAL_WORK_DIR/maven/libs/.
   generateSchemaSupport $subsys
 #  if { $subsys == "Test" } {
 #    exec cp $SAL_DIR/code/templates/TestWithSalobjTest.java $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/test/java/.
@@ -371,16 +371,23 @@ global env SAL_WORK_DIR SAL_DIR OSPL_VERSION XMLVERSION RELVERSION SALVERSION TS
   set mvnrelease [set XMLVERSION]_[set SALVERSION][set RELVERSION]
   exec mkdir -p $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/avro
   exec mkdir -p $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/resources/avro
- set all [glob $SAL_WORK_DIR/avro-templates/[set subsys]/[set subsys]_*.json]
+  set all [glob $SAL_WORK_DIR/avro-templates/[set subsys]/[set subsys]_*.json]
   foreach j $all {
     set id [file tail [file rootname $j]]
-    exec cp  $SAL_WORK_DIR/avro-templates/[set subsys]/[set id].json $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/resources/avro/[set id].avsc
+    if { $id != "[set subsys]_hash_table.json" } {
+       exec cp  $SAL_WORK_DIR/avro-templates/[set subsys]/[set id].json $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/resources/avro/[set id].avsc
+    }
     if { [lindex [split $id "_"] end] != "enums" } {
      if { $id != "[set subsys]_hash_table.json" } {
       exec cp  $SAL_WORK_DIR/avro-templates/[set subsys]/[set id].json $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/avro/[set id].avsc
      }
     }
   }
+  set fout [open $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/resources/xml_version.json w]
+  puts $fout "\{
+   \"xml_version\":"$XMLVERSION\"
+\}"
+  close $fout
 # make pom.xml
 ##  cd $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]
 ##  set result none
@@ -392,4 +399,5 @@ global env SAL_WORK_DIR SAL_DIR OSPL_VERSION XMLVERSION RELVERSION SALVERSION TS
 
 
 source $env(SAL_DIR)/activaterevcodes.tcl
-source $env(SAL_DIR)/ospl_version.tcl
+set OSPL_VERSION "0.0.0"
+

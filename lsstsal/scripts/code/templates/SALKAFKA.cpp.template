@@ -47,10 +47,8 @@ SAL_SALData::SAL_SALData(char *identity)
 
 void SAL_SALData::initSalEnvironment(int aKey)
 {
-  int aenable;
   std::string errstr;
   char partitionPrefix[128];
-//  char serrstr[512];
 
   pname = getenv("LSST_KAFKA_PREFIX");
   kport = getenv("LSST_KAFKA_BROKER_PORT");

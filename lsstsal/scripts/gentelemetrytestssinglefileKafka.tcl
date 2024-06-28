@@ -203,7 +203,7 @@ proc insertTelemetryMakeFile { subsys file_writer } {
     puts $file_writer "LD            = \$(CXX) \$(CCFLAGS) \$(CPPFLAGS)"
     puts $file_writer "AR            = ar"
     puts $file_writer "PICFLAGS      = -fPIC"
-    puts $file_writer "CPPFLAGS      = \$(PICFLAGS) \$(GENFLAGS) -g \$(SAL_CPPFLAGS) -D_REENTRANT -Wall -I\".\"  -I\"\$(AVRO_INCL)\" -I../../[set subsys]/cpp/src -I\"\$(LSST_SAL_PREFIX)/include\"  -I\"\$(LSST_SAL_PREFIX)/include/avro\" -I.. -I\"\$(SAL_WORK_DIR)/include\" -Wno-write-strings $keyed"
+    puts $file_writer "CPPFLAGS      = \$(PICFLAGS) \$(GENFLAGS) -g \$(SAL_CPPFLAGS) -D_REENTRANT -Wall -I\".\"  -I\"\$(AVRO_INCL)\" -I../../[set subsys]/cpp/src -I\"\$(LSST_SAL_PREFIX)/include\"  -I\"\$(LSST_SAL_PREFIX)/include/avro\" -I.. -I\"\$(SAL_WORK_DIR)/include\" -fpermissive -Wno-write-strings $keyed"
     puts $file_writer "OBJEXT        = .o"
     puts $file_writer "OUTPUT_OPTION = -o \"\$@\""
     puts $file_writer "COMPILE.c     = \$(CC) \$(CFLAGS) \$(CPPFLAGS) -c"
