@@ -385,7 +385,7 @@ global env SAL_WORK_DIR SAL_DIR OSPL_VERSION XMLVERSION RELVERSION SALVERSION TS
   }
   set fout [open $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/resources/xml_version.json w]
   puts $fout "\{
-   \"xml_version\":"$XMLVERSION\"
+   \"xml_version\":\"$XMLVERSION\"
 \}"
   close $fout
 # make pom.xml
