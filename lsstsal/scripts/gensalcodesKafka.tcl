@@ -85,14 +85,14 @@ global DONE_CMDEVT OPTIONS SAL_DIR
          if { $OPTIONS(verbose) } {stdlog $result}
        } 
        if { $OPTIONS(java) } {
-         stdlog "Generating SAL Java code for $subsys"
+         stdlog "DEPRECATED : Generating SAL Java code for $subsys"
          set result none
          catch { set result [exec make_salUtils] } bad
          if { $result == "none" } {puts stderr $bad}
-         set result none
-         catch { set result [makesalcode $jsonfile $base $name java] } bad
-         if { $result == "none" } {puts stderr $bad}
-         if { $OPTIONS(verbose) } {stdlog $result}
+###         set result none
+###        catch { set result [makesalcode $jsonfile $base $name java] } bad
+###         if { $result == "none" } {puts stderr $bad}
+###         if { $OPTIONS(verbose) } {stdlog $result}
        }
       }
      }
@@ -168,19 +168,19 @@ global OPTIONS CMD_ALIASES EVENT_ALIASES TLM_ALIASES
     }
   }
   if { $OPTIONS(java) } {
-    set result none
-    if { [info exists CMD_ALIASES($base)] } {
-       catch { set result [gencommandtestssinglefilejava $base] } bad
-       if { $OPTIONS(verbose) } {stdlog $result}
-    }
-    if { [info exists EVENT_ALIASES($base)] } {
-      catch { set result [geneventtestssinglefilejava $base] } bad
-      if { $OPTIONS(verbose) } {stdlog $result}
-    }
-    if { [info exists TLM_ALIASES($base)] } {
-      catch { set result [gentelemetrytestssinglefilejava $base] } bad
-      if { $OPTIONS(verbose) } {stdlog $result}
-    }
+###    set result none
+###    if { [info exists CMD_ALIASES($base)] } {
+###       catch { set result [gencommandtestssinglefilejava $base] } bad
+###       if { $OPTIONS(verbose) } {stdlog $result}
+###    }
+###    if { [info exists EVENT_ALIASES($base)] } {
+###      catch { set result [geneventtestssinglefilejava $base] } bad
+###      if { $OPTIONS(verbose) } {stdlog $result}
+###    }
+###    if { [info exists TLM_ALIASES($base)] } {
+###      catch { set result [gentelemetrytestssinglefilejava $base] } bad
+###      if { $OPTIONS(verbose) } {stdlog $result}
+###    }
   }
   if { $OPTIONS(verbose) } {stdlog "###TRACE<<< genSingleProcessTests $base"}
 }

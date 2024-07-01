@@ -5,13 +5,22 @@
 ###############
 Version History
 ###############
+
+=================
+Changes for 8.1.0
+=================
+
+* Deprecate Java code generation for Kafka (replaced by standalone SimpleSAL reflection based API)
+* Fix warnings from C++ build
+
+==================
 Changes for 8.0.0
 =================
 
 * Add suppport for Kafka as the middleware transport
 * Remove AuthList testing
 
-=======
+=================
 Changes for 7.5.0
 =================
 
