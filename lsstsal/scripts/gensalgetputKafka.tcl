@@ -227,7 +227,7 @@ global SYSDIC
 #  getSALVersion,getXMLVersion,getKAFKAVersion
 #
 proc addSWVersionsCPP { fout } {
-global SALVERSION XMLVERSION AVRO_RELEASE OSPL_RELEASE env
+global SALVERSION XMLVERSION AVRO_RELEASE env
   puts $fout "
 string SAL_SALData::getSALVersion()
 \{
@@ -252,7 +252,7 @@ string SAL_SALData::getKAFKAVersion()
 
 string SAL_SALData::getOSPLVersion()
 \{
-    return \"$OSPL_RELEASE\";
+    return \"0.0.0\";
 \}
 
 string SAL_SALData::getAVROVersion()
@@ -270,7 +270,7 @@ string SAL_SALData::getAVROVersion()
 #  getSALVersion,getXMLVersion,getKAFKAVersion
 #
 proc addSWVersionsJava { fout } {
-global SALVERSION XMLVERSION AVRO_RELEASE OSPL_RELEASE env
+global SALVERSION XMLVERSION AVRO_RELEASE env
   puts $fout "
 /// Returns the current SAL version e.g. \"4.1.0\"
 public String getSALVersion()
@@ -297,7 +297,7 @@ public String getKAFKAVersion()
 
 public String getOSPLVersion()
 \{
-    return \"$OSPL_RELEASE\";
+    return \"0.0.0\";
 \}
 
 public String getAVROVersion()
