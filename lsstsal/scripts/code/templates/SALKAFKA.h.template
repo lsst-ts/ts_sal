@@ -95,6 +95,8 @@
 ///    avro::ValidSchema 		avroSchema;
 ///    avro::ValidSchema 		avroSchema2;
     bool hasSchema;
+/// use flush call to sync with broker
+    bool flush;
 /// isActive is true when the Actor has been connected to Kafka
       bool			isActive;
 /// isReader is true when the Actor is a Kafka reader
@@ -161,6 +163,7 @@
       RdKafka::Topic *topic;
       RdKafka::Topic *topic2;
       RdKafka::Producer *publisher;
+      RdKafka::Producer *publisherCmdEvt;
       RdKafka::KafkaConsumer *subscriber;
       RdKafka::Headers *headers;
       Serdes::Conf *serdesConfiguration;
@@ -208,6 +211,8 @@
       char *schemaRegistry;
       char *localSchemaDir;
       char *kafkaProducerWaitAcks;
+      int telemetryFlushMS;
+      int cmdevtFlushMS;
 
 ///   Holds the private_identity of this SAL Object, set at creation
       char CSC_identity[128];

@@ -165,11 +165,20 @@ global AVRO_PREFIX
   puts $fout "     std::string topicKey = idname + tname + cbrk;"
   puts $fout "#endif"
   puts $fout "     RdKafka::Headers *headers = RdKafka::Headers::create();"
-  puts $fout "     RdKafka::ErrorCode resp ="
+  puts $fout "     RdKafka::ErrorCode resp;"
+  puts $fout "     if (sal\[actorIdx\].flush) \{"
+  puts $fout "       resp ="
+  puts $fout "           publisherCmdEvt->produce(sal\[actorIdx\].avroName, RdKafka::Topic::PARTITION_UA,"
+  puts $fout "                                 RdKafka::Producer::RK_MSG_COPY /* Copy payload */,"
+  puts $fout "                                 buffer.data(), outsize,"
+  puts $fout "                                 topicKey.c_str(), topicKey.size() , 0, headers);"
+  puts $fout "     \} else \{"
+  puts $fout "       resp ="
   puts $fout "           publisher->produce(sal\[actorIdx\].avroName, RdKafka::Topic::PARTITION_UA,"
   puts $fout "                                 RdKafka::Producer::RK_MSG_COPY /* Copy payload */,"
   puts $fout "                                 buffer.data(), outsize,"
   puts $fout "                                 topicKey.c_str(), topicKey.size() , 0, headers);"
+  puts $fout "     \}"
   puts $fout "     if (resp != RdKafka::ERR_NO_ERROR) \{"
   puts $fout "       std::cerr << \"% Produce failed: \" << RdKafka::err2str(resp)"
   puts $fout "                 << std::endl;"
@@ -181,8 +190,13 @@ global AVRO_PREFIX
   puts $fout "                 << std::endl;"
   puts $fout "       \}"
   puts $fout "     \}"
-  puts $fout "     publisher->poll(0);"
-  puts $fout "     publisher->flush(500);"
+  puts $fout "     if (sal\[actorIdx\].flush) \{"
+  puts $fout "       publisherCmdEvt->poll(0);"
+  puts $fout "       publisherCmdEvt->flush(cmdevtFlushMS);"
+  puts $fout "     \} else \{"
+  puts $fout "       publisher->poll(0);"
+  puts $fout "       publisher->flush(telemetryFlushMS);"
+  puts $fout "     \}"
 }
 
 proc writerFragmentAck { fout base name } {
@@ -226,7 +240,7 @@ global AVRO_PREFIX
   puts $fout "       \}"
   puts $fout "     \}"
   puts $fout "     publisher->poll(0);"
-  puts $fout "     publisher->flush(500);"
+  puts $fout "     publisher->flush(100);"
 }
 
 #
