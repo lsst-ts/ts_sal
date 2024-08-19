@@ -179,8 +179,6 @@ if { $RELVERSION != "" } {
   set SALRELEASE "[set XMLVERSION]-[set SALVERSION]"
 }
 
-set OSPL_RELEASE $env(OSPL_RELEASE)
-
 if { $OPTIONS(idl) && $OPTIONS(sal) == 0 } {
    errorexit "IDL no longer supported by SAL Kafka"
 }
@@ -402,4 +400,4 @@ puts stdout "SALVERSION = $SALVERSION"
 puts stdout "XMLVERSION = $XMLVERSION"
 puts stdout "SAL_WORK_DIR = $SAL_WORK_DIR"
 puts stdout "LSST_LAFKA_PREFIX = $LSST_KAFKA_PREFIX"
-puts stdout "OSPL_RELEASE = $OSPL_RELEASE"
+

@@ -12,6 +12,8 @@ Changes for 8.1.0
 
 * Deprecate Java code generation for Kafka (replaced by standalone SimpleSAL reflection based API)
 * Fix warnings from C++ build
+* First version for AlmaLinux 9 and java-17-zulu-openjdk
+* Seperate ts_sal_utils and ts_sal_utilsKafka RPMS
 
 ==================
 Changes for 8.0.0

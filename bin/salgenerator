@@ -166,7 +166,7 @@ if { $RELVERSION != "" } {
   set SALRELEASE "[set XMLVERSION]-[set SALVERSION]"
 }
 
-set OSPL_RELEASE $env(OSPL_RELEASE)
+set OSPL_RELEASE "6.10.4"
 
 if { $OPTIONS(idl) && $OPTIONS(sal) == 0 } {
    errorexit "Use the sal option in conjunction with the idl option"

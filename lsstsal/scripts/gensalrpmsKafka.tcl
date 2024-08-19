@@ -68,8 +68,8 @@ proc updatetests { subsys rpmname } {
 global SAL_WORK_DIR XMLVERSION RELVERSION
    set rpmversion [updateversioning]
    catch {
-    copyasset $SAL_WORK_DIR/lib/libSAL_[set subsys].so [set rpmname]-$rpmversion/opt/lsst/ts_sal/lib/.
-    copyasset $SAL_WORK_DIR/lib/libSAL_[set subsys].a [set rpmname]-$rpmversion/opt/lsst/ts_sal/lib/.
+##    copyasset $SAL_WORK_DIR/lib/libSAL_[set subsys].so [set rpmname]-$rpmversion/opt/lsst/ts_sal/lib/.
+##    copyasset $SAL_WORK_DIR/lib/libSAL_[set subsys].a [set rpmname]-$rpmversion/opt/lsst/ts_sal/lib/.
     set all ""
     catch {set all [glob [set subsys]_*/cpp]}
     foreach i $all {
@@ -196,14 +196,14 @@ rpmbuild -bb -bl -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_[set subsys].spec
     exec cat /tmp/makerpm_[set subsys].log
   }
   cd $SAL_WORK_DIR
-  updatesingletons ts_sal_utils
+  updatesingletons ts_sal_utilsKafka
   updatesingletons ts_sal_runtime
   updatesingletons ts_sal_ATruntime
 }
 
 #
 ## Documented proc \c updatesingletons .
-# \param[in] name Name of asset (ts_sal_utils, ts_sal_runtime,ts_sal_ATruntime)
+# \param[in] name Name of asset (ts_sal_utilsKafka, ts_sal_runtime,ts_sal_ATruntime)
 #
 proc updatesingletons { name } {
 global SAL_WORK_DIR XMLVERSION SALVERSION
@@ -213,7 +213,7 @@ global SAL_WORK_DIR XMLVERSION SALVERSION
   }
   if { $found == "" } {
      switch $name  {
-        ts_sal_utils     { generateUtilsrpm }
+        ts_sal_utilsKafka { generateUtilsrpm }
         ts_sal_runtime   { generatemetarpm }
         ts_sal_ATruntime { generateATmetarpm }
      }
@@ -276,7 +276,7 @@ AutoReqProv: no
 URL:       %{url}
 Prefix:    %{_prefix}
 Buildroot: %{buildroot}
-Requires: ts_sal_utils
+Requires: ts_sal_utilsKafka
 "
    foreach subsys $SYSDIC(systems) {
       puts $fout "Requires: $subsys = $rpmversion"
@@ -337,7 +337,7 @@ AutoReqProv: no
 URL:       %{url}
 Prefix:    %{_prefix}
 Buildroot: %{buildroot}
-Requires: ts_sal_utils
+Requires: ts_sal_utilsKafka
 "
    foreach subsys $SYSDIC(systems) {
       if { [string range $subsys 0 1] == "AT" } {
@@ -392,7 +392,7 @@ Source0: [set subsys]-$rpmversion.tgz
 Prefix: /opt
 BuildRoot: $SAL_WORK_DIR/rpmbuild/%\{name\}-%\{version\}-[set release]
 Packager: dmills@lsst.org
-Requires: ts_sal_utils
+Requires: ts_sal_utilsKafka
 %global __os_install_post %{nil}
 %define debug_package %{nil}
 
@@ -456,7 +456,7 @@ Prefix: /opt
 BuildRoot: $SAL_WORK_DIR/rpmbuild/%\{name\}-%\{version\}_[set release]
 Packager: dmills@lsst.org
 Requires : [set subsys] = $rpmversion
-Requires: ts_sal_utils
+Requires: ts_sal_utilsKafka
 %global __os_install_post %{nil}
 %define debug_package %{nil}
 
@@ -497,17 +497,17 @@ rm -fr \$RPM_BUILD_ROOT
 #
 ## Documented proc \c generateUtilsrpm .
 #
-#  Generate the SPEC file for ts_sal_utils
+#  Generate the SPEC file for ts_sal_utilsKafka
 #
 proc generateUtilsrpm { } {
 global SYSDIC SALVERSION SAL_WORK_DIR AVRO_RELEASE SAL_DIR LSST_SAL_PREFIX env
    set version [join [lrange [split $SALVERSION ".-"] 0 2] .]
-   set fout [open $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_utils.spec w]
+   set fout [open $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_utilsKafka.spec w]
    puts $fout "
 %global __os_install_post %{nil}
 %define debug_package %{nil}
 
-%define name			ts_sal_utils
+%define name			ts_sal_utilsKafka
 %define summary			SAL runtime utilities package
 %define version			$version
 %define release			1
@@ -517,7 +517,7 @@ Vendor: LSST
 License: GPL
 URL: http://project.lsst.org/ts
 Group: Telescope and Site SAL
-Source0: ts_sal_utils-[set SALVERSION].tgz
+Source0: ts_sal_utilsKafka-[set SALVERSION].tgz
 BuildRoot: $SAL_WORK_DIR/rpmbuild/%\{name\}-%\{version\}
 Packager: dmills@lsst.org
 Version:   %{version}
@@ -546,12 +546,12 @@ cp -fr %\{name\}-%\{version\}/* %{buildroot}/.
 /opt/lsst/ts_sal/include
 "
   close $fout
-  exec mkdir -p ts_sal_utils-$SALVERSION/etc/systemd/system
-  exec mkdir -p ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/bin
-  exec mkdir -p ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/lib/pkgconfig
-  exec mkdir -p ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/etc
-  exec mkdir -p ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/include
-  set fser [open ts_sal_utils-$SALVERSION/etc/systemd/system/ts_sal_settai.service w]
+  exec mkdir -p ts_sal_utilsKafka-$SALVERSION/etc/systemd/system
+  exec mkdir -p ts_sal_utilsKafka-$SALVERSION/opt/lsst/ts_sal/bin
+  exec mkdir -p ts_sal_utilsKafka-$SALVERSION/opt/lsst/ts_sal/lib/pkgconfig
+  exec mkdir -p ts_sal_utilsKafka-$SALVERSION/opt/lsst/ts_sal/etc
+  exec mkdir -p ts_sal_utilsKafka-$SALVERSION/opt/lsst/ts_sal/include
+  set fser [open ts_sal_utilsKafka-$SALVERSION/etc/systemd/system/ts_sal_settai.service w]
      puts $fser "
 \[Unit\]
 Description=SAL set TAI time offset
@@ -569,25 +569,25 @@ WantedBy=ts_sal_settai.service
 "
   close $fser
   exec make_salUtils
-  copyasset $SAL_WORK_DIR/include/SAL_defines.h ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/include/.
-  copyasset $SAL_WORK_DIR/salUtils/set-tai ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/bin/.
-  copyasset $env(TS_SAL_DIR)/bin/update_leapseconds ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/bin/.
-  copyasset $SAL_WORK_DIR/lib/libsalUtils.so ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/lib/.
-  copyasset $SAL_DIR/leap-seconds.list ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/etc/.
-  copyasset $env(TS_SAL_DIR)/setupKafka.env ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/setup.env
+  copyasset $SAL_WORK_DIR/include/SAL_defines.h ts_sal_utilsKafka-$SALVERSION/opt/lsst/ts_sal/include/.
+  copyasset $SAL_WORK_DIR/salUtils/set-tai ts_sal_utilsKafka-$SALVERSION/opt/lsst/ts_sal/bin/.
+  copyasset $env(TS_SAL_DIR)/bin/update_leapseconds ts_sal_utilsKafka-$SALVERSION/opt/lsst/ts_sal/bin/.
+  copyasset $SAL_WORK_DIR/lib/libsalUtils.so ts_sal_utilsKafka-$SALVERSION/opt/lsst/ts_sal/lib/.
+  copyasset $SAL_DIR/leap-seconds.list ts_sal_utilsKafka-$SALVERSION/opt/lsst/ts_sal/etc/.
+  copyasset $env(TS_SAL_DIR)/setupKafka.env ts_sal_utilsKafka-$SALVERSION/opt/lsst/ts_sal/setup.env
   set all [glob $env(LSST_SAL_PREFIX)/lib/*]
   foreach f $all {
-    copyasset $f ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/lib/.
+    copyasset $f ts_sal_utilsKafka-$SALVERSION/opt/lsst/ts_sal/lib/.
   }
-  exec cp -r $env(LSST_SAL_PREFIX)/include ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/.
-  exec tar cvzf $SAL_WORK_DIR/rpmbuild/SOURCES/ts_sal_utils-$SALVERSION.tgz ts_sal_utils-$SALVERSION
-  exec cp -r ts_sal_utils-$SALVERSION $SAL_WORK_DIR/rpmbuild/BUILD/.
-###  exec rm -fr $SAL_WORK_DIR/rpmbuild/BUILD/ts_sal_utils-$SALVERSION/*
+  exec cp -r $env(LSST_SAL_PREFIX)/include ts_sal_utilsKafka-$SALVERSION/opt/lsst/ts_sal/.
+  exec tar cvzf $SAL_WORK_DIR/rpmbuild/SOURCES/ts_sal_utilsKafka-$SALVERSION.tgz ts_sal_utilsKafka-$SALVERSION
+  exec cp -r ts_sal_utilsKafka-$SALVERSION $SAL_WORK_DIR/rpmbuild/BUILD/.
+###  exec rm -fr $SAL_WORK_DIR/rpmbuild/BUILD/ts_sal_utilsKafka-$SALVERSION/*
   set frpm [open /tmp/makerpm-utils w]
   puts $frpm "#!/bin/sh
 export QA_RPATHS=0x001F
-rpmbuild -bi -bl -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_utils.spec
-rpmbuild -bb -bl -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_utils.spec
+rpmbuild -bi -bl -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_utilsKafka.spec
+rpmbuild -bb -bl -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_utilsKafka.spec
 "
   close $frpm
   exec chmod 755 /tmp/makerpm-utils

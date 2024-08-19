@@ -227,7 +227,7 @@ global SYSDIC
 #  getSALVersion,getXMLVersion,getKAFKAVersion
 #
 proc addSWVersionsCPP { fout } {
-global SALVERSION XMLVERSION AVRO_RELEASE OSPL_RELEASE env
+global SALVERSION XMLVERSION AVRO_RELEASE env
   puts $fout "
 string SAL_SALData::getSALVersion()
 \{
@@ -252,7 +252,7 @@ string SAL_SALData::getKAFKAVersion()
 
 string SAL_SALData::getOSPLVersion()
 \{
-    return \"$OSPL_RELEASE\";
+    return \"0.0.0\";
 \}
 
 string SAL_SALData::getAVROVersion()
@@ -270,7 +270,7 @@ string SAL_SALData::getAVROVersion()
 #  getSALVersion,getXMLVersion,getKAFKAVersion
 #
 proc addSWVersionsJava { fout } {
-global SALVERSION XMLVERSION AVRO_RELEASE OSPL_RELEASE env
+global SALVERSION XMLVERSION AVRO_RELEASE env
   puts $fout "
 /// Returns the current SAL version e.g. \"4.1.0\"
 public String getSALVersion()
@@ -297,7 +297,7 @@ public String getKAFKAVersion()
 
 public String getOSPLVersion()
 \{
-    return \"$OSPL_RELEASE\";
+    return \"0.0.0\";
 \}
 
 public String getAVROVersion()
@@ -340,7 +340,8 @@ global SAL_WORK_DIR ACTIVETOPICS AVRO_PREFIX
    puts $fout "      sal\[i\].maxSamples = 1000;"
    puts $fout "      sal\[i\].sampleAge = 1.0e20;"
    puts $fout "      sal\[i\].hasSchema = true;"
-   puts $fout "      sal\[i\].historyDepth = 0;" 
+   puts $fout "      sal\[i\].flush = false;"
+   puts $fout "      sal\[i\].historyDepth = 0;"
    puts $fout "    \}"
    set idx 0
    foreach name $ACTIVETOPICS {
@@ -351,9 +352,11 @@ global SAL_WORK_DIR ACTIVETOPICS AVRO_PREFIX
       puts $fout "    sal\[$idx\].avroName = \"[getAvroNamespace][set base].[set name]\";"
       if { $type == "command" } {
         puts $fout "   sal\[$idx\].historyDepth=0;"
+        puts $fout "   sal\[$idx\].flush = true;"
       }
       if { $type == "logevent" } {
         puts $fout "   sal\[$idx\].historyDepth=1;"
+        puts $fout "   sal\[$idx\].flush = true;"
       }
       if { $base == "Test" } {
         puts $fout "   sal\[$idx\].historyDepth=5000;"
@@ -930,7 +933,7 @@ global AVRO_PREFIX OPTIONS
    puts $fout "  \} catch (Exception e) \{"
    puts $fout "     System.out.println(\"An error occurred: \" + e.getMessage());"
    puts $fout "  \}"
-   puts $fout "  publisher.flush();"
+   puts $fout "//  publisher.flush();"
  if { $OPTIONS(verbose) } {stdlog "###TRACE<<< writerFragmentJava $base $name "}
 }
 
