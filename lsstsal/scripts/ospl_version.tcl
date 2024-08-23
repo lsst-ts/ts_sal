@@ -17,7 +17,5 @@ if { [info exists env(LSST_KAFKA_PREFIX)] == 0 } {
   if { $l == 2 } {set OSPL_VERSION $OSPL_VERSION.0}
   set SIMD_BASE_DIR /opt/simd
   set DDSGEN "$OSPL_HDE/bin/idlpp -I $OSPL_HDE/etc/idl"
-} else {
-  set OSPL_VERSION 0.0.0
 }
 

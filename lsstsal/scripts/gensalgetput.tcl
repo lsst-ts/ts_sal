@@ -325,7 +325,7 @@ global SAL_WORK_DIR
    puts $fout "
 void SAL_SALData::initSalActors ()
 \{
-    char *pname = (char *)malloc(128);
+    char *pname = (char *)malloc(256);
     for (int i=0; i<SAL__ACTORS_MAXCOUNT;i++) \{
       sal\[i\].isReader = false;
       sal\[i\].isWriter = false;

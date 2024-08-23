@@ -49,7 +49,6 @@ SAL_SALData::SAL_SALData(char *identity)
 
 void SAL_SALData::initSalEnvironment(int aKey)
 {
-   int aenable;
    char *pname = getenv("LSST_DDS_PARTITION_PREFIX");
    char *qname = getenv("LSST_DDS_QOS");
    char *sname = getenv("LSST_DDS_HISTORYSYNC");

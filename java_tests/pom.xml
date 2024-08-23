@@ -43,16 +43,20 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M5</version>
+                <version>3.3.1</version>
                 <configuration>
                     <forkCount>1</forkCount>
                     <reuseForks>false</reuseForks>
+                    <argLine>
+                        --add-opens=java.base/java.lang=ALL-UNNAMED
+                        --add-opens=java.base/java.util=ALL-UNNAMED
+                    </argLine>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>3.13.0</version>
                 <executions>
                     <execution>
                         <id>default-compile</id>
@@ -71,7 +75,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.2.0</version>
+                <version>3.6.0</version>
                 <executions>
                     <execution>
                         <phase>generate-sources</phase>
@@ -108,29 +112,39 @@
             <version>1.19.0</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.glassfish.corba</groupId>
+            <artifactId>glassfish-corba-orb</artifactId>
+            <version>4.2.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.corba</groupId>
+            <artifactId>glassfish-corba-omgapi</artifactId>
+            <version>4.2.5</version>
+        </dependency>
     </dependencies>
     <repositories>
         <repository>
             <id>ocs-maven2-public</id>
             <name>OCS Maven 2 central repository</name>
-            <url>http://repo-nexus.lsst.org/nexus/content/groups/ocs-maven2/</url>
+            <url>https://repo-nexus.lsst.org/nexus/content/groups/ocs-maven2/</url>
         </repository>
     </repositories>
     <distributionManagement>
         <repository>
             <id>ocs-maven2</id>
             <name>OCS Maven2 Release repository</name>
-            <url>http://repo-nexus.lsst.org/nexus/content/repositories/ocs-maven2/</url>
+            <url>https://repo-nexus.lsst.org/nexus/content/repositories/ocs-maven2/</url>
         </repository>
         <snapshotRepository>
             <id>ocs-maven2-snapshots</id>
             <name>OCS Maven2 SNAPSHOTS repository</name>
-            <url>http://repo-nexus.lsst.org/nexus/content/repositories/ocs-maven2-snapshots/</url>
+            <url>https://repo-nexus.lsst.org/nexus/content/repositories/ocs-maven2-snapshots/</url>
         </snapshotRepository>
         <site>
             <id>ocs-maven2-site</id>
             <name>OCS Maven2 site repository</name>
-            <url>dav:http://repo-nexus.lsst.org/nexus/content/sites/ocs-site/</url>
+            <url>dav:https://repo-nexus.lsst.org/nexus/content/sites/ocs-site/</url>
         </site>
     </distributionManagement>
 </project>

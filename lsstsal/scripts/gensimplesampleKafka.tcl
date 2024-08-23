@@ -714,6 +714,10 @@ global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS CMD_ALIASES AVRO_PREFIX
          salcpptestgen $base $id
       }
       if { $lang == "java" } {
+         exec touch [set base]/java/src/saj_[set base]_types.jar 
+         exec touch $SAL_WORK_DIR/lib/saj_[set base]_types.jar
+      }
+      if { $lang == "java-deprecated" } {
          if { [llength [split $base "_"]] == 1  } {
            salavrogen $base java
            exec cp [set base]/java/src/saj_[set base]_types.jar $SAL_WORK_DIR/lib/.
@@ -749,7 +753,7 @@ global SAL_WORK_DIR OPTIONS ONEDONECPP ONEDONEJAVA SAL_DIR AVRO_RELEASE LSST_SAL
           }
           set ONEDONECPP 1
        }
-       if { $lang == "java" && $ONEDONEJAVA == 0} {
+       if { $lang == "java-deprecated" && $ONEDONEJAVA == 0} {
           set all [glob $SAL_WORK_DIR/avro-templates/[set base]/[set base]_*.json]
           foreach i $all {
             if { [lindex [split [file tail $i] ._] 2] != "enums" } {
