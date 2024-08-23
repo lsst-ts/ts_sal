@@ -7,7 +7,7 @@ Version History
 ###############
 
 =================
-Changes for 8.1.0
+Changes for 9.0.0
 =================
 
 * Deprecate Java code generation for Kafka (replaced by standalone SimpleSAL reflection based API)
