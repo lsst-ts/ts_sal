@@ -4,10 +4,10 @@
 # java needs maven 3.8.1+
 echo "Setting up SAL Kafka build environment"
 
-export MAVEN_RELEASE=3.9.6
-export AVRO_RELEASE=1.11.1
+export MAVEN_RELEASE=3.9.8
+export AVRO_RELEASE=1.12.0
 export BOOST_RELEASE=1.78
-export JDK_RELEASE=11
+export JDK_RELEASE=17
 export KAFKA_RELEASE=7.6
 export JACKSON_RELEASE=2.15.2
 
@@ -33,7 +33,7 @@ if [ -f /.dockerenv ]; then
   dnf install -y python3.11 python3.11-devel python3.11-pip
   ln -sf /usr/bin/python3.11 /etc/alternatives/python3
 fi
-dnf install -y ant cmake boost${BOOST_RELEASE}-devel jansson-devel asciidoc libcurl-devel csnappy-devel zlib-devel maven snappy-devel doxygen
+dnf install -y ant cmake boost${BOOST_RELEASE}-devel jansson-devel asciidoc libcurl-devel csnappy-devel zlib-devel maven snappy-devel doxygen fmt fmt-devel
 if [ -f /.dockerenv ]; then
   dnf install -y java-${JDK_RELEASE}-openjdk java-${JDK_RELEASE}-openjdk-devel java-${JDK_RELEASE}-openjdk-javadoc
 fi
@@ -125,12 +125,12 @@ if [ -f /.dockerenv ]; then
   ar x libsnappy.a
   gcc -fPIC -shared -o libsnappy.so.1 *.o -lc -lc++
   cp libsnappy.so.1 /opt/lsst/ts_sal/lib/.
+  cp $CONDA_PREFIX/lib/libstdc++.so.6.0.32  /opt/lsst/ts_sal/lib/libstdc++.so.6
 fi
 
 
 echo "Downloading and building libserdes"
 ln -sf /usr/include/boost$BOOST_RELEASE/boost /opt/lsst/ts_sal/include/boost
-cp $CONDA_PREFIX/lib/libstdc++.so.6.0.32  /opt/lsst/ts_sal/lib/libstdc++.so.6
 cd $HOME/external-packages
 git clone https://github.com/confluentinc/libserdes
 cd libserdes
