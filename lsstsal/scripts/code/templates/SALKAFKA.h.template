@@ -95,8 +95,8 @@
 ///    avro::ValidSchema 		avroSchema;
 ///    avro::ValidSchema 		avroSchema2;
     bool hasSchema;
-/// use flush call to sync with broker
-    bool flush;
+/// use flush call to sync with broker for commnds and events producer
+    bool cmdevt;
 /// isActive is true when the Actor has been connected to Kafka
       bool			isActive;
 /// isReader is true when the Actor is a Kafka reader
