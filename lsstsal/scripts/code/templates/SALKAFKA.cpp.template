@@ -85,12 +85,12 @@ void SAL_SALData::initSalEnvironment(int aKey)
   if (tlmflush != NULL) {
     sscanf(tlmflush,"%d",&telemetryFlushMS);
   } else {
-    telemetryFlushMS = 100;
+    telemetryFlushMS = 0;
   }
   if (cmdevtflush != NULL) {
     sscanf(cmdevtflush,"%d",&cmdevtFlushMS);
   } else {
-    telemetryFlushMS = 100;
+    cmdevtFlushMS = 100;
   }
   configuration->set("value.serializer", "io.confluent.kafka.serializers.KafkaAvroSerializer", errstr);  // Serialize the Avro object
   if (maxms != NULL) {
@@ -489,7 +489,7 @@ void SAL_SALData::createTopic(int actorIdx)
   RdKafka::Topic *topic = NULL;
   RdKafka::Conf *topicConfiguration = RdKafka::Conf::create(RdKafka::Conf::CONF_TOPIC);
   sal[actorIdx].topicConfiguration = topicConfiguration;
-  if (sal[actorIdx].flush) {
+  if (sal[actorIdx].cmdevt) {
     topic = RdKafka::Topic::create(publisherCmdEvt, sal[actorIdx].avroName, sal[actorIdx].topicConfiguration, errstr);
   } else {
     topic = RdKafka::Topic::create(publisher, sal[actorIdx].avroName, sal[actorIdx].topicConfiguration, errstr);
@@ -519,7 +519,7 @@ void SAL_SALData::createTopic2(int actorIdx)
   RdKafka::Topic *topic = NULL;
   RdKafka::Conf *topicConfiguration = RdKafka::Conf::create(RdKafka::Conf::CONF_TOPIC);
   sal[actorIdx].topicConfiguration2 = topicConfiguration;
-  if (sal[actorIdx].flush) {
+  if (sal[actorIdx].cmdevt) {
     topic = RdKafka::Topic::create(publisherCmdEvt, sal[actorIdx].avroName, sal[actorIdx].topicConfiguration2, errstr);
   } else {
     topic = RdKafka::Topic::create(publisher, sal[actorIdx].avroName, sal[actorIdx].topicConfiguration2, errstr);
@@ -549,7 +549,7 @@ void SAL_SALData::createTopic(int actorIdx, char *topicName)
   RdKafka::Topic *topic = NULL;
   RdKafka::Conf *topicConfiguration = RdKafka::Conf::create(RdKafka::Conf::CONF_TOPIC);
   sal[actorIdx].topicConfiguration = topicConfiguration;
-  if (sal[actorIdx].flush) {
+  if (sal[actorIdx].cmdevt) {
     topic = RdKafka::Topic::create(publisherCmdEvt, sal[actorIdx].avroName, sal[actorIdx].topicConfiguration, errstr);
   } else {
     topic = RdKafka::Topic::create(publisher, sal[actorIdx].avroName, sal[actorIdx].topicConfiguration, errstr);
@@ -579,7 +579,7 @@ void SAL_SALData::createTopic2(int actorIdx, char *topicName)
   RdKafka::Topic *topic = NULL;
   RdKafka::Conf *topicConfiguration = RdKafka::Conf::create(RdKafka::Conf::CONF_TOPIC);
   sal[actorIdx].topicConfiguration2 = topicConfiguration;
-  if (sal[actorIdx].flush) {
+  if (sal[actorIdx].cmdevt) {
     topic = RdKafka::Topic::create(publisherCmdEvt, sal[actorIdx].avroName, sal[actorIdx].topicConfiguration2, errstr);
   } else {
     topic = RdKafka::Topic::create(publisher, sal[actorIdx].avroName, sal[actorIdx].topicConfiguration2, errstr);
@@ -652,9 +652,12 @@ std::string SAL_SALData::randomString( size_t length )
 void SAL_SALData::createSubscriber(int actorIdx)
 {
   std::string errstr;
+  std::string randomtag = randomString(15);
   std::vector<std::string> topics;
+  std::string ul = "_";
   topics.push_back(sal[actorIdx].avroName);
-  consumerConfiguration->set("group.id",randomString(15), errstr);
+  std::string groupid = sal[actorIdx].topicName + ul + randomtag;
+  consumerConfiguration->set("group.id",groupid, errstr);
   if (sal[actorIdx].historyDepth == 0) {
     consumerConfiguration->set("auto.offset.reset","latest", errstr);
   } else {
