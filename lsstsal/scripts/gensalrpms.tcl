@@ -96,7 +96,7 @@ global SAL_WORK_DIR XMLVERSION RELVERSION
 #
 proc updateruntime { subsys {withtest 0} } {
 global SAL_WORK_DIR XMLVERSION RELVERSION SAL_DIR SYSDIC SALVERSION env
-  set rpmname "[set subsys]dds"
+  set rpmname $subsys
   set rpmversion [updateversioning]
   if { $withtest } {set rpmname [set subsys]_test}
   exec rm -fr [set rpmname]-$rpmversion
