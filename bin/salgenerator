@@ -264,7 +264,7 @@ if { $OPTIONS(maven) } {
 #     catch { set result [mavenunittests $subsys] } bad
 #     puts stdout "$result"
 #     puts stderr "$bad"
-    cd maven/[set subsys]-[set mvnrelease]
+    cd maven/[set subsys]_dds-[set mvnrelease]
     puts stdout "Running maven install"
     set result ""
     set bad ""
