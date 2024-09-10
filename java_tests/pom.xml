@@ -84,8 +84,8 @@
                         </goals>
                         <configuration>
                             <sources>
-                                <source>../test/maven/Script/src/main/java</source>
-                                <source>../test/maven/Test/src/main/java</source>
+                                <source>../test/maven/Script_dds/src/main/java</source>
+                                <source>../test/maven/Test_dds/src/main/java</source>
                             </sources>
                         </configuration>
                     </execution>
