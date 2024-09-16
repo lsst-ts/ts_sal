@@ -4,17 +4,20 @@
 # java needs maven 3.8.1+
 echo "Setting up SAL Kafka build environment"
 
-export MAVEN_RELEASE=3.9.6
-export AVRO_RELEASE=1.11.1
+export MAVEN_RELEASE=3.9.8
+export AVRO_RELEASE=1.12.0
 export BOOST_RELEASE=1.78
-export JDK_RELEASE=11
+export JDK_RELEASE=17
 export KAFKA_RELEASE=7.6
 export JACKSON_RELEASE=2.15.2
 
 export LSST_SDK_INSTALL=/opt/lsst/tssw/ts_sal
-export LSST_SAL_PREFIX=/opt/lsst/ts_sal
+if [ -z "$LSST_SAL_PREFIX" ]; then
+ export LSST_SAL_PREFIX=/opt/lsst/ts_sal
+fi
 
 echo "Using : "
+echo "        LSST_SAL_PREFIX = $LSST_SAL_PREFIX"
 echo "        Avro version = $AVRO_RELEASE"
 echo "        Boost version = $BOOST_RELEASE"
 echo "        Java version = $JDK_RELEASE"
@@ -22,10 +25,10 @@ echo "        Maven version = $MAVEN_RELEASE"
 echo "        Kafka version = $KAFKA_RELEASE"
 
 echo "Updating dependencies available from repo's"
-mkdir -p /opt/lsst/ts_sal
-chown -R $USER  /opt/lsst
-chgrp -R $USER  /opt/lsst
-dnf install =y epel-release
+mkdir -p $LSST_SAL_PREFIX
+chown -R $USER $LSST_SAL_PREFIX/..
+chgrp -R $USER $LSST_SAL_PREFIX/..
+dnf install -y epel-release
 dnf install -y yum-utils
 dnf config-manager -y --set-enabled powertools
 dnf update
@@ -33,7 +36,7 @@ if [ -f /.dockerenv ]; then
   dnf install -y python3.11 python3.11-devel python3.11-pip
   ln -sf /usr/bin/python3.11 /etc/alternatives/python3
 fi
-dnf install -y ant cmake boost${BOOST_RELEASE}-devel jansson-devel asciidoc libcurl-devel csnappy-devel zlib-devel maven snappy-devel doxygen
+dnf install -y ant cmake boost${BOOST_RELEASE}-devel jansson-devel asciidoc libcurl-devel csnappy-devel zlib-devel maven snappy-devel doxygen fmt fmt-devel
 if [ -f /.dockerenv ]; then
   dnf install -y java-${JDK_RELEASE}-openjdk java-${JDK_RELEASE}-openjdk-devel java-${JDK_RELEASE}-openjdk-javadoc
 fi
@@ -45,11 +48,11 @@ tar xzf apache-maven-${MAVEN_RELEASE}-src.tar.gz
 cd apache-maven-${MAVEN_RELEASE}
 mvn -DdistributionTargetDir="$LSST_SAL_PREFIX/../maven/apache-maven-${MAVEN_RELEASE}-SNAPSHOT" clean package
 
-export PATH=/opt/lsst/maven/apache-maven-${MAVEN_RELEASE}-SNAPSHOT/bin/:${PATH}
-mkdir -p /opt/lsst/ts_sal/bin
-mkdir -p /opt/lsst/ts_sal/include
-mkdir -p /opt/lsst/ts_sal/lib
-ln -sf /opt/lsst/maven/apache-maven-${MAVEN_RELEASE}-SNAPSHOT/bin/mvn /opt/lsst/ts_sal/bin/mvn
+export PATH=$LSSt_SAL_PREFIX/..//maven/apache-maven-${MAVEN_RELEASE}-SNAPSHOT/bin/:${PATH}
+mkdir -p $LSST_SAL_PREFIX/bin
+mkdir -p $LSST_SAL_PREFIX/include
+mkdir -p $LSST_SAL_PREFIX/lib
+ln -sf $LSST_SAL_PREFIX/../maven/apache-maven-${MAVEN_RELEASE}-SNAPSHOT/bin/mvn $LSST_SAL_PREFIX/bin/mvn
 
 echo "Downloading and building Avro"
 cd $HOME/external-packages
@@ -61,14 +64,14 @@ cd build
 cp lib* $LSST_SAL_PREFIX/lib/.
 cp avrogencpp $LSST_SAL_PREFIX/bin/.
 mkdir  -p $LSST_SAL_PREFIX/include/avro
-cp -r ../api/* $LSST_SAL_PREFIX/include/avro/.
-cp -r ../impl /opt/lsst/ts_sal/include/.
+cp -r ../include/avro $LSST_SAL_PREFIX/include/.
+cp -r ../impl $LSST_SAL_PREFIX/include/.
 
 
 cd $HOME/external-packages/avro-src-${AVRO_RELEASE}/lang/c
 if [ -f /.dockerenv ]; then
   cp /usr/include/jansson*.h $CONDA_PREFIX/include/.
-  cp /usr/include/jansson*.h $LSST_SAL_PREFIX/include/.
+  cp /usr/include/jansson*.h $CONDA_PREFIX/include/.
   cp /usr/lib64/libjansson* $CONDA_PREFIX/lib/.
 fi
 ./build.sh test
@@ -108,7 +111,7 @@ echo "Downloading and building librdkafka"
 cd $HOME/external-packages
 git clone https://github.com/confluentinc/librdkafka
 cd librdkafka
-./configure --prefix=/opt/lsst/ts_sal
+./configure --prefix=$LSST_SAL_PREFIX
 make 
 make install
 
@@ -124,19 +127,19 @@ if [ -f /.dockerenv ]; then
   make install
   ar x libsnappy.a
   gcc -fPIC -shared -o libsnappy.so.1 *.o -lc -lc++
-  cp libsnappy.so.1 /opt/lsst/ts_sal/lib/.
+  cp libsnappy.so.1 $LSST_SAL_PREFIX/lib/.
+  cp $CONDA_PREFIX/lib/libstdc++.so.6.0.32  $LSST_SAL_PREFIX/lib/libstdc++.so.6
 fi
 
 
 echo "Downloading and building libserdes"
-ln -sf /usr/include/boost$BOOST_RELEASE/boost /opt/lsst/ts_sal/include/boost
-cp $CONDA_PREFIX/lib/libstdc++.so.6.0.32  /opt/lsst/ts_sal/lib/libstdc++.so.6
+ln -sf /usr/include/boost$BOOST_RELEASE/boost $LSST_SAL_PREFIX/include/boost
 cd $HOME/external-packages
 git clone https://github.com/confluentinc/libserdes
 cd libserdes
-export LD_LIBRARY_PATH=/opt/lsst/ts_sal/lib:$LD_LIBRARY_PATH
-./configure --prefix=/opt/lsst/ts_sal --includedir=/opt/lsst/ts_sal/include --libdir=/opt/lsst/ts_sal/lib
-export CPPFLAGS=-I/opt/lsst/ts_sal/include/avro
+export LD_LIBRARY_PATH=$LSST_SAL_PREFIX/lib:$LD_LIBRARY_PATH
+./configure --prefix=$LSST_SAL_PREFIX --includedir=$LSST_SAL_PREFIX/include --libdir=$LSST_SAL_PREFIX/lib
+export CPPFLAGS=-I$LSST_SAL_PREFIX/include/avro
 make
 make install
 

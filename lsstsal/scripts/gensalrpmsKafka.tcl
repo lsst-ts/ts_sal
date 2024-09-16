@@ -256,6 +256,7 @@ global SYSDIC SALRELEASE SALVERSION SAL_WORK_DIR AVRO_RELEASE RELVERSION env XML
    puts $fout "
 %global __os_install_post %{nil}
 %define debug_package %{nil}
+%define _build_id_links none
 %define name			ts_sal_runtime
 %define summary			SAL runtime meta package
 %define license			GPL
@@ -317,6 +318,7 @@ global SYSDIC SALRELEASE SALVERSION SAL_WORK_DIR AVRO_RELEASE RELVERSION env XML
    puts $fout "
 %global __os_install_post %{nil}
 %define debug_package %{nil}
+%define _build_id_links none
 %define name			ts_sal_ATruntime
 %define summary			SAL Aux Telescope runtime meta package
 %define license			GPL
@@ -395,7 +397,7 @@ Packager: dmills@lsst.org
 Requires: ts_sal_utilsKafka
 %global __os_install_post %{nil}
 %define debug_package %{nil}
-
+%define _build_id_links none
 %description
 This is a SAL runtime and build environment for the LSST $subsys subsystem.
 It provides shared libraries , jar files , include files and documentation
@@ -459,7 +461,7 @@ Requires : [set subsys] = $rpmversion
 Requires: ts_sal_utilsKafka
 %global __os_install_post %{nil}
 %define debug_package %{nil}
-
+%define _build_id_links none
 %description
 This is a SAL runtime test environment for the LSST $subsys subsystem.
 It includes precompiled test programs for each message type.
@@ -506,7 +508,7 @@ global SYSDIC SALVERSION SAL_WORK_DIR AVRO_RELEASE SAL_DIR LSST_SAL_PREFIX env
    puts $fout "
 %global __os_install_post %{nil}
 %define debug_package %{nil}
-
+%define _build_id_links none
 %define name			ts_sal_utilsKafka
 %define summary			SAL runtime utilities package
 %define version			$version

@@ -340,7 +340,7 @@ global SAL_WORK_DIR ACTIVETOPICS AVRO_PREFIX
    puts $fout "      sal\[i\].maxSamples = 1000;"
    puts $fout "      sal\[i\].sampleAge = 1.0e20;"
    puts $fout "      sal\[i\].hasSchema = true;"
-   puts $fout "      sal\[i\].flush = false;"
+   puts $fout "      sal\[i\].cmdevt = false;"
    puts $fout "      sal\[i\].historyDepth = 0;"
    puts $fout "    \}"
    set idx 0
@@ -352,11 +352,11 @@ global SAL_WORK_DIR ACTIVETOPICS AVRO_PREFIX
       puts $fout "    sal\[$idx\].avroName = \"[getAvroNamespace][set base].[set name]\";"
       if { $type == "command" } {
         puts $fout "   sal\[$idx\].historyDepth=0;"
-        puts $fout "   sal\[$idx\].flush = true;"
+        puts $fout "   sal\[$idx\].cmdevt = true;"
       }
       if { $type == "logevent" } {
         puts $fout "   sal\[$idx\].historyDepth=1;"
-        puts $fout "   sal\[$idx\].flush = true;"
+        puts $fout "   sal\[$idx\].cmdevt = true;"
       }
       if { $base == "Test" } {
         puts $fout "   sal\[$idx\].historyDepth=5000;"
@@ -933,7 +933,7 @@ global AVRO_PREFIX OPTIONS
    puts $fout "  \} catch (Exception e) \{"
    puts $fout "     System.out.println(\"An error occurred: \" + e.getMessage());"
    puts $fout "  \}"
-   puts $fout "//  publisher.flush();"
+   puts $fout "  publisher.flush(100);"
  if { $OPTIONS(verbose) } {stdlog "###TRACE<<< writerFragmentJava $base $name "}
 }
 
