@@ -6,6 +6,14 @@
 Version History
 ###############
 
+==================
+Changes for 10.0.0
+==================
+
+* Rename DDS RPMs and Jars with a _dds suffix
+* Adjust java_tests/pom.xml for dds suffix
+* Update SAL Kafka environment setup
+
 =================
 Changes for 9.0.0
 =================
