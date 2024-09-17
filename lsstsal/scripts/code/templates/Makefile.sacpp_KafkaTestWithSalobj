@@ -1,0 +1,91 @@
+#----------------------------------------------------------------------------
+#       Macros
+#----------------------------------------------------------------------------
+CC            = gcc
+CXX           = g++
+CPPFLAGS      = $(PICFLAGS) $(GENFLAGS) -fpermissive -g $(SAL_CPPFLAGS) -D_REENTRANT -Wall -Wno-switch -Wno-format -I"." -I"$(LSST_SAL_PREFIX)/include" -I"$(LSST_SAL_PREFIX)/include/boost" -I"$(LSST_SAL_PREFIX)/include/avro" -I../../../SALSubsys/cpp/src -I../../../SALSubsys/cpp -I"$(SAL_WORK_DIR)/include" -Wno-write-strings #-DSAL_SUBSYSTEM_ID_IS_KEYED
+LD            = $(CXX) $(CCFLAGS) $(CPPFLAGS)
+AR            = ar
+PICFLAGS      = -fPIC
+OBJEXT        = .o
+SHLIBEXT      = .so
+OUTPUT_OPTION = -o "$@"
+COMPILE.c     = $(CC) $(CFLAGS) $(CPPFLAGS) -c
+COMPILE.cc    = $(CXX) $(CCFLAGS) $(CPPFLAGS) -c
+LDFLAGS       = -fPIC -L"." -Wl,-rpath,\$$ORIGIN -L"$(SAL_WORK_DIR)/lib"
+CCC           = $(CXX)
+MAKEFILE      = Makefile.sacpp_TestWithSalobj
+DEPENDENCIES  = 
+BTARGETDIR    = ./
+CAT           = cat
+MV            = mv -f
+RM            = rm -rf
+CP            = cp -p
+NUL           = /dev/null
+MKDIR         = mkdir -p
+TESTDIRSTART  = test -d
+TESTDIREND    = ||
+TOUCH         = touch
+EXEEXT        = 
+LIBPREFIX     = lib
+LIBSUFFIX     = 
+GENFLAGS      = -g
+LDLIBS        = -ldl -lrt -lpthread -L"/usr/lib64/boost$(BOOST_RELEASE)" -lboost_filesystem -lboost_iostreams -lboost_program_options -lboost_system $(LSST_SAL_PREFIX)/lib/libserdes++.a $(LSST_SAL_PREFIX)/lib/libserdes.a -L$(LSST_SAL_PREFIX)/lib -lcurl -ljansson -lrdkafka++ -lavrocpp -lavro
+OBJS          =  .obj/sacpp_TestWithSalobj$(OBJEXT) .obj/SAL_Test$(OBJEXT)
+SRC           =  ../src/sacpp_TestWithSalobj.cpp ../src/SAL_Test.cpp
+OBJS2         =  .obj/sacpp_TestWithSalobjTarget$(OBJEXT) .obj/SAL_Test$(OBJEXT)
+SRC2          =  ../src/sacpp_TestWithSalobjTarget.cpp ../src/SAL_Test.cpp
+LINK.cc       = $(LD) $(LDFLAGS)
+EXPORTFLAGS   = 
+
+#----------------------------------------------------------------------------
+#       Local targets
+#----------------------------------------------------------------------------
+
+all: sacpp_TestWithSalobj sacpp_TestWithSalobjTarget
+
+sacpp_TestWithSalobj: $(OBJS)
+	@$(TESTDIRSTART) "$(BTARGETDIR)" $(TESTDIREND) $(MKDIR) "$(BTARGETDIR)"
+	$(LINK.cc) $(OBJS) $(LDLIBS) $(OUTPUT_OPTION)
+
+sacpp_TestWithSalobjTarget: $(OBJS2)
+	@$(TESTDIRSTART) "$(BTARGETDIR)" $(TESTDIREND) $(MKDIR) "$(BTARGETDIR)"
+	$(LINK.cc) $(OBJS2) $(LDLIBS) $(OUTPUT_OPTION)
+
+generated: $(GENERATED_DIRTY)
+	@-:
+
+
+.obj/SAL_Test$(OBJEXT): ../src/SAL_Test.cpp
+	@$(TESTDIRSTART) ".obj/../src" $(TESTDIREND) $(MKDIR) ".obj/../src"
+	$(COMPILE.cc) $(EXPORTFLAGS) $(OUTPUT_OPTION) ../src/SAL_Test.cpp
+
+.obj/sacpp_TestWithSalobj$(OBJEXT): ../src/sacpp_TestWithSalobj.cpp
+	@$(TESTDIRSTART) ".obj/../src" $(TESTDIREND) $(MKDIR) ".obj/../src"
+	$(COMPILE.cc) $(EXPORTFLAGS) $(OUTPUT_OPTION) ../src/sacpp_TestWithSalobj.cpp
+
+.obj/sacpp_TestWithSalobjTarget$(OBJEXT): ../src/sacpp_TestWithSalobjTarget.cpp
+	@$(TESTDIRSTART) ".obj/../src" $(TESTDIREND) $(MKDIR) ".obj/../src"
+	$(COMPILE.cc) $(EXPORTFLAGS) $(OUTPUT_OPTION) ../src/sacpp_TestWithSalobjTarget.cpp
+
+clean:
+	-$(RM) $(OBJS) $(OBJS2)
+
+realclean: clean
+	-$(RM) sacpp_TestWithSalobj sacpp_TestWithSalobjTarget
+	-$(RM) .obj/
+
+check-syntax:
+	$(COMPILE.cc) $(EXPORTFLAGS) -Wall -Wextra -pedantic -fsyntax-only $(CHK_SOURCES)
+
+#----------------------------------------------------------------------------
+#       Dependencies
+#----------------------------------------------------------------------------
+
+$(DEPENDENCIES):
+	@$(TOUCH) $(DEPENDENCIES)
+
+depend:
+	-VDIR=.obj/ $(MPC_ROOT)/depgen.pl  $(CFLAGS) $(CCFLAGS) $(CPPFLAGS) -f $(DEPENDENCIES) $(SRC) 2> $(NUL)
+
+include $(DEPENDENCIES)
