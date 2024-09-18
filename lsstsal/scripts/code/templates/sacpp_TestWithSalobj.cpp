@@ -38,7 +38,7 @@ int test_TestWithSalobj(int index, int logLevel)
   int cmdid;
   struct timespec delay_10ms;
   delay_10ms.tv_sec = 0;
-  delay_10ms.tv_nsec = 10000;
+  delay_10ms.tv_nsec = 10000000;
 
   Test_logevent_logLevelC SALEvent;
   Test_command_setLogLevelC SALCommand;
