@@ -467,8 +467,8 @@ void SAL_SALData::checkSchema(int actorIdx)
      throw std::runtime_error(string(errstr + sal[actorIdx].topicName));
   }
   if (sal[actorIdx].avroSchema == NULL) {
-    sal[actorIdx].avroSchema = Serdes::Schema::get(serdes, svname, errstr);
-    if (!sal[actorIdx].avroSchema) {
+//    sal[actorIdx].avroSchema = Serdes::Schema::get(serdes, svname, errstr);
+//    if (!sal[actorIdx].avroSchema) {
       std::string adir = "/avro-templates/SALData/"; 
       std::string schema = localSchemaDir + adir + sal[actorIdx].topicName + ".json";
       std::ifstream ifs(schema);
@@ -477,7 +477,7 @@ void SAL_SALData::checkSchema(int actorIdx)
       std::string svname = sal[actorIdx].avroName + "-value";
       sal[actorIdx].avroSchema = Serdes::Schema::add(serdes, svname, buffer.str(), errstr);
       sal[actorIdx].hasSchema = true;
-    }
+//    }
   }
 }
 
