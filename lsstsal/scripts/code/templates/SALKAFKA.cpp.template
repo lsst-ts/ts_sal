@@ -105,7 +105,6 @@ void SAL_SALData::initSalEnvironment(int aKey)
     configuration->set("batch.num.messages", "1", errstr);
   }
   configuration->set("socket.nagle.disable", "true", errstr);
-  configuration->set("socket.blocking.max.ms","1",errstr);
 
   if (kafkaProducerWaitAcks != NULL) {
     configuration->set("acks", kafkaProducerWaitAcks, errstr);
@@ -500,8 +499,8 @@ void SAL_SALData::createTopic(int actorIdx)
   {
      throw std::runtime_error(string(errstr + sal[actorIdx].topicName));
   }
-  sal[actorIdx].avroSchema = Serdes::Schema::get(serdes, svname, errstr);
-  if (!sal[actorIdx].avroSchema) {
+//  sal[actorIdx].avroSchema = Serdes::Schema::get(serdes, svname, errstr);
+//  if (!sal[actorIdx].avroSchema) {
     std::string adir = "/avro-templates/SALData/"; 
     std::string schema = localSchemaDir + adir + sal[actorIdx].topicName + ".json";
     std::ifstream ifs(schema);
@@ -510,7 +509,7 @@ void SAL_SALData::createTopic(int actorIdx)
     std::string svname = sal[actorIdx].avroName + "-value";
     sal[actorIdx].avroSchema = Serdes::Schema::add(serdes, svname, buffer.str(), errstr);
     sal[actorIdx].hasSchema = true;
-  }
+//  }
 }
 
 void SAL_SALData::createTopic2(int actorIdx)
@@ -530,8 +529,8 @@ void SAL_SALData::createTopic2(int actorIdx)
   {
      throw std::runtime_error(string(errstr + sal[actorIdx].topicName2));
   }
-  sal[actorIdx].avroSchema2 = Serdes::Schema::get(serdes, svname, errstr);
-  if (!sal[actorIdx].avroSchema2) {
+//  sal[actorIdx].avroSchema2 = Serdes::Schema::get(serdes, svname, errstr);
+//  if (!sal[actorIdx].avroSchema2) {
     std::string adir = "/avro-templates/SALData/"; 
     std::string schema = localSchemaDir + adir + sal[actorIdx].topicName2 + ".json";
     std::ifstream ifs(schema);
@@ -540,7 +539,7 @@ void SAL_SALData::createTopic2(int actorIdx)
     std::string svname = sal[actorIdx].avroName2 + "-value";
     sal[actorIdx].avroSchema2 = Serdes::Schema::add(serdes, svname, buffer.str(), errstr);
     sal[actorIdx].hasSchema = true;
-  }
+//  }
 }
 
 void SAL_SALData::createTopic(int actorIdx, char *topicName)
@@ -560,8 +559,8 @@ void SAL_SALData::createTopic(int actorIdx, char *topicName)
   {
      throw std::runtime_error(string(errstr + topicName));
   }
-  sal[actorIdx].avroSchema = Serdes::Schema::get(serdes, svname, errstr);
-  if (!sal[actorIdx].avroSchema) {
+//  sal[actorIdx].avroSchema = Serdes::Schema::get(serdes, svname, errstr);
+//  if (!sal[actorIdx].avroSchema) {
     std::string adir = "/avro-templates/SALData/"; 
     std::string schema = localSchemaDir + adir + sal[actorIdx].topicName + ".json";
     std::ifstream ifs(schema);
@@ -570,7 +569,7 @@ void SAL_SALData::createTopic(int actorIdx, char *topicName)
     std::string svname = sal[actorIdx].avroName + "-value";
     sal[actorIdx].avroSchema = Serdes::Schema::add(serdes, svname, buffer.str(), errstr);
     sal[actorIdx].hasSchema = true;
-  }
+//  }
  }
 
 void SAL_SALData::createTopic2(int actorIdx, char *topicName)
@@ -590,8 +589,8 @@ void SAL_SALData::createTopic2(int actorIdx, char *topicName)
   {
      throw std::runtime_error(string(errstr + sal[actorIdx].topicName2));
   }
-  sal[actorIdx].avroSchema2 = Serdes::Schema::get(serdes, svname, errstr);
-  if (!sal[actorIdx].avroSchema2) {
+//  sal[actorIdx].avroSchema2 = Serdes::Schema::get(serdes, svname, errstr);
+//  if (!sal[actorIdx].avroSchema2) {
     std::string adir = "/avro-templates/SALData/"; 
     std::string schema = localSchemaDir + adir + sal[actorIdx].topicName2 + ".json";
     std::ifstream ifs(schema);
@@ -600,7 +599,7 @@ void SAL_SALData::createTopic2(int actorIdx, char *topicName)
     std::string svname = sal[actorIdx].avroName2 + "-value";
     sal[actorIdx].avroSchema2 = Serdes::Schema::add(serdes, svname, buffer.str(), errstr);
     sal[actorIdx].hasSchema = true;
-  }
+//  }
 }
 
 
@@ -656,7 +655,7 @@ void SAL_SALData::createSubscriber(int actorIdx)
   std::vector<std::string> topics;
   std::string ul = "_";
   topics.push_back(sal[actorIdx].avroName);
-  std::string groupid = sal[actorIdx].topicName + ul + randomtag;
+  std::string groupid = CSC_identity + ul + sal[actorIdx].topicName + ul + randomtag;
   consumerConfiguration->set("group.id",groupid, errstr);
   if (sal[actorIdx].historyDepth == 0) {
     consumerConfiguration->set("auto.offset.reset","latest", errstr);
