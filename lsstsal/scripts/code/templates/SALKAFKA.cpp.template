@@ -462,7 +462,7 @@ void SAL_SALData::createParticipant(const char *partitiontName)
 void SAL_SALData::checkSchema(int actorIdx)
 {
   std::string errstr;
-  std::string svname = sal[actorIdx].avroName + "-value";
+//  std::string svname = sal[actorIdx].avroName + "-value";
   if (sal[actorIdx].topicConfiguration == NULL)  {
      throw std::runtime_error(string(errstr + sal[actorIdx].topicName));
   }
@@ -494,7 +494,7 @@ void SAL_SALData::createTopic(int actorIdx)
     topic = RdKafka::Topic::create(publisher, sal[actorIdx].avroName, sal[actorIdx].topicConfiguration, errstr);
   }
   sal[actorIdx].topic = topic;
-  std::string svname = sal[actorIdx].avroName + "-value";
+//  std::string svname = sal[actorIdx].avroName + "-value";
   if (sal[actorIdx].topicConfiguration == NULL) 
   {
      throw std::runtime_error(string(errstr + sal[actorIdx].topicName));
@@ -524,7 +524,7 @@ void SAL_SALData::createTopic2(int actorIdx)
     topic = RdKafka::Topic::create(publisher, sal[actorIdx].avroName, sal[actorIdx].topicConfiguration2, errstr);
   }
   sal[actorIdx].topic2 = topic;
-  std::string svname = sal[actorIdx].avroName2 + "-value";
+//  std::string svname = sal[actorIdx].avroName2 + "-value";
   if (sal[actorIdx].topicConfiguration2 == NULL) 
   {
      throw std::runtime_error(string(errstr + sal[actorIdx].topicName2));
@@ -554,7 +554,7 @@ void SAL_SALData::createTopic(int actorIdx, char *topicName)
     topic = RdKafka::Topic::create(publisher, sal[actorIdx].avroName, sal[actorIdx].topicConfiguration, errstr);
   }
   sal[actorIdx].topic = topic;
-  std::string svname = sal[actorIdx].avroName + "-value";
+//  std::string svname = sal[actorIdx].avroName + "-value";
   if (sal[actorIdx].topicConfiguration == NULL) 
   {
      throw std::runtime_error(string(errstr + topicName));
@@ -584,7 +584,7 @@ void SAL_SALData::createTopic2(int actorIdx, char *topicName)
     topic = RdKafka::Topic::create(publisher, sal[actorIdx].avroName, sal[actorIdx].topicConfiguration2, errstr);
   }
   sal[actorIdx].topic2 = topic;
-  std::string svname = sal[actorIdx].avroName2 + "-value";
+//  std::string svname = sal[actorIdx].avroName2 + "-value";
   if (sal[actorIdx].topicConfiguration2 == NULL) 
   {
      throw std::runtime_error(string(errstr + sal[actorIdx].topicName2));
