@@ -540,6 +540,7 @@ cp -fr %\{name\}-%\{version\}/* %{buildroot}/.
 /etc/systemd/system/ts_sal_settai.service
 /opt/lsst/ts_sal/bin/set-tai
 /opt/lsst/ts_sal/bin/update_leapseconds
+/opt/lsst/ts_sal/bin/avrogencpp
 /opt/lsst/ts_sal/lib/libsalUtils.so
 /opt/lsst/ts_sal/etc/leap-seconds.list
 /opt/lsst/ts_sal/setup.env
