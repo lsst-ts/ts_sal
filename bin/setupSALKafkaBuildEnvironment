@@ -37,7 +37,7 @@ if [ -f /.dockerenv ]; then
   dnf install -y python3.11 python3.11-devel python3.11-pip
   ln -sf /usr/bin/python3.11 /etc/alternatives/python3
 fi
-dnf install -y ant cmake boost${BOOST_RELEASE}-devel jansson-devel asciidoc libcurl-devel snappy csnappy csnappy-devel zlib-devel maven snappy-devel doxygen fmt fmt-devel
+dnf install -y ant cmake boost${BOOST_RELEASE}-devel jansson-devel asciidoc libcurl-devel zlib-devel maven doxygen fmt fmt-devel snappy csnappy
 if [ -f /.dockerenv ]; then
   dnf install -y java-${JDK_RELEASE}-openjdk java-${JDK_RELEASE}-openjdk-devel java-${JDK_RELEASE}-openjdk-javadoc
 fi
