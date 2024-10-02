@@ -60,7 +60,7 @@ cd $HOME/external-packages
 wget https://archive.apache.org/dist/avro/avro-${AVRO_RELEASE}/avro-src-${AVRO_RELEASE}.tar.gz
 tar xvzf avro-src-${AVRO_RELEASE}.tar.gz
 cd $HOME/external-packages/avro-src-${AVRO_RELEASE}/lang/c++
-./build.sh test
+./build.sh install
 cd build
 cp lib* $LSST_SAL_PREFIX/lib/.
 cp avrogencpp $LSST_SAL_PREFIX/bin/.
