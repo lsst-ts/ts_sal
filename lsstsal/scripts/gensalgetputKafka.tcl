@@ -67,6 +67,9 @@ salReturn SAL_[set base]::putSample_[set name]([set base]_[set name]C *data)
     cout << \"=== \[putSample\] [set base].[set name] writing a message containing :\" << endl;
     cout << \"    revCode  : \" << Instance.private_revCode << endl;
   \}
+#ifdef SAL_SUBSYSTEM_ID_IS_KEYED
+  Instance.salIndex = subsystemID;
+#endif
   Instance.private_sndStamp = getCurrentTime();
   Instance.private_efdStamp = getCurrentUTC();
   Instance.private_kafkaStamp = getCurrentTime();"
@@ -154,12 +157,18 @@ salReturn SAL_[set base]::getLastSample_[set name]([set base]_[set name]C *data)
 
 salReturn SAL_[set base]::flushSamples_[set name]([set base]_[set name]C *data)
 \{
-    salReturn istatus;
-    sal\[SAL__[set base]_[set name]_ACTOR\].maxSamples = 1000;
-    sal\[SAL__[set base]_[set name]_ACTOR\].sampleAge = -1.0;
-    istatus = getSample_[set name](data);
+    RdKafka::ErrorCode err,err2;
+    std::vector<RdKafka::TopicPartition*> parts;
+    int64_t startOffset = RD_KAFKA_OFFSET_END;
+    int actorIdx = SAL__[set base]_[set name]_ACTOR;
+    sal\[actorIdx\].maxSamples = 1000;
+    sal\[actorIdx\].sampleAge = -1.0;
+    err = sal\[actorIdx\].subscriber->assignment(parts);
+    parts\[0\]->set_offset(startOffset);
+    err2 = sal\[actorIdx\].subscriber->seek(*parts\[0\],100);
     if (debugLevel > 8) \{
-        cout << \"=== \[flushSamples\] getSample returns :\" << istatus << endl;
+        cout << \"=== \[flushSamples\] assignment returns :\" << err << endl;
+        cout << \"=== \[flushSamples\] seek returns :\" << err2 << endl;
     \}
     sal\[SAL__[set base]_[set name]_ACTOR\].sampleAge = 1.0e20;
     return SAL__OK;
