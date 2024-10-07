@@ -70,6 +70,9 @@ salReturn SAL_[set base]::putSample_[set name]([set base]_[set name]C *data)
     cout << \"=== \[putSample\] [set base].[set name] writing a message containing :\" << endl;
     cout << \"    revCode  : \" << Instance.private_revCode << endl;
   \}
+#ifdef SAL_SUBSYSTEM_ID_IS_KEYED
+  Instance.salIndex = subsystemID;
+#endif
   Instance.private_sndStamp = getCurrentTime();
   Instance.private_efdStamp = getCurrentUTC();
   Instance.private_kafkaStamp = getCurrentTime();"
