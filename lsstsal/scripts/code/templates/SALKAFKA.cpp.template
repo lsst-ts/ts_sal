@@ -128,7 +128,8 @@ void SAL_SALData::initSalEnvironment(int aKey)
   }
   consumerConfiguration->set("value.serializer", "io.confluent.kafka.serializers.KafkaAvroDeserializer", errstr);  // Serialize the Avro object
   std::string ul = "ul";
-  std::string groupid = CSC_identity + ul + sal[actorIdx].topicName + ul + randomtag;
+  std::string randomtag = randomString(15);
+  std::string groupid = CSC_identity + ul + randomtag;
   consumerConfiguration->set("group.id",groupid, errstr);
 
   serdesConfiguration = Serdes::Conf::create();
