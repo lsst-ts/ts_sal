@@ -127,6 +127,8 @@ void SAL_SALData::initSalEnvironment(int aKey)
     consumerConfiguration->set("sasl.password",securityPassword, errstr);   
   }
   consumerConfiguration->set("value.serializer", "io.confluent.kafka.serializers.KafkaAvroDeserializer", errstr);  // Serialize the Avro object
+  std::string groupid = CSC_identity + ul + randomtag;
+  consumerConfiguration->set("group.id",groupid, errstr);
 
   serdesConfiguration = Serdes::Conf::create();
   serdesConfiguration->set("serializer.framing", "cp1", errstr);
@@ -613,12 +615,8 @@ std::string SAL_SALData::randomString( size_t length )
 void SAL_SALData::createSubscriber(int actorIdx)
 {
   std::string errstr;
-  std::string randomtag = randomString(15);
   std::vector<std::string> topics;
-  std::string ul = "_";
   topics.push_back(sal[actorIdx].avroName);
-  std::string groupid = CSC_identity + ul + sal[actorIdx].topicName + ul + randomtag;
-  consumerConfiguration->set("group.id",groupid, errstr);
   if (sal[actorIdx].historyDepth == 0) {
     consumerConfiguration->set("auto.offset.reset","latest", errstr);
   } else {
