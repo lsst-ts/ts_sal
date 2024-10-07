@@ -96,9 +96,9 @@ global SAL_WORK_DIR XMLVERSION RELVERSION
 #
 proc updateruntime { subsys {withtest 0} } {
 global SAL_WORK_DIR XMLVERSION RELVERSION SAL_DIR SYSDIC SALVERSION env
-  set rpmname $subsys
+  set rpmname [set subsys]_dds
   set rpmversion [updateversioning]
-  if { $withtest } {set rpmname [set subsys]_test}
+  if { $withtest } {set rpmname [set subsys]_dds_test}
   exec rm -fr [set rpmname]-$rpmversion
   exec mkdir -p [set rpmname]-$rpmversion/opt/lsst/ts_sal
   exec mkdir -p [set rpmname]-$rpmversion/opt/lsst/ts_sal/bin
@@ -172,8 +172,8 @@ global SAL_WORK_DIR XMLVERSION RELVERSION SAL_DIR SYSDIC SALVERSION env
     set frpm [open /tmp/makerpm-runtime-[set subsys] w]
     puts $frpm "#!/bin/sh
 export QA_RPATHS=0x001F
-rpmbuild -bi -bl -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_[set subsys]_test.spec
-rpmbuild -bb -bl -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_[set subsys]_test.spec
+rpmbuild -bi -bl -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_[set subsys]_dds_test.spec
+rpmbuild -bb -bl -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_[set subsys]_dds_test.spec
 "
     close $frpm
     exec chmod 755 /tmp/makerpm-runtime-[set subsys]
@@ -184,8 +184,8 @@ rpmbuild -bb -bl -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_[set subsys]_test.spec
     set frpm [open /tmp/makerpm-runtime-[set subsys] w]
     puts $frpm "#!/bin/sh
 export QA_RPATHS=0x001F
-rpmbuild -bi -bl -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_[set subsys].spec
-rpmbuild -bb -bl -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_[set subsys].spec
+rpmbuild -bi -bl -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_[set subsys]_dds.spec
+rpmbuild -bb -bl -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_[set subsys]_dds.spec
 "
     close $frpm
     exec chmod 755 /tmp/makerpm-runtime-[set subsys]
@@ -193,9 +193,9 @@ rpmbuild -bb -bl -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_[set subsys].spec
     exec cat /tmp/makerpm_[set subsys].log
   }
   cd $SAL_WORK_DIR
-  updatesingletons ts_sal_utils
-  updatesingletons ts_sal_runtime
-  updatesingletons ts_sal_ATruntime
+  updatesingletons ts_sal_utils_dds
+  updatesingletons ts_sal_runtime_dds
+  updatesingletons ts_sal_ATruntime_dds
 }
 
 #
@@ -210,9 +210,9 @@ global SAL_WORK_DIR XMLVERSION SALVERSION
   }
   if { $found == "" } {
      switch $name  {
-        ts_sal_utils     { generateUtilsrpm }
-        ts_sal_runtime   { generatemetarpm }
-        ts_sal_ATruntime { generateATmetarpm }
+        ts_sal_utils_dds     { generateUtilsrpm }
+        ts_sal_runtime_dds   { generatemetarpm }
+        ts_sal_ATruntime_dds { generateATmetarpm }
      }
   }
 }
@@ -257,7 +257,7 @@ global XMLVERSION RELVERSION env RPMFILES SAL_WORK_DIR
 #
 proc generatemetarpm { } {
 global SYSDIC SALRELEASE SALVERSION SAL_WORK_DIR OSPL_VERSION RELVERSION env XMLVERSION
-   set fout [open $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_runtime.spec w]
+   set fout [open $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_runtime_dds.spec w]
    set rpmversion [updateversioning]
    set rpmversion [join [split $rpmversion "-"] "~"]
    set release $SALVERSION
@@ -265,7 +265,7 @@ global SYSDIC SALRELEASE SALVERSION SAL_WORK_DIR OSPL_VERSION RELVERSION env XML
 %global __os_install_post %{nil}
 %define debug_package %{nil}
 %define _build_id_links none
-%define name			ts_sal_runtime
+%define name			ts_sal_runtime_dds
 %define summary			SAL runtime meta package
 %define license			GPL
 %define group			LSST Telescope and Site
@@ -281,15 +281,14 @@ License:   %{license}
 Summary:   %{summary}
 Group:     %{group}
 AutoReqProv: no
-#Source:    %{source}
 URL:       %{url}
 Prefix:    %{_prefix}
 Buildroot: %{buildroot}
 Requires: OpenSpliceDDS = $OSPL_VERSION
-Requires: ts_sal_utils
+Requires: ts_sal_utils_dds
 "
    foreach subsys $SYSDIC(systems) {
-      puts $fout "Requires: $subsys = $rpmversion"
+      puts $fout "Requires: [set subsys]_dds = $rpmversion"
    }
    puts $fout "
 %description
@@ -304,7 +303,7 @@ This metapackage is used to install all the SAL runtime packages at once
    close $fout
   set frpm [open /tmp/makerpm-meta w]
   puts $frpm "#!/bin/sh
-rpmbuild -ba -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_runtime.spec
+rpmbuild -ba -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_runtime_dds.spec
 "
   close $frpm
   exec chmod 755 /tmp/makerpm-meta
@@ -320,7 +319,7 @@ rpmbuild -ba -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_runtime.spec
 #
 proc generateATmetarpm { } {
 global SYSDIC SALRELEASE SALVERSION SAL_WORK_DIR OSPL_VERSION RELVERSION env XMLVERSION
-   set fout [open $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_ATruntime.spec w]
+   set fout [open $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_ATruntime_dds.spec w]
    set rpmversion [updateversioning]
    set rpmversion [join [split $rpmversion "-"] "~"]
    set release $SALVERSION
@@ -328,7 +327,7 @@ global SYSDIC SALRELEASE SALVERSION SAL_WORK_DIR OSPL_VERSION RELVERSION env XML
 %global __os_install_post %{nil}
 %define debug_package %{nil}
 %define _build_id_links none
-%define name			ts_sal_ATruntime
+%define name			ts_sal_ATruntime_dds
 %define summary			SAL Aux Telescope runtime meta package
 %define license			GPL
 %define group			LSST Telescope and Site
@@ -344,16 +343,15 @@ License:   %{license}
 Summary:   %{summary}
 Group:     %{group}
 AutoReqProv: no
-#Source:    %{source}
 URL:       %{url}
 Prefix:    %{_prefix}
 Buildroot: %{buildroot}
 Requires: OpenSpliceDDS = $OSPL_VERSION
-Requires: ts_sal_utils
+Requires: ts_sal_utils_dds
 "
    foreach subsys $SYSDIC(systems) {
       if { [string range $subsys 0 1] == "AT" } {
-        puts $fout "Requires: $subsys = $rpmversion"
+        puts $fout "Requires: [set subsys]_dds = $rpmversion"
       }
    }
    puts $fout "
@@ -369,7 +367,7 @@ This metapackage is used to install all the SAL Aux telescope related runtime pa
    close $fout
   set frpm [open /tmp/makerpm-atmeta w]
   puts $frpm "#!/bin/sh
-rpmbuild -ba -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_ATruntime.spec
+rpmbuild -ba -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_ATruntime_dds.spec
 "
   close $frpm
   exec chmod 755 /tmp/makerpm-atmeta
@@ -387,11 +385,11 @@ proc generaterpm { subsys } {
 global SAL_WORK_DIR SALVERSION SALRELEASE RPMFILES OSPL_VERSION RELVERSION XMLVERSION env
   exec rm -fr $SAL_WORK_DIR/rpm_[set subsys]
   exec mkdir -p $SAL_WORK_DIR/rpm_[set subsys]
-  set fout [open $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_[set subsys].spec w]
+  set fout [open $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_[set subsys]_dds.spec w]
   set rpmversion [updateversioning]
   set rpmversion [join [split $rpmversion "-"] "~"]
   set release $SALVERSION
-  puts $fout "Name: $subsys
+  puts $fout "Name: [set subsys]_dds
 Version: [set rpmversion]
 Release: [set release]%\{?dist\}
 Summary: SAL runtime for $subsys Subsystem
@@ -400,12 +398,12 @@ License: GPL
 URL: http://project.lsst.org/ts
 Group: Telescope and Site SAL
 AutoReqProv: no
-Source0: [set subsys]-$rpmversion.tgz
+Source0: [set subsys]_dds-$rpmversion.tgz
 Prefix: /opt
 BuildRoot: $SAL_WORK_DIR/rpmbuild/%\{name\}-%\{version\}-[set release]
 Packager: dmills@lsst.org
 Requires: OpenSpliceDDS = $OSPL_VERSION
-Requires: ts_sal_utils
+Requires: ts_sal_utils_dds
 %global __os_install_post %{nil}
 %define debug_package %{nil}
 %define _build_id_links none
@@ -451,11 +449,11 @@ proc generatetestrpm { subsys } {
 global SAL_WORK_DIR SALVERSION SALRELEASE RPMFILES OSPL_VERSION RELVERSION XMLVERSION env
   exec rm -fr $SAL_WORK_DIR/rpm_[set subsys]
   exec mkdir -p $SAL_WORK_DIR/rpm_[set subsys]
-  set fout [open $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_[set subsys]_test.spec w]
+  set fout [open $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_[set subsys]_dds_test.spec w]
   set rpmversion [updateversioning]
   set rpmversion [join [split $rpmversion "-"] "~"]
   set release $SALVERSION
-  puts $fout "Name: [set subsys]_test
+  puts $fout "Name: [set subsys]_dds_test
 Version: [set rpmversion]
 Release: [set release]%\{?dist\}
 Summary: SAL runtime for $subsys Subsystem with tests
@@ -464,13 +462,13 @@ License: GPL
 URL: http://project.lsst.org/ts
 Group: Telescope and Site SAL
 AutoReqProv: no
-Source0: [set subsys]_test-$rpmversion.tgz
+Source0: [set subsys]_dds_test-$rpmversion.tgz
 Prefix: /opt
 BuildRoot: $SAL_WORK_DIR/rpmbuild/%\{name\}-%\{version\}_[set release]
 Packager: dmills@lsst.org
 Requires: OpenSpliceDDS = $OSPL_VERSION
 Requires : [set subsys] = $rpmversion
-Requires: ts_sal_utils
+Requires: ts_sal_utils_dds
 %global __os_install_post %{nil}
 %define debug_package %{nil}
 %define _build_id_links none
@@ -515,12 +513,12 @@ rm -fr \$RPM_BUILD_ROOT
 #
 proc generateUtilsrpm { } {
 global SYSDIC SALVERSION SAL_WORK_DIR OSPL_VERSION SAL_DIR env
-   set fout [open $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_utils.spec w]
+   set fout [open $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_utils_dds.spec w]
    puts $fout "
 %global __os_install_post %{nil}
 %define debug_package %{nil}
 %define _build_id_links none
-%define name			ts_sal_utils
+%define name			ts_sal_utils_dds
 %define summary			SAL runtime utilities package
 %define version			$SALVERSION
 %define release			1
@@ -530,7 +528,7 @@ Vendor: LSST
 License: GPL
 URL: http://project.lsst.org/ts
 Group: Telescope and Site SAL
-Source0: ts_sal_utils-[set SALVERSION].tgz
+Source0: ts_sal_utils_dds-[set SALVERSION].tgz
 BuildRoot: $SAL_WORK_DIR/rpmbuild/%\{name\}-%\{version\}
 Packager: dmills@lsst.org
 Version:   %{version}
@@ -556,11 +554,11 @@ cp -fr %\{name\}-%\{version\}/* %{buildroot}/.
 /opt/lsst/ts_sal/setup.env
 "
   close $fout
-  exec mkdir -p ts_sal_utils-$SALVERSION/etc/systemd/system
-  exec mkdir -p ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/bin
-  exec mkdir -p ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/lib
-  exec mkdir -p ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/etc
-  set fser [open ts_sal_utils-$SALVERSION/etc/systemd/system/ts_sal_settai.service w]
+  exec mkdir -p ts_sal_utils_dds-$SALVERSION/etc/systemd/system
+  exec mkdir -p ts_sal_utils_dds-$SALVERSION/opt/lsst/ts_sal/bin
+  exec mkdir -p ts_sal_utils_dds-$SALVERSION/opt/lsst/ts_sal/lib
+  exec mkdir -p ts_sal_utils_dds-$SALVERSION/opt/lsst/ts_sal/etc
+  set fser [open ts_sal_utils_dds-$SALVERSION/etc/systemd/system/ts_sal_settai.service w]
      puts $fser "
 \[Unit\]
 Description=SAL set TAI time offset
@@ -578,19 +576,19 @@ WantedBy=ts_sal_settai.service
 "
   close $fser
   exec make_salUtils
-  copyasset $SAL_WORK_DIR/salUtils/set-tai ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/bin/.
-  copyasset $env(TS_SAL_DIR)/bin/update_leapseconds ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/bin/.
-  copyasset $SAL_WORK_DIR/lib/libsalUtils.so ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/lib/.
-  copyasset $SAL_DIR/leap-seconds.list ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/etc/.
-  copyasset $env(TS_SAL_DIR)/setup.env ts_sal_utils-$SALVERSION/opt/lsst/ts_sal/.
-  exec tar cvzf $SAL_WORK_DIR/rpmbuild/SOURCES/ts_sal_utils-$SALVERSION.tgz ts_sal_utils-$SALVERSION
-  exec rm -fr $SAL_WORK_DIR/rpmbuild/BUILD/ts_sal_utils-$SALVERSION/*
-  exec cp -r ts_sal_utils-$SALVERSION $SAL_WORK_DIR/rpmbuild/BUILD/.
+  copyasset $SAL_WORK_DIR/salUtils/set-tai ts_sal_utils_dds-$SALVERSION/opt/lsst/ts_sal/bin/.
+  copyasset $env(TS_SAL_DIR)/bin/update_leapseconds ts_sal_utils_dds-$SALVERSION/opt/lsst/ts_sal/bin/.
+  copyasset $SAL_WORK_DIR/lib/libsalUtils.so ts_sal_utils_dds-$SALVERSION/opt/lsst/ts_sal/lib/.
+  copyasset $SAL_DIR/leap-seconds.list ts_sal_utils_dds-$SALVERSION/opt/lsst/ts_sal/etc/.
+  copyasset $env(TS_SAL_DIR)/setup.env ts_sal_utils_dds-$SALVERSION/opt/lsst/ts_sal/.
+  exec tar cvzf $SAL_WORK_DIR/rpmbuild/SOURCES/ts_sal_utils_dds-$SALVERSION.tgz ts_sal_utils_dds-$SALVERSION
+  exec rm -fr $SAL_WORK_DIR/rpmbuild/BUILD/ts_sal_utils_dds-$SALVERSION/*
+  exec cp -r ts_sal_utils_dds-$SALVERSION $SAL_WORK_DIR/rpmbuild/BUILD/.
   set frpm [open /tmp/makerpm-utils w]
   puts $frpm "#!/bin/sh
 export QA_RPATHS=0x001F
-rpmbuild -bi -bl -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_utils.spec
-rpmbuild -bb -bl -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_utils.spec
+rpmbuild -bi -bl -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_utils_dds.spec
+rpmbuild -bb -bl -v $SAL_WORK_DIR/rpmbuild/SPECS/ts_sal_utils_dds.spec
 "
   close $frpm
   exec chmod 755 /tmp/makerpm-utils

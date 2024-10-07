@@ -38,7 +38,7 @@ int test_TestWithSalobj(int index, int logLevel)
   int cmdid;
   struct timespec delay_10ms;
   delay_10ms.tv_sec = 0;
-  delay_10ms.tv_nsec = 10000;
+  delay_10ms.tv_nsec = 10000000;
 
   Test_logevent_logLevelC SALEvent;
   Test_command_setLogLevelC SALCommand;
@@ -64,13 +64,13 @@ int test_TestWithSalobj(int index, int logLevel)
       if ( cmdid > 0 ) {
         cout << "SALController: read setLogLevel(cmdid=" << cmdid << ";level=" << SALCommand.level << endl;
         mgr.ackCommand_setLogLevel(cmdid, SAL__CMD_COMPLETE, 0, "Done : OK");
-        nanosleep(&elay_10ms,NULL);
+        nanosleep(&delay_10ms,NULL);
         cout << "SALController: writing logLevel=" << SALCommand.level << " event and the same value in scalars.int0 telemetry" << endl;
         SALTelemetry.int0 = SALCommand.level;
         SALEvent.level = SALCommand.level;
         mgr.logEvent_logLevel(&SALEvent,1);
         mgr.putSample_scalars(&SALTelemetry);
-        os_nanoSleep(delay_10ms);
+        nanosleep(&delay_10ms,NULL);
         if (SALCommand.level == 0) break;
       }
     }

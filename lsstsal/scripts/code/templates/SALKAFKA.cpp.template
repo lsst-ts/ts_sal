@@ -107,7 +107,6 @@ void SAL_SALData::initSalEnvironment(int aKey)
     configuration->set("batch.num.messages", "1", errstr);
   }
   configuration->set("socket.nagle.disable", "true", errstr);
-  configuration->set("socket.blocking.max.ms","1",errstr);
 
   if (kafkaProducerWaitAcks != NULL) {
     configuration->set("acks", kafkaProducerWaitAcks, errstr);
@@ -467,13 +466,13 @@ void SAL_SALData::createParticipant(const char *partitiontName)
 void SAL_SALData::checkSchema(int actorIdx)
 {
   std::string errstr;
-  std::string svname = sal[actorIdx].avroName + "-value";
+//  std::string svname = sal[actorIdx].avroName + "-value";
   if (sal[actorIdx].topicConfiguration == NULL)  {
      throw std::runtime_error(string(errstr + sal[actorIdx].topicName));
   }
   if (sal[actorIdx].avroSchema == NULL) {
-    sal[actorIdx].avroSchema = Serdes::Schema::get(serdes, svname, errstr);
-    if (!sal[actorIdx].avroSchema) {
+//    sal[actorIdx].avroSchema = Serdes::Schema::get(serdes, svname, errstr);
+//    if (!sal[actorIdx].avroSchema) {
       std::string adir = "/avro-templates/SALData/"; 
       std::string schema = localSchemaDir + adir + sal[actorIdx].topicName + ".json";
       std::ifstream ifs(schema);
@@ -482,7 +481,7 @@ void SAL_SALData::checkSchema(int actorIdx)
       std::string svname = sal[actorIdx].avroName + "-value";
       sal[actorIdx].avroSchema = Serdes::Schema::add(serdes, svname, buffer.str(), errstr);
       sal[actorIdx].hasSchema = true;
-    }
+//    }
   }
 }
 
@@ -499,13 +498,13 @@ void SAL_SALData::createTopic(int actorIdx)
     topic = RdKafka::Topic::create(publisher, sal[actorIdx].avroName, sal[actorIdx].topicConfiguration, errstr);
   }
   sal[actorIdx].topic = topic;
-  std::string svname = sal[actorIdx].avroName + "-value";
+//  std::string svname = sal[actorIdx].avroName + "-value";
   if (sal[actorIdx].topicConfiguration == NULL) 
   {
      throw std::runtime_error(string(errstr + sal[actorIdx].topicName));
   }
-  sal[actorIdx].avroSchema = Serdes::Schema::get(serdes, svname, errstr);
-  if (!sal[actorIdx].avroSchema) {
+//  sal[actorIdx].avroSchema = Serdes::Schema::get(serdes, svname, errstr);
+//  if (!sal[actorIdx].avroSchema) {
     std::string adir = "/avro-templates/SALData/"; 
     std::string schema = localSchemaDir + adir + sal[actorIdx].topicName + ".json";
     std::ifstream ifs(schema);
@@ -514,7 +513,7 @@ void SAL_SALData::createTopic(int actorIdx)
     std::string svname = sal[actorIdx].avroName + "-value";
     sal[actorIdx].avroSchema = Serdes::Schema::add(serdes, svname, buffer.str(), errstr);
     sal[actorIdx].hasSchema = true;
-  }
+//  }
 }
 
 void SAL_SALData::createTopic2(int actorIdx)
@@ -529,13 +528,13 @@ void SAL_SALData::createTopic2(int actorIdx)
     topic = RdKafka::Topic::create(publisher, sal[actorIdx].avroName, sal[actorIdx].topicConfiguration2, errstr);
   }
   sal[actorIdx].topic2 = topic;
-  std::string svname = sal[actorIdx].avroName2 + "-value";
+//  std::string svname = sal[actorIdx].avroName2 + "-value";
   if (sal[actorIdx].topicConfiguration2 == NULL) 
   {
      throw std::runtime_error(string(errstr + sal[actorIdx].topicName2));
   }
-  sal[actorIdx].avroSchema2 = Serdes::Schema::get(serdes, svname, errstr);
-  if (!sal[actorIdx].avroSchema2) {
+//  sal[actorIdx].avroSchema2 = Serdes::Schema::get(serdes, svname, errstr);
+//  if (!sal[actorIdx].avroSchema2) {
     std::string adir = "/avro-templates/SALData/"; 
     std::string schema = localSchemaDir + adir + sal[actorIdx].topicName2 + ".json";
     std::ifstream ifs(schema);
@@ -544,7 +543,7 @@ void SAL_SALData::createTopic2(int actorIdx)
     std::string svname = sal[actorIdx].avroName2 + "-value";
     sal[actorIdx].avroSchema2 = Serdes::Schema::add(serdes, svname, buffer.str(), errstr);
     sal[actorIdx].hasSchema = true;
-  }
+//  }
 }
 
 void SAL_SALData::createTopic(int actorIdx, char *topicName)
@@ -559,13 +558,13 @@ void SAL_SALData::createTopic(int actorIdx, char *topicName)
     topic = RdKafka::Topic::create(publisher, sal[actorIdx].avroName, sal[actorIdx].topicConfiguration, errstr);
   }
   sal[actorIdx].topic = topic;
-  std::string svname = sal[actorIdx].avroName + "-value";
+//  std::string svname = sal[actorIdx].avroName + "-value";
   if (sal[actorIdx].topicConfiguration == NULL) 
   {
      throw std::runtime_error(string(errstr + topicName));
   }
-  sal[actorIdx].avroSchema = Serdes::Schema::get(serdes, svname, errstr);
-  if (!sal[actorIdx].avroSchema) {
+//  sal[actorIdx].avroSchema = Serdes::Schema::get(serdes, svname, errstr);
+//  if (!sal[actorIdx].avroSchema) {
     std::string adir = "/avro-templates/SALData/"; 
     std::string schema = localSchemaDir + adir + sal[actorIdx].topicName + ".json";
     std::ifstream ifs(schema);
@@ -574,7 +573,7 @@ void SAL_SALData::createTopic(int actorIdx, char *topicName)
     std::string svname = sal[actorIdx].avroName + "-value";
     sal[actorIdx].avroSchema = Serdes::Schema::add(serdes, svname, buffer.str(), errstr);
     sal[actorIdx].hasSchema = true;
-  }
+//  }
  }
 
 void SAL_SALData::createTopic2(int actorIdx, char *topicName)
@@ -589,13 +588,13 @@ void SAL_SALData::createTopic2(int actorIdx, char *topicName)
     topic = RdKafka::Topic::create(publisher, sal[actorIdx].avroName, sal[actorIdx].topicConfiguration2, errstr);
   }
   sal[actorIdx].topic2 = topic;
-  std::string svname = sal[actorIdx].avroName2 + "-value";
+//  std::string svname = sal[actorIdx].avroName2 + "-value";
   if (sal[actorIdx].topicConfiguration2 == NULL) 
   {
      throw std::runtime_error(string(errstr + sal[actorIdx].topicName2));
   }
-  sal[actorIdx].avroSchema2 = Serdes::Schema::get(serdes, svname, errstr);
-  if (!sal[actorIdx].avroSchema2) {
+//  sal[actorIdx].avroSchema2 = Serdes::Schema::get(serdes, svname, errstr);
+//  if (!sal[actorIdx].avroSchema2) {
     std::string adir = "/avro-templates/SALData/"; 
     std::string schema = localSchemaDir + adir + sal[actorIdx].topicName2 + ".json";
     std::ifstream ifs(schema);
@@ -604,7 +603,7 @@ void SAL_SALData::createTopic2(int actorIdx, char *topicName)
     std::string svname = sal[actorIdx].avroName2 + "-value";
     sal[actorIdx].avroSchema2 = Serdes::Schema::add(serdes, svname, buffer.str(), errstr);
     sal[actorIdx].hasSchema = true;
-  }
+//  }
 }
 
 
