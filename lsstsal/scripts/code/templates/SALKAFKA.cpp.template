@@ -53,8 +53,7 @@ void SAL_SALData::initSalEnvironment(int aKey)
   char *maxmsg;
   char *tlmflush;
   char *cmdevtflush;
-  std::string ul = "_";
-  std::string randomtag = randomString(15);
+  char *debugContext;
 
   pname = getenv("LSST_KAFKA_PREFIX");
   kport = getenv("LSST_KAFKA_BROKER_PORT");
@@ -84,6 +83,7 @@ void SAL_SALData::initSalEnvironment(int aKey)
   maxmsg = getenv("LSST_KAFKA_MAX_QUEUE_MSG");
   tlmflush = getenv("LSST_KAFKA_TLM_FLUSH_MS");
   cmdevtflush = getenv("LSST_KAFKA_CMDEVT_FLUSH_MS");
+  debugContext = getenv("LSST_KAFKA_DEBUG_CONTEXT");
   if (tlmflush != NULL) {
     sscanf(tlmflush,"%d",&telemetryFlushMS);
   } else {
@@ -113,8 +113,8 @@ void SAL_SALData::initSalEnvironment(int aKey)
   } else {
     configuration->set("acks", "all", errstr);
   }
-  if (debugLevel > 0) {
-    configuration->set("debug","log",errstr);
+  if (debugContext != NULL) {
+    configuration->set("debug",debugContext,errstr);
   }
 
   consumerConfiguration = RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL);
@@ -503,17 +503,7 @@ void SAL_SALData::createTopic(int actorIdx)
   {
      throw std::runtime_error(string(errstr + sal[actorIdx].topicName));
   }
-//  sal[actorIdx].avroSchema = Serdes::Schema::get(serdes, svname, errstr);
-//  if (!sal[actorIdx].avroSchema) {
-    std::string adir = "/avro-templates/SALData/"; 
-    std::string schema = localSchemaDir + adir + sal[actorIdx].topicName + ".json";
-    std::ifstream ifs(schema);
-    std::stringstream buffer;
-    buffer << ifs.rdbuf();
-    std::string svname = sal[actorIdx].avroName + "-value";
-    sal[actorIdx].avroSchema = Serdes::Schema::add(serdes, svname, buffer.str(), errstr);
-    sal[actorIdx].hasSchema = true;
-//  }
+  checkSchema(actorIdx);
 }
 
 void SAL_SALData::createTopic2(int actorIdx)
@@ -533,17 +523,7 @@ void SAL_SALData::createTopic2(int actorIdx)
   {
      throw std::runtime_error(string(errstr + sal[actorIdx].topicName2));
   }
-//  sal[actorIdx].avroSchema2 = Serdes::Schema::get(serdes, svname, errstr);
-//  if (!sal[actorIdx].avroSchema2) {
-    std::string adir = "/avro-templates/SALData/"; 
-    std::string schema = localSchemaDir + adir + sal[actorIdx].topicName2 + ".json";
-    std::ifstream ifs(schema);
-    std::stringstream buffer;
-    buffer << ifs.rdbuf();
-    std::string svname = sal[actorIdx].avroName2 + "-value";
-    sal[actorIdx].avroSchema2 = Serdes::Schema::add(serdes, svname, buffer.str(), errstr);
-    sal[actorIdx].hasSchema = true;
-//  }
+  checkSchema(actorIdx);
 }
 
 void SAL_SALData::createTopic(int actorIdx, char *topicName)
@@ -563,18 +543,8 @@ void SAL_SALData::createTopic(int actorIdx, char *topicName)
   {
      throw std::runtime_error(string(errstr + topicName));
   }
-//  sal[actorIdx].avroSchema = Serdes::Schema::get(serdes, svname, errstr);
-//  if (!sal[actorIdx].avroSchema) {
-    std::string adir = "/avro-templates/SALData/"; 
-    std::string schema = localSchemaDir + adir + sal[actorIdx].topicName + ".json";
-    std::ifstream ifs(schema);
-    std::stringstream buffer;
-    buffer << ifs.rdbuf();
-    std::string svname = sal[actorIdx].avroName + "-value";
-    sal[actorIdx].avroSchema = Serdes::Schema::add(serdes, svname, buffer.str(), errstr);
-    sal[actorIdx].hasSchema = true;
-//  }
- }
+  checkSchema(actorIdx);
+}
 
 void SAL_SALData::createTopic2(int actorIdx, char *topicName)
 {
@@ -593,17 +563,7 @@ void SAL_SALData::createTopic2(int actorIdx, char *topicName)
   {
      throw std::runtime_error(string(errstr + sal[actorIdx].topicName2));
   }
-//  sal[actorIdx].avroSchema2 = Serdes::Schema::get(serdes, svname, errstr);
-//  if (!sal[actorIdx].avroSchema2) {
-    std::string adir = "/avro-templates/SALData/"; 
-    std::string schema = localSchemaDir + adir + sal[actorIdx].topicName2 + ".json";
-    std::ifstream ifs(schema);
-    std::stringstream buffer;
-    buffer << ifs.rdbuf();
-    std::string svname = sal[actorIdx].avroName2 + "-value";
-    sal[actorIdx].avroSchema2 = Serdes::Schema::add(serdes, svname, buffer.str(), errstr);
-    sal[actorIdx].hasSchema = true;
-//  }
+  checkSchema(actorIdx);
 }
 
 

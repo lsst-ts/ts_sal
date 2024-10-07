@@ -5,11 +5,12 @@
 echo "Setting up SAL Kafka build environment"
 
 export MAVEN_RELEASE=3.9.8
-export AVRO_RELEASE=1.12.0
+export AVRO_RELEASE=1.11.1
 export BOOST_RELEASE=1.78
 export JDK_RELEASE=17
 export KAFKA_RELEASE=7.6
 export JACKSON_RELEASE=2.15.2
+export LIBRDKAFKA_RELEASE=1.9.0
 
 export LSST_SDK_INSTALL=/opt/lsst/tssw/ts_sal
 if [ -z "$LSST_SAL_PREFIX" ]; then
@@ -36,7 +37,7 @@ if [ -f /.dockerenv ]; then
   dnf install -y python3.11 python3.11-devel python3.11-pip
   ln -sf /usr/bin/python3.11 /etc/alternatives/python3
 fi
-dnf install -y ant cmake boost${BOOST_RELEASE}-devel jansson-devel asciidoc libcurl-devel csnappy-devel zlib-devel maven snappy-devel doxygen fmt fmt-devel
+dnf install -y ant cmake boost${BOOST_RELEASE}-devel jansson-devel asciidoc libcurl-devel zlib-devel maven doxygen fmt fmt-devel snappy snappy-devel csnappy
 if [ -f /.dockerenv ]; then
   dnf install -y java-${JDK_RELEASE}-openjdk java-${JDK_RELEASE}-openjdk-devel java-${JDK_RELEASE}-openjdk-javadoc
 fi
@@ -48,7 +49,7 @@ tar xzf apache-maven-${MAVEN_RELEASE}-src.tar.gz
 cd apache-maven-${MAVEN_RELEASE}
 mvn -DdistributionTargetDir="$LSST_SAL_PREFIX/../maven/apache-maven-${MAVEN_RELEASE}-SNAPSHOT" clean package
 
-export PATH=$LSSt_SAL_PREFIX/..//maven/apache-maven-${MAVEN_RELEASE}-SNAPSHOT/bin/:${PATH}
+export PATH=$LSST_SAL_PREFIX/..//maven/apache-maven-${MAVEN_RELEASE}-SNAPSHOT/bin/:${PATH}
 mkdir -p $LSST_SAL_PREFIX/bin
 mkdir -p $LSST_SAL_PREFIX/include
 mkdir -p $LSST_SAL_PREFIX/lib
@@ -59,12 +60,12 @@ cd $HOME/external-packages
 wget https://archive.apache.org/dist/avro/avro-${AVRO_RELEASE}/avro-src-${AVRO_RELEASE}.tar.gz
 tar xvzf avro-src-${AVRO_RELEASE}.tar.gz
 cd $HOME/external-packages/avro-src-${AVRO_RELEASE}/lang/c++
-./build.sh test
+./build.sh install
 cd build
 cp lib* $LSST_SAL_PREFIX/lib/.
 cp avrogencpp $LSST_SAL_PREFIX/bin/.
 mkdir  -p $LSST_SAL_PREFIX/include/avro
-cp -r ../include/avro $LSST_SAL_PREFIX/include/.
+cp -r ../api/* $LSST_SAL_PREFIX/include/avro/.
 cp -r ../impl $LSST_SAL_PREFIX/include/.
 
 
@@ -111,6 +112,7 @@ echo "Downloading and building librdkafka"
 cd $HOME/external-packages
 git clone https://github.com/confluentinc/librdkafka
 cd librdkafka
+git checkout v$LIBRDKAFKA_RELEASE
 ./configure --prefix=$LSST_SAL_PREFIX
 make 
 make install
@@ -148,7 +150,7 @@ cd $HOME/external-packages
 if [ -f /.dockerenv ]; then
   tar xzf Catch2.tgz
 else
-  git clone https://github.com/catch/Catch2
+  git clone https://github.com/catchorg/Catch2
 fi
 cd Catch2
 rm -fr build
@@ -160,8 +162,8 @@ make install
 if [ -f /.dockerenv ]; then
   echo "Do NOT install spdlog,libyaml,yaml-cpp as lsst-scipipe already has them"
 else
-  dnf install spdlog spdlog-devel
-  dnf install libyaml-devel yaml-cpp yaml-cpp-devel
+  dnf install -y spdlog spdlog-devel
+  dnf install -y libyaml-devel yaml-cpp yaml-cpp-devel
   export PKG_CONFIG_PATH=/usr/local/share/pkgconfig
 fi
 
