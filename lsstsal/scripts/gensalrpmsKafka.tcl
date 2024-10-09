@@ -214,8 +214,8 @@ global SAL_WORK_DIR XMLVERSION SALVERSION
   if { $found == "" } {
      switch $name  {
         ts_sal_utilsKafka { generateUtilsrpm }
-        ts_sal_runtime   { generatemetarpm }
-        ts_sal_ATruntime { generateATmetarpm }
+        ts_sal_runtime    { generatemetarpm }
+        ts_sal_ATruntime  { generateATmetarpm }
      }
   }
 }
@@ -575,6 +575,7 @@ WantedBy=ts_sal_settai.service
   copyasset $SAL_WORK_DIR/include/SAL_defines.h ts_sal_utilsKafka-$SALVERSION/opt/lsst/ts_sal/include/.
   copyasset $SAL_WORK_DIR/salUtils/set-tai ts_sal_utilsKafka-$SALVERSION/opt/lsst/ts_sal/bin/.
   copyasset $env(TS_SAL_DIR)/bin/update_leapseconds ts_sal_utilsKafka-$SALVERSION/opt/lsst/ts_sal/bin/.
+  copyasset $LSST_SAL_PREFIX/bin/avrogencpp ts_sal_utilsKafka-$SALVERSION/opt/lsst/ts_sal/bin/.
   copyasset $SAL_WORK_DIR/lib/libsalUtils.so ts_sal_utilsKafka-$SALVERSION/opt/lsst/ts_sal/lib/.
   copyasset $SAL_DIR/leap-seconds.list ts_sal_utilsKafka-$SALVERSION/opt/lsst/ts_sal/etc/.
   copyasset $env(TS_SAL_DIR)/setupKafka.env ts_sal_utilsKafka-$SALVERSION/opt/lsst/ts_sal/setup.env
