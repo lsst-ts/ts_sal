@@ -95,12 +95,11 @@ proc insertSenders { subsys file_writer } {
         puts $file_writer "  iseq = 0;"
         puts $file_writer "  [set subsys]_logevent_[set alias]C myData;"
         puts $file_writer "  cout << \"=== Event $alias iseq = \" << iseq << endl;"
-
         set fragment_reader [open $SAL_WORK_DIR/include/SAL_[set subsys]_logevent_[set alias]Cpub.tmp r]
         while { [gets $fragment_reader line] > -1 } {
-            puts $file_writer [string range $line 2 1000]
+            puts $file_writer [string trim $line]
         }
-        
+        close $fragment_reader
         puts $file_writer "  mgr.logEvent_[set alias](&myData, priority);"
         puts $file_writer "  cout << \"=== Event $alias generated = \" << endl;"
         puts $file_writer "  sleep(1);\n\}"
