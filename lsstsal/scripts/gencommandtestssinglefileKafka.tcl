@@ -97,7 +97,7 @@ proc insertCommanders { subsys file_writer } {
         puts $file_writer "    int timeout=10;"
         puts $file_writer "    int status=0;"
         puts $file_writer "    [set subsys]_command_[set alias]C myData;"
-        set fragment_reader [open $SAL_WORK_DIR/include/SAL_[set subsys]_[set alias]Cpub.tmp r]
+        set fragment_reader [open $SAL_WORK_DIR/include/SAL_[set subsys]_command_[set alias]Cpub.tmp r]
         while { [gets $fragment_reader line] > -1 } {
             puts $file_writer "    [string trim $line]"
         }
