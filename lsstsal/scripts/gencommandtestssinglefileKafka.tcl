@@ -70,7 +70,7 @@ proc insertCommandHeader { subsys file_writer } {
 
 proc insertCommanders { subsys file_writer } {
 
-    global SYSDIC CMD_ALIASES 
+    global SYSDIC CMD_ALIASES SAL_WORK_DIR
 
     puts $file_writer "int main (int argc, char *argv\[\])"
     puts $file_writer "\{"
@@ -94,10 +94,15 @@ proc insertCommanders { subsys file_writer } {
         puts $file_writer "  \{"
         puts $file_writer "    cout << \"=== [set subsys]_[set alias] start of topic ===\" << endl;"
         puts $file_writer "    int cmdId;"
+        puts $file_writer "    int iseq=0;"
         puts $file_writer "    int timeout=10;"
         puts $file_writer "    int status=0;"
         puts $file_writer "    [set subsys]_command_[set alias]C myData;"
-        
+        set fragment_reader [open $SAL_WORK_DIR/include/SAL_[set subsys]_command_[set alias]Cpub.tmp r]
+        while { [gets $fragment_reader line] > -1 } {
+            puts $file_writer "    [string trim $line]"
+        }
+        close $fragment_reader     
         puts $file_writer "    cmdId = mgr.issueCommand_[set alias](&myData);"
         puts $file_writer "    cout << \"=== [set subsys]_[set alias] end of topic ===\" << endl;"
         puts $file_writer "    status = mgr.waitForCompletion_[set alias](cmdId, timeout);"
@@ -194,7 +199,7 @@ global SYSDIC
     puts $file_writer "LD            = \$(CXX) \$(CCFLAGS) \$(CPPFLAGS)"
     puts $file_writer "AR            = ar"
     puts $file_writer "PICFLAGS      = -fPIC"
-    puts $file_writer "CPPFLAGS      = \$(PICFLAGS) \$(GENFLAGS) -g \$(SAL_CPPFLAGS) -D_REENTRANT -Wall -I\".\"  -I\"\$(AVRO_INCL)\" -I../../[set subsys]/cpp/src -I\"\$(LSST_SAL_PREFIX)/include\"  -I\"\$(LSST_SAL_PREFIX)/include/avro\" -I.. -I\"\$(SAL_WORK_DIR)/include\" -fpermissive -Wno-write-strings $keyed"
+    puts $file_writer "CPPFLAGS      = \$(PICFLAGS) \$(GENFLAGS) -g \$(SAL_CPPFLAGS) -D_REENTRANT -Wall -I\".\"  -I\"\$(AVRO_INCL)\" -I../../[set subsys]/cpp/src -I\"\$(LSST_SAL_PREFIX)/include\"  -I\"\$(LSST_SAL_PREFIX)/include/avro\" -I.. -I\"\$(SAL_WORK_DIR)/include\" -fpermissive -Wno-unused-variable -Wno-write-strings $keyed"
     puts $file_writer "OBJEXT        = .o"
     puts $file_writer "OUTPUT_OPTION = -o \"\$@\""
     puts $file_writer "COMPILE.c     = \$(CC) \$(CFLAGS) \$(CPPFLAGS) -c"
