@@ -15,6 +15,14 @@ Changes for 10.0.0
 * Update SAL Kafka environment setup
 * Refactor checkSchema usage
 * Add LSST_KAFKA_DEBUG_CONTEXT
+* Seperate producer for commands/events
+* Add client.id to producers
+* Set private_kafkaStamp = private_sndStamp
+* Add LSST_KAFKA_MAX_QUEUE_MS
+* Add LSST_KAFKA_MAX_QUEUE_MSG
+* Add LSST_KAFKA_TLM_FLUSH_MS
+* Add LSST_KAFKA_CMDEVT_FLUSH_MS
+* Add SAL_DEBUG_MS_DELTA and SAL_DEBUG_NSAMPLES to test programs
 
 =================
 Changes for 9.0.0
