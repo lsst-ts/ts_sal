@@ -49,10 +49,6 @@ salReturn SAL_[set base]::putSample_[set name]([set base]_[set name]C *data)
   close $frag
   puts $fout "
   Instance.private_revCode = \"[string trim $revcode _]\";
-  Instance.private_sndStamp = getCurrentTime();
-  Instance.private_efdStamp = getCurrentUTC();
-  Instance.private_kafkaStamp = getCurrentTime();
-  sal\[actorIdx\].sndStamp = Instance.private_sndStamp;
   Instance.private_identity = CSC_identity;
   Instance.private_origin = getpid();
   Instance.private_seqNum = sal\[actorIdx\].sndSeqNum;
@@ -75,7 +71,7 @@ salReturn SAL_[set base]::putSample_[set name]([set base]_[set name]C *data)
 #endif
   Instance.private_sndStamp = getCurrentTime();
   Instance.private_efdStamp = getCurrentUTC();
-  Instance.private_kafkaStamp = getCurrentTime();"
+  Instance.private_kafkaStamp = Instance.private_sndStamp;"
     writerFragment $fout $base [set base]_[set name]
       puts $fout "
   return status;
@@ -160,6 +156,7 @@ salReturn SAL_[set base]::getLastSample_[set name]([set base]_[set name]C *data)
 
 salReturn SAL_[set base]::flushSamples_[set name]([set base]_[set name]C *data)
 \{
+    salReturn istatus;
     int actorIdx = SAL__[set base]_[set name]_ACTOR;
     RdKafka::ErrorCode err,err2;
     std::vector<RdKafka::TopicPartition*> parts;
@@ -173,6 +170,10 @@ salReturn SAL_[set base]::flushSamples_[set name]([set base]_[set name]C *data)
        cout << \"=== \[flushSamples\] seek returns :\" << err2 << endl;
     \}
     sal\[SAL__[set base]_[set name]_ACTOR\].sampleAge = 1.0e20;
+    istatus = getSample_[set name](data);
+    if (debugLevel > 8) \{
+       cout << \"=== \[flushSamples\] getSample returns :\" << istatus << endl;
+    \}
     return SAL__OK;
 \}
 "
