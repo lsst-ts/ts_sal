@@ -128,9 +128,9 @@ proc insertControllers { subsys file_writer } {
     puts $file_writer "\{"
     puts $file_writer "  int cmdId = -1;"
     puts $file_writer "  int timeout = 1;"
-    puts $file_writer "  struct timespec delay_10ms;"
-    puts $file_writer "  delay_10ms.tv_sec = 0;"
-    puts $file_writer "  delay_10ms.tv_nsec = 10000000;"
+    puts $file_writer "  struct timespec delay_100ms;"
+    puts $file_writer "  delay_100ms.tv_sec = 0;"
+    puts $file_writer "  delay_100ms.tv_nsec = 100000000;"
 
     if { [info exists SYSDIC($subsys,keyedID)] } {
         puts $file_writer "  int salIndex = 1;"
@@ -163,12 +163,12 @@ proc insertControllers { subsys file_writer } {
 
         puts $file_writer "      if (timeout > 0) \{"
         puts $file_writer "        mgr.ackCommand_[set alias](cmdId, SAL__CMD_INPROGRESS, 0, \"Ack : OK\");"
-        puts $file_writer "        nanosleep(&delay_10ms,NULL);"
+        puts $file_writer "        nanosleep(&delay_100ms,NULL);"
         puts $file_writer "      \}"
         puts $file_writer "      mgr.ackCommand_[set alias](cmdId, SAL__CMD_COMPLETE, 0, \"Done : OK\");"
         puts $file_writer "      break;"
         puts $file_writer "    \}"
-        puts $file_writer "    nanosleep(&delay_10ms,NULL);"
+        puts $file_writer "    nanosleep(&delay_100ms,NULL);"
         puts $file_writer "  \}"
         puts $file_writer "  cout << \"=== [set subsys]_[set alias] end of topic ===\" << endl;"
     }
