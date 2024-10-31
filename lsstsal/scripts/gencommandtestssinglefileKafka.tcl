@@ -96,6 +96,9 @@ proc insertCommanders { subsys file_writer } {
         puts $file_writer "    int cmdId;"
         puts $file_writer "    int iseq=0;"
         puts $file_writer "    int timeout=10;"
+        puts $file_writer "    struct timespec delay_500ms;"
+        puts $file_writer "    delay_500ms.tv_sec = 0;"
+        puts $file_writer "    delay_500ms.tv_nsec = 500000000;"
         puts $file_writer "    int status=0;"
         puts $file_writer "    [set subsys]_command_[set alias]C myData;"
         set fragment_reader [open $SAL_WORK_DIR/include/SAL_[set subsys]_command_[set alias]Cpub.tmp r]
@@ -105,6 +108,7 @@ proc insertCommanders { subsys file_writer } {
         close $fragment_reader     
         puts $file_writer "    cmdId = mgr.issueCommand_[set alias](&myData);"
         puts $file_writer "    cout << \"=== [set subsys]_[set alias] end of topic ===\" << endl;"
+        puts $file_writer "    nanosleep(&delay_500ms,NULL);"
         puts $file_writer "    status = mgr.waitForCompletion_[set alias](cmdId, timeout);"
         puts $file_writer "    cout << status << endl;"
         puts $file_writer "  \}\n"
