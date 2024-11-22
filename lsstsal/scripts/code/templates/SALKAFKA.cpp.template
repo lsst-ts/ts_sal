@@ -111,7 +111,7 @@ void SAL_SALData::initSalEnvironment(int aKey)
   if (kafkaProducerWaitAcks != NULL) {
     configuration->set("acks", kafkaProducerWaitAcks, errstr);
   } else {
-    configuration->set("acks", "all", errstr);
+    configuration->set("acks", "1", errstr);
   }
   if (debugContext != NULL) {
     configuration->set("debug",debugContext,errstr);
