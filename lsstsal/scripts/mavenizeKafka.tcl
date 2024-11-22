@@ -225,7 +225,7 @@ global env SAL_WORK_DIR SAL_DIR OSPL_VERSION XMLVERSION RELVERSION SALVERSION TS
 #     exec cp $fj $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/test/java/.
 #     puts stdout "Processed $fj"
 #  }
-  exec cp -r $SAL_WORK_DIR/$subsys/java/src/org $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/java/.
+#  exec cp -r $SAL_WORK_DIR/$subsys/java/src/org $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/java/.
 ###  exec cp -r $SAL_WORK_DIR/$subsys/java/src/lsst $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/java/.
   exec mkdir -p $SAL_WORK_DIR/maven/libs
 ###  exec cp -r $SAL_WORK_DIR/lib/SAL_[set subsys].jar  $SAL_WORK_DIR/maven/libs/.
