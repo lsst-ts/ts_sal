@@ -92,7 +92,7 @@ void SAL_SALData::initSalEnvironment(int aKey)
   if (cmdevtflush != NULL) {
     sscanf(cmdevtflush,"%d",&cmdevtFlushMS);
   } else {
-    cmdevtFlushMS = 100;
+    cmdevtFlushMS = 0;
   }
   configuration->set("value.serializer", "io.confluent.kafka.serializers.KafkaAvroSerializer", errstr);  // Serialize the Avro object
   if (maxms != NULL) {

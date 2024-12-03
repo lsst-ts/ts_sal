@@ -192,7 +192,9 @@ global AVRO_PREFIX
   puts $fout "     \}"
   puts $fout "     if (sal\[actorIdx\].cmdevt) \{"
   puts $fout "       publisherCmdEvt->poll(0);"
-  puts $fout "       publisherCmdEvt->flush(cmdevtFlushMS);"
+  puts $fout "       if (cmdevtFlushMS > 0) \{"
+  puts $fout "         publisherCmdEvt->flush(cmdevtFlushMS);"
+  puts $fout "       \}"
   puts $fout "     \} else \{"
   puts $fout "       publisher->poll(0);"
   puts $fout "       if (telemetryFlushMS > 0) \{"
@@ -226,7 +228,7 @@ global AVRO_PREFIX
   puts $fout "#endif"
   puts $fout "     RdKafka::Headers *headers = RdKafka::Headers::create();"
   puts $fout "     RdKafka::ErrorCode resp ="
-  puts $fout "           publisher->produce(sal\[actorIdx\].avroName, RdKafka::Topic::PARTITION_UA,"
+  puts $fout "           publisherCmdEvt->produce(sal\[actorIdx\].avroName, RdKafka::Topic::PARTITION_UA,"
   puts $fout "                                 RdKafka::Producer::RK_MSG_COPY /* Copy payload */,"
   puts $fout "                                 buffer.data(), outsize,"
   puts $fout "                                 topicKey.c_str(), topicKey.size() , 0, headers);"
@@ -241,8 +243,10 @@ global AVRO_PREFIX
   puts $fout "                 << std::endl;"
   puts $fout "       \}"
   puts $fout "     \}"
-  puts $fout "     publisher->poll(0);"
-  puts $fout "     publisher->flush(100);"
+  puts $fout "     publisherCmdEvt->poll(0);"
+  puts $fout "     if (cmdevtFlushMS > 0) \{"
+  puts $fout "        publisherCmdEvt->flush(cmdevtFlushMS);"
+  puts $fout "     \}"
 }
 
 #
