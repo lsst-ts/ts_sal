@@ -5,15 +5,15 @@
 #
 
 proc print_help {} {
-   puts stdout "SAL generator tool (Kafka) - Usage :
+   puts stdout "SAL generatorKafka tool (Kafka) - Usage :
 
-	salgenerator subsystem (command \[args\] ...)
+	salgeneratorKafka subsystem (command \[args\] ...)
 
    where command may be
 
 		generate - all steps to generate SAL wrappers for specified language
 		validate - check the XML Telemetry/Command/LogEvent definitions
-                sal      - generate SAL wrappers for specified language : cpp, idl, java
+                sal      - generate SAL wrappers for specified language : cpp, java
                 apidoc   - generate interface documentation for the specified language : cpp, java
                 lib      - generate shared library
 		labview  - generate LabVIEW low-level interface
@@ -243,7 +243,7 @@ if { $OPTIONS(apidoc) } {
     if { $s != "apidoc" } {
       if { $s != "upload" } {stdlog "Building API documentation for $s subsystem"}
       set result none
-      catch { set result [exec $SAL_DIR/apiDocumentation.tcl $s] } bad
+      catch { set result [exec $SAL_DIR/apiDocumentationKafka.tcl $s] } bad
       if { $result == "none" } {stdlog $bad}
       if { $OPTIONS(verbose) } {stdlog $result}
     }

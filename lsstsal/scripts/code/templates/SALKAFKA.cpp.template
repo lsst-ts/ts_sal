@@ -69,14 +69,14 @@ void SAL_SALData::initSalEnvironment(int aKey)
   std::string colon = ":";
   std::string server = khost + colon + kport;
 
-  configuration = RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL);
-  configuration->set("bootstrap.servers",server, errstr);
-  configuration->set("schema.registry.url", schemaRegistry, errstr);
+  producerConfiguration = RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL);
+  producerConfiguration->set("bootstrap.servers",server, errstr);
+  producerConfiguration->set("schema.registry.url", schemaRegistry, errstr);
   if (securityPassword != NULL) {
-    configuration->set("security.protocol",securityProtocol, errstr);
-    configuration->set("sasl.mechanism",securityMechanism, errstr);
-    configuration->set("sasl.username",securityUserName, errstr);
-    configuration->set("sasl.password",securityPassword, errstr);   
+    producerConfiguration->set("security.protocol",securityProtocol, errstr);
+    producerConfiguration->set("sasl.mechanism",securityMechanism, errstr);
+    producerConfiguration->set("sasl.username",securityUserName, errstr);
+    producerConfiguration->set("sasl.password",securityPassword, errstr);   
   }
 
   maxms = getenv("LSST_KAFKA_MAX_QUEUE_MS");
@@ -94,27 +94,27 @@ void SAL_SALData::initSalEnvironment(int aKey)
   } else {
     cmdevtFlushMS = 0;
   }
-  configuration->set("value.serializer", "io.confluent.kafka.serializers.KafkaAvroSerializer", errstr);  // Serialize the Avro object
+  producerConfiguration->set("value.serializer", "io.confluent.kafka.serializers.KafkaAvroSerializer", errstr);  // Serialize the Avro object
   if (maxms != NULL) {
-    configuration->set("queue.buffering.max.ms", maxms, errstr);
+    producerConfiguration->set("queue.buffering.max.ms", maxms, errstr);
   } else {
-    configuration->set("queue.buffering.max.ms", "0", errstr);
+    producerConfiguration->set("queue.buffering.max.ms", "0", errstr);
   }
   if (maxmsg != NULL) {
-    configuration->set("queue.buffering.max.messages", maxmsg, errstr);
-    configuration->set("batch.num.messages", "1000", errstr);
+    producerConfiguration->set("queue.buffering.max.messages", maxmsg, errstr);
+    producerConfiguration->set("batch.num.messages", "1000", errstr);
   } else {
-    configuration->set("batch.num.messages", "1", errstr);
+    producerConfiguration->set("batch.num.messages", "1", errstr);
   }
-  configuration->set("socket.nagle.disable", "true", errstr);
+  producerConfiguration->set("socket.nagle.disable", "true", errstr);
 
   if (kafkaProducerWaitAcks != NULL) {
-    configuration->set("acks", kafkaProducerWaitAcks, errstr);
+    producerConfiguration->set("acks", kafkaProducerWaitAcks, errstr);
   } else {
-    configuration->set("acks", "1", errstr);
+    producerConfiguration->set("acks", "1", errstr);
   }
   if (debugContext != NULL) {
-    configuration->set("debug",debugContext,errstr);
+    producerConfiguration->set("debug",debugContext,errstr);
   }
 
   consumerConfiguration = RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL);
@@ -131,7 +131,27 @@ void SAL_SALData::initSalEnvironment(int aKey)
   std::string randomtag = randomString(15);
   std::string groupid = CSC_identity + ul + randomtag;
   consumerConfiguration->set("group.id",groupid, errstr);
-  configuration->set("client.id",CSC_identity, errstr);
+  producerConfiguration->set("client.id",CSC_identity, errstr);
+
+  char *globalConfigFile;
+  char *producerConfigFile;
+  char *consumerConfigFile;
+  globalConfigFile = getenv("LSST_KAFKA_BROKER_CLIENT_CONFIGURATION");
+  producerConfigFile = getenv("LSST_KAFKA_PRODUCER_CONFIGURATION");
+  consumerConfigFile = getenv("LSST_KAFKA_CONSUMER_CONFIGURATION");
+
+  if (consumerConfigFile != NULL) {
+    readKafkaConfiguration(consumerConfigFile, consumerConfiguration);
+  }
+  if (producerConfigFile != NULL) {
+    readKafkaConfiguration(producerConfigFile, producerConfiguration);
+  }
+  if (globalConfigFile != NULL) {
+    readKafkaConfiguration(globalConfigFile, consumerConfiguration);
+  }
+  if (globalConfigFile != NULL) {
+    readKafkaConfiguration(globalConfigFile, producerConfiguration);
+  }
 
   serdesConfiguration = Serdes::Conf::create();
   serdesConfiguration->set("serializer.framing", "cp1", errstr);
@@ -139,8 +159,8 @@ void SAL_SALData::initSalEnvironment(int aKey)
   serdesConfiguration->set("schema.registry.url", schemaRegistry, errstr);
   serdes = Serdes::Avro::create(serdesConfiguration, errstr);
 
-  publisher = RdKafka::Producer::create(configuration, errstr); 
-  publisherCmdEvt = RdKafka::Producer::create(configuration, errstr); 
+  publisher = RdKafka::Producer::create(producerConfiguration, errstr); 
+  publisherCmdEvt = RdKafka::Producer::create(producerConfiguration, errstr); 
 
    if ( pname != NULL ) {
       strncpy(partitionPrefix, pname, 128);
@@ -162,6 +182,50 @@ void SAL_SALData::initSalEnvironment(int aKey)
    debugLevel = 1;
    initSalActors();
 }
+
+void SAL_SALData::readKafkaConfiguration (char *kfile, RdKafka::Conf *kconf) {
+     
+ 
+  FILE *fp;
+  char buf[512];
+  int line = 0;
+
+  fp = fopen(kfile, "r");
+  if (!fp) ;// add error checking..
+
+  while (fgets(buf, sizeof(buf)-1, fp)) {
+    char *t;
+    char *b = buf;
+    char *name, *val;
+    std::string errstr;
+
+    line++;
+
+    if ((t = strchr(b, '\n')))
+        *t = '\0';
+
+    if (*b == '#' || !*b)
+        continue;
+
+    if (!(t = strchr(b, ':')))
+        fprintf(stderr, "%i: expected name: value format\n",line);
+
+    name = b;
+    *t = '\0';
+    val = t+2;
+    std::string kname = name;
+    std::string kval = val;
+    kval.erase(std::remove(kval.begin(), kval.end(), '\"'), kval.end());
+    if ( debugLevel > 1 ) {
+      cout << "From " << kfile << ": set " << kname << " = " << kval << endl;
+    }
+    kconf->set(kname, kval, errstr);
+    
+  }
+  
+  fclose(fp);
+}
+
 
 
 double SAL_SALData::getCurrentTime()
@@ -459,8 +523,8 @@ void SAL_SALData::createParticipant(const char *partitiontName)
   std::string errstr;
   if (participant == 0) {
     partition = 1;
-    RdKafka::Conf *configuration  = RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL);
-    configuration->set("metadata.broker.list", server, errstr);
+    RdKafka::Conf *producerConfiguration  = RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL);
+    producerConfiguration->set("metadata.broker.list", server, errstr);
     participant = 1;
     sleep(1);
   }

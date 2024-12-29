@@ -20,6 +20,7 @@
   #include <cstring>
   #include <getopt.h>
   #include <iomanip>
+  #include <algorithm>
   
   #include "SAL_defines.h"
   #include <boost/optional/optional_io.hpp>
@@ -157,7 +158,7 @@
       /* Generic Kafka entities */
       const std::string server;
       RdKafka::TopicPartition *tpartition;
-      RdKafka::Conf *configuration;
+      RdKafka::Conf *producerConfiguration;
       RdKafka::Conf *consumerConfiguration;
       RdKafka::Conf *topicConfiguration;
       RdKafka::Topic *topic;
@@ -238,6 +239,12 @@
   @param aKey is used to specify the index of an indexed component, or 0 for non-indexed ones
  */
      void initSalEnvironment(int aKey);
+
+/** Read Kafka configuration file
+  @param kfile is the filename
+  @param kconf is the Kafka configuratuion object
+ */ 
+     void readKafkaConfiguration (char *kfile, RdKafka::Conf *kconf);
 
 /** Sets up the Kafka Publisher support for the named Kafka type
   @param topicName is the name of the Kafka topic
