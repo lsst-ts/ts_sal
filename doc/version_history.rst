@@ -23,6 +23,9 @@ Changes for 10.0.0
 * Add LSST_KAFKA_TLM_FLUSH_MS
 * Add LSST_KAFKA_CMDEVT_FLUSH_MS
 * Add SAL_DEBUG_MS_DELTA and SAL_DEBUG_NSAMPLES to test programs
+* Add API doc generator for Kafka
+* Add Kafka configuration file environment and file readers
+* Remove SAL Java classes now replaced with SimpleSAL implementation
 
 =================
 Changes for 9.0.0
