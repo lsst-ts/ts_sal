@@ -2,6 +2,8 @@
 //#include <chrono>
 #include <sys/time.h>
 #include <stdexcept>
+#include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -44,7 +46,6 @@ SAL_SALData::SAL_SALData(char *identity)
    initSalEnvironment(0);
 }
 
-
 void SAL_SALData::initSalEnvironment(int aKey)
 {
   std::string errstr;
@@ -55,29 +56,30 @@ void SAL_SALData::initSalEnvironment(int aKey)
   char *cmdevtflush;
   char *debugContext;
 
-  pname = getenv("LSST_KAFKA_PREFIX");
-  kport = getenv("LSST_KAFKA_BROKER_PORT");
-  if (kport == NULL) {
-      throw std::runtime_error("ERROR : Cannot find envvar LSST_KAFKA_BROKER_PORT");
-  }
-  khost = getenv("LSST_KAFKA_HOST");
-  if (khost == NULL) {
-      throw std::runtime_error("ERROR : Cannot find envvar LSST_KAFKA_HOST");
-  }
-  sname = getenv("LSST_KAFKA_HISTORYSYNC");
-  kafkaProducerWaitAcks = getenv("LSST_KAFKA_PRODUCER_WAIT_ACKS");
-  securityProtocol = getenv("LSST_KAFKA_SECURITY_PROTOCOL");
-  securityMechanism = getenv("LSST_KAFKA_SECURITY_MECHANISM");
-  securityUserName = getenv("LSST_KAFKA_SECURITY_USERNAME");
-  securityPassword = getenv("LSST_KAFKA_SECURITY_PASSWORD");
-  schemaRegistry = getenv("LSST_SCHEMA_REGISTRY_URL");
-  if (schemaRegistry == NULL) {
-      throw std::runtime_error("ERROR : Cannot find envvar LSST_SCHEMA_REGISTRY_URL");
-  }
-  localSchemaDir = getenv("LSST_KAFKA_LOCAL_SCHEMAS");
-  if (localSchemaDir == NULL) {
-      throw std::runtime_error("ERROR : Cannot find envvar LSST_KAFKA_LOCAL_SCHEMAS");
-  }
+  auto getenv_report = [](const char *variable, bool reguired) -> const char*
+  {
+      auto ret = getenv(variable);
+      if (ret == nullptr) {
+          if (required == true) {
+              fprintf(stderr, "Required environmental variable '%s' is not set, exiting!", variable);
+              exit(10);
+          }
+          fprintf(stderr, "Environmental variable '%s' is not set.", variable);
+      }
+      return ret;
+  };
+
+  pname = getenv_report("LSST_KAFKA_PREFIX", true);
+  kport = getenv_report("LSST_KAFKA_BROKER_PORT", true);
+  khost = getenv_report("LSST_KAFKA_HOST", true);
+  sname = getenv_report("LSST_KAFKA_HISTORYSYNC", true);
+  kafkaProducerWaitAcks = getenv_report("LSST_KAFKA_PRODUCER_WAIT_ACKS", false);
+  securityProtocol = getenv_report("LSST_KAFKA_SECURITY_PROTOCOL", false);
+  securityMechanism = getenv_report("LSST_KAFKA_SECURITY_MECHANISM", false);
+  securityUserName = getenv_report("LSST_KAFKA_SECURITY_USERNAME", false);
+  securityPassword = getenv_report("LSST_KAFKA_SECURITY_PASSWORD", false);
+  schemaRegistry = getenv_report("LSST_SCHEMA_REGISTRY_URL", false);
+  localSchemaDir = getenv_report("LSST_KAFKA_LOCAL_SCHEMAS", false);
   std::string colon = ":";
   std::string server = khost + colon + kport;
 
@@ -91,11 +93,11 @@ void SAL_SALData::initSalEnvironment(int aKey)
     producerConfiguration->set("sasl.password",securityPassword, errstr);   
   }
 
-  maxms = getenv("LSST_KAFKA_MAX_QUEUE_MS");
-  maxmsg = getenv("LSST_KAFKA_MAX_QUEUE_MSG");
-  tlmflush = getenv("LSST_KAFKA_TLM_FLUSH_MS");
-  cmdevtflush = getenv("LSST_KAFKA_CMDEVT_FLUSH_MS");
-  debugContext = getenv("LSST_KAFKA_DEBUG_CONTEXT");
+  maxms = getenv_report("LSST_KAFKA_MAX_QUEUE_MS", false);
+  maxmsg = getenv_report("LSST_KAFKA_MAX_QUEUE_MSG", false);
+  tlmflush = getenv_report("LSST_KAFKA_TLM_FLUSH_MS", false);
+  cmdevtflush = getenv_report("LSST_KAFKA_CMDEVT_FLUSH_MS", false);
+  debugContext = getenv_report("LSST_KAFKA_DEBUG_CONTEXT", false);
   if (tlmflush != NULL) {
     sscanf(tlmflush,"%d",&telemetryFlushMS);
   } else {
@@ -148,9 +150,9 @@ void SAL_SALData::initSalEnvironment(int aKey)
   char *globalConfigFile;
   char *producerConfigFile;
   char *consumerConfigFile;
-  globalConfigFile = getenv("LSST_KAFKA_BROKER_CLIENT_CONFIGURATION");
-  producerConfigFile = getenv("LSST_KAFKA_PRODUCER_CONFIGURATION");
-  consumerConfigFile = getenv("LSST_KAFKA_CONSUMER_CONFIGURATION");
+  globalConfigFile = getenv_report("LSST_KAFKA_BROKER_CLIENT_CONFIGURATION", false);
+  producerConfigFile = getenv_report("LSST_KAFKA_PRODUCER_CONFIGURATION", false);
+  consumerConfigFile = getenv_report("LSST_KAFKA_CONSUMER_CONFIGURATION", false);
 
   if (consumerConfigFile != NULL) {
     readKafkaConfiguration(consumerConfigFile, consumerConfiguration);
