@@ -57,7 +57,13 @@ void SAL_SALData::initSalEnvironment(int aKey)
 
   pname = getenv("LSST_KAFKA_PREFIX");
   kport = getenv("LSST_KAFKA_BROKER_PORT");
+  if (kport == NULL) {
+      throw std::runtime_error("ERROR : Cannot find envvar LSST_KAFKA_BROKER_PORT");
+  }
   khost = getenv("LSST_KAFKA_HOST");
+  if (khost == NULL) {
+      throw std::runtime_error("ERROR : Cannot find envvar LSST_KAFKA_HOST");
+  }
   sname = getenv("LSST_KAFKA_HISTORYSYNC");
   kafkaProducerWaitAcks = getenv("LSST_KAFKA_PRODUCER_WAIT_ACKS");
   securityProtocol = getenv("LSST_KAFKA_SECURITY_PROTOCOL");
@@ -65,7 +71,13 @@ void SAL_SALData::initSalEnvironment(int aKey)
   securityUserName = getenv("LSST_KAFKA_SECURITY_USERNAME");
   securityPassword = getenv("LSST_KAFKA_SECURITY_PASSWORD");
   schemaRegistry = getenv("LSST_SCHEMA_REGISTRY_URL");
+  if (schemaRegistry == NULL) {
+      throw std::runtime_error("ERROR : Cannot find envvar LSST_SCHEMA_REGISTRY_URL");
+  }
   localSchemaDir = getenv("LSST_KAFKA_LOCAL_SCHEMAS");
+  if (localSchemaDir == NULL) {
+      throw std::runtime_error("ERROR : Cannot find envvar LSST_KAFKA_LOCAL_SCHEMAS");
+  }
   std::string colon = ":";
   std::string server = khost + colon + kport;
 
