@@ -216,7 +216,7 @@ global SYSDIC
     puts $file_writer "LIBPREFIX     = lib"
     puts $file_writer "LIBSUFFIX     = .so"
     puts $file_writer "GENFLAGS      = -g"
-    puts $file_writer "LDLIBS        = -ldl -lrt -lpthread -L/usr/lib64/boost\$(BOOST_RELEASE) -lboost_filesystem -lboost_iostreams -lboost_program_options -lboost_system \$(LSST_SAL_PREFIX)/lib/libserdes++.a \$(LSST_SAL_PREFIX)/lib/libserdes.a  -L\$(LSST_SAL_PREFIX)/lib -lcurl -ljansson -lrdkafka++ -lavrocpp -lavro"
+    puts $file_writer "LDLIBS        = -ldl -lrt -lpthread -L/usr/lib64/boost\$(BOOST_RELEASE) -lboost_filesystem -lboost_iostreams -lboost_program_options -lboost_system \$(LSST_SAL_PREFIX)/lib/libserdes++.a \$(LSST_SAL_PREFIX)/lib/libserdes.a  -L\$(LSST_SAL_PREFIX)/lib -lcurl -ljansson -lrdkafka++ -lrdkafka -lavrocpp -lavro"
     puts $file_writer "LINK.cc       = \$(LD) \$(LDFLAGS)"
     puts $file_writer "EXPORTFLAGS   ="
     puts $file_writer "endif"

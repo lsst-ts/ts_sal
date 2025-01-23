@@ -139,10 +139,10 @@ void SAL_SALData::initSalEnvironment(int aKey)
     consumerConfiguration->set("sasl.password",securityPassword, errstr);   
   }
   consumerConfiguration->set("value.serializer", "io.confluent.kafka.serializers.KafkaAvroDeserializer", errstr);  // Serialize the Avro object
-  std::string ul = "ul";
+  std::string ul = "_";
   std::string randomtag = randomString(15);
-  std::string groupid = CSC_identity + ul + randomtag;
-  consumerConfiguration->set("group.id",groupid, errstr);
+  kafkaGroupId = CSC_identity + ul + randomtag;
+  consumerConfiguration->set("group.id",kafkaGroupId, errstr);
   producerConfiguration->set("client.id",CSC_identity, errstr);
 
   char *globalConfigFile;
@@ -525,33 +525,38 @@ salReturn SAL_SALData::salEventSub(char *topicName)
 
 void SAL_SALData::salShutdown()
 {
-  if (participant != 0) {
-    participant = 0;
+  int idx = -1;
+  int usedIdx = -1;
+  while ( idx < SAL__ACTORS_MAXCOUNT ) {
+    idx++;
+    if ( sal[idx].subscriber != NULL ) {
+      usedIdx = idx;
+      sal[usedIdx].subscriber->close();
+    }
   }
+  sleep(1);
+  rd_kafka_t *rk = sal[usedIdx].subscriber->c_ptr();
+  rd_kafka_queue_t *q;
+  rd_kafka_AdminOptions_t *options = NULL;
+  rd_kafka_DeleteGroup_t *del_groups[1];
+  del_groups[0] = rd_kafka_DeleteGroup_new(kafkaGroupId.c_str());
+  q = rd_kafka_queue_new(rk);
+  rd_kafka_DeleteGroups(rk, del_groups, 1, options, q);
+  sleep(1);
 }
 
 void SAL_SALData::createParticipant(const char *partitiontName)
 {
-  std::string errstr;
-  if (participant == 0) {
-    partition = 1;
-    RdKafka::Conf *producerConfiguration  = RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL);
-    producerConfiguration->set("metadata.broker.list", server, errstr);
-    participant = 1;
-    sleep(1);
-  }
+  participant++;
 }
 
 void SAL_SALData::checkSchema(int actorIdx)
 {
   std::string errstr;
-//  std::string svname = sal[actorIdx].avroName + "-value";
   if (sal[actorIdx].topicConfiguration == NULL)  {
      throw std::runtime_error(string(errstr + sal[actorIdx].topicName));
   }
   if (sal[actorIdx].avroSchema == NULL) {
-//    sal[actorIdx].avroSchema = Serdes::Schema::get(serdes, svname, errstr);
-//    if (!sal[actorIdx].avroSchema) {
       std::string adir = "/avro-templates/SALData/"; 
       std::string schema = localSchemaDir + adir + sal[actorIdx].topicName + ".json";
       std::ifstream ifs(schema);
@@ -560,7 +565,6 @@ void SAL_SALData::checkSchema(int actorIdx)
       std::string svname = sal[actorIdx].avroName + "-value";
       sal[actorIdx].avroSchema = Serdes::Schema::add(serdes, svname, buffer.str(), errstr);
       sal[actorIdx].hasSchema = true;
-//    }
   }
 }
 
@@ -577,7 +581,6 @@ void SAL_SALData::createTopic(int actorIdx)
     topic = RdKafka::Topic::create(publisher, sal[actorIdx].avroName, sal[actorIdx].topicConfiguration, errstr);
   }
   sal[actorIdx].topic = topic;
-//  std::string svname = sal[actorIdx].avroName + "-value";
   if (sal[actorIdx].topicConfiguration == NULL) 
   {
      throw std::runtime_error(string(errstr + sal[actorIdx].topicName));
@@ -597,7 +600,6 @@ void SAL_SALData::createTopic2(int actorIdx)
     topic = RdKafka::Topic::create(publisher, sal[actorIdx].avroName, sal[actorIdx].topicConfiguration2, errstr);
   }
   sal[actorIdx].topic2 = topic;
-//  std::string svname = sal[actorIdx].avroName2 + "-value";
   if (sal[actorIdx].topicConfiguration2 == NULL) 
   {
      throw std::runtime_error(string(errstr + sal[actorIdx].topicName2));
@@ -617,7 +619,6 @@ void SAL_SALData::createTopic(int actorIdx, char *topicName)
     topic = RdKafka::Topic::create(publisher, sal[actorIdx].avroName, sal[actorIdx].topicConfiguration, errstr);
   }
   sal[actorIdx].topic = topic;
-//  std::string svname = sal[actorIdx].avroName + "-value";
   if (sal[actorIdx].topicConfiguration == NULL) 
   {
      throw std::runtime_error(string(errstr + topicName));
@@ -637,7 +638,6 @@ void SAL_SALData::createTopic2(int actorIdx, char *topicName)
     topic = RdKafka::Topic::create(publisher, sal[actorIdx].avroName, sal[actorIdx].topicConfiguration2, errstr);
   }
   sal[actorIdx].topic2 = topic;
-//  std::string svname = sal[actorIdx].avroName2 + "-value";
   if (sal[actorIdx].topicConfiguration2 == NULL) 
   {
      throw std::runtime_error(string(errstr + sal[actorIdx].topicName2));

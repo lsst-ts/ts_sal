@@ -130,9 +130,9 @@
       int			error;
 /// ack is the ack field for the most recent ackCmd message (commands)
       int			ack;
-/// activeidentity is the private_identity field of the most recent command
+/// activeidentity is the private_identity field of the most recent message
       string			activeidentity;
-/// activeorigin is the private_origin field of the most recent command
+/// activeorigin is the private_origin field of the most recent message
       int activeorigin;
 /// activecmdid is the command sequence number of the most recent command
       int			activecmdid;
@@ -140,11 +140,13 @@
       double			timeout;
 /// result is the text message result of the most recent command
       string			result;
-/// sndStamp is the TAI timestamp of the most recent command sent
+/// sndStamp is the TAI timestamp of the most recent message sent
       double	 		sndStamp;
-/// rcvStamp is the TAI timestamp of the most recent command received
+/// lastSndStamp is the TAI timestamp of the most recent message received
+      double	 		lastSndStamp;
+/// rcvStamp is the TAI timestamp of the most recent message received
       double			rcvStamp;
-/// sampleAge is the time in seconds between command send and receive
+/// sampleAge is the time in seconds between message send and receive
       double			sampleAge;
 /// historyDepth is the maximum size (in samples) of the Kafka message cache for the topic
       long                      historyDepth;
@@ -172,6 +174,7 @@
       Serdes::Schema *schema;
       std::string schema_name;
       std::string schema_def;
+      std::string kafkaGroupId;
       int domain;
       int status;
       int participant;

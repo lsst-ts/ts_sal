@@ -10,7 +10,7 @@ export BOOST_RELEASE=1.78
 export JDK_RELEASE=17
 export KAFKA_RELEASE=7.6
 export JACKSON_RELEASE=2.15.2
-export LIBRDKAFKA_RELEASE=1.9.0
+export LIBRDKAFKA_RELEASE=2.6.1
 
 export LSST_SDK_INSTALL=/opt/lsst/tssw/ts_sal
 if [ -z "$LSST_SAL_PREFIX" ]; then

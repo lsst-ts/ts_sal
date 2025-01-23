@@ -99,6 +99,7 @@ salReturn SAL_[set base]::getSample_[set name]([set base]_[set name]C *data)
       cout << \"=== \[GetSample\] message received :\" << numSamples << endl;
       cout << \"    revCode  : \" << Instance.private_revCode << endl;
       cout << \"    sndStamp  : \" << Instance.private_sndStamp << endl;
+      cout << \"    lastSndStamp : \" << sal\[actorIdx\].lastSndStamp << endl;
       cout << \"    origin  : \" << Instance.private_origin << endl;
       cout << \"    identity  : \" << Instance.private_identity << endl;
       double latency = (rcvdTime - Instance.private_sndStamp)*1000.0;
@@ -119,6 +120,11 @@ salReturn SAL_[set base]::getSample_[set name]([set base]_[set name]C *data)
     puts $fout "     istatus = SAL__OK;"
   }
   puts $fout "
+     if ( Instance.private_sndStamp < sal\[actorIdx\].lastSndStamp ) \{
+       istatus = SAL__NO_UPDATES;
+     \} else \{
+       sal\[actorIdx\].lastSndStamp = Instance.private_sndStamp;
+     \}
    \} else \{
      istatus = SAL__NO_UPDATES;
    \}
