@@ -56,15 +56,15 @@ void SAL_SALData::initSalEnvironment(int aKey)
   char *cmdevtflush;
   char *debugContext;
 
-  auto getenv_report = [](const char *variable, bool reguired) -> const char*
+  auto getenv_report = [](const char *variable, bool required) -> const char*
   {
       auto ret = getenv(variable);
       if (ret == nullptr) {
           if (required == true) {
-              fprintf(stderr, "Required environmental variable '%s' is not set, exiting!", variable);
+              fprintf(stderr, "Required environmental variable '%s' is not set, exiting!\n", variable);
               exit(10);
           }
-          fprintf(stderr, "Environmental variable '%s' is not set.", variable);
+          fprintf(stderr, "Environmental variable '%s' is not set.\n", variable);
       }
       return ret;
   };
@@ -72,14 +72,14 @@ void SAL_SALData::initSalEnvironment(int aKey)
   pname = getenv_report("LSST_KAFKA_PREFIX", true);
   kport = getenv_report("LSST_KAFKA_BROKER_PORT", true);
   khost = getenv_report("LSST_KAFKA_HOST", true);
-  sname = getenv_report("LSST_KAFKA_HISTORYSYNC", true);
+  sname = getenv_report("LSST_KAFKA_HISTORYSYNC", false);
   kafkaProducerWaitAcks = getenv_report("LSST_KAFKA_PRODUCER_WAIT_ACKS", false);
-  securityProtocol = getenv_report("LSST_KAFKA_SECURITY_PROTOCOL", false);
-  securityMechanism = getenv_report("LSST_KAFKA_SECURITY_MECHANISM", false);
-  securityUserName = getenv_report("LSST_KAFKA_SECURITY_USERNAME", false);
-  securityPassword = getenv_report("LSST_KAFKA_SECURITY_PASSWORD", false);
-  schemaRegistry = getenv_report("LSST_SCHEMA_REGISTRY_URL", false);
-  localSchemaDir = getenv_report("LSST_KAFKA_LOCAL_SCHEMAS", false);
+  securityProtocol = getenv_report("LSST_KAFKA_SECURITY_PROTOCOL", true);
+  securityMechanism = getenv_report("LSST_KAFKA_SECURITY_MECHANISM", true);
+  securityUserName = getenv_report("LSST_KAFKA_SECURITY_USERNAME", true);
+  securityPassword = getenv_report("LSST_KAFKA_SECURITY_PASSWORD", true);
+  schemaRegistry = getenv_report("LSST_SCHEMA_REGISTRY_URL", true);
+  localSchemaDir = getenv_report("LSST_KAFKA_LOCAL_SCHEMAS", true);
   std::string colon = ":";
   std::string server = khost + colon + kport;
 
@@ -172,9 +172,19 @@ void SAL_SALData::initSalEnvironment(int aKey)
   serdesConfiguration->set("deserializer.framing", "cp1", errstr);
   serdesConfiguration->set("schema.registry.url", schemaRegistry, errstr);
   serdes = Serdes::Avro::create(serdesConfiguration, errstr);
+  if (serdes == NULL) {
+    throw std::runtime_error("ERROR Serdes::Avro::create: " + errstr);
+  }
 
   publisher = RdKafka::Producer::create(producerConfiguration, errstr); 
+  if (publisher == NULL) {
+    throw std::runtime_error("ERROR publisher creation: " + errstr);
+  }
+
   publisherCmdEvt = RdKafka::Producer::create(producerConfiguration, errstr); 
+  if (publisherCmdEvt == NULL) {
+    throw std::runtime_error("ERROR publisherCmdEvt creation: " + errstr);
+  }
 
    if ( pname != NULL ) {
       strncpy(partitionPrefix, pname, 128);
@@ -566,6 +576,9 @@ void SAL_SALData::checkSchema(int actorIdx)
       buffer << ifs.rdbuf();
       std::string svname = sal[actorIdx].avroName + "-value";
       sal[actorIdx].avroSchema = Serdes::Schema::add(serdes, svname, buffer.str(), errstr);
+      if (sal[actorIdx].avroSchema == NULL) {
+          throw std::runtime_error(std::string("checkSchema ") + sal[actorIdx].avroName + " for schema file " + schema + " add failed : " + errstr);
+      }
       sal[actorIdx].hasSchema = true;
   }
 }
