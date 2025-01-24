@@ -177,7 +177,7 @@ global AVRO_PREFIX
   puts $fout "           publisher->produce(sal\[actorIdx\].avroName, RdKafka::Topic::PARTITION_UA,"
   puts $fout "                                 RdKafka::Producer::RK_MSG_COPY /* Copy payload */,"
   puts $fout "                                 buffer.data(), outsize,"
-  puts $fout "                                 topicKey.c_str(), topicKey.size() , 0, headers);"
+  puts $fout "                                 NULL, 0, 0, headers);"
   puts $fout "     \}"
   puts $fout "     if (resp != RdKafka::ERR_NO_ERROR) \{"
   puts $fout "       std::cerr << \"% Produce failed: \" << RdKafka::err2str(resp)"

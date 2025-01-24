@@ -26,6 +26,9 @@ Changes for 10.0.0
 * Add API doc generator for Kafka
 * Add Kafka configuration file environment and file readers
 * Remove SAL Java classes now replaced with SimpleSAL implementation
+* Remove groups on salShutDown
+* Enable multiple partitions for telemetry (remove keys)
+* Check for (and ignore) out of order topic samples
 
 =================
 Changes for 9.0.0
