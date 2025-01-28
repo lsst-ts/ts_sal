@@ -50,13 +50,14 @@ void SAL_SALData::initSalEnvironment(int aKey)
 {
   std::string errstr;
   char partitionPrefix[128];
-  char *maxms;
-  char *maxmsg;
-  char *tlmflush;
-  char *cmdevtflush;
-  char *debugContext;
+  const char *maxms;
+  const char *maxmsg;
+  const char *tlmflush;
+  const char *cmdevtflush;
+  const char *debugContext;
+  const char *salDebugLevel;
 
-  auto getenv_report = [](const char *variable, bool required) -> const char*
+  auto getenv_report = []( const char *variable, bool required) -> const char*
   {
       auto ret = getenv(variable);
       if (ret == nullptr) {
@@ -69,15 +70,16 @@ void SAL_SALData::initSalEnvironment(int aKey)
       return ret;
   };
 
+  salDebugLevel = getenv_report("LSST_SAL_DEBUG_LEVEL", false);
+  if (salDebugLevel != NULL ) {
+    setDebugLevel(atoi(salDebugLevel));
+  }
   pname = getenv_report("LSST_KAFKA_PREFIX", true);
   kport = getenv_report("LSST_KAFKA_BROKER_PORT", true);
   khost = getenv_report("LSST_KAFKA_HOST", true);
   sname = getenv_report("LSST_KAFKA_HISTORYSYNC", false);
   kafkaProducerWaitAcks = getenv_report("LSST_KAFKA_PRODUCER_WAIT_ACKS", false);
-  securityProtocol = getenv_report("LSST_KAFKA_SECURITY_PROTOCOL", true);
-  securityMechanism = getenv_report("LSST_KAFKA_SECURITY_MECHANISM", true);
-  securityUserName = getenv_report("LSST_KAFKA_SECURITY_USERNAME", true);
-  securityPassword = getenv_report("LSST_KAFKA_SECURITY_PASSWORD", true);
+  securityPassword = getenv_report("LSST_KAFKA_SECURITY_PASSWORD", false);
   schemaRegistry = getenv_report("LSST_SCHEMA_REGISTRY_URL", true);
   localSchemaDir = getenv_report("LSST_KAFKA_LOCAL_SCHEMAS", true);
   std::string colon = ":";
@@ -87,6 +89,9 @@ void SAL_SALData::initSalEnvironment(int aKey)
   producerConfiguration->set("bootstrap.servers",server, errstr);
   producerConfiguration->set("schema.registry.url", schemaRegistry, errstr);
   if (securityPassword != NULL) {
+    securityProtocol = getenv_report("LSST_KAFKA_SECURITY_PROTOCOL", true);
+    securityMechanism = getenv_report("LSST_KAFKA_SECURITY_MECHANISM", true);
+    securityUserName = getenv_report("LSST_KAFKA_SECURITY_USERNAME", true);
     producerConfiguration->set("security.protocol",securityProtocol, errstr);
     producerConfiguration->set("sasl.mechanism",securityMechanism, errstr);
     producerConfiguration->set("sasl.username",securityUserName, errstr);
@@ -147,9 +152,9 @@ void SAL_SALData::initSalEnvironment(int aKey)
   consumerConfiguration->set("group.id",kafkaGroupId, errstr);
   producerConfiguration->set("client.id",CSC_identity, errstr);
 
-  char *globalConfigFile;
-  char *producerConfigFile;
-  char *consumerConfigFile;
+  const char *globalConfigFile;
+  const char *producerConfigFile;
+  const char *consumerConfigFile;
   globalConfigFile = getenv_report("LSST_KAFKA_BROKER_CLIENT_CONFIGURATION", false);
   producerConfigFile = getenv_report("LSST_KAFKA_PRODUCER_CONFIGURATION", false);
   consumerConfigFile = getenv_report("LSST_KAFKA_CONSUMER_CONFIGURATION", false);
@@ -207,7 +212,7 @@ void SAL_SALData::initSalEnvironment(int aKey)
    initSalActors();
 }
 
-void SAL_SALData::readKafkaConfiguration (char *kfile, RdKafka::Conf *kconf) {
+void SAL_SALData::readKafkaConfiguration (const char *kfile, RdKafka::Conf *kconf) {
      
  
   FILE *fp;
@@ -539,22 +544,27 @@ void SAL_SALData::salShutdown()
 {
   int idx = -1;
   int usedIdx = -1;
-  while ( idx < SAL__ACTORS_MAXCOUNT ) {
+  rd_kafka_t *rk = NULL;
+  rd_kafka_DeleteGroup_t *del_groups[1];
+  while ( idx < SAL__ACTORS_MAXCOUNT-2 ) {
     idx++;
-    if ( sal[idx].subscriber != NULL ) {
+    if ( sal[idx].isReader || sal[idx].isEventReader ) {
       usedIdx = idx;
+      if ( rk == NULL) {
+         rk = sal[usedIdx].subscriber->c_ptr();
+         del_groups[0] = rd_kafka_DeleteGroup_new(kafkaGroupId.c_str());
+      }
       sal[usedIdx].subscriber->close();
     }
   }
-  sleep(1);
-  rd_kafka_t *rk = sal[usedIdx].subscriber->c_ptr();
-  rd_kafka_queue_t *q;
-  rd_kafka_AdminOptions_t *options = NULL;
-  rd_kafka_DeleteGroup_t *del_groups[1];
-  del_groups[0] = rd_kafka_DeleteGroup_new(kafkaGroupId.c_str());
-  q = rd_kafka_queue_new(rk);
-  rd_kafka_DeleteGroups(rk, del_groups, 1, options, q);
-  sleep(1);
+  if ( usedIdx > -1 ) {
+    sleep(1);
+    rd_kafka_queue_t *q;
+    rd_kafka_AdminOptions_t *options = NULL;
+    q = rd_kafka_queue_new(rk);
+    rd_kafka_DeleteGroups(rk, del_groups, 1, options, q);
+    sleep(1);
+  }
 }
 
 void SAL_SALData::createParticipant(const char *partitiontName)
@@ -590,16 +600,16 @@ void SAL_SALData::createTopic(int actorIdx)
   RdKafka::Topic *topic = NULL;
   RdKafka::Conf *topicConfiguration = RdKafka::Conf::create(RdKafka::Conf::CONF_TOPIC);
   sal[actorIdx].topicConfiguration = topicConfiguration;
+  if (sal[actorIdx].topicConfiguration == NULL) 
+  {
+     throw std::runtime_error(string(errstr + sal[actorIdx].topicName));
+  }
   if (sal[actorIdx].cmdevt) {
     topic = RdKafka::Topic::create(publisherCmdEvt, sal[actorIdx].avroName, sal[actorIdx].topicConfiguration, errstr);
   } else {
     topic = RdKafka::Topic::create(publisher, sal[actorIdx].avroName, sal[actorIdx].topicConfiguration, errstr);
   }
   sal[actorIdx].topic = topic;
-  if (sal[actorIdx].topicConfiguration == NULL) 
-  {
-     throw std::runtime_error(string(errstr + sal[actorIdx].topicName));
-  }
   checkSchema(actorIdx);
 }
 
@@ -609,16 +619,16 @@ void SAL_SALData::createTopic2(int actorIdx)
   RdKafka::Topic *topic = NULL;
   RdKafka::Conf *topicConfiguration = RdKafka::Conf::create(RdKafka::Conf::CONF_TOPIC);
   sal[actorIdx].topicConfiguration2 = topicConfiguration;
+  if (sal[actorIdx].topicConfiguration2 == NULL) 
+  {
+     throw std::runtime_error(string(errstr + sal[actorIdx].topicName2));
+  }
   if (sal[actorIdx].cmdevt) {
     topic = RdKafka::Topic::create(publisherCmdEvt, sal[actorIdx].avroName, sal[actorIdx].topicConfiguration2, errstr);
   } else {
     topic = RdKafka::Topic::create(publisher, sal[actorIdx].avroName, sal[actorIdx].topicConfiguration2, errstr);
   }
   sal[actorIdx].topic2 = topic;
-  if (sal[actorIdx].topicConfiguration2 == NULL) 
-  {
-     throw std::runtime_error(string(errstr + sal[actorIdx].topicName2));
-  }
   checkSchema(actorIdx);
 }
 
@@ -628,16 +638,16 @@ void SAL_SALData::createTopic(int actorIdx, char *topicName)
   RdKafka::Topic *topic = NULL;
   RdKafka::Conf *topicConfiguration = RdKafka::Conf::create(RdKafka::Conf::CONF_TOPIC);
   sal[actorIdx].topicConfiguration = topicConfiguration;
+  if (sal[actorIdx].topicConfiguration == NULL) 
+  {
+     throw std::runtime_error(string(errstr + topicName));
+  }
   if (sal[actorIdx].cmdevt) {
     topic = RdKafka::Topic::create(publisherCmdEvt, sal[actorIdx].avroName, sal[actorIdx].topicConfiguration, errstr);
   } else {
     topic = RdKafka::Topic::create(publisher, sal[actorIdx].avroName, sal[actorIdx].topicConfiguration, errstr);
   }
   sal[actorIdx].topic = topic;
-  if (sal[actorIdx].topicConfiguration == NULL) 
-  {
-     throw std::runtime_error(string(errstr + topicName));
-  }
   checkSchema(actorIdx);
 }
 
@@ -647,16 +657,16 @@ void SAL_SALData::createTopic2(int actorIdx, char *topicName)
   RdKafka::Topic *topic = NULL;
   RdKafka::Conf *topicConfiguration = RdKafka::Conf::create(RdKafka::Conf::CONF_TOPIC);
   sal[actorIdx].topicConfiguration2 = topicConfiguration;
+  if (sal[actorIdx].topicConfiguration2 == NULL) 
+  {
+     throw std::runtime_error(string(errstr + sal[actorIdx].topicName2));
+  }
   if (sal[actorIdx].cmdevt) {
     topic = RdKafka::Topic::create(publisherCmdEvt, sal[actorIdx].avroName, sal[actorIdx].topicConfiguration2, errstr);
   } else {
     topic = RdKafka::Topic::create(publisher, sal[actorIdx].avroName, sal[actorIdx].topicConfiguration2, errstr);
   }
   sal[actorIdx].topic2 = topic;
-  if (sal[actorIdx].topicConfiguration2 == NULL) 
-  {
-     throw std::runtime_error(string(errstr + sal[actorIdx].topicName2));
-  }
   checkSchema(actorIdx);
 }
 
@@ -680,7 +690,7 @@ void SAL_SALData::createPublisher(int actorIdx)
 {
   std::string errstr;
   if (publisher == NULL) {
-     throw std::runtime_error("Failed to create a Kafka producder");
+     throw std::runtime_error("Failed to create a Kafka producer");
   }
 }
 

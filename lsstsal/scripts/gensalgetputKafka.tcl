@@ -61,16 +61,17 @@ salReturn SAL_[set base]::putSample_[set name]([set base]_[set name]C *data)
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
    Instance.salIndex = subsystemID;
 #endif
+  Instance.private_sndStamp = getCurrentTime();
+  Instance.private_efdStamp = getCurrentUTC();
 
   if (debugLevel > 0) \{
     cout << \"=== \[putSample\] [set base].[set name] writing a message containing :\" << endl;
     cout << \"    revCode  : \" << Instance.private_revCode << endl;
+    cout << \"    sndStmp  : \" << Instance.private_sndStamp << endl;
   \}
 #ifdef SAL_SUBSYSTEM_ID_IS_KEYED
   Instance.salIndex = subsystemID;
 #endif
-  Instance.private_sndStamp = getCurrentTime();
-  Instance.private_efdStamp = getCurrentUTC();
   Instance.private_kafkaStamp = Instance.private_sndStamp;"
     writerFragment $fout $base [set base]_[set name]
       puts $fout "
