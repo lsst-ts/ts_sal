@@ -49,11 +49,11 @@ void SAL_SALData::initSalEnvironment(int aKey)
 {
   std::string errstr;
   char partitionPrefix[128];
-  char *maxms;
-  char *maxmsg;
-  char *tlmflush;
-  char *cmdevtflush;
-  char *debugContext;
+  const char *maxms;
+  const char *maxmsg;
+  const char *tlmflush;
+  const char *cmdevtflush;
+  const char *debugContext;
 
   pname = getenv("LSST_KAFKA_PREFIX");
   kport = getenv("LSST_KAFKA_BROKER_PORT");
@@ -145,9 +145,9 @@ void SAL_SALData::initSalEnvironment(int aKey)
   consumerConfiguration->set("group.id",kafkaGroupId, errstr);
   producerConfiguration->set("client.id",CSC_identity, errstr);
 
-  char *globalConfigFile;
-  char *producerConfigFile;
-  char *consumerConfigFile;
+  const char *globalConfigFile;
+  const char *producerConfigFile;
+  const char *consumerConfigFile;
   globalConfigFile = getenv("LSST_KAFKA_BROKER_CLIENT_CONFIGURATION");
   producerConfigFile = getenv("LSST_KAFKA_PRODUCER_CONFIGURATION");
   consumerConfigFile = getenv("LSST_KAFKA_CONSUMER_CONFIGURATION");
@@ -195,7 +195,7 @@ void SAL_SALData::initSalEnvironment(int aKey)
    initSalActors();
 }
 
-void SAL_SALData::readKafkaConfiguration (char *kfile, RdKafka::Conf *kconf) {
+void SAL_SALData::readKafkaConfiguration (const char *kfile, RdKafka::Conf *kconf) {
      
  
   FILE *fp;
