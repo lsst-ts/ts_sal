@@ -203,18 +203,18 @@
       int lastActor_telemetry;
       int lastActor_command;
       int lastActor_event;
-      char *pname;
+      const char *pname;
       char *aname;
-      char *sname;
-      char *kport;
-      char *khost;
-      char *securityProtocol;
-      char *securityMechanism;
-      char *securityUserName;
-      char *securityPassword;
-      char *schemaRegistry;
-      char *localSchemaDir;
-      char *kafkaProducerWaitAcks;
+      const char *sname;
+      const char *kport;
+      const char *khost;
+      const char *securityProtocol;
+      const char *securityMechanism;
+      const char *securityUserName;
+      const char *securityPassword;
+      const char *schemaRegistry;
+      const char *localSchemaDir;
+      const char *kafkaProducerWaitAcks;
       int telemetryFlushMS;
       int cmdevtFlushMS;
 
@@ -247,7 +247,7 @@
   @param kfile is the filename
   @param kconf is the Kafka configuratuion object
  */ 
-     void readKafkaConfiguration (char *kfile, RdKafka::Conf *kconf);
+     void readKafkaConfiguration (const char *kfile, RdKafka::Conf *kconf);
 
 /** Sets up the Kafka Publisher support for the named Kafka type
   @param topicName is the name of the Kafka topic

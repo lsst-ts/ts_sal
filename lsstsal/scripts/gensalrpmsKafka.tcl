@@ -209,7 +209,7 @@ proc updatesingletons { name } {
 global SAL_WORK_DIR XMLVERSION SALVERSION
   set found ""
   catch {
-    set found [glob $SAL_WORK_DIR/rpmbuild/RPMS/x86_64/[set name]-$XMLVERSION-$SALVERSION*]
+    set found [glob $SAL_WORK_DIR/rpmbuild/RPMS/x86_64/[set name]-$SALVERSION*]
   }
   if { $found == "" } {
      switch $name  {
