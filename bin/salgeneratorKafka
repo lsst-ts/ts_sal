@@ -399,5 +399,5 @@ if { $OPTIONS(labview) } {
 puts stdout "SALVERSION = $SALVERSION"
 puts stdout "XMLVERSION = $XMLVERSION"
 puts stdout "SAL_WORK_DIR = $SAL_WORK_DIR"
-puts stdout "LSST_LAFKA_PREFIX = $LSST_KAFKA_PREFIX"
+puts stdout "LSST_KAFKA_PREFIX = $LSST_KAFKA_PREFIX"
 
