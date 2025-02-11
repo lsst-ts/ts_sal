@@ -30,7 +30,7 @@ Telemetry and Command definitions, which are described using "Interface
 definition Language".
 
 A System Dictionary describes the syntax and naming schemes used in the
-IDL (Legacy) or Avro (current), thus establishing system-wide consistency.
+IDL/Avro, thus establishing system-wide consistency.
 
 The required network bandwidth for each subsystem , and the accompanying
 EFD table sizes are described.
@@ -41,11 +41,15 @@ listed in per-subsystem appendices.
 Applicable Documents
 ~~~~~~~~~~~~~~~~~~~~
 
+-  Datastream Definitions Document - Datastream Prototypes 1.7
+   (Document-11528)
 -  Definition of subsystems - LSST Project WBS Dictionary (Document-985)
 -  Documentation standards - LSST DM UML Modeling Conventions
    (Document-469)
+-  Messaging standards - OMG DDS 1.1 (Document-2233)
 -  Software coding standards LSST C++ Programming Style Guidelines
    (Document-3046)
+-  Vendor documentation - Opensplice manuals (Collection-2791)
 -  Observatory System Specifications - LSE-30
 -  TCS Communication Protocol Interface - LTS-306
 -  TCS Software Component Interface - LTS-307
@@ -95,14 +99,15 @@ accessor to a publisher. The Writer is the object the application
 must use to communicate to a publisher the existence and value of
 data-objects of a given type. When data-object values have been
 communicated to the publisher through the appropriate Writer, it is
-the publisher's responsibility to perform the distribution . 
-A publication is defined by the
+the publisher's responsibility to perform the distribution (the
+publisher will do this according to its own QoS, or the QoS attached to
+the corresponding Writer). A publication is defined by the
 association of a Writer to a publisher. This association expresses
 the intent of the application to publish the data described by the
 Writer in the context provided by the publisher.
 
 A Subscriber is an object responsible for receiving published data and
-making it available to the receiving
+making it available (according to the Subscribers QoS) to the receiving
 application. It may receive and dispatch data of different specified
 types. To access the received data, the application must use a typed
 Reader attached to the subscriber. Thus, a subscription is defined
@@ -113,7 +118,12 @@ described by the data-reader in the context provided by the subscriber.
 Topic objects conceptually fit between publications and subscriptions.
 Publications must be known in such a way that subscriptions can refer to
 them unambiguously. A Topic is meant to fulfill that purpose: it
-associates a name (unique in the domain), and data-schema.
+associates a name (unique in the domain), a data-type, and QoS related
+to the data itself. In addition to the topic QoS, the QoS of the
+Writer associated with that Topic and the QoS of the Publisher
+associated to the Writer control the behavior on the publisher's
+side, while the corresponding Topic, Reader, and Subscriber QoS
+control the behavior on the subscribers side.
 
 When an application wishes to publish data of a given type, it must
 create a Publisher (or reuse an already created one) and a Writer
@@ -122,6 +132,14 @@ an application wishes to receive data, it must create a Subscriber (or
 reuse an already created one) and a Reader to define the
 subscription.
 
+QoS (Quality of Service) is a general concept that is used to specify
+the behavior of a service. Programming service behavior by means of QoS
+settings offers the advantage that the application developer only
+indicates what is wanted rather than how this QoS should be achieved.
+Generally speaking, QoS is comprised of several QoS policies. Each QoS
+policy is then an independent description that associates a name with a
+value. Describing QoS by means of a list of independent QoS policies
+gives rise to more flexibility.
 
 This specification is designed to allow a clear separation between the
 publish and the subscribe sides, so that an application process that
@@ -148,7 +166,7 @@ be utilized whenever possible.
 The access levels are :
 
 -  SAL (Service abstraction layer)
--  Apache Kafka
+-  OMG DDS (Data Distribution Service) OR Apache Kafka
 
 Each layer provides more detailed access to the low-level
 details of the configuration and control of the datastream definitions
@@ -166,7 +184,8 @@ Transparent access to telemetry and command objects residing on any
 subsystem is provided via means of automatic shared memory mapping of
 the underlying data objects.
 
-The lower level objects are managed using an implementation of Apache Kafka.
+The lower level objects are managed using an implementation of the OMG's
+DDS or Apache Kafka.
 
 The SAL provides direct access to only a small subset of the total
 functionality provided by the transport layers, reducing both the amount of code
@@ -207,7 +226,7 @@ Invocation with no arguments will result in display of the on-line help.
 
             generate - all steps to generate SAL wrappers for specified language
             validate - check the XML Telemetry/Command/LogEvent definitions
-            sal      - generate SAL wrappers for specified language : cpp, java
+            sal      - generate SAL wrappers for specified language : cpp, idl, java
             apidoc   - generate interface documentation for the specified language : cpp, java
             lib      - generate shared library
             labview  - generate LabVIEW low-level interface
@@ -215,19 +234,197 @@ Invocation with no arguments will result in display of the on-line help.
             rpm      - generate runtime RPM
             verbose  - be more verbose ;-)
 
+OMG DDS
+~~~~~~~
+
+The OMG Data-Distribution Service (DDS) is a specification for
+publish-subscribe data-distribution systems. The purpose of the
+specification is to provide a common application-level interface that
+clearly defines the data-distribution service. The specification
+describes the service using UML, providing a platform-independent model
+that can then be mapped into a variety of concrete platforms and
+programming languages.
+
+The goal of the DDS specification is to facilitate the efficient
+distribution of data in a distributed system. Participants using DDS can
+read and write data efficiently and naturally with a typed interface.
+Underneath, the DDS middleware will distribute the data so that each
+reading participant can access the most-current values. In effect, the
+service creates a global data space that any participant can read and
+write. It also creates a name space to allow participants to find and
+share objects.
+
+DDS targets real-time systems; the API and QoS are chosen to balance
+predictable behavior and implementation efficiency/performance.
 
 
+DDS Tools
+^^^^^^^^^
+
+Code generation
+^^^^^^^^^^^^^^^
+
+The DDS standard provides an source code generation tool, the IDL
+Pre-Processor (idlpp) which can generate DSS interface code for a
+variety of language/environment combinations. We use the "standalone
+C++", and "standalone Java" variants.
+
+Message Translation
+^^^^^^^^^^^^^^^^^^^
+
+Opensplice Gateway
+
+The OpenSplice Gateway provides semi-automated message translation
+between a large number of middleware protocols.
+
+By leveraging the `Apache Camel <https://camel.apache.org/>`__
+integration framework and its support for over 80 connectors, the
+OpenSplice Gateway is ideal for integrating DDS-interoperable
+applications with proprietary as well as standards-based messaging
+technologies, such as JMS and AMQP, as well as user applications
+leveraging Web standards such as W3C Web Services, REST and HTML5
+WebSockets.
+
+It's potential use is still being evaluated.
+
+Debug
+^^^^^
+
+Opensplice Tuner
+^^^^^^^^^^^^^^^^
+
+The OpenSplice Tuner is a deployment tool within PrismTech's OpenSplice
+DDS suite. This tool offers total control over a deployed OpenSplice
+based DDS-system from any local or remote platform that supports the
+Java language.
+
+The Java based OpenSplice Tuner tool aids the design, implementation,
+test and maintenance of OpenSplice based distributed systems (the
+OpenSplice Tuner is available both as a 'standalone' Java-program as
+well as an Eclipse plug-in for the Productivity tool suite).
+
+The OpenSplice Tuner's features target all lifecycle stages of
+distributed system development and can be summarized as:
+
+-  Design: During the design phase, once the information model is
+   established (i.e. topics are defined and 'registered' in a runtime
+   environment, which can be both a host-environment as well as a
+   target-environment), the Tuner allows creation of publishers/writers
+   and subscribers/readers on the fly to experiment and validate how
+   this data should be treated by the middleware regarding persistence,
+   durability, latency, etc.
+-  Implementation: During the implementation phase, where actual
+   application-level processing and distribution of this information is
+   developed, the OpenSplice Tuner allows injection of test input-data
+   by creating publishers and writers 'on the fly' as well as validating
+   the responses by creating subscribers and readers for any produced
+   topics.
+-  Test: during the test phase, the total system can be monitored by
+   inspection of data (by making 'snapshots' of writer- and
+   reader-history caches) and behavior of readers & writers (statistics,
+   like how long data has resided in the reader's cache before it was
+   read) as well as monitoring of the data-distribution behavior
+   (memory-usage, transport-latencies).
+-  Maintenance: Maximum flexibility for planned and 'ad-hoc' maintenance
+   is offered by allowing the Tuner tool (which can be executed on any
+   JAVA enabled platform without the need of OpenSplice to be installed)
+   to remotely connect via the web-based SOAP protocol to any
+   'reachable' OpenSplice system around the world (as long a
+   HTTP-connection can be established with the OpenSplice
+   computing-nodes of that system). Using such a dynamic-connection,
+   critical data may be logged and data-sets may be 'injected' into the
+   system to be maintained (such as new settings which can be
+   automatically 'persisted' using the QoS features as offered by the
+   'persistence-profile supported by OpenSplice).
+
+Opensplice Tester
+^^^^^^^^^^^^^^^^^
+
+This Java based tool is designed with the systems integrator in mind and
+offers an intuitive set of features to aid his task, offering both local
+operation (where the tool is running on a deployed DDS-system) as well
+as remote operation (where the tool is connect over SOAP to a remotely
+deployed DDS-system).
+
+The main features of the OpenSplice Tester are:
+
+-  Automated testing of DDS-based systems
+
+   -  Dynamic discovery of DDS entities
+   -  Domain-Specific scripting Language (DSL) for test scenario's
+
+-  Batch execution of regression tests
+
+   -  Debugging of distributed DDS system
+   -  One-click definition of a monitoring-time-line
+   -  Analysis/comparison of topics/instances & samples
+   -  Virtual topic-attributes to dramatically ease analysis
+   -  System-browser of DDS entities (app's/readers/writers)
+   -  Connectivity and QoS-conflict monitoring/detection
+   -  Statistics-monitoring of applications and services
+
+-  Integrated IDE
+
+   -  Syntax highlighting editor, script-executor and Sample Logger
+   -  One-click relations between script, logs and timeline
+   -  Optional integration of message-interfaces with DDS interactions
+
+OMG RTPS wire protocol
+~~~~~~~~~~~~~~~~~~~~~~
+
+**The RTPS layer is NOT expected to be used directly by any project
+generated code, we included a brief description for completeness.**
+
+The Real-Time Publish Subscribe (RTPS) protocol has its roots in
+industrial automation and was approved by the IEC as part of the
+Real-Time Industrial Ethernet Suite IEC-PAS-62030. It is a field proven
+technology that is currently deployed worldwide in thousands of
+industrial devices. RTPS was specifically developed to support the
+unique requirements of data-distributions systems.
+
+As one of the application domains targeted by DDS, the industrial
+automation community defined requirements for a standard publish
+subscribe wire-protocol that closely match those of DDS. There is a
+close synergy between DDS and the RTPS wire-protocol, both in terms of
+the underlying behavioral architecture and the features of RTPS.
+
+The RTPS protocol is designed to be able to run over multicast and
+connectionless best-effort transports such as UDP/IP. The main features
+of the RTPS protocol include:
+
+-  Performance and quality-of-service properties to enable best-effort
+   and reliable publish-subscribe communications for real-time
+   applications over standard IP networks.
+-  Fault tolerance to allow the creation of networks without single
+   points of failure.
+-  Extensibility to allow the protocol to be extended and enhanced with
+   new services without breaking backwards compatibility and
+   interoperability.
+-  Plug-and-play connectivity so that new applications and services are
+   automatically discovered and applications can join and leave the
+   network at any time without the need for reconfiguration.
+-  Reconfigurability to allow balancing the requirements for reliability
+   and timeliness for each data delivery.
+-  Modularity to allow simple devices to implement a subset of the
+   protocol and still participate in the network.
+-  Scalability to enable systems to potentially scale to very large
+   networks.
+-  Type-safety to prevent application programming errors from
+   compromising the operation of remote nodes.
+
+The above features make RTPS an excellent match for a DDS wire-protocol.
+Given its publish subscribe roots, this is not a coincidence, as RTPS
+was specifically designed for meeting the types of requirements set
+forth by the DDS application domain.
+
+This specification defines the message formats, interpretation, and
+usage scenarios that underlie all messages exchanged by applications
+that use the RTPS protocol.
 
 **********************************************
 ***********TODO - Add Kafka instroduction here
 **********************************************
- Kafka is a distributed system consisting of servers and clients that communicate via a high-performance TCP network protocol. It can be deployed on bare-metal hardware, virtual machines, and containers in on-premise as well as cloud environments.
 
-Servers: Kafka is run as a cluster of one or more servers that can span multiple datacenters or cloud regions. Some of these servers form the storage layer, called the brokers. Other servers run Kafka Connect to continuously import and export data as event streams to integrate Kafka with your existing systems such as relational databases as well as other Kafka clusters. To let you implement mission-critical use cases, a Kafka cluster is highly scalable and fault-tolerant: if any of its servers fails, the other servers will take over their work to ensure continuous operations without any data loss.
-
-Clients: They allow you to write distributed applications and microservices that read, write, and process streams of events in parallel, at scale, and in a fault-tolerant manner even in the case of network problems or machine failures. Kafka ships with some such clients included, which are augmented by dozens of clients provided by the Kafka community: clients are available for Java and Scala including the higher-level Kafka Streams library, for Go, Python, C/C++, and many other programming languages as well as REST APIs.
-
-Refer to https://kafka.apache.org/documentation/#gettingStarted for much more detail.
 
 General policies
 ^^^^^^^^^^^^^^^^
@@ -297,16 +494,25 @@ obtaining enough public addresses for every computer in an organization.
 Hiding the addresses of protected devices has become an increasingly
 important defense against network reconnaissance.
 
-Kafka namespace
+DDS domains
 ^^^^^^^^^^^
 
-The namespace is the basic construct used to bind individual applications
+The domain is the basic construct used to bind individual applications
 together for communication. A distributed application can elect to use a
-single namepsace for all its data-centric communications.
+single domain for all its data-centric communications.
 
 All Data Writers and Data Readers with like data types will communicate
-within this namespace.
+within this domain. DDS also has the capability to support multiple
+domains, thus providing developers a system that can scale with system
+needs or segregate based on different data types. When a specific data
+instance is published on one domain, it will not be received by
+subscribers residing on any other domains.
 
+Multiple domains provide effective data isolation. One use case would be
+for a system to be designed whereby all Command/Control related data is
+exchanged via one domain while Status information is exchanged within
+another. Multiple domains are also a good way to control the
+introduction of new functionality into an existing system.
 
 Commanding Requirements
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -378,6 +584,7 @@ specific commanding occurs only in the "Enabled" state.
 -  [CSC-name]>\_command\_enterControl
 -  [CSC-name]>\_command\_setLogLevel
 -  [CSC-name]>\_command\_setValue
+-  [CSC-name]>\_command\_setAuthList
 
 Generic subsystem logging events
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -392,6 +599,7 @@ Generic subsystem logging events
 -  [CSC-name]>\_logevent\_simulationMode
 -  [CSC-name]>\_logevent\_softwareVersions
 -  [CSC-name]>\_logevent\_heartbeat
+-  [CSC-name]>\_logevent\_authList
 
 |image2|
 
@@ -413,7 +621,7 @@ Telemetry Requirements
 ~~~~~~~~~~~~~~~~~~~~~~
 
 Telemetry data issued via the middleware must be received by the
-computer system(s) of the Engineering and Facility database , and any other subscribers
+computer system(s) of the Facility database , and any other subscribers
 , within 20ms.
 
 Event Notifications Requirements
@@ -457,19 +665,79 @@ Notifications are automatically tagged with the source and a timestamp.
 Communication Methods
 ~~~~~~~~~~~~~~~~~~~~~
 
+Initiation : DDS discovery
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Flow Control : Kafka topics
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The process by which domain participants find out about each others
+entities Each participant maintains database on other participants in
+the domain and their entities happens automatically behind the scenes
+(anonymous publish-subscribe)
+
+-  Does not cross domain boundaries
+-  Dynamic discovery
+-  Participants must refresh their presence in the domain or will be
+   aged out of database
+-  QoS changes are propagated to remote participants
+-  Two consecutive phases
+-  Participant discovery phase
+-  Participants discover each other
+-  Best-effort communication
+-  Endpoint discovery phase
+-  Participants exchange information about their Writer and
+   Reader entities
+-  Reliable communication
+-  Steady state traffic to maintain liveliness of participants
+-  Participants periodically announce their presence using RTPS VAR
+   message
+-  Contains participant GUID, transport locators, QoS
+-  Initially sent to all participants in initial peers list, then sent
+   periodically to all discovered participants
+-  Sent using best-effort
+
+Writer/Reader discovery
+
+-  Send out pub/sub VAR to every new participant
+-  NACK for pub/sub info if not received from a known participant
+-  Send out changes/additions/deletions to each participant
+-  Uses reliable communication between participants
+-  Data Distribution Service matches up local and remote entities to
+   establish communication paths
+
+|image3|
+
+Discovery is implemented using DDS entities known as Built-in Data
+Writers and Built-in Data Readers
+
+-  Uses same infrastructure as user defined Data Writers/Data Readers
+-  Participant data is sent best effort
+-  Publication/subscription data is sent reliably
+
+Three Built-in topics (keyed):
+
+-  DCPSParticipant
+-  DCPSPublication
+-  DCPSSubscription
+
+Each participant on the same host and in the same domain requires a
+unique participant index
+
+For given domain, participant index determines port numbers used by the
+participant
+
+Flow Control : DDS topics
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Topics provide the basic connection point between publishers and
 subscribers. The Topic of a given publisher on one node must match the
 Topic of an associated subscriber on any other node. If the Topics do
 not match, communication will not take place.
 
-A Topic is comprised of a Topic Name and a Topic Schema (Avro). The Topic Name is
+A Topic is comprised of a Topic Name and a Topic Type. The Topic Name is
 a string that uniquely identifies the Topic within a domain. The Topic
-Schema is the definition of the data contained within the Topic. Topics
-must be uniquely defined within any one particular namespace.
+Type is the definition of the data contained within the Topic. Topics
+must be uniquely defined within any one particular domain. Two Topics
+with different Topic Names but the same Topic Type definition would be
+considered two different Topics within the DDS infrastructure.
 
 Message timestamps
 ~~~~~~~~~~~~~~~~~~
@@ -507,7 +775,7 @@ Code generation
 
 The primary implementation of the software interface described in this
 document will be automatically generated. A Service Abstraction layer
-(SAL) will provide a standardized wrapper for the low-level Kafka
+(SAL) will provide a standardized wrapper for the low-level OMG DDS
 functionality which provides the transport layer.
 
 The permissible commands, datastream contents, and issuable alerts are
@@ -527,5 +795,6 @@ bandwidth and latency requirements. All test results are archived to the
 facility database for future examination.
 
 .. |image0| image:: LSST_logo.gif
+.. |image1| image:: omg.png
 .. |image2| image:: statemachine.png
-
+.. |image3| image:: discovery.png
