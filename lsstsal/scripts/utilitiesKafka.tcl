@@ -66,11 +66,6 @@ global SAL_WORK_DIR SALVERSION OPTIONS
          foreach i $files { exec rm -fr $i }
              } res
    }
-   if { $OPTIONS(idl) } {
-       catch {
-         exec rm -f $SAL_WORK_DIR/[set subsys]/sal_revCoded_[set subsys].idl
-             } res
-   }
    if { $OPTIONS(java) } {
        catch {
          set files [glob $SAL_WORK_DIR/[set subsys]/java]
@@ -103,9 +98,6 @@ global SAL_WORK_DIR SALVERSION OPTIONS
 proc checkAssets { subsys } {
 global SAL_WORK_DIR OPTIONS CMD_ALIASES EVENT_ALIASES TLM_ALIASES env
    if { $OPTIONS(verbose) } {stdlog "###TRACE>>> checkAssets $subsys"}
-   if { $OPTIONS(idl) } {
-        checkFileAsset $SAL_WORK_DIR/[set subsys]/sal_revCoded_[set subsys].idl
-   }
    if { $OPTIONS(cpp) } {
         if { [info exists env(LSST_KAFKA_PREFIX)] == 0 } {
           checkFileAsset $SAL_WORK_DIR/[set subsys]/cpp/libsacpp_[set subsys]_types.so
@@ -137,7 +129,6 @@ global SAL_WORK_DIR OPTIONS CMD_ALIASES EVENT_ALIASES TLM_ALIASES env
    if { $OPTIONS(labview) } {
         checkFileAsset $SAL_WORK_DIR/[set subsys]/labview/SALLV_[set subsys].so
         checkFileAsset $SAL_WORK_DIR/[set subsys]/labview/SALLV_[set subsys]_Monitor
-        checkFileAsset $SAL_WORK_DIR/[set subsys]/labview/sal_[set subsys].idl
         checkFileAsset $SAL_WORK_DIR/[set subsys]/cpp/src/SAL_[set subsys]LV.h
    }
    if { $OPTIONS(verbose) } {stdlog "###TRACE<<< checkAssets $subsys"}
@@ -171,16 +162,6 @@ proc getAlias { topic } {
 
 
 #
-## Documented proc \c skipPrivate .
-#  \param[in] fidl File handle of input IDL file
-#
-#  Skip private_ items when reading IDL files
-#
-proc skipPrivate { fidl } {
-  foreach i "1 2 3 4 5 6 7" {gets $fidl rec}
-}
-
-#
 ## Documented proc \c safeString .
 #  \param[input]
 #
@@ -192,29 +173,6 @@ proc safeString { input } {
   return $safe
 }
 
-#
-## Documented proc \c getTopicNames .
-# \param[in] subsys Name of CSC/SUbsystem as defined in SALSubsystems.xml
-# \param[in] type Optional type of Topic to list
-#
-#  Return list of SAL Topic names for a Subsystem/CSC
-#
-proc getTopicNames { subsys {type all} } {
-global SAL_WORK_DIR
-  switch $type {
-     command {
-          set res [split [exec grep "pragma keylist command_" $SAL_WORK_DIR/idl-templates/validated/sal/sal_[set subsys].idl] \n]
-             }
-     logevent {
-          set res [split [exec grep "pragma keylist logevent_" $SAL_WORK_DIR/idl-templates/validated/sal/sal_[set subsys].idl] \n]
-             }
-     all {
-          set res [split [exec grep pragma $SAL_WORK_DIR/idl-templates/validated/sal/sal_[set subsys].idl] \n]
-             }
-  }
-  foreach i $res { lappend names [lindex $i 2] }
-  return [lsort $names]
-}
 
 #
 ## Documented proc \c getTopicURL .
@@ -257,25 +215,3 @@ global METADATA SAL_WORK_DIR
 }
 
 
-
-#
-## Documented proc \c doxygenateIDL .
-# \param[in] cscidl Input IDL file
-# \param[in] dcscidl Output IDL file
-#
-#  Add doxygen compatible documentation to an IDL file
-#
-proc doxygenateIDL { cscidl dcscidl } {
-  set fin [open $cscidl r]
-  set fout [open $dcscidl w]
-  while { [gets $fin rec] > -1 } {
-     if { [llength [split $rec "@"]] > 1 && [string range $rec 0 5] != "struct"} {
-       set spl [lindex [split $rec ";"] 0]
-       set desc [string trim [lindex [split $rec "="] end] "\");"]
-       puts $fout "/// [getItemName $spl] - $desc"
-     }
-     puts $fout $rec
-  }
-  close $fin
-  close $fout
-}
