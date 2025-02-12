@@ -27,7 +27,7 @@ proc print_help {} {
 if { $argc < 2 } { print_help }
 
 
-set SAL_DIR $env(SAL_DIR)
+set SAL_DIR $env(SAL_HOME)/scripts
 set COMMANDS "validate cpp java lib link maven tcl icd labview html apidoc rpm sal verbose fastest generate upload"
 foreach o $COMMANDS {
   set OPTIONS($o) 0
