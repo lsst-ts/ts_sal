@@ -61,7 +61,9 @@ pipeline {
                         "source ~/.setup.sh && " +
                         "mamba install -y catch2 && " +
                         "source ~/.setup.sh && " +
-                        "cd /home/saluser/repos/ts_sal/cpp_tests && " +
+                        "cd /home/saluser/repos/ts_sal && " +
+                        "source setupKafka.env &&" +
+                        "cd /home/saluser/repos/ts_sal/test && " +
                         "salgeneratorKafka validate Test && " +
                         "salgeneratorKafka validate Script && " +
                         "salgeneratorKafka sal cpp Test && " +
