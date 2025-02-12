@@ -42,7 +42,7 @@ pipeline {
             steps {
                 script {
                     sh "docker exec -u saluser \${container_name} sh -c \"" +
-                        "source ~/.setupKafka.sh && " +
+                        "source ~/.setup.sh && " +
                         "cd /home/saluser/repos/ts_xml && " +
                         "/home/saluser/.checkout_repo.sh \${work_branches} && " +
                         "git pull\""
@@ -58,9 +58,9 @@ pipeline {
             steps {
                 script {
                     sh "docker exec -u saluser \${container_name} sh -c \"" +
-                        "source ~/.setupKafka.sh && " +
+                        "source ~/.setup.sh && " +
                         "mamba install -y catch2 && " +
-                        "source ~/.setupKafka.sh && " +
+                        "source ~/.setup.sh && " +
                         "cd /home/saluser/repos/ts_sal/cpp_tests && " +
                         "salgeneratorKafka validate Test && " +
                         "salgeneratorKafka validate Script && " +
@@ -79,7 +79,7 @@ pipeline {
             steps {
                 script {
                     sh "docker exec -u saluser \${container_name} sh -c \"" +
-                        "source ~/.setupKafka.sh && " +
+                        "source ~/.setup.sh && " +
                         "mamba install -y catch2 && " +
                         "cd /home/saluser/repos/ts_sal/cpp_tests && " +
                          "make junit\""
@@ -90,7 +90,7 @@ pipeline {
             steps {
                 script {
                     sh "docker exec -u saluser \${container_name} sh -c \"" +
-                        "source ~/.setupKafka.sh && " +
+                        "source ~/.setup.sh && " +
                         "cd /home/saluser/repos/ts_sal/simple_sal && " +
                         "mvn --no-transfer-progress -B clean install \""
                     
@@ -111,7 +111,7 @@ pipeline {
 
             echo "Build documents"
             sh "docker exec -u saluser \${container_name} sh -c \"" +
-                "source ~/.setupKafka.sh && " +
+                "source ~/.setup.sh && " +
                 "cd /home/saluser/repos/ts_sal && " +
                 "setup ts_sal -t saluser && " +
                 "package-docs build\""
@@ -119,7 +119,7 @@ pipeline {
             echo "Publish documents"
             script {
                 def RESULT = sh returnStatus: true, script: "docker exec -u saluser \${container_name} sh -c \"" +
-                    "source ~/.setupKafka.sh && " +
+                    "source ~/.setup.sh && " +
                     "cd /home/saluser/repos/ts_sal && " +
                     "setup ts_sal -t saluser && " +
                     "ltd upload --product ts-sal --git-ref \${GIT_BRANCH} --dir doc/_build/html\""
