@@ -61,18 +61,17 @@ pipeline {
                         "source ~/.setup.sh && " +
                         "mamba install -y catch2 && " +
                         "source ~/.setup.sh && " +
-                        "export LSST_DDS_QOS=file:///home/saluser/repos/ts_ddsconfig/python/lsst/ts/ddsconfig/data/qos/QoS.xml && " +
                         "cd /home/saluser/repos/ts_sal/cpp_tests && " +
-                        "salgenerator validate Test && " +
-                        "salgenerator validate Script && " +
-                        "salgenerator sal cpp Test && " +
-                        "salgenerator sal cpp Script && " +
-                        "salgenerator sal java Test && " +
-                        "salgenerator sal java Script && " +
-                        "salgenerator lib Test && " +
-                        "salgenerator lib Script && " +
-                        "salgenerator maven Test && " +
-                        "salgenerator maven Script\""
+                        "salgeneratorKafka validate Test && " +
+                        "salgeneratorKafka validate Script && " +
+                        "salgeneratorKafka sal cpp Test && " +
+                        "salgeneratorKafka sal cpp Script && " +
+                        "salgeneratorKafka sal java Test && " +
+                        "salgeneratorKafka sal java Script && " +
+                        "salgeneratorKafka lib Test && " +
+                        "salgeneratorKafka lib Script && " +
+                        "salgeneratorKafka maven Test && " +
+                        "salgeneratorKafka maven Script\""
                 }
             }
         }
@@ -83,8 +82,7 @@ pipeline {
                         "source ~/.setup.sh && " +
                         "mamba install -y catch2 && " +
                         "cd /home/saluser/repos/ts_sal/cpp_tests && " +
-                        "export LSST_DDS_PARTITION_PREFIX=testcpp && " +
-                        "make junit\""
+                         "make junit\""
                 }
             }
         }
@@ -93,8 +91,6 @@ pipeline {
                 script {
                     sh "docker exec -u saluser \${container_name} sh -c \"" +
                         "source ~/.setup.sh && " +
-                        "export LSST_DDS_QOS=file:///home/saluser/repos/ts_ddsconfig/python/lsst/ts/ddsconfig/data/qos/QoS.xml && " +
-                        "export LSST_DDS_PARTITION_PREFIX=testcpp && " +
                         "cd /home/saluser/repos/ts_sal/simple_sal && " +
                         "mvn --no-transfer-progress -B clean install \""
                     
