@@ -183,7 +183,7 @@ m1m3_extras()
 	fi
 }
 
-while getobs ab: name
+while getopts ab: name
 do
 	case $name in 
 	update) update_dependencies;;
