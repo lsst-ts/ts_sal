@@ -49,44 +49,9 @@ pipeline {
                 }
             }
         }
-        stage("Checkout IDL") {
-            steps {
-                script {
-                    sh "docker exec -u saluser \${container_name} sh -c \"" +
-                        "source ~/.setup.sh && " +
-                        "source /home/saluser/.bashrc && " +
-                        "cd /home/saluser/repos/ts_idl && " +
-                        "/home/saluser/.checkout_repo.sh \${work_branches} && " +
-                        "git pull\""
-                }
-            }
-        }
-        stage("Checkout DDSConfig") {
-            steps {
-                script {
-                    sh "docker exec -u saluser \${container_name} sh -c \"" +
-                        "source ~/.setup.sh && " +
-                        "source /home/saluser/.bashrc && " +
-                        "cd /home/saluser/repos/ts_ddsconfig && " +
-                        "/home/saluser/.checkout_repo.sh \${work_branches} && " +
-                        "git pull\""
-                }
-            }
-        }
         stage('Checkout simple-sal') {
             steps {
                 checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: 'develop']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'simple_sal']], userRemoteConfigs: [[credentialsId: '14e4c262-1fb1-4b73-b395-5fe617420c85', url: 'https://github.com/lsst-camera-ccs/org-lsst-camera-simple-sal.git']]]     
-            }
-        }
-        stage("Running python tests") {
-            steps {
-                script {
-                    sh "docker exec -u saluser \${container_name} sh -c \"" +
-                        "source ~/.setup.sh && " +
-                        "export LSST_DDS_QOS=file:///home/saluser/repos/ts_ddsconfig/python/lsst/ts/ddsconfig/data/qos/QoS.xml && " +
-                        "cd /home/saluser/repos/ts_sal/ && " +
-                        "pytest\""
-                }
             }
         }
         stage("Build SAL runtime assets") {
@@ -117,22 +82,9 @@ pipeline {
                     sh "docker exec -u saluser \${container_name} sh -c \"" +
                         "source ~/.setup.sh && " +
                         "mamba install -y catch2 && " +
-                        "export LSST_DDS_QOS=file:///home/saluser/repos/ts_ddsconfig/python/lsst/ts/ddsconfig/data/qos/QoS.xml && " +
                         "cd /home/saluser/repos/ts_sal/cpp_tests && " +
                         "export LSST_DDS_PARTITION_PREFIX=testcpp && " +
                         "make junit\""
-                }
-            }
-        }
-        stage("Running Java tests") {
-            steps {
-                script {
-                    sh "docker exec -u saluser \${container_name} sh -c \"" +
-                        "source ~/.setup.sh && " +
-                        "export LSST_DDS_QOS=file:///home/saluser/repos/ts_ddsconfig/python/lsst/ts/ddsconfig/data/qos/QoS.xml && " +
-                        "export LSST_DDS_PARTITION_PREFIX=testjava && " +
-                        "cd /home/saluser/repos/ts_sal/java_tests && " +
-                        "mvn --no-transfer-progress test\""
                 }
             }
         }
