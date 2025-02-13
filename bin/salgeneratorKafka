@@ -4,10 +4,12 @@
 # Command line tool for SAL code/document/etc generation.
 #
 
+set called $::argv[0]
+
 proc print_help {} {
    puts stdout "SAL generatorKafka tool (Kafka) - Usage :
 
-	salgeneratorKafka subsystem (command \[args\] ...)
+	${called} subsystem (command \[args\] ...)
 
    where command may be
 
@@ -155,18 +157,24 @@ foreach subsys $TSUBSYSTEMS {
 
 # Generate runs all steps needed to get lib for given language
 if { $OPTIONS(generate) } {
-  set result [exec salgenerator $TSUBSYSTEMS validate] ; puts stdout $result
-  catch { set result [exec salgenerator $TSUBSYSTEMS html] } ok ; puts stdout $ok
-  if { $OPTIONS(cpp) } { set result [exec salgenerator $TSUBSYSTEMS sal cpp] ; puts stdout $result }
+  if { [expr $OPTIONS(cpp) + $OPTIONS(java) + $OPTIONS(labview)] == 0 } {
+    stdlog "=========================================================================="
+    stdlog "ERROR :  sal option requires a language choice, cpp/java/labview"
+    stdlog "=========================================================================="
+    exit 6
+  }
+  set result [exec ${called} $TSUBSYSTEMS validate] ; puts stdout $result
+  catch { set result [exec ${called} $TSUBSYSTEMS html] } ok ; puts stdout $ok
+  if { $OPTIONS(cpp) } { set result [exec ${called} $TSUBSYSTEMS sal cpp] ; puts stdout $result }
   if { $OPTIONS(java) } {
-     set result [exec salgenerator $TSUBSYSTEMS sal java] ; puts stdout $result
-     set result [exec salgenerator $TSUBSYSTEMS maven] ; puts stdout $result
+     set result [exec ${called} $TSUBSYSTEMS sal java] ; puts stdout $result
+     set result [exec ${called} $TSUBSYSTEMS maven] ; puts stdout $result
   }
   if { $OPTIONS(labview) } {
-     set result [exec salgenerator $TSUBSYSTEMS sal cpp] ; puts stdout $result
-     set result [exec salgenerator $TSUBSYSTEMS labview] ; puts stdout $result
+     set result [exec ${called} $TSUBSYSTEMS sal cpp] ; puts stdout $result
+     set result [exec ${called} $TSUBSYSTEMS labview] ; puts stdout $result
   }
-  set result [exec salgenerator $TSUBSYSTEMS lib] ; puts stdout $result
+  set result [exec ${called} $TSUBSYSTEMS lib] ; puts stdout $result
   exit 0
 }
 
@@ -305,7 +313,7 @@ if { $OPTIONS(sal) } {
   set ONEDONEJAVA 0
   if { [expr $OPTIONS(cpp) + $OPTIONS(java)] == 0 } {
     stdlog "=========================================================================="
-    stdlog "ERROR :  sal option requires a language choice , cpp/java"
+    stdlog "ERROR :  sal option requires a language choice, cpp/java"
     stdlog "=========================================================================="
     exit 6
   }
