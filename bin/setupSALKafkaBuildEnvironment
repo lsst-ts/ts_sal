@@ -26,180 +26,204 @@ echo "        Kafka version = $KAFKA_RELEASE"
 
 update_dependencies()
 {
-	echo "Updating dependencies available from repo's"
-	mkdir -p $LSST_SAL_PREFIX
-	chown -R $USER $LSST_SAL_PREFIX/..
-	chgrp -R $USER $LSST_SAL_PREFIX/..
-	dnf install -y epel-release
-	dnf install -y yum-utils
-	dnf config-manager -y --set-enabled powertools
-	dnf update
-	if [ -f /.dockerenv ]; then
-	  dnf install -y python3.11 python3.11-devel python3.11-pip
-	  ln -sf /usr/bin/python3.11 /etc/alternatives/python3
-	fi
-	dnf install -y ant cmake boost${BOOST_RELEASE}-devel jansson-devel asciidoc curl libcurl-devel zlib-devel maven doxygen fmt fmt-devel snappy snappy-devel csnappy
-	if [ -f /.dockerenv ]; then
-	  dnf install -y java-${JDK_RELEASE}-openjdk java-${JDK_RELEASE}-openjdk-devel java-${JDK_RELEASE}-openjdk-javadoc
-	fi
+    echo "Updating dependencies available from repo's"
+    mkdir -p $LSST_SAL_PREFIX
+    chown -R $USER $LSST_SAL_PREFIX/..
+    chgrp -R $USER $LSST_SAL_PREFIX/..
+    dnf install -y epel-release || exit 1
+    dnf install -y yum-utils || exit 1
+    dnf config-manager -y --set-enabled powertools || exit 1
+    dnf update -y || exit 1
+    if [ -f /.dockerenv ]; then
+        dnf install -y python3.11 python3.11-devel python3.11-pip || exit 1
+        ln -sf /usr/bin/python3.11 /etc/alternatives/python3 || exit 1
+    fi
+    dnf install -y ant cmake git boost${BOOST_RELEASE}-devel jansson-devel asciidoc curl libcurl-devel zlib-devel maven doxygen fmt fmt-devel snappy snappy-devel csnappy || exit 1
+    if [ -f /.dockerenv ]; then
+        dnf install -y java-${JDK_RELEASE}-openjdk java-${JDK_RELEASE}-openjdk-devel java-${JDK_RELEASE}-openjdk-javadoc || exit 1
+    fi
 }
 
 maven()
 {
-	echo "Downloading and building Maven"
-	mkdir external-packages
-	cd external-packages
-	curl -O https://dlcdn.apache.org/maven/maven-3/${MAVEN_RELEASE}/source/apache-maven-${MAVEN_RELEASE}-src.tar.gz
-	tar xzf apache-maven-${MAVEN_RELEASE}-src.tar.gz
-	cd apache-maven-${MAVEN_RELEASE}
-	mvn -DdistributionTargetDir="$LSST_SAL_PREFIX/../maven/apache-maven-${MAVEN_RELEASE}-SNAPSHOT" clean package
+    echo "Downloading and building Maven"
+    cd $HOME/external-packages
+    curl -O https://dlcdn.apache.org/maven/maven-3/${MAVEN_RELEASE}/binaries/apache-maven-${MAVEN_RELEASE}-bin.tar.gz || exit 2
+    tar xzf apache-maven-${MAVEN_RELEASE}-bin.tar.gz -C /opt
 
-	export PATH=$LSST_SAL_PREFIX/..//maven/apache-maven-${MAVEN_RELEASE}-SNAPSHOT/bin/:${PATH}
-	mkdir -p $LSST_SAL_PREFIX/bin
-	mkdir -p $LSST_SAL_PREFIX/include
-	mkdir -p $LSST_SAL_PREFIX/lib
-	ln -sf $LSST_SAL_PREFIX/../maven/apache-maven-${MAVEN_RELEASE}-SNAPSHOT/bin/mvn $LSST_SAL_PREFIX/bin/mvn
+    echo > /etc/profile.d/maven.sh -e \
+"# Apache Maven Environmental Variables"\\n\
+"# MAVEN_HOME for Maven 1 —M2_HOME for Maven 2"\\n\
+export JAVA_HOME=/usr/lib/jvm/jre-openjdk\\n\
+export M2_HOME=/opt/apache-maven-${MAVEN_RELEASE}\\n\
+export MAVEN_HOME=/opt/apache-maven-${MAVEN_RELEASE}\\n\
+export PATH=\${M2_HOME}/bin:\${PATH}\\n
+
+    chmod a+x /etc/profile.d/maven.sh
+    /etc/profile.d/maven.sh
 }
 
 avro()
 {
-	echo "Downloading and building Avro"
-	cd $HOME/external-packages
-	curl -O https://archive.apache.org/dist/avro/avro-${AVRO_RELEASE}/avro-src-${AVRO_RELEASE}.tar.gz
-	tar xvzf avro-src-${AVRO_RELEASE}.tar.gz
-	cd $HOME/external-packages/avro-src-${AVRO_RELEASE}/lang/c++
-	./build.sh install
-	cd build
-	cp lib* $LSST_SAL_PREFIX/lib/.
-	cp avrogencpp $LSST_SAL_PREFIX/bin/.
-	mkdir  -p $LSST_SAL_PREFIX/include/avro
-	cp -r ../api/* $LSST_SAL_PREFIX/include/avro/.
-	cp -r ../impl $LSST_SAL_PREFIX/include/.
+    echo "Downloading and building Avro"
+    cd $HOME/external-packages
+    curl -O https://archive.apache.org/dist/avro/avro-${AVRO_RELEASE}/avro-src-${AVRO_RELEASE}.tar.gz || exit 3
+    tar xvzf avro-src-${AVRO_RELEASE}.tar.gz
+    cd $HOME/external-packages/avro-src-${AVRO_RELEASE}/lang/c++
+    ./build.sh install
+    cd build
+    cp lib* $LSST_SAL_PREFIX/lib/.
+    cp avrogencpp $LSST_SAL_PREFIX/bin/.
+    mkdir  -p $LSST_SAL_PREFIX/include/avro
+    cp -r ../api/* $LSST_SAL_PREFIX/include/avro/.
+    cp -r ../impl $LSST_SAL_PREFIX/include/.
 
-	cd $HOME/external-packages/avro-src-${AVRO_RELEASE}/lang/c
-	if [ -f /.dockerenv ]; then
-	  cp /usr/include/jansson*.h $CONDA_PREFIX/include/.
-	  cp /usr/include/jansson*.h $CONDA_PREFIX/include/.
-	  cp /usr/lib64/libjansson* $CONDA_PREFIX/lib/.
-	fi
-	./build.sh test
-	./cmake_avrolib.sh || true
-	cd build/avrolib/lib64
-	cp lib* $LSST_SAL_PREFIX/lib/.
-	cd ../include
-	cp -r * $LSST_SAL_PREFIX/include/.
+    cd $HOME/external-packages/avro-src-${AVRO_RELEASE}/lang/c
+    if [ -f /.dockerenv ]; then
+        cp /usr/include/jansson*.h $CONDA_PREFIX/include/.
+        cp /usr/include/jansson*.h $CONDA_PREFIX/include/.
+        cp /usr/lib64/libjansson* $CONDA_PREFIX/lib/.
+    fi
+    ./build.sh test || exit 3
+    ./cmake_avrolib.sh || true
+    cd build/avrolib/lib64
+    cp lib* $LSST_SAL_PREFIX/lib/.
+    cd ../include
+    cp -r * $LSST_SAL_PREFIX/include/.
 
-	cd $HOME/external-packages
-	curl -O https://packages.confluent.io/archive/${KAFKA_RELEASE}/confluent-community-${KAFKA_RELEASE}.0.tar.gz
-	tar xzf confluent-community-${KAFKA_RELEASE}.0.tar.gz
-	cd confluent-${KAFKA_RELEASE}.0/share/java
-	cp kafka-rest-lib/common-config*.jar ${LSST_SAL_PREFIX}/lib/.
-	cp kafka-rest-lib/common-utils*.jar ${LSST_SAL_PREFIX}/lib/.
-	cp kafka-rest-lib/kafka_*.jar ${LSST_SAL_PREFIX}/lib/.
-	cp kafka-rest-lib/kafka-clients*.jar ${LSST_SAL_PREFIX}/lib/.
-	cp kafka-rest-lib/kafka-schema-registry-client*.jar ${LSST_SAL_PREFIX}/lib/.
-	cp kafka-rest-lib/kafka-avro-serializer*.jar ${LSST_SAL_PREFIX}/lib/.
-	cp kafka-rest-lib/lz4-java*.jar ${LSST_SAL_PREFIX}/lib/.
-	cp kafka-rest-bin/slf4j-api*.jar ${LSST_SAL_PREFIX}/lib/.
-	cp kafka-rest-lib/snappy-java*.jar ${LSST_SAL_PREFIX}/lib/.
-	cp kafka-rest-lib/zstd-jni*.jar ${LSST_SAL_PREFIX}/lib/.
+    cd $HOME/external-packages
+    curl -O https://packages.confluent.io/archive/${KAFKA_RELEASE}/confluent-community-${KAFKA_RELEASE}.0.tar.gz || exit 3
+    tar xzf confluent-community-${KAFKA_RELEASE}.0.tar.gz
+    cd confluent-${KAFKA_RELEASE}.0/share/java
+    cp kafka-rest-lib/common-config*.jar ${LSST_SAL_PREFIX}/lib/.
+    cp kafka-rest-lib/common-utils*.jar ${LSST_SAL_PREFIX}/lib/.
+    cp kafka-rest-lib/kafka_*.jar ${LSST_SAL_PREFIX}/lib/.
+    cp kafka-rest-lib/kafka-clients*.jar ${LSST_SAL_PREFIX}/lib/.
+    cp kafka-rest-lib/kafka-schema-registry-client*.jar ${LSST_SAL_PREFIX}/lib/.
+    cp kafka-rest-lib/kafka-avro-serializer*.jar ${LSST_SAL_PREFIX}/lib/.
+    cp kafka-rest-lib/lz4-java*.jar ${LSST_SAL_PREFIX}/lib/.
+    cp kafka-rest-bin/slf4j-api*.jar ${LSST_SAL_PREFIX}/lib/.
+    cp kafka-rest-lib/snappy-java*.jar ${LSST_SAL_PREFIX}/lib/.
+    cp kafka-rest-lib/zstd-jni*.jar ${LSST_SAL_PREFIX}/lib/.
 
-	curl -O https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-avro/${JACKSON_RELEASE}/jackson-dataformat-avro-${JACKSON_RELEASE}.jar
-	mv jackson-dataformat-avro-${JACKSON_RELEASE}.jar ${LSST_SAL_PREFIX}/lib/.
+    curl -O https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-avro/${JACKSON_RELEASE}/jackson-dataformat-avro-${JACKSON_RELEASE}.jar || exit 3
+    mv jackson-dataformat-avro-${JACKSON_RELEASE}.jar ${LSST_SAL_PREFIX}/lib/.
 
-	cd $HOME/external-packages/avro-src-${AVRO_RELEASE}/lang/java
-	./build.sh test
-	./build.sh dist
-	cp ./avro/target/avro-1.11.1.jar $LSST_SAL_PREFIX/lib/.
-	cp ./compiler/target/avro-compiler-1.11.1.jar $LSST_SAL_PREFIX/lib/.
-	cp ./maven-plugin/target/avro-maven-plugin-1.11.1.jar $LSST_SAL_PREFIX/lib/.
-	cp ./tools/target/avro-tools-1.11.1.jar $LSST_SAL_PREFIX/lib/.
+    cd $HOME/external-packages/avro-src-${AVRO_RELEASE}/lang/java
+    ./build.sh test || exit 3
+    ./build.sh dist || exit 3
+    cp ./avro/target/avro-1.11.1.jar $LSST_SAL_PREFIX/lib/.
+    cp ./compiler/target/avro-compiler-1.11.1.jar $LSST_SAL_PREFIX/lib/.
+    cp ./maven-plugin/target/avro-maven-plugin-1.11.1.jar $LSST_SAL_PREFIX/lib/.
+    cp ./tools/target/avro-tools-1.11.1.jar $LSST_SAL_PREFIX/lib/.
 }
 
 librdkafka()
 {
-	echo "Downloading and building librdkafka"
-	cd $HOME/external-packages
-	git clone https://github.com/confluentinc/librdkafka
-	cd librdkafka
-	git checkout v$LIBRDKAFKA_RELEASE
-	./configure --prefix=$LSST_SAL_PREFIX
-	make 
-	make install
+    echo "Downloading and building librdkafka" 
+    cd $HOME/external-packages
+    rm -rf librdkafka
+    git clone https://github.com/confluentinc/librdkafka || exit 4
+    cd librdkafka
+    git checkout v$LIBRDKAFKA_RELEASE
+    ./configure --prefix=$LSST_SAL_PREFIX || exit 4
+    make || exit 4
+    make install || exit 4
 
-	if [ -f /.dockerenv ]; then
-	   cd $HOME/external-packages
-	   git clone https://github.com/google/snappy
-	  cd snappy
-	  git submodule update --init
-	  mkdir build
-	  cd build
-	  cmake ../.
-	  make
-	  make install
-	  ar x libsnappy.a
-	  gcc -fPIC -shared -o libsnappy.so.1 *.o -lc -lc++
-	  cp libsnappy.so.1 $LSST_SAL_PREFIX/lib/.
-	  cp $CONDA_PREFIX/lib/libstdc++.so.6.0.32  $LSST_SAL_PREFIX/lib/libstdc++.so.6
-	fi
+    if [ -f /.dockerenv ]; then
+        cd $HOME/external-packages
+        git clone https://github.com/google/snappy
+        cd snappy
+        git submodule update --init
+        mkdir build
+        cd build
+        cmake ../. || exit 2
+        make || exit 2
+        make install || exit 2
+        ar x libsnappy.a
+        gcc -fPIC -shared -o libsnappy.so.1 *.o -lc -lc++
+        cp libsnappy.so.1 $LSST_SAL_PREFIX/lib/.
+        cp $CONDA_PREFIX/lib/libstdc++.so.6.0.32  $LSST_SAL_PREFIX/lib/libstdc++.so.6
+    fi
 }
 
 libserdes()
 {
-	echo "Downloading and building libserdes"
-	ln -sf /usr/include/boost$BOOST_RELEASE/boost $LSST_SAL_PREFIX/include/boost
-	cd $HOME/external-packages
-	git clone https://github.com/confluentinc/libserdes
-	cd libserdes
-	export LD_LIBRARY_PATH=$LSST_SAL_PREFIX/lib:$LD_LIBRARY_PATH
-	./configure --prefix=$LSST_SAL_PREFIX --includedir=$LSST_SAL_PREFIX/include --libdir=$LSST_SAL_PREFIX/lib
-	export CPPFLAGS=-I$LSST_SAL_PREFIX/include/avro
-	make
-	make install
+    echo "Downloading and building libserdes"
+    cd $HOME/external-packages
+    ln -sf /usr/include/boost$BOOST_RELEASE/boost $LSST_SAL_PREFIX/include/boost
+    cd $HOME/external-packages
+    rm -rf libserdes
+    git clone https://github.com/confluentinc/libserdes || exit 5
+    cd libserdes
+    export LD_LIBRARY_PATH=$LSST_SAL_PREFIX/lib:$LD_LIBRARY_PATH
+    ./configure --prefix=$LSST_SAL_PREFIX --includedir=$LSST_SAL_PREFIX/include --libdir=$LSST_SAL_PREFIX/lib || exit 5
+    export CPPFLAGS=-I$LSST_SAL_PREFIX/include/avro
+    make || exit 5
+    make install || exit 5
 }
 
 m1m3_extras()
 {
-	# Extras for M1M3
-	cd $HOME/external-packages
-	if [ -f /.dockerenv ]; then
-	  tar xzf Catch2.tgz
-	else
-	  git clone https://github.com/catchorg/Catch2
-	fi
-	cd Catch2
-	rm -fr build
-	mkdir build
-	cd build
-	cmake ../.
-	make
-	make install
-	if [ -f /.dockerenv ]; then
-	  echo "Do NOT install spdlog,libyaml,yaml-cpp as lsst-scipipe already has them"
-	else
-	  dnf install -y spdlog spdlog-devel
-	  dnf install -y libyaml-devel yaml-cpp yaml-cpp-devel
-	  export PKG_CONFIG_PATH=/usr/local/share/pkgconfig
-	fi
+    # Extras for M1M3
+    cd $HOME/external-packages
+    if [ -f /.dockerenv ]; then
+        tar xzf Catch2.tgz
+    else
+        git clone https://github.com/catchorg/Catch2 || exit 6
+    fi
+    cd Catch2
+    rm -fr build
+    mkdir build
+    cd build
+    cmake ../. || exit 6
+    make || exit 6
+    make install || exit 6
+    if [ -f /.dockerenv ]; then
+        echo "Do NOT install spdlog,libyaml,yaml-cpp as lsst-scipipe already has them"
+    else
+        dnf install -y spdlog spdlog-devel
+        dnf install -y libyaml-devel yaml-cpp yaml-cpp-devel
+        export PKG_CONFIG_PATH=/usr/local/share/pkgconfig
+    fi
 }
 
-while getopts ab: name
+mkdir -p $HOME/external-packages
+
+for option in ${@:-all};
 do
-	case $name in 
-	update) update_dependencies;;
-	maven) maven;;
-	avro) avro;;
-	librdkafka) librdkafka;;
-	libserdes) libserdes;;
-	m1m3) m1m3_extras;;
-	?)
-		update_dependencies
-		maven
-		avro
-		librdkafka
-		libserdes
-		m1m3_extras;;
-	esac
+case $option in
+    update)
+        update_dependencies
+    ;;
+    maven)
+        maven
+    ;;
+    avro)
+        avro
+    ;;
+    librdkafka)
+        librdkafka
+    ;;
+    libserdes)
+        libserdes
+    ;;
+    m1m3)
+        m1m3_extras
+    ;;
+    all)
+        update_dependencies
+        maven
+        avro
+        librdkafka
+        libserdes
+        m1m3_extras
+    ;;
+    *)
+        echo "Invalid option $option."
+        exit 1
+    ;;
+esac
 done
 
 echo "Used external packages : "
