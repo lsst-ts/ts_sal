@@ -26,35 +26,6 @@ proc simpletypecode { name type size target } {
 global TYPESUBS
    set ltyp [string tolower $type]
    switch $target {
-        idl { 
-              switch $ltyp {
-                        string    -
-                        string32  { return " string<32> $name;" }
-                        string16  { return " string<16> $name;" }
-                        string64  { return " string<64> $name;" }
-                        string1k  { return " string<1024> $name;" }
-                        byte      -
-                        octet     { set s "unsigned char $name"
-                                    if { $size > 1 } {
-                                       return "$s\[$size\];"
-                                    } else {
-                                       return "$s;"
-                                    }
-                                  }
-                        short     -
-                        int       -
-                        long      -
-                        longlong   -
-                        float     -
-                        double    { set s "$ltyp $name"
-                                    if { $size > 1 } {
-                                       return "$s\[$size\];"
-                                    } else {
-                                       return "$s;"
-                                    }
-                                  }
-              }
-         }   
          c  { 
               switch $ltyp {
                         string    -
@@ -189,142 +160,6 @@ global TYPESUBS VPROPS OPTIONS METADATA
 }
 
 
-#
-## Documented proc \c typeidltoc .
-# \param[in] rec Record from IDL input file
-#
-#  Return the C/C++ code for an IDL data type declaration
-#
-proc typeidltoc { rec } {
-global TYPESUBS VPROPS OPTIONS
-   if { $OPTIONS(verbose) } {stdlog "### typeidltoc : $rec"}
-   set u ""
-   set VPROPS(array) 0
-   set VPROPS(string) 0
-   set VPROPS(int) 0
-   set VPROPS(long) 0
-   set VPROPS(boolean) 0
-   set VPROPS(longlong) 0
-   set VPROPS(short) 0
-   set VPROPS(byte) 0
-   set VPROPS(double) 0
-   set VPROPS(lvres) 0
-   set VPROPS(name) ""
-   if { [lindex $rec 0] == "string" } {
-      set VPROPS(string) 1
-      set VPROPS(lvres) 5
-      set VPROPS(dim) -1
-      set name [string trim [lindex $rec 1] ";"]
-      set VPROPS(name) $name
-      set res "  std::string	$name;[join [lrange $rec 2 end]]"
-      return $res
-   }
-   if { [lindex $rec 0] == "unsigned" } {set u "unsigned"; set rec [join [lrange $rec 1 end] " "]}
-   if { [lindex $rec 0] == "char" } {
-      if { [llength [split $rec "\[("]] > 1 } {
-        set s [lindex [split $rec "\[\]()"] 1]
-        set name [lindex [lindex [split $rec "\[\]()"] 0] 1]
-        set VPROPS(name) $name
-        set VPROPS(string) 1
-        set VPROPS(lvres) 5
-        set VPROPS(dim) [string trim $s "\\"]
-        set res "  std::string	$name;[join [lrange $rec 2 end]]"
-        return $res
-      }
-   }
-   if { [llength [split $rec "<"]] > 1 } {
-      set s [lindex [split $rec "<>"] 1]
-      set VPROPS(dim) $s
-      set name [string trim [lindex $rec 1] ";"]
-      set res "  std::string	$name;[join [lrange $rec 2 end]]"
-      set VPROPS(name) [string trim [join [lrange $rec 1 end]] ";"]
-      set VPROPS(string) 1
-      set VPROPS(lvres) 5
-   } else {
-      if { [lindex $rec 0] != "float" && [lindex $rec 0] != "double" } {set VPROPS(int) 1; set VPROPS(lvres) 9}
-      if { [lindex $rec 0] == "double" } {set VPROPS(double) 1; set VPROPS(lvres) 10 }
-      if { [lindex $rec 0] == "byte" } {set VPROPS(byte) 1; set VPROPS(lvres) 1  }
-      if { [lindex $rec 0] == "octet" } {set VPROPS(byte) 1; set VPROPS(lvres) 1  }
-      if { [lindex $rec 0] == "short" } {set VPROPS(short) 1; set VPROPS(lvres) 2  }
-      if { [lindex $rec 0] == "long" } {set VPROPS(int) 1; set VPROPS(long); set VPROPS(lvres) 3  }
-      if { [lindex $rec 1] == "long" } {set VPROPS(int) 1; set VPROPS(longlong) 1; set VPROPS(lvres) 4  }
-      if { [lindex $rec 0] == "boolean" } {set VPROPS(boolean) 1; set VPROPS(lvres) 5  }
-      if { $u == "unsigned" } { set VPROPS(lvres) [expr $VPROPS(lvres) +4] }
-      if { [llength [split $rec "\[("]] > 1 } {
-        set s [lindex [split $rec "\[\]()"] 1]
-        set n [lindex [lindex [split $rec "\[\]()"] 0] 1]
-        set VPROPS(name) $n
-        set VPROPS(array) 1
-        set VPROPS(dim) [string trim $s "\\"]
-        if { $VPROPS(longlong) } {
-          set VPROPS(name) [lindex [lindex [split $rec "\[\]()"] 0] 2]
-          set res "  [set u] long long $VPROPS(name)\[$s\];"
-        } else {
-          set res "  [set u] $TYPESUBS([lindex $rec 0]) $n\[$s\];"
-        }
-      } else {
-        set VPROPS(name) [string trim [join [lrange $rec 1 end]] ";"]
-        if { $VPROPS(longlong) } {
-          set VPROPS(name) [string trim [join [lrange $rec 2 end]] ";"]
-          set res "  [set u] long long $VPROPS(name);"
-        } else {
-          set res " [set u] $TYPESUBS([lindex $rec 0]) [join [lrange $rec 1 end]]"
-        }
-      }
-   }
-   return $res
-}
-
-
-#
-## Documented proc \c simpletypecode .
-# \param[in] rec Record from IDL input file
-#
-#  Return the LabVIEW C++ code for an IDL data type declaration
-#
-proc typeidltolv { rec } {
-global TYPESUBS ATYPESUBS VPROPS OPTIONS
-   if { $OPTIONS(verbose) } {stdlog "### typeidltolv : $rec"}
-   set u ""
-   if { [lindex $rec 0] == "string" } {
-      set name [string trim [lindex $rec 1] ";"]
-      set res "  StrHdl	[set name]; /* 1000 */"
-      return $res
-   }
-   if { [lindex $rec 0] == "unsigned" } {set u "unsigned"; set rec [join [lrange $rec 1 end] " "]}
-   if { [lrange $rec 0 1] == "long long"} {set rec "longlong [lindex $rec 2]"}
-   if { [lindex $rec 0] == "char" } {
-      if { [llength [split $rec "\[("]] > 1 } {
-        set s [lindex [split $rec "\[\]()"] 1]
-        set name [lindex [lindex [split $rec "\[\]()"] 0] 1]
-        set res "  StrHdl [set name]; /* $s */"
-        return $res
-      }
-   }
-   if { [llength [split $rec "<"]] > 1 } {
-      set s [lindex [split $rec "<>"] 1]
-      set name [string trim [lindex $rec 1] ";"]
-      set res "  StrHdl [set name]; /* $s */"
-   } else {
-      if { [llength [split $rec "\[("]] > 1 } {
-        set s [lindex [split $rec "\[\]()"] 1]
-        set n [lindex [lindex [split $rec "\[\]()"] 0] 1]
-        if { $u == "unsigned" } {
-          set res "  U[string trim $ATYPESUBS([lindex $rec 0]) I] $n\;"
-        } else {
-          set res "  $ATYPESUBS([lindex $rec 0]) $n\;"
-        }
-      } else {
-        if { [lindex $rec 0] == "boolean" } {
-           set res " bool_t [join [lrange $rec 1 end]]"
-        } else {
-           set res " [set u] $TYPESUBS([lindex $rec 0]) [join [lrange $rec 1 end]]"
-        }
-      }
-   }
-   return $res
-}
-
 
 #
 ## Documented proc \c simpletypecode .
@@ -332,7 +167,7 @@ global TYPESUBS ATYPESUBS VPROPS OPTIONS
 #  Test the simpletypecode routine
 #
 proc testsimpletypecode { } {
-   foreach case "c idl sql" {
+   foreach case "c sql" {
       foreach typ "byte short int long float double string" {
           puts stdout "$case $typ :: [simpletypecode test $typ 1 $case]"
           puts stdout "$case $typ :: [simpletypecode test $typ 16 $case]"
