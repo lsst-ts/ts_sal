@@ -4,12 +4,13 @@
 # Command line tool for SAL code/document/etc generation.
 #
 
-set called $::argv[0]
+set called [lindex $argv 0]
 
 proc print_help {} {
+global called
    puts stdout "SAL generatorKafka tool (Kafka) - Usage :
 
-	${called} subsystem (command \[args\] ...)
+	$called subsystem (command \[args\] ...)
 
    where command may be
 
@@ -163,18 +164,18 @@ if { $OPTIONS(generate) } {
     stdlog "=========================================================================="
     exit 6
   }
-  set result [exec ${called} $TSUBSYSTEMS validate] ; puts stdout $result
-  catch { set result [exec ${called} $TSUBSYSTEMS html] } ok ; puts stdout $ok
-  if { $OPTIONS(cpp) } { set result [exec ${called} $TSUBSYSTEMS sal cpp] ; puts stdout $result }
+  set result [exec $called $TSUBSYSTEMS validate] ; puts stdout $result
+  catch { set result [exec $called $TSUBSYSTEMS html] } ok ; puts stdout $ok
+  if { $OPTIONS(cpp) } { set result [exec $called $TSUBSYSTEMS sal cpp] ; puts stdout $result }
   if { $OPTIONS(java) } {
-     set result [exec ${called} $TSUBSYSTEMS sal java] ; puts stdout $result
-     set result [exec ${called} $TSUBSYSTEMS maven] ; puts stdout $result
+     set result [exec $called $TSUBSYSTEMS sal java] ; puts stdout $result
+     set result [exec $called $TSUBSYSTEMS maven] ; puts stdout $result
   }
   if { $OPTIONS(labview) } {
-     set result [exec ${called} $TSUBSYSTEMS sal cpp] ; puts stdout $result
-     set result [exec ${called} $TSUBSYSTEMS labview] ; puts stdout $result
+     set result [exec $called $TSUBSYSTEMS sal cpp] ; puts stdout $result
+     set result [exec $called $TSUBSYSTEMS labview] ; puts stdout $result
   }
-  set result [exec ${called} $TSUBSYSTEMS lib] ; puts stdout $result
+  set result [exec $called $TSUBSYSTEMS lib] ; puts stdout $result
   exit 0
 }
 
