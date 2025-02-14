@@ -225,7 +225,7 @@ global env SAL_WORK_DIR SAL_DIR OSPL_VERSION XMLVERSION RELVERSION SALVERSION TS
 #     exec cp $fj $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/test/java/.
 #     puts stdout "Processed $fj"
 #  }
-  exec cp -r $SAL_WORK_DIR/$subsys/java/src/org $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/java/.
+#  exec cp -r $SAL_WORK_DIR/$subsys/java/src/org $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/java/.
 ###  exec cp -r $SAL_WORK_DIR/$subsys/java/src/lsst $SAL_WORK_DIR/maven/[set subsys]-[set mvnrelease]/src/main/java/.
   exec mkdir -p $SAL_WORK_DIR/maven/libs
 ###  exec cp -r $SAL_WORK_DIR/lib/SAL_[set subsys].jar  $SAL_WORK_DIR/maven/libs/.
@@ -267,9 +267,9 @@ public class [set subsys]CommanderTest extends TestCase \{
    \}
 
 "
-  set cmds [split [exec grep "pragma keylist command_" $SAL_WORK_DIR/idl-templates/validated/sal/sal_[set subsys].idl] \n]
+  set cmds [glob $SAL_WORK_DIR/avro-templates/[set subsys]/[set subsys]_command*.json]
   foreach i $cmds {
-     set alias [join [lrange [split [lindex $i 2] _] 1 end] _]
+     set alias [lindex  [split [file tail $i] "_."] 2]
      set revcode [getRevCode [set subsys]_command_[set alias] short]
      puts $fout "
   public void test[set subsys]Commander_[set alias]() \{

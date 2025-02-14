@@ -13,6 +13,22 @@ Changes for 10.0.0
 * Rename DDS RPMs and Jars with a _dds suffix
 * Adjust java_tests/pom.xml for dds suffix
 * Update SAL Kafka environment setup
+* Refactor checkSchema usage
+* Add LSST_KAFKA_DEBUG_CONTEXT
+* Seperate producer for commands/events
+* Add client.id to producers
+* Set private_kafkaStamp = private_sndStamp
+* Add LSST_KAFKA_MAX_QUEUE_MS
+* Add LSST_KAFKA_MAX_QUEUE_MSG
+* Add LSST_KAFKA_TLM_FLUSH_MS
+* Add LSST_KAFKA_CMDEVT_FLUSH_MS
+* Add SAL_DEBUG_MS_DELTA and SAL_DEBUG_NSAMPLES to test programs
+* Add API doc generator for Kafka
+* Add Kafka configuration file environment and file readers
+* Remove SAL Java classes now replaced with SimpleSAL implementation
+* Remove groups on salShutDown
+* Enable multiple partitions for telemetry (remove keys)
+* Check for (and ignore) out of order topic samples
 
 =================
 Changes for 9.0.0

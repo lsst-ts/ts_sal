@@ -95,12 +95,11 @@ proc insertSenders { subsys file_writer } {
         puts $file_writer "  iseq = 0;"
         puts $file_writer "  [set subsys]_logevent_[set alias]C myData;"
         puts $file_writer "  cout << \"=== Event $alias iseq = \" << iseq << endl;"
-
         set fragment_reader [open $SAL_WORK_DIR/include/SAL_[set subsys]_logevent_[set alias]Cpub.tmp r]
         while { [gets $fragment_reader line] > -1 } {
-            puts $file_writer [string range $line 2 1000]
+            puts $file_writer [string trim $line]
         }
-        
+        close $fragment_reader
         puts $file_writer "  mgr.logEvent_[set alias](&myData, priority);"
         puts $file_writer "  cout << \"=== Event $alias generated = \" << endl;"
         puts $file_writer "  sleep(1);\n\}"
@@ -217,7 +216,7 @@ global SYSDIC
     puts $file_writer "LIBPREFIX     = lib"
     puts $file_writer "LIBSUFFIX     = .so"
     puts $file_writer "GENFLAGS      = -g"
-    puts $file_writer "LDLIBS        = -ldl -lrt -lpthread -L/usr/lib64/boost\$(BOOST_RELEASE) -lboost_filesystem -lboost_iostreams -lboost_program_options -lboost_system \$(LSST_SAL_PREFIX)/lib/libserdes++.a \$(LSST_SAL_PREFIX)/lib/libserdes.a  -L\$(LSST_SAL_PREFIX)/lib -lcurl -ljansson -lrdkafka++ -lavrocpp -lavro"
+    puts $file_writer "LDLIBS        = -ldl -lrt -lpthread -L/usr/lib64/boost\$(BOOST_RELEASE) -lboost_filesystem -lboost_iostreams -lboost_program_options -lboost_system \$(LSST_SAL_PREFIX)/lib/libserdes++.a \$(LSST_SAL_PREFIX)/lib/libserdes.a  -L\$(LSST_SAL_PREFIX)/lib -lcurl -ljansson -lrdkafka++ -lrdkafka -lavrocpp -lavro -lsasl2"
     puts $file_writer "LINK.cc       = \$(LD) \$(LDFLAGS)"
     puts $file_writer "EXPORTFLAGS   ="
     puts $file_writer "endif"

@@ -20,6 +20,7 @@
   #include <cstring>
   #include <getopt.h>
   #include <iomanip>
+  #include <algorithm>
   
   #include "SAL_defines.h"
   #include <boost/optional/optional_io.hpp>
@@ -129,9 +130,9 @@
       int			error;
 /// ack is the ack field for the most recent ackCmd message (commands)
       int			ack;
-/// activeidentity is the private_identity field of the most recent command
+/// activeidentity is the private_identity field of the most recent message
       string			activeidentity;
-/// activeorigin is the private_origin field of the most recent command
+/// activeorigin is the private_origin field of the most recent message
       int activeorigin;
 /// activecmdid is the command sequence number of the most recent command
       int			activecmdid;
@@ -139,11 +140,13 @@
       double			timeout;
 /// result is the text message result of the most recent command
       string			result;
-/// sndStamp is the TAI timestamp of the most recent command sent
+/// sndStamp is the TAI timestamp of the most recent message sent
       double	 		sndStamp;
-/// rcvStamp is the TAI timestamp of the most recent command received
+/// lastSndStamp is the TAI timestamp of the most recent message received
+      double	 		lastSndStamp;
+/// rcvStamp is the TAI timestamp of the most recent message received
       double			rcvStamp;
-/// sampleAge is the time in seconds between command send and receive
+/// sampleAge is the time in seconds between message send and receive
       double			sampleAge;
 /// historyDepth is the maximum size (in samples) of the Kafka message cache for the topic
       long                      historyDepth;
@@ -157,7 +160,7 @@
       /* Generic Kafka entities */
       const std::string server;
       RdKafka::TopicPartition *tpartition;
-      RdKafka::Conf *configuration;
+      RdKafka::Conf *producerConfiguration;
       RdKafka::Conf *consumerConfiguration;
       RdKafka::Conf *topicConfiguration;
       RdKafka::Topic *topic;
@@ -171,6 +174,7 @@
       Serdes::Schema *schema;
       std::string schema_name;
       std::string schema_def;
+      std::string kafkaGroupId;
       int domain;
       int status;
       int participant;
@@ -199,18 +203,18 @@
       int lastActor_telemetry;
       int lastActor_command;
       int lastActor_event;
-      char *pname;
+      const char *pname;
       char *aname;
-      char *sname;
-      char *kport;
-      char *khost;
-      char *securityProtocol;
-      char *securityMechanism;
-      char *securityUserName;
-      char *securityPassword;
-      char *schemaRegistry;
-      char *localSchemaDir;
-      char *kafkaProducerWaitAcks;
+      const char *sname;
+      const char *kport;
+      const char *khost;
+      const char *securityProtocol;
+      const char *securityMechanism;
+      const char *securityUserName;
+      const char *securityPassword;
+      const char *schemaRegistry;
+      const char *localSchemaDir;
+      const char *kafkaProducerWaitAcks;
       int telemetryFlushMS;
       int cmdevtFlushMS;
 
@@ -238,6 +242,12 @@
   @param aKey is used to specify the index of an indexed component, or 0 for non-indexed ones
  */
      void initSalEnvironment(int aKey);
+
+/** Read Kafka configuration file
+  @param kfile is the filename
+  @param kconf is the Kafka configuratuion object
+ */ 
+     void readKafkaConfiguration (const char *kfile, RdKafka::Conf *kconf);
 
 /** Sets up the Kafka Publisher support for the named Kafka type
   @param topicName is the name of the Kafka topic

@@ -4,16 +4,19 @@
 # Command line tool for SAL code/document/etc generation.
 #
 
-proc print_help {} {
-   puts stdout "SAL generator tool (Kafka) - Usage :
+set called [lindex $argv 0]
 
-	salgenerator subsystem (command \[args\] ...)
+proc print_help {} {
+global called
+   puts stdout "SAL generatorKafka tool (Kafka) - Usage :
+
+	$called subsystem (command \[args\] ...)
 
    where command may be
 
 		generate - all steps to generate SAL wrappers for specified language
 		validate - check the XML Telemetry/Command/LogEvent definitions
-                sal      - generate SAL wrappers for specified language : cpp, idl, java
+                sal      - generate SAL wrappers for specified language : cpp, java
                 apidoc   - generate interface documentation for the specified language : cpp, java
                 lib      - generate shared library
 		labview  - generate LabVIEW low-level interface
@@ -27,8 +30,8 @@ proc print_help {} {
 if { $argc < 2 } { print_help }
 
 
-set SAL_DIR $env(SAL_DIR)
-set COMMANDS "validate cpp idl java lib link maven tcl icd labview html apidoc rpm sal verbose fastest generate upload"
+set SAL_DIR $env(SAL_HOME)/scripts
+set COMMANDS "validate cpp java lib link maven tcl icd labview html apidoc rpm sal verbose fastest generate upload"
 foreach o $COMMANDS {
   set OPTIONS($o) 0
   if { [lsearch [string tolower $argv] $o] > -1 } {
@@ -155,18 +158,24 @@ foreach subsys $TSUBSYSTEMS {
 
 # Generate runs all steps needed to get lib for given language
 if { $OPTIONS(generate) } {
-  set result [exec salgenerator $TSUBSYSTEMS validate] ; puts stdout $result
-  catch { set result [exec salgenerator $TSUBSYSTEMS html] } ok ; puts stdout $ok
-  if { $OPTIONS(cpp) } { set result [exec salgenerator $TSUBSYSTEMS sal cpp] ; puts stdout $result }
+  if { [expr $OPTIONS(cpp) + $OPTIONS(java) + $OPTIONS(labview)] == 0 } {
+    stdlog "=========================================================================="
+    stdlog "ERROR :  sal option requires a language choice, cpp/java/labview"
+    stdlog "=========================================================================="
+    exit 6
+  }
+  set result [exec $called $TSUBSYSTEMS validate] ; puts stdout $result
+  catch { set result [exec $called $TSUBSYSTEMS html] } ok ; puts stdout $ok
+  if { $OPTIONS(cpp) } { set result [exec $called $TSUBSYSTEMS sal cpp] ; puts stdout $result }
   if { $OPTIONS(java) } {
-     set result [exec salgenerator $TSUBSYSTEMS sal java] ; puts stdout $result
-     set result [exec salgenerator $TSUBSYSTEMS maven] ; puts stdout $result
+     set result [exec $called $TSUBSYSTEMS sal java] ; puts stdout $result
+     set result [exec $called $TSUBSYSTEMS maven] ; puts stdout $result
   }
   if { $OPTIONS(labview) } {
-     set result [exec salgenerator $TSUBSYSTEMS sal cpp] ; puts stdout $result
-     set result [exec salgenerator $TSUBSYSTEMS labview] ; puts stdout $result
+     set result [exec $called $TSUBSYSTEMS sal cpp] ; puts stdout $result
+     set result [exec $called $TSUBSYSTEMS labview] ; puts stdout $result
   }
-  set result [exec salgenerator $TSUBSYSTEMS lib] ; puts stdout $result
+  set result [exec $called $TSUBSYSTEMS lib] ; puts stdout $result
   exit 0
 }
 
@@ -177,10 +186,6 @@ if { $RELVERSION != "" } {
   set SALRELEASE "[set XMLVERSION]-[set SALVERSION].$RELVERSION"
 } else {
   set SALRELEASE "[set XMLVERSION]-[set SALVERSION]"
-}
-
-if { $OPTIONS(idl) && $OPTIONS(sal) == 0 } {
-   errorexit "IDL no longer supported by SAL Kafka"
 }
 
 if { $OPTIONS(validate) } {
@@ -243,7 +248,7 @@ if { $OPTIONS(apidoc) } {
     if { $s != "apidoc" } {
       if { $s != "upload" } {stdlog "Building API documentation for $s subsystem"}
       set result none
-      catch { set result [exec $SAL_DIR/apiDocumentation.tcl $s] } bad
+      catch { set result [exec $SAL_DIR/apiDocumentationKafka.tcl $s] } bad
       if { $result == "none" } {stdlog $bad}
       if { $OPTIONS(verbose) } {stdlog $result}
     }
@@ -307,9 +312,9 @@ if { $OPTIONS(sal) } {
   set DONE_CMDEVT 0
   set ONEDONECPP 0
   set ONEDONEJAVA 0
-  if { [expr $OPTIONS(cpp) + $OPTIONS(java) + $OPTIONS(idl)] == 0 } {
+  if { [expr $OPTIONS(cpp) + $OPTIONS(java)] == 0 } {
     stdlog "=========================================================================="
-    stdlog "ERROR :  sal option requires a language choice , cpp/idl/java"
+    stdlog "ERROR :  sal option requires a language choice, cpp/java"
     stdlog "=========================================================================="
     exit 6
   }
@@ -325,14 +330,10 @@ if { $OPTIONS(sal) } {
   puts stdout $bad
   puts stdout $inclfile
   updateRevCodes $base
-  if { $OPTIONS(idl) == 0 } {
-    source $SAL_WORK_DIR/avro-templates/[set base]_revCodes.tcl
-    genGenericCodes $base
-    genTelemetryCodes $inclfile $TARGETS
-    genSingleProcessTests $base
-  } else {
-    exec cp $SAL_WORK_DIR/avro-templates/sal/sal_revCoded_[set base].avro $SAL_WORK_DIR/[set base]/.
-  }
+  source $SAL_WORK_DIR/avro-templates/[set base]_revCodes.tcl
+  genGenericCodes $base
+  genTelemetryCodes $inclfile $TARGETS
+  genSingleProcessTests $base
   checkAssets $base
 }
 
@@ -399,5 +400,5 @@ if { $OPTIONS(labview) } {
 puts stdout "SALVERSION = $SALVERSION"
 puts stdout "XMLVERSION = $XMLVERSION"
 puts stdout "SAL_WORK_DIR = $SAL_WORK_DIR"
-puts stdout "LSST_LAFKA_PREFIX = $LSST_KAFKA_PREFIX"
+puts stdout "LSST_KAFKA_PREFIX = $LSST_KAFKA_PREFIX"
 

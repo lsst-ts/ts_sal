@@ -70,7 +70,7 @@ proc insertCommandHeader { subsys file_writer } {
 
 proc insertCommanders { subsys file_writer } {
 
-    global SYSDIC CMD_ALIASES 
+    global SYSDIC CMD_ALIASES SAL_WORK_DIR
 
     puts $file_writer "int main (int argc, char *argv\[\])"
     puts $file_writer "\{"
@@ -94,12 +94,21 @@ proc insertCommanders { subsys file_writer } {
         puts $file_writer "  \{"
         puts $file_writer "    cout << \"=== [set subsys]_[set alias] start of topic ===\" << endl;"
         puts $file_writer "    int cmdId;"
+        puts $file_writer "    int iseq=0;"
         puts $file_writer "    int timeout=10;"
+        puts $file_writer "    struct timespec delay_500ms;"
+        puts $file_writer "    delay_500ms.tv_sec = 0;"
+        puts $file_writer "    delay_500ms.tv_nsec = 500000000;"
         puts $file_writer "    int status=0;"
         puts $file_writer "    [set subsys]_command_[set alias]C myData;"
-        
+        set fragment_reader [open $SAL_WORK_DIR/include/SAL_[set subsys]_command_[set alias]Cpub.tmp r]
+        while { [gets $fragment_reader line] > -1 } {
+            puts $file_writer "    [string trim $line]"
+        }
+        close $fragment_reader     
         puts $file_writer "    cmdId = mgr.issueCommand_[set alias](&myData);"
         puts $file_writer "    cout << \"=== [set subsys]_[set alias] end of topic ===\" << endl;"
+        puts $file_writer "    nanosleep(&delay_500ms,NULL);"
         puts $file_writer "    status = mgr.waitForCompletion_[set alias](cmdId, timeout);"
         puts $file_writer "    cout << status << endl;"
         puts $file_writer "  \}\n"
@@ -123,9 +132,9 @@ proc insertControllers { subsys file_writer } {
     puts $file_writer "\{"
     puts $file_writer "  int cmdId = -1;"
     puts $file_writer "  int timeout = 1;"
-    puts $file_writer "  struct timespec delay_10ms;"
-    puts $file_writer "  delay_10ms.tv_sec = 0;"
-    puts $file_writer "  delay_10ms.tv_nsec = 10000000;"
+    puts $file_writer "  struct timespec delay_100ms;"
+    puts $file_writer "  delay_100ms.tv_sec = 0;"
+    puts $file_writer "  delay_100ms.tv_nsec = 100000000;"
 
     if { [info exists SYSDIC($subsys,keyedID)] } {
         puts $file_writer "  int salIndex = 1;"
@@ -158,12 +167,12 @@ proc insertControllers { subsys file_writer } {
 
         puts $file_writer "      if (timeout > 0) \{"
         puts $file_writer "        mgr.ackCommand_[set alias](cmdId, SAL__CMD_INPROGRESS, 0, \"Ack : OK\");"
-        puts $file_writer "        nanosleep(&delay_10ms,NULL);"
+        puts $file_writer "        nanosleep(&delay_100ms,NULL);"
         puts $file_writer "      \}"
         puts $file_writer "      mgr.ackCommand_[set alias](cmdId, SAL__CMD_COMPLETE, 0, \"Done : OK\");"
         puts $file_writer "      break;"
         puts $file_writer "    \}"
-        puts $file_writer "    nanosleep(&delay_10ms,NULL);"
+        puts $file_writer "    nanosleep(&delay_100ms,NULL);"
         puts $file_writer "  \}"
         puts $file_writer "  cout << \"=== [set subsys]_[set alias] end of topic ===\" << endl;"
     }
@@ -194,7 +203,7 @@ global SYSDIC
     puts $file_writer "LD            = \$(CXX) \$(CCFLAGS) \$(CPPFLAGS)"
     puts $file_writer "AR            = ar"
     puts $file_writer "PICFLAGS      = -fPIC"
-    puts $file_writer "CPPFLAGS      = \$(PICFLAGS) \$(GENFLAGS) -g \$(SAL_CPPFLAGS) -D_REENTRANT -Wall -I\".\"  -I\"\$(AVRO_INCL)\" -I../../[set subsys]/cpp/src -I\"\$(LSST_SAL_PREFIX)/include\"  -I\"\$(LSST_SAL_PREFIX)/include/avro\" -I.. -I\"\$(SAL_WORK_DIR)/include\" -fpermissive -Wno-write-strings $keyed"
+    puts $file_writer "CPPFLAGS      = \$(PICFLAGS) \$(GENFLAGS) -g \$(SAL_CPPFLAGS) -D_REENTRANT -Wall -I\".\"  -I\"\$(AVRO_INCL)\" -I../../[set subsys]/cpp/src -I\"\$(LSST_SAL_PREFIX)/include\"  -I\"\$(LSST_SAL_PREFIX)/include/avro\" -I.. -I\"\$(SAL_WORK_DIR)/include\" -fpermissive -Wno-unused-variable -Wno-write-strings $keyed"
     puts $file_writer "OBJEXT        = .o"
     puts $file_writer "OUTPUT_OPTION = -o \"\$@\""
     puts $file_writer "COMPILE.c     = \$(CC) \$(CFLAGS) \$(CPPFLAGS) -c"
@@ -226,7 +235,7 @@ global SYSDIC
     puts $file_writer "LIBPREFIX     = lib"
     puts $file_writer "LIBSUFFIX     = .so"
     puts $file_writer "GENFLAGS      = -g"
-    puts $file_writer "LDLIBS        = -ldl -lrt -lpthread -L/usr/lib64/boost\$(BOOST_RELEASE) -lboost_filesystem -lboost_iostreams -lboost_program_options -lboost_system \$(LSST_SAL_PREFIX)/lib/libserdes++.a \$(LSST_SAL_PREFIX)/lib/libserdes.a -L\$(LSST_SAL_PREFIX)/lib -lcurl -ljansson -lrdkafka++ -lavrocpp -lavro"
+    puts $file_writer "LDLIBS        = -ldl -lrt -lpthread -L/usr/lib64/boost\$(BOOST_RELEASE) -lboost_filesystem -lboost_iostreams -lboost_program_options -lboost_system \$(LSST_SAL_PREFIX)/lib/libserdes++.a \$(LSST_SAL_PREFIX)/lib/libserdes.a -L\$(LSST_SAL_PREFIX)/lib -lcurl -ljansson -lrdkafka++ -lrdkafka -lavrocpp -lavro -lsasl2"
     puts $file_writer "LINK.cc       = \$(LD) \$(LDFLAGS)"
     puts $file_writer "EXPORTFLAGS   ="
     puts $file_writer "endif"

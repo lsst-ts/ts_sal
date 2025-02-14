@@ -55,9 +55,8 @@ int main (int argc, char *argv\[\])
  
   struct timespec delay_1ms;
   delay_1ms.tv_sec = 0;
-  int numsamples = 100;
   int deltams = 1;
-  int nsamples = 10;
+  int nsamples = 100;
     
   char *deltaName = getenv(\"SAL_DEBUG_MS_DELTA\");
   if ( deltaName != NULL ) \{
@@ -89,7 +88,7 @@ int main (int argc, char *argv\[\])
   close $fin
   puts $fevt "
   int iseq = 0;
-  while (iseq < numsamples) {
+  while (iseq < nsamples) {
   // generate event
     priority = 0;
     mgr.logEvent_[set alias](&myData, priority);
