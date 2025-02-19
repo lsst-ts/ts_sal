@@ -99,12 +99,11 @@ proc insertPublishers { subsys file_writer } {
         puts $file_writer "  delay_1s.tv_nsec = 0;"
         puts $file_writer "    [set subsys]_[set alias]C myData;"
         puts $file_writer "    while (iseq < 10) \{"
-
         set fragment_reader [open $SAL_WORK_DIR/include/SAL_[set subsys]_[set alias]Cpub.tmp r]
         while { [gets $fragment_reader line] > -1 } {
             puts $file_writer "    [string trim $line ]"
         }
-
+        close $fragment_reader
         puts $file_writer "      iseq++;"
         puts $file_writer "      mgr.putSample_[set alias](&myData);"
         puts $file_writer "      nanosleep(&delay_1s,NULL);"
@@ -235,7 +234,7 @@ proc insertTelemetryMakeFile { subsys file_writer } {
     puts $file_writer "LIBPREFIX     = lib"
     puts $file_writer "LIBSUFFIX     = .so"
     puts $file_writer "GENFLAGS      = -g"
-    puts $file_writer "LDLIBS        = -ldl -lrt -lpthread -L/usr/lib64/boost\$(BOOST_RELEASE) -lboost_filesystem -lboost_iostreams -lboost_program_options -lboost_system \$(LSST_SAL_PREFIX)/lib/libserdes++.a \$(LSST_SAL_PREFIX)/lib/libserdes.a  -L\$(LSST_SAL_PREFIX)/lib -lcurl -ljansson -lrdkafka++ -lavrocpp -lavro"
+    puts $file_writer "LDLIBS        = -ldl -lrt -lpthread -L/usr/lib64/boost\$(BOOST_RELEASE) -lboost_filesystem -lboost_iostreams -lboost_program_options -lboost_system \$(LSST_SAL_PREFIX)/lib/libserdes++.a \$(LSST_SAL_PREFIX)/lib/libserdes.a  -L\$(LSST_SAL_PREFIX)/lib -lcurl -ljansson -lrdkafka++ -lrdkafka -lavrocpp -lavro -lsasl2"
     puts $file_writer "LINK.cc       = \$(LD) \$(LDFLAGS)"
     puts $file_writer "EXPORTFLAGS   ="
     puts $file_writer "endif"

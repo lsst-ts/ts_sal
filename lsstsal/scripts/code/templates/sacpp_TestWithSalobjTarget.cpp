@@ -39,7 +39,7 @@ int test_TestWithSalobjTarget(int index, int logLevel)
   int cmdid;
   struct timespec delay_10ms;
   delay_10ms.tv_sec = 0;
-  delay_10ms.tv_nsec = 10000;
+  delay_10ms.tv_nsec = 10000000;
   int loglevels[] = { 10, 52, 0 };
   int ilevel;
   int itimer;

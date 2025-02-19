@@ -49,10 +49,6 @@ salReturn SAL_[set base]::putSample_[set name]([set base]_[set name]C *data)
   close $frag
   puts $fout "
   Instance.private_revCode = \"[string trim $revcode _]\";
-  Instance.private_sndStamp = getCurrentTime();
-  Instance.private_efdStamp = getCurrentUTC();
-  Instance.private_kafkaStamp = getCurrentTime();
-  sal\[actorIdx\].sndStamp = Instance.private_sndStamp;
   Instance.private_identity = CSC_identity;
   Instance.private_origin = getpid();
   Instance.private_seqNum = sal\[actorIdx\].sndSeqNum;
@@ -62,14 +58,21 @@ salReturn SAL_[set base]::putSample_[set name]([set base]_[set name]C *data)
   while { [gets $frag rec] > -1} {puts $fout $rec}
   close $frag
   puts $fout "
+#ifdef SAL_SUBSYSTEM_ID_IS_KEYED
+   Instance.salIndex = subsystemID;
+#endif
+  Instance.private_sndStamp = getCurrentTime();
+  Instance.private_efdStamp = getCurrentUTC();
 
   if (debugLevel > 0) \{
     cout << \"=== \[putSample\] [set base].[set name] writing a message containing :\" << endl;
     cout << \"    revCode  : \" << Instance.private_revCode << endl;
+    cout << \"    sndStmp  : \" << Instance.private_sndStamp << endl;
   \}
-  Instance.private_sndStamp = getCurrentTime();
-  Instance.private_efdStamp = getCurrentUTC();
-  Instance.private_kafkaStamp = getCurrentTime();"
+#ifdef SAL_SUBSYSTEM_ID_IS_KEYED
+  Instance.salIndex = subsystemID;
+#endif
+  Instance.private_kafkaStamp = Instance.private_sndStamp;"
     writerFragment $fout $base [set base]_[set name]
       puts $fout "
   return status;
@@ -97,6 +100,7 @@ salReturn SAL_[set base]::getSample_[set name]([set base]_[set name]C *data)
       cout << \"=== \[GetSample\] message received :\" << numSamples << endl;
       cout << \"    revCode  : \" << Instance.private_revCode << endl;
       cout << \"    sndStamp  : \" << Instance.private_sndStamp << endl;
+      cout << \"    lastSndStamp : \" << sal\[actorIdx\].lastSndStamp << endl;
       cout << \"    origin  : \" << Instance.private_origin << endl;
       cout << \"    identity  : \" << Instance.private_identity << endl;
       double latency = (rcvdTime - Instance.private_sndStamp)*1000.0;
@@ -117,6 +121,11 @@ salReturn SAL_[set base]::getSample_[set name]([set base]_[set name]C *data)
     puts $fout "     istatus = SAL__OK;"
   }
   puts $fout "
+     if ( Instance.private_sndStamp < sal\[actorIdx\].lastSndStamp ) \{
+       istatus = SAL__NO_UPDATES;
+     \} else \{
+       sal\[actorIdx\].lastSndStamp = Instance.private_sndStamp;
+     \}
    \} else \{
      istatus = SAL__NO_UPDATES;
    \}
@@ -155,13 +164,23 @@ salReturn SAL_[set base]::getLastSample_[set name]([set base]_[set name]C *data)
 salReturn SAL_[set base]::flushSamples_[set name]([set base]_[set name]C *data)
 \{
     salReturn istatus;
-    sal\[SAL__[set base]_[set name]_ACTOR\].maxSamples = 1000;
-    sal\[SAL__[set base]_[set name]_ACTOR\].sampleAge = -1.0;
-    istatus = getSample_[set name](data);
+    int actorIdx = SAL__[set base]_[set name]_ACTOR;
+    RdKafka::ErrorCode err,err2;
+    std::vector<RdKafka::TopicPartition*> parts;
+    int64_t startOffset = RD_KAFKA_OFFSET_END;
+    sal\[actorIdx\].maxSamples = 1000;
+    err = sal\[actorIdx\].subscriber->assignment(parts);
+    parts\[0\]->set_offset(startOffset);
+    err2 = sal\[actorIdx\].subscriber->seek(*parts\[0\],100);
     if (debugLevel > 8) \{
-        cout << \"=== \[flushSamples\] getSample returns :\" << istatus << endl;
+       cout << \"=== \[flushSamples\] assignment returns :\" << err << endl;
+       cout << \"=== \[flushSamples\] seek returns :\" << err2 << endl;
     \}
     sal\[SAL__[set base]_[set name]_ACTOR\].sampleAge = 1.0e20;
+    istatus = getSample_[set name](data);
+    if (debugLevel > 8) \{
+       cout << \"=== \[flushSamples\] getSample returns :\" << istatus << endl;
+    \}
     return SAL__OK;
 \}
 "
