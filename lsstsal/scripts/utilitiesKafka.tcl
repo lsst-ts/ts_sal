@@ -26,7 +26,7 @@ global SAL_LOG
      close $SAL_LOG(fd)
   }
   puts stdout "*******************************************************************************"
-  puts stdout "***       ERROR : $msg"
+  puts stdout "***        ERROR : $msg"
   puts stdout "*******************************************************************************"
   exit $id
 }
