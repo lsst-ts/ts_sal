@@ -4,7 +4,7 @@
 # Command line tool for SAL code/document/etc generation.
 #
 
-set called [lindex $argv 0]
+set called $argv0
 
 proc print_help {} {
 global called
