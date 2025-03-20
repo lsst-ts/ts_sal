@@ -18,8 +18,6 @@ prep()
 	echo $JAVA_LIB
 	# Add the java information to the ts_sal.table file.
         java_home_line='envSet(JAVA_HOME, '${JAVA_HOME}')'
-	java_ld_preload_line='envSet(LD_PRELOAD, '${JAVA_LIB}')'
-	java_ld_preload_line_mac='envSet(DYLD_INSERT_LIBRARIES, '${JAVA_LIB}')'
 	java_path_line='envPrepend(PATH, ${JAVA_HOME}/bin)'
 	echo $java_home_line >> "$PKGROOT/ups/ts_sal.table"
 	echo $java_ld_preload_line >> "$PKGROOT/ups/ts_sal.table"
@@ -63,7 +61,7 @@ build()
 	    for subsys in $SUBSYSTEMS
 	    do
 		echo "Building topics for "$subsys"."
-		( salgenerator $subsys validate && salgenerator $subsys sal cpp  && salgenerator $subsys sal python ) || echo "Skipping "$subsys
+		( salgenerator $subsys validate && salgenerator $subsys sal cpp ) || echo "Skipping "$subsys
 	    done
 
             # copy libraries to workdir/lib location.

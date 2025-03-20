@@ -137,7 +137,7 @@ salReturn SAL_SALData::logEvent_[set i]( SALData_logevent_[set i]C *data, int pr
 #  per-command Topic type. This routine generates Java code.
 #
 proc geneventaliasjava { subsys fout } {
-global EVENT_ALIASES EVTS AVRO_PREFIX
+global EVENT_ALIASES EVTS
    foreach i $EVENT_ALIASES($subsys) {
     if { [info exists EVTS($subsys,$i,param)] } {
       stdlog "	: alias = $i"

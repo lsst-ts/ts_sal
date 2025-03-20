@@ -576,7 +576,7 @@ global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS
 #   Generate the base SAL API code
 #
 proc makesalcode { jsonfile base name lang } {
-global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS CMD_ALIASES AVRO_PREFIX
+global SAL_DIR SAL_WORK_DIR SYSDIC DONE_CMDEVT OPTIONS CMD_ALIASES
       if { $OPTIONS(verbose) } {stdlog "###TRACE>>> makesalcode $jsonfile $base $name $lang"}
       stdlog "Processing $base $name in $SAL_WORK_DIR"
       cd $SAL_WORK_DIR

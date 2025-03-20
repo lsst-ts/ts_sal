@@ -337,7 +337,7 @@ public String getAVROVersion()
 #   Add code to support salActor data structure initialization in C++
 #
 proc addActorIndexesCPP { base fout } {
-global SAL_WORK_DIR ACTIVETOPICS AVRO_PREFIX
+global SAL_WORK_DIR ACTIVETOPICS
    set idx 0
    set fact [open $SAL_WORK_DIR/[set base]/cpp/src/SAL_[set base]_actors.h w]
    foreach name $ACTIVETOPICS {
@@ -394,7 +394,7 @@ global SAL_WORK_DIR ACTIVETOPICS AVRO_PREFIX
 #   Add code to support salActor data structure initialization in Java
 #
 proc addActorIndexesJava { base fout } {
-global ACTIVETOPICS env AVRO_PREFIX
+global ACTIVETOPICS env
    set idx 0
    foreach name $ACTIVETOPICS {
       set type [lindex [split $name _] 0]
@@ -583,7 +583,7 @@ global CMDS TLMS EVTS
 }
 
 proc javaTypeSupport { fout base } {
-global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS AVRO_PREFIX
+global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS
    puts $fout "/** Configure AVRO type support for [set base] Kafka topics."
    puts $fout "  * @param topicName The Kafka topic name"
    puts $fout "  */"
@@ -616,7 +616,7 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS AVRO_PREFI
 }
 
 proc javaputSample { fout base } {
-global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS AVRO_PREFIX
+global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS
   foreach name $ACTIVETOPICS {
    if { $name != "ackcmd" } {
     set revcode [getRevCode [set base]_[set name] short]
@@ -660,7 +660,7 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS AVRO_PREFI
 }
 
 proc javagetSample { fout base } {
-global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS AVRO_PREFIX
+global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS
   foreach name $ACTIVETOPICS {
    if { $name != "ackcmd" } {
     set revcode [getRevCode [set base]_[set name] short]
@@ -711,7 +711,7 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS AVRO_PREFI
 }
 
 proc javagetNextFlushSample { fout base } {
-global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS AVRO_PREFIX
+global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS
   foreach name $ACTIVETOPICS {
    if { $name != "ackcmd" } {
     set revcode [getRevCode [set base]_[set name] short]
@@ -936,7 +936,7 @@ global env SAL_DIR SAL_WORK_DIR SYSDIC TLMS EVTS OPTIONS ACTIVETOPICS
 }
 
 proc writerFragmentJava { fout base name } {
-global AVRO_PREFIX OPTIONS
+global OPTIONS
  if { $OPTIONS(verbose) } {stdlog "###TRACE>>> writerFragmentJava $base $name "}
    set avroname [set base]_[set name]
    if { $name == "ackcmd" } {
@@ -957,7 +957,6 @@ global AVRO_PREFIX OPTIONS
 }
 
 proc readerFragmentJava { fout base name } {
-global AVRO_PREFIX
    set avroname [set base]_[set name]
    if { $name == "[set base]_ackcmd" } {
      set avroname "ackcmd"

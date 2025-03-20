@@ -2,13 +2,13 @@
 
 echo "Setting up SAL Kafka build environment"
 
-export MAVEN_RELEASE=3.9.8
-export AVRO_RELEASE=1.11.1
+export MAVEN_RELEASE=3.9.9
+export AVRO_RELEASE=1.11.3
 export BOOST_RELEASE=1.78
 export JDK_RELEASE=17
 export KAFKA_RELEASE=7.6
 export JACKSON_RELEASE=2.15.2
-export LIBRDKAFKA_RELEASE=2.6.1
+export LIBRDKAFKA_RELEASE=2.8.0
 export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 export LSST_SDK_INSTALL=/opt/lsst/tssw/ts_sal
 

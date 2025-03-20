@@ -4,8 +4,6 @@ def postResults() {
   echo "C++ unit-test results"
   junit testResults: 'cpp_tests/*.xml', skipPublishingChecks: true
   echo "Java unit-test results"
-  junit testResults: 'java_tests/target/surefire-reports/TEST*.xml', skipPublishingChecks: true
-  echo "Java unit-test results"
   junit testResults: 'simple_sal/**/target/surefire-reports/TEST*.xml', skipPublishingChecks: true
 }
 
@@ -57,9 +55,9 @@ pipeline {
             steps {
                 script {
                     sh "docker exec -u root \${container_name} sh -c \"" +
-                        "/opt/lsst/software/stack/conda/envs/lsst-scipipe-9.0.0/bin/conda install -y jansson && " +
-                        "curl -O https://repo-nexus.lsst.org/nexus/repository/ts_yum/test/ts_sal_utilsKafka-10.0.0-1.x86_64.rpm && " +
-                        "dnf install -y ts_sal_utilsKafka-10.0.0-1.x86_64.rpm && " +
+                        "/opt/lsst/software/stack/conda/envs/lsst-scipipe-10.0.0/bin/conda install -y jansson && " +
+                        "curl -O https://repo-nexus.lsst.org/nexus/repository/ts_yum/test/ts_sal_utilsKafka-10.1.0-1.x86_64.rpm && " +
+                        "dnf install -y ts_sal_utilsKafka-10.1.0-1.x86_64.rpm && " +
                         "dnf install -y epel-release && " +
                         "dnf install -y yum-utils && " +
                         "dnf config-manager -y --set-enabled powertools && " +

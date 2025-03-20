@@ -11,14 +11,16 @@ CPP := g++ -std=c++14 -Wall -fmessage-length=0 -g
 
 CFLAGS := \
 	$(shell pkg-config catch2-with-main --cflags) \
-	-I${OSPL_HOME}/include                   \
-	-I${OSPL_HOME}/include/sys               \
-	-I${OSPL_HOME}/include/dcps/C++/SACPP    \
-	-I${SAL_WORK_DIR}/include                \
-	-I${SAL_HOME}/include                    \
+	-fpermissive -g -D_REENTRANT -Wall -Wno-switch -Wno-format \
+	-I"." -I"$(CONDA_PREFIX)/include/boost" -I"$(CONDA_PREFIX)/include/avro" \
+	-I"$(SAL_WORK_DIR)/include" -Wno-write-strings \
 	-I${CONDA_PREFIX}/include
 
-LIBS := $(shell pkg-config catch2-with-main --libs) -L${SAL_WORK_DIR}/lib -lSAL_Test -lSAL_Script
+LIBS := $(shell pkg-config catch2-with-main --libs) -L${SAL_WORK_DIR}/lib -lSAL_Test -lSAL_Script \
+	-ldl -lrt -lpthread -lboost_filesystem -lboost_iostreams \
+	-lboost_program_options -lboost_system $(CONDA_PREFIX)/lib/libserdes++.a \
+	$(CONDA_PREFIX)/lib/libserdes.a -lcurl -ljansson \
+	-lrdkafka++ -lrdkafka -lavrocpp -lavro -lsasl2
 
 ifneq ($(MAKECMDGOALS),clean)
     -include $(DEPS)

@@ -5,6 +5,13 @@
 ###############
 Version History
 ###############
+==================
+Changes for 10.1.0
+==================
+
+* Deprecate DDS
+* Add stack environment for develop-env usage
+* Use LSST_TOPIC_SUBNAME for salobj compatability
 
 ==================
 Changes for 10.0.0

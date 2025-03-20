@@ -19,7 +19,7 @@ salReturn SAL_SALData::salCommand(char *cmdAlias)
 
   createTopic(actorIdx,cmdAlias);
 
-  if (sal[SAL__SALData_ackcmd_ACTOR].isReader == false) { 
+  if (sal[SAL__SALData_ackcmd_ACTOR].topic == NULL) { 
      //create Topics
      createTopic(SAL__SALData_ackcmd_ACTOR,const_cast<char*>(response.c_str()));
 
@@ -30,8 +30,10 @@ salReturn SAL_SALData::salCommand(char *cmdAlias)
 
   //create Publisher
   createPublisher(actorIdx);
-  createSubscriber(SAL__SALData_ackcmd_ACTOR);
-  sleep(1);
+  if ( sal[SAL__SALData_ackcmd_ACTOR].subscriber == NULL ) {
+    createSubscriber(SAL__SALData_ackcmd_ACTOR);
+  }
+  // sleep(1);
 
   sal[actorIdx].isCommand = true;
   sal[actorIdx].isWriter = true;
@@ -69,7 +71,9 @@ salReturn SAL_SALData::salProcessor(char *cmdAlias)
   if ( sal[SAL__SALData_ackcmd_ACTOR].isWriter == false) {
     //create Publisher
     createPublisher(SAL__SALData_ackcmd_ACTOR);
-    createTopic(SAL__SALData_ackcmd_ACTOR,const_cast<char*>(response.c_str()));
+    if ( sal[SAL__SALData_ackcmd_ACTOR].topic == NULL ) {
+      createTopic(SAL__SALData_ackcmd_ACTOR,const_cast<char*>(response.c_str()));
+    }
     sal[SAL__SALData_ackcmd_ACTOR].isWriter = true;
   }
 
