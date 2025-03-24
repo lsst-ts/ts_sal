@@ -3,7 +3,7 @@
 echo "Setting up SAL Kafka build environment"
 
 export MAVEN_RELEASE=3.9.9
-export AVRO_RELEASE=1.11.3
+export AVRO_RELEASE=1.11.1
 export BOOST_RELEASE=1.78
 export JDK_RELEASE=17
 export KAFKA_RELEASE=7.6
@@ -32,7 +32,7 @@ update_dependencies()
     chgrp -R $USER $LSST_SAL_PREFIX/..
     dnf install -y epel-release || exit 1
     dnf install -y yum-utils || exit 1
-    dnf config-manager -y --set-enabled powertools || exit 1
+    dnf config-manager -y --set-enabled crb || exit 1
     dnf update -y || exit 1
     if [ -f /.dockerenv ]; then
         dnf install -y python3.11 python3.11-devel python3.11-pip || exit 1
