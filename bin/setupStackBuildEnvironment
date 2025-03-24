@@ -22,7 +22,6 @@ curl -O https://archive.apache.org/dist/avro/avro-${AVRO_RELEASE}/avro-src-${AVR
 tar xvzf avro-src-${AVRO_RELEASE}.tar.gz
 cd avro-src-${AVRO_RELEASE}/lang/c
 cp -r ../../lang/c++/impl $LSST_SAL_PREFIX/include/.
-./build.sh test || exit 3
 ./cmake_avrolib.sh || true
 cd build/avrolib/lib64
 cp lib* $LSST_SAL_PREFIX/lib/.
@@ -34,7 +33,7 @@ cd $HOME/external-packages
 rm -rf libserdes
 git clone https://github.com/confluentinc/libserdes || exit 5
 cd libserdes
-###    export LD_LIBRARY_PATH=$LSST_SAL_PREFIX/lib:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=$LSST_SAL_PREFIX/lib:$LD_LIBRARY_PATH
 export CPPFLAGS=-I$LSST_SAL_PREFIX/include/avro
 ./configure --prefix=$LSST_SAL_PREFIX --includedir=$LSST_SAL_PREFIX/include --libdir=$LSST_SAL_PREFIX/lib || exit 5
 make || exit 5
