@@ -43,7 +43,7 @@ pipeline {
                     sh """
                         docker run -v \${WORKSPACE}:/home/saluser/repos/ts_sal -td --rm --network \${network_name} \
                             -e LTD_USERNAME=\${LSST_IO_CREDS_USR} -e LTD_PASSWORD=\${LSST_IO_CREDS_PSW} \
-                            -e LSST_KAFKA_PREFIX=lsst.sal -e LSST_KAFKA_HOST=broker -e LSST_KAFKA_LOCAL_SCHEMAS=\$LSST_SAL_PREFIX \
+                            -e LSST_KAFKA_PREFIX=lsst.sal -e LSST_TOPIC_SUBNAME=sal -e LSST_KAFKA_HOST=broker -e LSST_KAFKA_LOCAL_SCHEMAS=\$LSST_SAL_PREFIX \
                             -e LSST_KAFKA_BROKER_PORT=29092 -e LSST_KAFKA_BROKER_ADDR=broker:\$LSST_KAFKA_BROKER_PORT \
                             -e LSST_SCHEMA_REGISTRY_URL=http://schema-registry:8081 \
                             --name \${container_name} lsstts/salobj:develop
