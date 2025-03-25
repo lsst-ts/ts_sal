@@ -60,13 +60,13 @@ pipeline {
                         "dnf install -y ts_sal_utilsKafka-10.1.0-1.x86_64.rpm && " +
                         "dnf install -y epel-release && " +
                         "dnf install -y yum-utils && " +
-                        "dnf config-manager -y --set-enabled powertools && " +
+                        "dnf config-manager -y --set-enabled crb && " +
                         "dnf -y update && " +
-                        "dnf install -y ant cmake boost1.78-devel jansson-devel asciidoc curl libcurl-devel zlib-devel maven doxygen fmt fmt-devel snappy snappy-devel csnappy gcc-toolset-10 cyrus-sasl cyrus-sasl-devel catch-devel && " +
+                        "dnf install -y ant cmake boost1.78-devel jansson-devel asciidoc curl-minimal libcurl-devel zlib-devel maven doxygen fmt fmt-devel snappy snappy-devel csnappy gcc-toolset-13 cyrus-sasl cyrus-sasl-devel catch-devel && " +
                         "curl -LO https://github.com/catchorg/Catch2/archive/refs/tags/v3.8.0.tar.gz && " +
                         "tar zxvf v3.8.0.tar.gz && " +
                         "cd Catch2-3.8.0/ && " +
-                        "source scl_source enable gcc-toolset-10 && " +
+                        "source scl_source enable gcc-toolset-13 && " +
                         "cmake -Bbuild -H. -DBUILD_TESTING=OFF && " +
                         "cmake --build build/ --target install\""
                 }
@@ -95,7 +95,7 @@ pipeline {
                         "cd /home/saluser/repos/ts_sal && " +
                         "source ~/.setup.sh && " +
                         "source ./setupKafka.env && " +
-                        "source scl_source enable gcc-toolset-10 && " +
+                        "source scl_source enable gcc-toolset-13 && " +
                         "cd /home/saluser/repos/ts_sal/test && " +
                         "salgeneratorKafka validate Test && " +
                         "salgeneratorKafka validate Script && " +
@@ -117,7 +117,7 @@ pipeline {
                         "source ~/.setup.sh && " +
                         "cd /home/saluser/repos/ts_sal && " +
                         "source ./setupKafka.env && " +
-                        "source scl_source enable gcc-toolset-10 && " +
+                        "source scl_source enable gcc-toolset-13 && " +
                         "cd /home/saluser/repos/ts_sal/cpp_tests && " +
                          "make junit || echo cpp test failed...\""
                 }
@@ -130,7 +130,7 @@ pipeline {
                         "source ~/.setup.sh && " +
                         "cd /home/saluser/repos/ts_sal && " +
                         "source ./setupKafka.env && " +
-                        "source scl_source enable gcc-toolset-10 && " +
+                        "source scl_source enable gcc-toolset-13 && " +
                         "cd /home/saluser/repos/ts_sal/simple_sal && " +
                         "mvn --no-transfer-progress -B clean install  || echo java test failed\""
                 }
