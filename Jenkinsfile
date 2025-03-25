@@ -66,6 +66,7 @@ pipeline {
                         "curl -LO https://github.com/catchorg/Catch2/archive/refs/tags/v3.8.0.tar.gz && " +
                         "tar zxvf v3.8.0.tar.gz && " +
                         "cd Catch2-3.8.0/ && " +
+                        "ln -s /usr/include/boost1.78/boost /usr/include/boost && " +  
                         "source scl_source enable gcc-toolset-13 && " +
                         "cmake -Bbuild -H. -DBUILD_TESTING=OFF && " +
                         "cmake --build build/ --target install\""
