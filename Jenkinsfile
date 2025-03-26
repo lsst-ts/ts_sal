@@ -87,9 +87,8 @@ pipeline {
                     sh "docker exec -u saluser \${container_name} sh -c \"" +
                         "cd /home/saluser/repos/ts_sal && " +
                         "source ~/.setup.sh && " +
-                        "source ./setupKafka.env && " +
-                        "source ./bin/setupStackBuildEnvironment && " +
                         "export LSST_SAL_PREFIX=\$CONDA_PREFIX && " + 
+                        "source ./setupKafka.env && " +
                         "source scl_source enable gcc-toolset-13 && " +
                         "cd /home/saluser/repos/ts_sal/test && " +
                         "salgeneratorKafka validate Test && " +
@@ -111,6 +110,7 @@ pipeline {
                     sh "docker exec -u saluser \${container_name} sh -c \"" +
                         "source ~/.setup.sh && " +
                         "cd /home/saluser/repos/ts_sal && " +
+                        "export LSST_SAL_PREFIX=\$CONDA_PREFIX && " + 
                         "source ./setupKafka.env && " +
                         "source scl_source enable gcc-toolset-13 && " +
                         "cd /home/saluser/repos/ts_sal/cpp_tests && " +
@@ -124,6 +124,7 @@ pipeline {
                     sh "docker exec -u saluser \${container_name} sh -c \"" +
                         "source ~/.setup.sh && " +
                         "cd /home/saluser/repos/ts_sal && " +
+                        "export LSST_SAL_PREFIX=\$CONDA_PREFIX && " + 
                         "source ./setupKafka.env && " +
                         "source scl_source enable gcc-toolset-13 && " +
                         "cd /home/saluser/repos/ts_sal/simple_sal && " +
