@@ -55,7 +55,6 @@ pipeline {
             steps {
                 script {
                     sh "docker exec -u root \${container_name} sh -c \"" +
-                        "/opt/lsst/software/stack/conda/envs/lsst-scipipe-10.0.0/bin/conda install -y jansson && " +
                         "curl -O https://repo-nexus.lsst.org/nexus/repository/ts_yum/test/ts_sal_utilsKafka-10.1.0-1.x86_64.rpm && " +
                         "dnf install -y ts_sal_utilsKafka-10.1.0-1.x86_64.rpm && " +
                         "dnf install -y epel-release && " +
@@ -96,6 +95,7 @@ pipeline {
                         "cd /home/saluser/repos/ts_sal && " +
                         "source ~/.setup.sh && " +
                         "source ./setupKafka.env && " +
+                        "export LSST_SAL_PREFIX=/opt/lsst/ts_sal && " + 
                         "source scl_source enable gcc-toolset-13 && " +
                         "cd /home/saluser/repos/ts_sal/test && " +
                         "salgeneratorKafka validate Test && " +
