@@ -90,6 +90,7 @@ pipeline {
                         "cd /home/saluser/repos/ts_sal && " +
                         "source ~/.setup.sh && " +
                         "source ./setupKafka.env && " +
+                        "source ./bin/setupStackBuildEnvironment && " +
                         "export LSST_SAL_PREFIX=\$CONDA_PREFIX && " + 
                         "source scl_source enable gcc-toolset-13 && " +
                         "cd /home/saluser/repos/ts_sal/test && " +
