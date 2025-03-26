@@ -20,7 +20,13 @@ properties(
     ]
 )
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'lsstts/salobj:c0041.000'
+            alwaysPull true
+            args "--entrypoint='' --network=kafka"
+        }
+    }
     environment {
         network_name = "kafka"
         container_name = "c_${BUILD_ID}_${JENKINS_NODE_COOKIE}"
@@ -30,49 +36,14 @@ pipeline {
     }
 
     stages {
-        stage("Pulling docker image") {
-            steps {
-                script {
-                    sh "docker pull lsstts/salobj:develop"
-                }
-            }
-        }
-        stage("Preparing environment") {
-            steps {
-                script {
-                    sh """
-                        docker run -v \${WORKSPACE}:/home/saluser/repos/ts_sal -td --rm --network \${network_name} \
-                            -e LTD_USERNAME=\${LSST_IO_CREDS_USR} -e LTD_PASSWORD=\${LSST_IO_CREDS_PSW} \
-                            -e LSST_KAFKA_PREFIX=lsst.sal -e LSST_TOPIC_SUBNAME=sal -e LSST_KAFKA_HOST=broker -e LSST_KAFKA_LOCAL_SCHEMAS=\$LSST_SAL_PREFIX \
-                            -e LSST_KAFKA_BROKER_PORT=29092 -e LSST_KAFKA_BROKER_ADDR=broker:\$LSST_KAFKA_BROKER_PORT \
-                            -e LSST_SCHEMA_REGISTRY_URL=http://schema-registry:8081 \
-                            --name \${container_name} lsstts/salobj:develop
-                    """
-                }
-            }
-        }
-                stage("Setup SAL Kafka build environment") {
-            steps {
-                script {
-                    sh "docker exec -u root \${container_name} sh -c \"" +
-                        "dnf install -y epel-release && " +
-                        "dnf install -y yum-utils && " +
-                        "dnf config-manager -y --set-enabled crb && " +
-                        "dnf -y update && " +
-                        "dnf install -y ant cmake boost1.78-devel jansson-devel asciidoc curl-minimal libcurl-devel zlib-devel maven doxygen fmt fmt-devel snappy snappy-devel csnappy gcc-toolset-13 cyrus-sasl cyrus-sasl-devel catch-devel && " +
-                        "ln -s /usr/include/boost1.78/boost /usr/include/boost && " +  
-                        "source scl_source enable gcc-toolset-13\""
-                }
-            }
-        }
         stage("Checkout xml") {
             steps {
                 script {
-                    sh "docker exec -u saluser \${container_name} sh -c \"" +
-                        "source ~/.setup.sh && " +
-                        "cd /home/saluser/repos/ts_xml && " +
-                        "/home/saluser/.checkout_repo.sh \${work_branches} && " +
-                        "git pull\""
+                    sh """cp -rv ${env.WORKSPACE}/* /home/saluser/repos/ts_sal/
+                    source ~/.setup.sh
+                    cd /home/saluser/repos/ts_xml
+                    /home/saluser/.checkout_repo.sh ${WORK_BRANCHES}
+                    """
                 }
             }
         }
@@ -84,57 +55,52 @@ pipeline {
         stage("Build SAL runtime assets") {
             steps {
                 script {
-                    sh "docker exec -u saluser \${container_name} sh -c \"" +
-                        "source scl_source enable gcc-toolset-13 && " +
-                        "cd /home/saluser/repos/ts_sal && " +
-                        "source ~/.setup.sh && " +
-                        "export LSST_SAL_PREFIX=\$CONDA_PREFIX && " + 
-                        "source ./setupKafka.env && " +
-                        "export LSST_SAL_PREFIX=\$CONDA_PREFIX && " + 
-                        "export AVRO_INCL=\$CONDA_PREFIX/include/avro && " +
-                        "export BOOST_RELEASE= && " +
-                        "printenv | grep LSST && " +
-                        "printenv | grep AVRO && " +
-                        "cd /home/saluser/repos/ts_sal/test && " +
-                        "salgeneratorKafka validate Test && " +
-                        "salgeneratorKafka validate Script && " +
-                        "salgeneratorKafka sal cpp Test && " +
-                        "salgeneratorKafka sal cpp Script && " +
-                        "salgeneratorKafka sal java Test && " +
-                        "salgeneratorKafka sal java Script && " +
-                        "salgeneratorKafka lib Test && " +
-                        "salgeneratorKafka lib Script && " +
-                        "salgeneratorKafka maven Test && " +
-                        "salgeneratorKafka maven Script\""
+                    sh """ cd /home/saluser/repos/ts_sal
+                    source ~/.setup.sh
+                    export LSST_SAL_PREFIX=\$CONDA_PREFIX
+                    source ./setupKafka.env
+                    printenv | grep LSST
+                    printenv | grep AVRO
+                    cd /home/saluser/repos/ts_sal/test
+                    salgeneratorKafka validate Test
+                    salgeneratorKafka validate Script
+                    salgeneratorKafka sal cpp Test
+                    salgeneratorKafka sal cpp Script
+                    salgeneratorKafka sal java Test
+                    salgeneratorKafka sal java Script
+                    salgeneratorKafka lib Test
+                    salgeneratorKafka lib Script
+                    salgeneratorKafka maven Test
+                    salgeneratorKafka maven Script
+                    """
                 }
             }
         }
         stage("Running cpp tests") {
             steps {
                 script {
-                    sh "docker exec -u saluser \${container_name} sh -c \"" +
-                        "source scl_source enable gcc-toolset-13 && " +
-                        "source ~/.setup.sh && " +
-                        "cd /home/saluser/repos/ts_sal && " +
-                        "export LSST_SAL_PREFIX=\$CONDA_PREFIX && " + 
-                        "source ./setupKafka.env && " +
-                        "export BOOST_RELEASE= && " +
-                        "cd /home/saluser/repos/ts_sal/cpp_tests && " +
-                         "make junit || echo cpp test failed...\""
+                    sh """source ~/.setup.sh
+                    cd /home/saluser/repos/ts_sal
+                    export LSST_SAL_PREFIX=\$CONDA_PREFIX
+                    source ./setupKafka.env
+                    export BOOST_RELEASE=
+                    export LSST_KAFKA_PRODUCER_WAIT_ACKS=1
+                    cd /home/saluser/repos/ts_sal/cpp_tests
+                    make junit
+                    """
                 }
             }
         }
         stage("Running Camera java tests") {
             steps {
                 script {
-                    sh "docker exec -u saluser \${container_name} sh -c \"" +
-                        "source scl_source enable gcc-toolset-13 && " +
-                        "source ~/.setup.sh && " +
-                        "cd /home/saluser/repos/ts_sal && " +
-                        "export LSST_SAL_PREFIX=\$CONDA_PREFIX && " + 
-                        "source ./setupKafka.env && " +
-                        "cd /home/saluser/repos/ts_sal/simple_sal && " +
-                        "mvn --no-transfer-progress -B clean install  || echo java test failed\""
+                    sh """source ~/.setup.sh
+                    cd /home/saluser/repos/ts_sal
+                    export LSST_SAL_PREFIX=\$CONDA_PREFIX
+                    source ./setupKafka.env
+                    cd /home/saluser/repos/ts_sal/simple_sal
+                    mvn --no-transfer-progress -B clean install
+                    """
                 }
             }
         }//CameraTests
@@ -144,30 +110,14 @@ pipeline {
             // Uncomment once tests are passing...
             // postResults()
             echo "Build documents"
-            sh "docker exec -u saluser \${container_name} sh -c \"" +
-                "source ~/.setup.sh && " +
-                "cd /home/saluser/repos/ts_sal && " +
-                "setup ts_sal -t saluser && " +
-                "package-docs build\""
-
-            echo "Publish documents"
-            script {
-                def RESULT = sh returnStatus: true, script: "docker exec -u saluser \${container_name} sh -c \"" +
-                    "source ~/.setup.sh && " +
-                    "cd /home/saluser/repos/ts_sal && " +
-                    "setup ts_sal -t saluser && " +
-                    "ltd upload --product ts-sal --git-ref \${GIT_BRANCH} --dir doc/_build/html\""
-
-                if ( RESULT != 0 ) {
-                    unstable("Failed to push documentation.")
-                }
-            }
-        }
-        cleanup {
-            sh """
-                docker stop \${container_name} || echo Could not stop container
-                docker network rm \${network_name} || echo Could not remove network
+            sh """ source ~/.setup.sh
+            cd /home/saluser/repos/ts_sal
+            setup ts_sal -t saluser
+            package-docs build
+            ltd upload --product ts-sal --git-ref ${GIT_BRANCH} --dir doc/_build/html || echo "Upload failed... ignoring."
             """
+            }
+        cleanup {
             deleteDir()
         }
     }
