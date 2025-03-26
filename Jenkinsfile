@@ -85,6 +85,7 @@ pipeline {
             steps {
                 script {
                     sh "docker exec -u saluser \${container_name} sh -c \"" +
+                        "source scl_source enable gcc-toolset-13 && " +
                         "cd /home/saluser/repos/ts_sal && " +
                         "source ~/.setup.sh && " +
                         "export LSST_SAL_PREFIX=\$CONDA_PREFIX && " + 
@@ -93,7 +94,6 @@ pipeline {
                         "export AVRO_INCL=\$CONDA_PREFIX/include/avro && " +
                         "printenv | grep LSST && " +
                         "printenv | grep AVRO && " +
-                        "source scl_source enable gcc-toolset-13 && " +
                         "cd /home/saluser/repos/ts_sal/test && " +
                         "salgeneratorKafka validate Test && " +
                         "salgeneratorKafka validate Script && " +
@@ -112,11 +112,11 @@ pipeline {
             steps {
                 script {
                     sh "docker exec -u saluser \${container_name} sh -c \"" +
+                        "source scl_source enable gcc-toolset-13 && " +
                         "source ~/.setup.sh && " +
                         "cd /home/saluser/repos/ts_sal && " +
                         "export LSST_SAL_PREFIX=\$CONDA_PREFIX && " + 
                         "source ./setupKafka.env && " +
-                        "source scl_source enable gcc-toolset-13 && " +
                         "cd /home/saluser/repos/ts_sal/cpp_tests && " +
                          "make junit || echo cpp test failed...\""
                 }
@@ -126,11 +126,11 @@ pipeline {
             steps {
                 script {
                     sh "docker exec -u saluser \${container_name} sh -c \"" +
+                        "source scl_source enable gcc-toolset-13 && " +
                         "source ~/.setup.sh && " +
                         "cd /home/saluser/repos/ts_sal && " +
                         "export LSST_SAL_PREFIX=\$CONDA_PREFIX && " + 
                         "source ./setupKafka.env && " +
-                        "source scl_source enable gcc-toolset-13 && " +
                         "cd /home/saluser/repos/ts_sal/simple_sal && " +
                         "mvn --no-transfer-progress -B clean install  || echo java test failed\""
                 }
