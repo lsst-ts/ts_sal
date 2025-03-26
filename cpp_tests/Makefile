@@ -1,3 +1,4 @@
+SHELL=bash
 all: compile
 
 .PHONY: FORCE compile run junit clean
@@ -14,7 +15,7 @@ CFLAGS := \
 	-fpermissive -g -D_REENTRANT -Wall -Wno-switch -Wno-format \
 	-I"." -I"$(CONDA_PREFIX)/include/boost" -I"$(CONDA_PREFIX)/include/avro" \
 	-I"$(SAL_WORK_DIR)/include" -Wno-write-strings \
-	-I${CONDA_PREFIX}/include
+	-I"${CONDA_PREFIX}/include" -I"$(SAL_WORK_DIR)/Test/cpp/src" -I"$(SAL_WORK_DIR)/Script/cpp/src"
 
 LIBS := $(shell pkg-config catch2-with-main --libs) -L${SAL_WORK_DIR}/lib -lSAL_Test -lSAL_Script \
 	-ldl -lrt -lpthread -lboost_filesystem -lboost_iostreams \
