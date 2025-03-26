@@ -61,9 +61,7 @@ pipeline {
                         "dnf -y update && " +
                         "dnf install -y ant cmake boost1.78-devel jansson-devel asciidoc curl-minimal libcurl-devel zlib-devel maven doxygen fmt fmt-devel snappy snappy-devel csnappy gcc-toolset-13 cyrus-sasl cyrus-sasl-devel catch-devel && " +
                         "ln -s /usr/include/boost1.78/boost /usr/include/boost && " +  
-                        "source scl_source enable gcc-toolset-13 && " +
-                        "cmake -Bbuild -H. -DBUILD_TESTING=OFF && " +
-                        "cmake --build build/ --target install\""
+                        "source scl_source enable gcc-toolset-13\""
                 }
             }
         }
