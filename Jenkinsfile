@@ -55,16 +55,11 @@ pipeline {
             steps {
                 script {
                     sh "docker exec -u root \${container_name} sh -c \"" +
-                        "curl -O https://repo-nexus.lsst.org/nexus/repository/ts_yum/test/ts_sal_utilsKafka-10.1.0-1.x86_64.rpm && " +
-                        "dnf install -y ts_sal_utilsKafka-10.1.0-1.x86_64.rpm && " +
                         "dnf install -y epel-release && " +
                         "dnf install -y yum-utils && " +
                         "dnf config-manager -y --set-enabled crb && " +
                         "dnf -y update && " +
                         "dnf install -y ant cmake boost1.78-devel jansson-devel asciidoc curl-minimal libcurl-devel zlib-devel maven doxygen fmt fmt-devel snappy snappy-devel csnappy gcc-toolset-13 cyrus-sasl cyrus-sasl-devel catch-devel && " +
-                        "curl -LO https://github.com/catchorg/Catch2/archive/refs/tags/v3.8.0.tar.gz && " +
-                        "tar zxvf v3.8.0.tar.gz && " +
-                        "cd Catch2-3.8.0/ && " +
                         "ln -s /usr/include/boost1.78/boost /usr/include/boost && " +  
                         "source scl_source enable gcc-toolset-13 && " +
                         "cmake -Bbuild -H. -DBUILD_TESTING=OFF && " +
@@ -95,7 +90,7 @@ pipeline {
                         "cd /home/saluser/repos/ts_sal && " +
                         "source ~/.setup.sh && " +
                         "source ./setupKafka.env && " +
-                        "export LSST_SAL_PREFIX=/opt/lsst/ts_sal && " + 
+                        "export LSST_SAL_PREFIX=\$CONDA_PREFIX && " + 
                         "source scl_source enable gcc-toolset-13 && " +
                         "cd /home/saluser/repos/ts_sal/test && " +
                         "salgeneratorKafka validate Test && " +
