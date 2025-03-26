@@ -92,6 +92,7 @@ pipeline {
                         "source ./setupKafka.env && " +
                         "export LSST_SAL_PREFIX=\$CONDA_PREFIX && " + 
                         "export AVRO_INCL=\$CONDA_PREFIX/include/avro && " +
+                        "export BOOST_RELEASE= && " +
                         "printenv | grep LSST && " +
                         "printenv | grep AVRO && " +
                         "cd /home/saluser/repos/ts_sal/test && " +
@@ -117,6 +118,7 @@ pipeline {
                         "cd /home/saluser/repos/ts_sal && " +
                         "export LSST_SAL_PREFIX=\$CONDA_PREFIX && " + 
                         "source ./setupKafka.env && " +
+                        "export BOOST_RELEASE= && " +
                         "cd /home/saluser/repos/ts_sal/cpp_tests && " +
                          "make junit || echo cpp test failed...\""
                 }
