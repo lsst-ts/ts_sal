@@ -23,7 +23,7 @@
   #include <algorithm>
   
   #include "SAL_defines.h"
-  #include <boost/optional/optional_io.hpp>
+//  #include <boost/optional/optional_io.hpp>
 // INSERT TYPE INCLUDES
 
   #include "SAL_SALDataC.h"
