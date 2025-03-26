@@ -89,6 +89,10 @@ pipeline {
                         "source ~/.setup.sh && " +
                         "export LSST_SAL_PREFIX=\$CONDA_PREFIX && " + 
                         "source ./setupKafka.env && " +
+                        "export LSST_SAL_PREFIX=\$CONDA_PREFIX && " + 
+                        "export AVRO_INCL=\$CONDA_PREFIX/include/avro && " +
+                        "printenv | grep LSST && " +
+                        "printenv | grep AVRO && " +
                         "source scl_source enable gcc-toolset-13 && " +
                         "cd /home/saluser/repos/ts_sal/test && " +
                         "salgeneratorKafka validate Test && " +
