@@ -21,7 +21,8 @@
   #include <getopt.h>
   #include <iomanip>
   #include <algorithm>
-  
+  #include <thread>
+
   #include "SAL_defines.h"
 //  #include <boost/optional/optional_io.hpp>
 // INSERT TYPE INCLUDES
@@ -217,7 +218,6 @@
       const char *kafkaProducerWaitAcks;
       int telemetryFlushMS;
       int cmdevtFlushMS;
-
 ///   Holds the private_identity of this SAL Object, set at creation
       char CSC_identity[128];
     public:
@@ -261,6 +261,12 @@
  */    
       salReturn salTelemetrySub(char *topicName);
 
+// THREAD     
+//     void flusher();
+//      std::thread flusherThread;
+//      static void threadFunc( void* param );
+//
+       
 /// Returns of vector::string consisting of the topic names of all SAL_SALData telemetry topics
       std::vector<std::string> getTelemetryNames();
 
@@ -339,7 +345,7 @@
       salReturn setDebugLevel( int level );
 
 /// Get the current value of the debug message verbosity level for this SAL_SALData object
-      int getDebugLevel( int level );
+      int getDebugLevel();
 
 /// Get the current IP address
       int getOrigin();

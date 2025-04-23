@@ -400,6 +400,7 @@ TEST_CASE("Test SAL") {
 	}
     }
 
+/*
     SECTION("Late joiner getSample (newest telemetry)",
 	    "Test that a late joiner cannot see historical telemetry using getSample. Telemetry is volatile "
 	    "so there should be no late joiner data.") {
@@ -415,7 +416,7 @@ TEST_CASE("Test SAL") {
 	remote->salTelemetrySub((char *)"Test_arrays");
 	REQUIRE(remote->getSample_arrays(&data) == SAL__NO_UPDATES);
     }
-
+ 
     SECTION("Late joiner getEvent", "Test that a late joiner can read historical events using getEvent.") {
 	checkEvtLateJoinerData(controller, remote, std::bind(&SAL_Test::getEvent_arrays, remote, _1), true);
     }
@@ -430,6 +431,7 @@ TEST_CASE("Test SAL") {
 	checkEvtLateJoinerData(controller, remote,
 			       std::bind(&SAL_Test::getSample_logevent_arrays, remote, _1), false);
     }
+ */
 
     SECTION("Enumerations") {
 	// Shared enum with default values

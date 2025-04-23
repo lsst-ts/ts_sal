@@ -39,6 +39,9 @@ global SAL_WORK_DIR OPTIONS
 salReturn SAL_[set base]::putSample_[set name]([set base]_[set name]C *data)
 \{
   int actorIdx = SAL__[set base]_[set name]_ACTOR;
+  if ( actorWriter(actorIdx) == false ) \{
+     throw std::runtime_error(\"No writer for getSample_[set name]\");
+  \}
   [set base]::[set name] Instance;
   if ( data == NULL ) \{
      throw std::runtime_error(\"NULL pointer for putSample_[set name]\");
@@ -88,6 +91,9 @@ salReturn SAL_[set base]::getSample_[set name]([set base]_[set name]C *data)
      throw std::runtime_error(\"NULL pointer for getSample_[set name]\");
   \}
   int actorIdx = SAL__[set base]_[set name]_ACTOR;
+  if ( actorReader(actorIdx) == false ) \{
+     throw std::runtime_error(\"No Reader for getSample_[set name]\");
+  \}
   checkSchema(actorIdx);"
      readerFragment $fout $base $name
      puts $fout "
@@ -165,6 +171,9 @@ salReturn SAL_[set base]::flushSamples_[set name]([set base]_[set name]C *data)
 \{
     salReturn istatus;
     int actorIdx = SAL__[set base]_[set name]_ACTOR;
+    if ( actorReader(actorIdx) == false ) \{
+     throw std::runtime_error(\"No Reader for flushSamples_[set name]\");
+    \}
     RdKafka::ErrorCode err,err2;
     std::vector<RdKafka::TopicPartition*> parts;
     int64_t startOffset = RD_KAFKA_OFFSET_END;

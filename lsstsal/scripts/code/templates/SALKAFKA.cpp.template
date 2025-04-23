@@ -191,6 +191,9 @@ void SAL_SALData::initSalEnvironment(int aKey)
     throw std::runtime_error("ERROR publisherCmdEvt creation: " + errstr);
   }
 
+//THREAD
+//   std::thread flusherThread([&SAL_SALData] {flusher(); });
+//   
    if ( pname != NULL ) {
       strncpy(partitionPrefix, pname, 128);
    } else {
@@ -488,7 +491,7 @@ salReturn SAL_SALData::setDebugLevel( int level )
    return status;
 }
 
-int SAL_SALData::getDebugLevel( int level )
+int SAL_SALData::getDebugLevel()
 {
    return debugLevel;
 }
@@ -536,6 +539,7 @@ salReturn SAL_SALData::salEventSub(char *topicName)
   createSubscriber(actorIdx);
 
    sal[actorIdx].isEventReader = true;
+   sal[actorIdx].isReader = true;
    return SAL__OK;
 }
 
@@ -593,7 +597,30 @@ void SAL_SALData::checkSchema(int actorIdx)
   }
 }
 
+/* THREAD
+void SAL_SALData::threadFunc( void* a ){
+    std::cout << "In threadFunc\n";
+    ((SAL_SALData*)a)->flusher();
+}
 
+void SAL_SALData::flusher()
+{
+  struct timespec delayms;
+  delayms.tv_sec = 0;
+  delayms.tv_nsec = 25*1000000;
+  while (true) {
+    nanosleep(&delayms,NULL);
+    if (publisher != NULL) {
+      publisher->flush(10);
+    }
+    if (publisherCmdEvt != NULL) {
+      publisherCmdEvt->flush(10);
+    }
+  }
+}
+ */ 
+ 
+ 
 void SAL_SALData::createTopic(int actorIdx)
 {
   std::string errstr;
