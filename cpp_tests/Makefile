@@ -11,14 +11,14 @@ JUNIT_FILES := $(shell ls *.xml 2>/dev/null)
 CPP := g++ -std=c++14 -Wall -fmessage-length=0 -g
 
 CFLAGS := \
-	$(shell pkg-config catch2-with-main --cflags) \
+	-I/usr/local/include \
 	-fpermissive -g -D_REENTRANT -Wall -Wno-switch -Wno-format \
 	-I"." -I"$(CONDA_PREFIX)/include/boost" -I"$(CONDA_PREFIX)/include/avro" \
 	-I"$(SAL_WORK_DIR)/include" -Wno-write-strings \
 	-I"${CONDA_PREFIX}/include" -I"$(SAL_WORK_DIR)/Test/cpp/src" -I"$(SAL_WORK_DIR)/Script/cpp/src"
 
-LIBS := $(shell pkg-config catch2-with-main --libs) -L${SAL_WORK_DIR}/lib -lSAL_Test -lSAL_Script \
-	-ldl -lrt -lpthread -lboost_filesystem -lboost_iostreams \
+LIBS := -L/usr/local/lib64 -lCatch2Main -lCatch2 -L${SAL_WORK_DIR}/lib -lSAL_Test -lSAL_Script \
+	-ldl -lrt -lpthread -L$(CONDA_PREFIX)/lib -L/usr/lib64/boost1.78 -lboost_filesystem -lboost_iostreams \
 	-lboost_program_options -lboost_system $(CONDA_PREFIX)/lib/libserdes++.a \
 	$(CONDA_PREFIX)/lib/libserdes.a -lcurl -ljansson \
 	-lrdkafka++ -lrdkafka -lavrocpp -lavro -lsasl2

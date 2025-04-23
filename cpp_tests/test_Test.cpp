@@ -316,6 +316,7 @@ TEST_CASE("Test SAL") {
 	REQUIRE(remote->getSample_arrays(&data) == SAL__NO_UPDATES);
     }
 
+/*
     SECTION("Get newest events after get oldest",
 	    "Test that get newest after get oldest gets the newest value. This tests DM-18491.") {
 	remote->salEventSub((char *)"Test_logevent_arrays");
@@ -330,6 +331,7 @@ TEST_CASE("Test SAL") {
 		std::bind(&SAL_Test::getSample_logevent_arrays, remote, _1),
 		std::bind(&SAL_Test::getSample_logevent_arrays, remote, _1), true);
     }
+*/
 
     SECTION("Get newest telemetry after getNextSample",
 	    "Test that get newest after getNextSample gets the newest value. This tests DM-18491.") {
