@@ -60,6 +60,7 @@ pipeline {
                     export HOME=${env.WORKSPACE}
                     ./bin/setupStackBuildEnvironment
                     export LSST_SDK_INSTALL=${env.WORKSPACE}
+                    export LSST_SAL_PREFIX=\$CONDA_PREFIX
                     source ./setupKafka.env
                     export TS_XML_DIR=/home/saluser/repos/ts_xml
                     cd ${env.WORKSPACE}/test
@@ -83,6 +84,7 @@ pipeline {
                     sh """source ~/.setup.sh
                     cd ${env.WORKSPACE}
                     export LSST_SDK_INSTALL=${env.WORKSPACE}
+                    export LSST_SAL_PREFIX=\$CONDA_PREFIX
                     source ./setupKafka.env
                     export TS_XML_DIR=/home/saluser/repos/ts_xml
                     export BOOST_RELEASE=
@@ -99,6 +101,7 @@ pipeline {
                     sh """source ~/.setup.sh
                     cd ${env.WORKSPACE}
                     export LSST_SDK_INSTALL=${env.WORKSPACE}
+                    export LSST_SAL_PREFIX=\$CONDA_PREFIX
                     source ./setupKafka.env
                     export TS_XML_DIR=/home/saluser/repos/ts_xml
                     cd ${env.WORKSPACE}/simple_sal
