@@ -22,7 +22,7 @@ properties(
 pipeline {
     agent {
         docker {
-            image 'lsstts/salobj:c0041.000'
+            image 'lsstts/salobj:develop'
             alwaysPull true
             args "--entrypoint='' --network=kafka"
         }
@@ -59,12 +59,9 @@ pipeline {
                     source ~/.setup.sh
                     export HOME=${env.WORKSPACE}
                     ./bin/setupStackBuildEnvironment
-                    export LSST_SAL_PREFIX=\$CONDA_PREFIX
                     export LSST_SDK_INSTALL=${env.WORKSPACE}
                     source ./setupKafka.env
                     export TS_XML_DIR=/home/saluser/repos/ts_xml
-                    printenv | grep LSST
-                    printenv | grep AVRO
                     cd ${env.WORKSPACE}/test
                     salgeneratorKafka validate Test
                     salgeneratorKafka validate Script
@@ -85,7 +82,6 @@ pipeline {
                 script {
                     sh """source ~/.setup.sh
                     cd ${env.WORKSPACE}
-                    export LSST_SAL_PREFIX=\$CONDA_PREFIX
                     export LSST_SDK_INSTALL=${env.WORKSPACE}
                     source ./setupKafka.env
                     export TS_XML_DIR=/home/saluser/repos/ts_xml
@@ -102,7 +98,6 @@ pipeline {
                 script {
                     sh """source ~/.setup.sh
                     cd ${env.WORKSPACE}
-                    export LSST_SAL_PREFIX=\$CONDA_PREFIX
                     export LSST_SDK_INSTALL=${env.WORKSPACE}
                     source ./setupKafka.env
                     export TS_XML_DIR=/home/saluser/repos/ts_xml
