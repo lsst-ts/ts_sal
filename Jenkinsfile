@@ -39,7 +39,7 @@ pipeline {
         stage("Checkout xml") {
             steps {
                 script {
-                    sh """cp -rv ${env.WORKSPACE}/* /home/saluser/repos/ts_sal/
+                    sh """
                     source ~/.setup.sh
                     cd /home/saluser/repos/ts_xml
                     /home/saluser/.checkout_repo.sh ${WORK_BRANCHES}
@@ -55,13 +55,17 @@ pipeline {
         stage("Build SAL runtime assets") {
             steps {
                 script {
-                    sh """ cd /home/saluser/repos/ts_sal
+                    sh """ cd ${env.WORKSPACE}
                     source ~/.setup.sh
+                    export HOME=${env.WORKSPACE}
+                    ./bin/setupStackBuildEnvironment
                     export LSST_SAL_PREFIX=\$CONDA_PREFIX
+                    export LSST_SDK_INSTALL=${env.WORKSPACE}
                     source ./setupKafka.env
+                    export TS_XML_DIR=/home/saluser/repos/ts_xml
                     printenv | grep LSST
                     printenv | grep AVRO
-                    cd /home/saluser/repos/ts_sal/test
+                    cd ${env.WORKSPACE}/test
                     salgeneratorKafka validate Test
                     salgeneratorKafka validate Script
                     salgeneratorKafka sal cpp Test
@@ -80,12 +84,14 @@ pipeline {
             steps {
                 script {
                     sh """source ~/.setup.sh
-                    cd /home/saluser/repos/ts_sal
+                    cd ${env.WORKSPACE}
                     export LSST_SAL_PREFIX=\$CONDA_PREFIX
+                    export LSST_SDK_INSTALL=${env.WORKSPACE}
                     source ./setupKafka.env
+                    export TS_XML_DIR=/home/saluser/repos/ts_xml
                     export BOOST_RELEASE=
                     export LSST_KAFKA_PRODUCER_WAIT_ACKS=1
-                    cd /home/saluser/repos/ts_sal/cpp_tests
+                    cd ${env.WORKSPACE}/cpp_tests
                     make junit
                     """
                 }
@@ -95,10 +101,12 @@ pipeline {
             steps {
                 script {
                     sh """source ~/.setup.sh
-                    cd /home/saluser/repos/ts_sal
+                    cd ${env.WORKSPACE}
                     export LSST_SAL_PREFIX=\$CONDA_PREFIX
+                    export LSST_SDK_INSTALL=${env.WORKSPACE}
                     source ./setupKafka.env
-                    cd /home/saluser/repos/ts_sal/simple_sal
+                    export TS_XML_DIR=/home/saluser/repos/ts_xml
+                    cd ${env.WORKSPACE}/simple_sal
                     mvn --no-transfer-progress -B clean install
                     """
                 }
@@ -111,8 +119,8 @@ pipeline {
             // postResults()
             echo "Build documents"
             sh """ source ~/.setup.sh
-            cd /home/saluser/repos/ts_sal
-            setup ts_sal -t saluser
+            cd ${env.WORKSPACE}
+            setup -kr .
             package-docs build
             ltd upload --product ts-sal --git-ref ${GIT_BRANCH} --dir doc/_build/html || echo "Upload failed... ignoring."
             """
