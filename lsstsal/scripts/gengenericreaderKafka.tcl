@@ -65,7 +65,6 @@ salReturn SAL_[set base]::[set name]Available () \{
 
 
 proc readerFragment { fout base name } {
-global AVRO_PREFIX
      puts $fout "   numSamples = 0;"
      puts $fout "   std::string errstr;"
      puts $fout "   if ( strcmp(\"[set name]\",\"ackcmd\") == 0) \{"
@@ -144,7 +143,6 @@ global AVRO_PREFIX
 }
 
 proc writerFragment { fout base name } {
-global AVRO_PREFIX
   puts $fout "     auto avro_schema = sal\[actorIdx\].avroSchema->object();"
   puts $fout "     avro::EncoderPtr e = avro::validatingEncoder(*avro_schema, avro::binaryEncoder());"
   puts $fout "     const avro::OutputStreamPtr out = avro::memoryOutputStream();"
@@ -203,7 +201,6 @@ global AVRO_PREFIX
 }
 
 proc writerFragmentAck { fout base name } {
-global AVRO_PREFIX
   puts $fout "     auto avro_schema = sal\[actorIdx\].avroSchema->object();"
   puts $fout "     avro::EncoderPtr e = avro::validatingEncoder(*avro_schema, avro::binaryEncoder());"
   puts $fout "     const avro::OutputStreamPtr out = avro::memoryOutputStream();"

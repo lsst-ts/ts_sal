@@ -184,6 +184,7 @@ int SAL_SALData::issueCommand_[set i]( SALData_command_[set i]C *data )
      throw std::runtime_error(\"No commander for issueCommand_[set i]\");
   \}
   checkSchema(actorIdx);
+  sal\[actorIdx\].activecmdid = sal\[actorIdx\].sndSeqNum;
   Instance.private_revCode =  \"[string trim $revcode _]\";
   Instance.private_sndStamp = getCurrentTime();
   Instance.private_efdStamp = getCurrentUTC();
@@ -348,9 +349,10 @@ salReturn SAL_SALData::getResponse_[set i](SALData::ackcmd data)
   sal\[actorIdxCmd\].rcvSeqNum = 0;
   sal\[actorIdxCmd\].rcvOrigin = 0;
   sal\[actorIdxCmd\].rcvIdentity = \"\";
-  if (Instance.private_seqNum > 0) \{
-    if (debugLevel > 8) \{
+  if (Instance.private_seqNum == sal\[actorIdxCmd\].activecmdid) \{
+    if (debugLevel > 1) \{
       cout << \"=== getResponse_[set i] reading a message containing :\" << endl;
+      cout << \"    want  : \" << sal\[actorIdxCmd\].activecmdid << endl;
       cout << \"    seqNum   : \" << Instance.private_seqNum << endl;
       cout << \"    error    : \" << Instance.error << endl;
       cout << \"    ack      : \" << Instance.ack << endl;
@@ -395,7 +397,7 @@ salReturn SAL_SALData::getResponse_[set i]C(SALData_ackcmdC *response)
   sal\[actorIdxCmd\].rcvOrigin = 0;
   sal\[actorIdxCmd\].rcvIdentity = \"\";
    if (Instance.private_seqNum > 0) \{
-    if (debugLevel > 8) \{
+    if (debugLevel > 1) \{
       cout << \"=== getResponse_[set i] reading a message containing :\" << endl;
       cout << \"    seqNum   : \" << Instance.private_seqNum << endl;
       cout << \"    error    : \" << Instance.error << endl;
@@ -538,7 +540,7 @@ salReturn SAL_SALData::ackCommand_[set i]C(SALData_ackcmdC *response )
 #  per-command Topic type. This routine generates Java code.
 #
 proc gencmdaliasjava { subsys fout } {
-global CMD_ALIASES CMDS SYSDIC ACKREVCODE AVRO_PREFIX
+global CMD_ALIASES CMDS SYSDIC ACKREVCODE
   if { [info exists CMD_ALIASES($subsys)] } {
    foreach i $CMD_ALIASES($subsys) {
     set revcode [getRevCode [set subsys]_command_[set i] short]
@@ -861,7 +863,7 @@ global CMD_ALIASES CMDS SYSDIC ACKREVCODE AVRO_PREFIX
 #  Create the generic Kafka code to manage command Topics for Java
 #
 proc gencmdgenericjava { subsys fout } {
-global SYSDIC AVRO_PREFIX
+global SYSDIC
    puts $fout "
 	public void salCommand(String cmdAlias)
 	\{
