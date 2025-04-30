@@ -149,6 +149,12 @@ proc insertControllers { subsys file_writer } {
     foreach alias $CMD_ALIASES($subsys) {
         puts $file_writer "  mgr.salProcessor(\"[set subsys]_command_[set alias]\");"
     }
+    foreach alias $CMD_ALIASES($subsys) {
+        puts $file_writer "  cout << \"=== [set subsys]_[set alias] flush of topic ===\" << endl;"
+        puts $file_writer "  [set subsys]_command_[set alias]C flush[set alias];"
+        puts $file_writer "  cmdId = mgr.acceptCommand_[set alias](&flush[set alias]);"
+        puts $file_writer "  nanosleep(&delay_100ms,NULL);"
+    }
     puts $file_writer "  cout << \"===== [set subsys] all controllers ready =====\" << endl;"
 
     foreach alias $CMD_ALIASES($subsys) {

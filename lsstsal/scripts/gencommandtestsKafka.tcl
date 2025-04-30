@@ -52,7 +52,7 @@ int main (int argc, char *argv\[\])
   int status=0;
   struct timespec delayms;
   delayms.tv_sec = 0;
-  int deltams = 1;
+  int deltams = 100;
   int nsamples = 1;
   char *deltaName = getenv(\"SAL_DEBUG_MS_DELTA\");
   if ( deltaName != NULL ) \{
@@ -109,8 +109,8 @@ int main (int argc, char *argv\[\])
     iseq++;
     cmdId = mgr->issueCommand_[set alias](&myData);
     cout << \"=== command $alias issued = \" << cmdId << endl;"
-  puts $fcmd "  status = mgr->waitForCompletion_[set alias](cmdId, 10);"
   puts $fcmd "    nanosleep(&delayms,NULL);"
+  puts $fcmd "    status = mgr->waitForCompletion_[set alias](cmdId, 10);"
   puts $fcmd "  \}
   
   /* Remove the DataWriters etc */

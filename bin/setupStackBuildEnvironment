@@ -1,0 +1,53 @@
+#!/bin/sh
+echo "Setting up SAL Stack-10 build environment"
+
+export MAVEN_RELEASE=3.9.9
+export AVRO_RELEASE=1.12.0
+export BOOST_RELEASE=
+export JDK_RELEASE=23
+export KAFKA_RELEASE=7.6
+export JACKSON_RELEASE=2.15.2
+export LIBRDKAFKA_RELEASE=2.8.0
+export JAVA_HOME=$CONDA_PREFIX/lib/jvm
+export LSST_SDK_INSTALL=/opt/lsst/tssw/ts_sal
+export LSST_SAL_PREFIX=$CONDA_PREFIX
+
+conda install -y avro avrocpp libboost librdkafka fmt snappy jansson catch2 maven yaml-cpp spdlog gdb strace lsst-ts-xml
+
+mkdir -p $HOME/external-packages
+
+echo "Downloading and building Avro"
+cd $HOME/external-packages
+curl -O https://archive.apache.org/dist/avro/avro-${AVRO_RELEASE}/avro-src-${AVRO_RELEASE}.tar.gz || exit 3
+tar xvzf avro-src-${AVRO_RELEASE}.tar.gz
+cd avro-src-${AVRO_RELEASE}/lang/c
+cp -r ../../lang/c++/impl $LSST_SAL_PREFIX/include/.
+./cmake_avrolib.sh || true
+cd build/avrolib/lib64
+cp lib* $LSST_SAL_PREFIX/lib/.
+cd ../include
+cp -r * $LSST_SAL_PREFIX/include/.
+
+echo "Downloading and building libserdes"
+cd $HOME/external-packages
+rm -rf libserdes
+git clone https://github.com/confluentinc/libserdes || exit 5
+cd libserdes
+export LD_LIBRARY_PATH=$LSST_SAL_PREFIX/lib:$LD_LIBRARY_PATH
+export CPPFLAGS=-I$LSST_SAL_PREFIX/include/avro
+./configure --prefix=$LSST_SAL_PREFIX --includedir=$LSST_SAL_PREFIX/include --libdir=$LSST_SAL_PREFIX/lib || exit 5
+make || exit 5
+make install || exit 5
+
+export SAL_HOME=$LSST_SDK_INSTALL/lsstsal
+export SAL_WORK_DIR=$LSST_SDK_INSTALL/test
+export SAL_CPPFLAGS=-m64
+source $SAL_HOME/salenv.sh
+export TS_SAL_DIR=$LSST_SDK_INSTALL
+export TS_XML_DIR=$LSST_SDK_INSTALL/../ts_xml
+export AVRO_HOME=$LSST_SAL_PREFIX/lib
+export AVRO_INCL=$LSST_SAL_PREFIX/include/avro
+export LSST_TOPIC_SUBNAME=sal
+export AVRO_CLASSPATH=lsst/$LSST_TOPIC_SUBNAME
+export PATH=${LSST_SDK_INSTALL}/bin:${PATH}
+

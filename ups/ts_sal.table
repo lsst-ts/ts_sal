@@ -1,7 +1,5 @@
 setupRequired(sconsUtils)
 setupRequired(ts_xml)
-# ts_idl is the destination for python dds IDL files
-setupRequired(ts_idl)
 
 envPrepend(LD_LIBRARY_PATH, ${PRODUCT_DIR}/lib)
 envPrepend(DYLD_LIBRARY_PATH, ${PRODUCT_DIR}/lib)

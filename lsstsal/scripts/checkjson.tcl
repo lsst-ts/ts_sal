@@ -143,9 +143,9 @@ proc getAvroMethod { item } {
 }
 
 proc getAvroNamespace { } {
-global AVRO_PREFIX
-  if { $AVRO_PREFIX == "lsst.sal" } { return [set AVRO_PREFIX]. }
-  return [set AVRO_PREFIX]_
+global LSST_TOPIC_SUBNAME
+  if { $LSST_TOPIC_SUBNAME == "sal" } { return lsst.sal. }
+  return [set LSST_TOPIC_SUBNAME]_
 }
 
 set SAL_WORK_DIR $env(SAL_WORK_DIR)
