@@ -398,6 +398,6 @@ global env SAL_WORK_DIR SAL_DIR OSPL_VERSION XMLVERSION RELVERSION SALVERSION TS
 
 
 
-source $env(SAL_DIR)/activaterevcodes.tcl
+source $env(SAL_DIR)/activaterevcodesKafka.tcl
 set OSPL_VERSION "0.0.0"
 

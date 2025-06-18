@@ -117,15 +117,6 @@ global SAL_WORK_DIR XMLVERSION SAL_DIR SYSDIC SALVERSION LSST_SAL_PREFIX env
     exec mkdir -p [set rpmname]-$rpmversion/opt/lsst/ts_sal/avro-templates/[set subsys]
     exec mkdir -p [set rpmname]-$rpmversion/opt/lsst/ts_sal/lib
     exec mkdir -p [set rpmname]-$rpmversion/opt/lsst/ts_sal/doc
-    if { [info exists SYSDIC([set subsys],labview)] } {
-      exec mkdir -p [set rpmname]-$rpmversion/opt/lsst/ts_sal/labview
-      exec mkdir -p [set rpmname]-$rpmversion/opt/lsst/ts_sal/labview/lib
-      copyasset $SAL_WORK_DIR/lib/SALLV_[set subsys].so [set rpmname]-$rpmversion/opt/lsst/ts_sal/labview/lib/.
-      copyasset $SAL_WORK_DIR/[set subsys]/labview/SALLV_[set subsys]_Monitor [set rpmname]-$rpmversion/opt/lsst/ts_sal/bin/.
-      copyasset $SAL_WORK_DIR/[set subsys]/labview/SAL_[set subsys]_shmem.h [set rpmname]-$rpmversion/opt/lsst/ts_sal/include/.
-      copyasset $SAL_WORK_DIR/[set subsys]/labview/sal_[set subsys].json [set rpmname]-$rpmversion/opt/lsst/ts_sal/labview/.
-      copyasset $SAL_WORK_DIR/[set subsys]/cpp/src/SAL_[set subsys]LV.h [set rpmname]-$rpmversion/opt/lsst/ts_sal/include/.
-    }
     if { [info exists SYSDIC([set subsys],java)] } {
       exec mkdir -p [set rpmname]-$rpmversion/opt/lsst/ts_sal/jar
       copyasset $SAL_WORK_DIR/lib/saj_[set subsys]_types.jar [set rpmname]-$rpmversion/opt/lsst/ts_sal/jar/.

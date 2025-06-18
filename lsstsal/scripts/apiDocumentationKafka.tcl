@@ -73,26 +73,12 @@ if { [info exists SYSDIC($csc,cpp)] } {
   exec cp $SAL_WORK_DIR/[set csc]/cpp/src/SAL_[set csc].h SAL_[set csc]/.
   exec cp $SAL_WORK_DIR/[set csc]/cpp/src/SAL_[set csc]_actors.h SAL_[set csc]/.
   exec cp $SAL_WORK_DIR/[set csc]/cpp/src/SAL_[set csc]C.h SAL_[set csc]/.
-  set src [glob $SAL_WORK_DIR/[set csc]/cpp/*.cpp]
+  set src [glob $SAL_WORK_DIR/[set csc]/cpp/src/*.cpp]
   foreach f $src {exec cp $f SAL_[set csc]/.}
-  set src [glob $SAL_WORK_DIR/[set csc]/cpp/*.h]
+  set src [glob $SAL_WORK_DIR/[set csc]/cpp/src/*.h]
   foreach f $src {exec cp $f SAL_[set csc]/.}
 }
 
-if { [info exists SYSDIC($csc,java)] } {
-puts $fprogress "SAL apidoc - Preparing Java"
-  exec mkdir SAL_[set csc]/java
-  set src [glob $SAL_WORK_DIR/[set csc]/java/src/org/lsst/sal/*.java]
-  foreach f $src {exec cp $f SAL_[set csc]/java/.}
-  set src [glob $SAL_WORK_DIR/[set csc]/java/[set csc]/*.java]
-  foreach f $src {exec cp $f SAL_[set csc]/java/.}
-  cd SAL_[set csc]/java
-  set allj [glob *.java]
-  set doit "javadoc $allj"
-  set result none ; set bad ""
-  catch {set result [eval $doit] bad}
-  if { $result == "none" } {puts $fprogress $bad}
-}
 
 cd $SAL_WORK_DIR/docbuild_[set csc]
 puts $fprogress "SAL apidoc - Generating sphinx input"
@@ -128,11 +114,6 @@ Welcome to SAL_[set csc]'s API documentation!
 "
 
 
-if  { [info exists SYSDIC($csc,java)] } {
-  puts $fout "
-`Java [set csc] API <java/index.html>`_
-"
-}
 
 puts $fout "
 .. toctree::
@@ -150,10 +131,10 @@ Docs
 
 if { [info exists SYSDIC($csc,cpp)] } {
   set s [lsort [split [exec grep struct SAL_[set csc]/SAL_[set csc]C.h] \n]]
-  foreach t $s {
-    puts $fout ".. doxygenstruct:: [lindex $t 1]
-   :members:"
-  }
+#  foreach t $s {
+#    puts $fout ".. doxygenstruct:: [lindex $t 1]"
+#   puts $fout ":members:"
+#  }
   puts $fout ".. doxygenstruct:: salActor
    :members:"
 }
