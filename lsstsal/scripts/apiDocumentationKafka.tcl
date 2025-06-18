@@ -67,7 +67,7 @@ exec tar xvzf $SAL_DIR/SALDocument_docs_req
 
 if { [info exists SYSDIC($csc,cpp)] } {
   puts $fprogress "SAL apidoc - Preparing C++"
-  exec tar xzf $SAL_DIR/SALDocument_cpp_req -C SAL_[set csc]
+  exec tar xzf $SAL_DIR/SALDocument_cpp_reqKafka -C SAL_[set csc]
   exec cp $SAL_DIR/code/templates/SAL_defines.h SAL_[set csc]/.
   exec cp $SAL_WORK_DIR/[set csc]/cpp/src/SAL_[set csc].cpp SAL_[set csc]/.
   exec cp $SAL_WORK_DIR/[set csc]/cpp/src/SAL_[set csc].h SAL_[set csc]/.
@@ -76,6 +76,8 @@ if { [info exists SYSDIC($csc,cpp)] } {
   set src [glob $SAL_WORK_DIR/[set csc]/cpp/src/*.cpp]
   foreach f $src {exec cp $f SAL_[set csc]/.}
   set src [glob $SAL_WORK_DIR/[set csc]/cpp/src/*.h]
+  foreach f $src {exec cp $f SAL_[set csc]/.}
+  set src [glob $SAL_WORK_DIR/[set csc]/cpp/src/*.hh]
   foreach f $src {exec cp $f SAL_[set csc]/.}
 }
 
@@ -131,10 +133,11 @@ Docs
 
 if { [info exists SYSDIC($csc,cpp)] } {
   set s [lsort [split [exec grep struct SAL_[set csc]/SAL_[set csc]C.h] \n]]
-#  foreach t $s {
-#    puts $fout ".. doxygenstruct:: [lindex $t 1]"
-#   puts $fout ":members:"
-#  }
+  foreach t $s {
+    set tt [string trim $t "\{"]
+    puts $fout ".. doxygenstruct:: [lindex $tt 1]
+   :members:"
+  }
   puts $fout ".. doxygenstruct:: salActor
    :members:"
 }
@@ -161,10 +164,7 @@ set result none
 catch {set result [exec make] } bad
 if { $result == "none" } {puts stdout $bad}
 
-exec mv SAL_[set csc]/avro/html docs/sphinx/avro
-if  { [info exists SYSDIC($csc,java)] } {
-  exec mv SAL_[set csc]/java docs/sphinx/.
-}
+
 puts $fprogress "SAL apidoc - Build complete"
 
 exec mkdir -p $TS_SAL_DIR/doc/_build/html/apiDocumentation
