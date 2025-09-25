@@ -180,7 +180,7 @@ global env SAL_WORK_DIR SAL_DIR OSPL_VERSION XMLVERSION RELVERSION SALVERSION TS
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-avro</artifactId>
-            <version>2.11.2</version>
+            <version>2.14.2</version>
             </dependency>
       </dependencies>
     <repositories>

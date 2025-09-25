@@ -49,7 +49,7 @@ pipeline {
         }
         stage('Checkout simple-sal') {
             steps {
-                checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: 'develop']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'simple_sal']], userRemoteConfigs: [[credentialsId: '14e4c262-1fb1-4b73-b395-5fe617420c85', url: 'https://github.com/lsst-camera-ccs/org-lsst-camera-simple-sal.git']]]     
+                checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: 'develop']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'simple_sal']], userRemoteConfigs: [[credentialsId: '2f201490-cd26-46b6-9fd3-193560c72140', url: 'https://github.com/lsst-camera-ccs/org-lsst-camera-simple-sal.git']]]     
             }
         }
         stage("Build SAL runtime assets") {
