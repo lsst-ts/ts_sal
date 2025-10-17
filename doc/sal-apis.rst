@@ -87,8 +87,6 @@ Application Programming Interfaces
 
   * `MTDomeTrajectory APIs <apiDocumentation/SAL_MTDomeTrajectory/index.html>`_ : The CSC for the Main Telescope Dome Trajectory
 
-  * `MTEEC APIs <apiDocumentation/SAL_MTEEC/index.html>`_ : The CSC for the Environmental Enclosure Component
-
   * `MTHeaderService APIs <apiDocumentation/SAL_MTHeaderService/index.html>`_ : HeaderService for MT
 
   * `MTHexapod APIs <apiDocumentation/SAL_MTHexapod/index.html>`_ : The CSC for both the Camera and M2 Hexapod

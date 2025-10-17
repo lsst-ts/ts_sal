@@ -9,13 +9,14 @@ def postResults() {
 
 properties(
     [
-    buildDiscarder
-        (logRotator (
+    buildDiscarder(
+        logRotator (
             artifactDaysToKeepStr: '',
             artifactNumToKeepStr: '',
             daysToKeepStr: '14',
             numToKeepStr: '10'
-        ) ),
+		)
+	),
     disableConcurrentBuilds()
     ]
 )
@@ -24,11 +25,10 @@ pipeline {
         docker {
             image 'lsstts/salobj:develop'
             alwaysPull true
-            args "--entrypoint='' --network=kafka"
+            args "--entrypoint=''"
         }
     }
     environment {
-        network_name = "kafka"
         container_name = "c_${BUILD_ID}_${JENKINS_NODE_COOKIE}"
         work_branches = "${GIT_BRANCH} ${CHANGE_BRANCH} develop"
         LSST_IO_CREDS = credentials("lsst-io")
