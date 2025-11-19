@@ -144,8 +144,11 @@ proc getAvroMethod { item } {
 
 proc getAvroNamespace { } {
 global LSST_TOPIC_SUBNAME
-  if { $LSST_TOPIC_SUBNAME == "sal" } { return lsst.sal. }
-  return [set LSST_TOPIC_SUBNAME]_
+  # FIXED: Always use lsst.<subname>. format to match Python salobj
+  # This ensures C++ and Python code use the same topic names
+  # Previous behavior: sal → lsst.sal., others → <subname>_
+  # New behavior: ALL → lsst.<subname>.
+  return "lsst.[set LSST_TOPIC_SUBNAME]."
 }
 
 set SAL_WORK_DIR $env(SAL_WORK_DIR)

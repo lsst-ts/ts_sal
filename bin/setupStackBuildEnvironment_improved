@@ -1,0 +1,361 @@
+#!/bin/bash
+# Setup script for SAL Stack-10 build environment (Container/Conda optimized)
+# For detailed explanation of environment variables, see: SAL_ENV_VARIABLES.md
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+echo "##### Setting up SAL Stack-10 build environment (Improved for Container/Conda)"
+
+export MAVEN_RELEASE=3.9.9
+export AVRO_RELEASE=1.12.0
+export BOOST_RELEASE=
+export JDK_RELEASE=23
+export KAFKA_RELEASE=7.6
+# JACKSON_RELEASE: Used when generating Java code, e.g., salgenerator MTMount sal java
+export JACKSON_RELEASE=2.15.2
+export LIBRDKAFKA_RELEASE=2.8.0
+export JAVA_HOME=$CONDA_PREFIX/lib/jvm
+
+# LSST_SDK_INSTALL: Use existing value if set, otherwise default to ts_sal location
+#                   Points to the ts_sal repository.
+export LSST_SDK_INSTALL=${LSST_SDK_INSTALL:-/home/saluser/repos/ts_sal}
+
+# LSST_SAL_PREFIX: Where to install libraries and headers
+# Priority:
+#   1. Use LSST_SAL_PREFIX if already set
+#   2. Use CONDA_PREFIX if writable
+#   3. Fall back to LSST_SDK_INSTALL if CONDA_PREFIX is not writable
+if [ -n "$LSST_SAL_PREFIX" ]; then
+    echo "Using pre-set LSST_SAL_PREFIX: $LSST_SAL_PREFIX"
+elif [ -w "$CONDA_PREFIX/lib" ] || [ "$(id -u)" -eq 0 ]; then
+    export LSST_SAL_PREFIX=$CONDA_PREFIX
+    echo "Using CONDA_PREFIX as LSST_SAL_PREFIX: $LSST_SAL_PREFIX"
+else
+    export LSST_SAL_PREFIX=$LSST_SDK_INSTALL
+    echo "CONDA_PREFIX not writable, using LSST_SDK_INSTALL as LSST_SAL_PREFIX: $LSST_SAL_PREFIX"
+    echo "WARNING: Libraries will be installed to ts_sal directory instead of conda environment"
+fi
+
+# Check if we need sudo (set globally)
+if command -v sudo >/dev/null 2>&1 && [ "$(id -u)" -ne 0 ]; then
+    SUDO_CMD="sudo"
+else
+    SUDO_CMD=""
+fi
+
+# Function to check if we're in a container environment
+is_container() {
+    [ -f /.dockerenv ] || [ -f /run/.containerenv ]
+}
+
+# Function to check if conda is available
+check_conda() {
+    if command -v conda >/dev/null 2>&1; then
+        echo "Conda found in PATH"
+        return 0
+    elif [ -f "/opt/lsst/software/stack/conda/bin/conda" ]; then
+        echo "Conda found at /opt/lsst/software/stack/conda/bin/conda"
+        export PATH="/opt/lsst/software/stack/conda/bin:$PATH"
+        return 0
+    else
+        echo "Conda not found"
+        return 1
+    fi
+}
+
+# Function to install system dependencies
+install_system_deps() {
+    echo "##### Installing system dependencies..."
+    
+    # Check if we need sudo
+    if command -v sudo >/dev/null 2>&1; then
+        SUDO_CMD="sudo"
+    else
+        SUDO_CMD=""
+    fi
+    
+    # Install required packages
+    if command -v dnf >/dev/null 2>&1; then
+        $SUDO_CMD dnf install -y gcc-c++ cmake jansson-devel libcurl-devel boost-devel git make rsync
+    elif command -v yum >/dev/null 2>&1; then
+        $SUDO_CMD yum install -y gcc-c++ cmake jansson-devel libcurl-devel boost-devel git make rsync
+    elif command -v apt-get >/dev/null 2>&1; then
+        $SUDO_CMD apt-get update && $SUDO_CMD apt-get install -y g++ cmake libjansson-dev libcurl4-openssl-dev libboost-all-dev git make rsync
+    else
+        echo "Warning: No supported package manager found. Please install gcc-c++, cmake, jansson-devel, libcurl-devel, boost-devel, git, make, rsync manually."
+    fi
+}
+
+# Function to install conda packages
+install_conda_packages() {
+    echo "##### Installing conda packages..."
+    conda install -y avro avrocpp libboost librdkafka fmt snappy jansson catch2 maven yaml-cpp spdlog gdb strace lsst-ts-xml
+}
+
+# Function to build Avro C library
+build_avro_c() {
+    echo "##### Building Avro C library..."
+    
+    TEMP_DIR=$(mktemp -d)
+    cd $TEMP_DIR
+    
+    curl -fsSLO https://archive.apache.org/dist/avro/avro-${AVRO_RELEASE}/avro-src-${AVRO_RELEASE}.tar.gz
+    tar xzf avro-src-${AVRO_RELEASE}.tar.gz
+    cd avro-src-${AVRO_RELEASE}/lang/c
+    
+    # Copy C++ impl headers used by SAL wrappers
+    $SUDO_CMD mkdir -p $LSST_SAL_PREFIX/include
+    $SUDO_CMD cp -r ../../lang/c++/impl $LSST_SAL_PREFIX/include/.
+    
+    ./cmake_avrolib.sh
+    
+    # Handle both lib and lib64 directories
+    echo "Looking for built libraries..."
+    if [ -d "build/avrolib/lib64" ]; then
+        echo "Found lib64 directory, copying libraries..."
+        cp -fv build/avrolib/lib64/lib* $LSST_SAL_PREFIX/lib/. || {
+            echo "Error: Failed to copy from lib64"
+            ls -la build/avrolib/lib64/
+            exit 1
+        }
+    elif [ -d "build/avrolib/lib" ]; then
+        echo "Found lib directory, copying libraries..."
+        cp -fv build/avrolib/lib/lib* $LSST_SAL_PREFIX/lib/. || {
+            echo "Error: Failed to copy from lib"
+            ls -la build/avrolib/lib/
+            exit 1
+        }
+    else
+        echo "Error: Neither lib nor lib64 directory found!"
+        ls -la build/avrolib/
+        exit 1
+    fi
+    
+    # Copy headers
+    if [ -d "build/avrolib/include" ]; then
+        echo "Copying Avro C headers..."
+        cp -rv build/avrolib/include/* $LSST_SAL_PREFIX/include/.
+    fi
+    
+    # Verify installation
+    echo "Verifying Avro C installation..."
+    if ls $LSST_SAL_PREFIX/lib/libavro* 1>/dev/null 2>&1; then
+        echo "SUCCESS: Avro libraries installed:"
+        ls -lh $LSST_SAL_PREFIX/lib/libavro*
+    else
+        echo "ERROR: No libavro libraries found in $LSST_SAL_PREFIX/lib"
+        exit 1
+    fi
+    
+    cd /
+    rm -rf $TEMP_DIR
+}
+
+# Function to build Avro C++ library (includes avrogencpp tool)
+# NOTE: This build-from-source is provided as a fallback option.
+# RECOMMENDED: Use 'conda install -y avro avrocpp' instead - faster and pre-patched.
+#
+# CONTEXT: Avro 1.12.0 + Boost 1.86.0 Compatibility Issue
+# - Avro 1.12.0 (2023) expects Boost CRC to return uint32_t (old API)
+# - Boost 1.86.0 (2024) changed CRC return type to unsigned long (improved portability)
+# - This causes harmless type conversion warnings that fail with -Werror
+# - The conversion is safe (CRC-32 values always fit in 32 bits)
+# - Conda's avrocpp package is pre-patched to handle this
+build_avro_cpp() {
+    echo "##### Building Avro C++ library and avrogencpp tool..."
+    
+    TEMP_DIR=$(mktemp -d)
+    cd $TEMP_DIR
+    
+    curl -fsSLO https://archive.apache.org/dist/avro/avro-${AVRO_RELEASE}/avro-src-${AVRO_RELEASE}.tar.gz
+    tar xzf avro-src-${AVRO_RELEASE}.tar.gz
+    cd avro-src-${AVRO_RELEASE}/lang/c++
+    
+    # Patch CMakeLists.txt to remove -Werror flags before building
+    # This allows compilation despite Boost 1.86.0 CRC return type changes
+    echo "Patching CMakeLists.txt to remove -Werror..."
+    if [ -f CMakeLists.txt ]; then
+        sed -i.bak 's/-Werror//g' CMakeLists.txt
+        sed -i 's/add_compile_options.*-Werror.*//g' CMakeLists.txt
+        grep -i werror CMakeLists.txt || echo "  -Werror flags removed successfully"
+    fi
+    
+    # Build Avro C++ using cmake
+    mkdir -p build
+    cd build
+    
+    # Set compiler flags to disable -Werror and conversion warnings
+    cmake .. \
+        -DCMAKE_INSTALL_PREFIX=$LSST_SAL_PREFIX \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_CXX_STANDARD=17 \
+        -DCMAKE_CXX_FLAGS="-Wno-error -Wno-conversion -Wno-sign-conversion"
+    
+    make -j$(nproc)
+    make install
+    
+    echo "Verifying Avro C++ installation..."
+    if [ -f "$LSST_SAL_PREFIX/bin/avrogencpp" ]; then
+        echo "SUCCESS: avrogencpp installed:"
+        ls -lh $LSST_SAL_PREFIX/bin/avrogencpp
+    else
+        echo "WARNING: avrogencpp not found in $LSST_SAL_PREFIX/bin"
+    fi
+    
+    if ls $LSST_SAL_PREFIX/lib/libavrocpp* 1>/dev/null 2>&1; then
+        echo "SUCCESS: Avro C++ libraries installed:"
+        ls -lh $LSST_SAL_PREFIX/lib/libavrocpp*
+    else
+        echo "WARNING: No libavrocpp libraries found"
+    fi
+    
+    cd /
+    rm -rf $TEMP_DIR
+}
+
+# Function to build libserdes (C and C++) with C++17
+after_libserdes_install_copy() {
+    echo "##### Copying libserdes artifacts into ts_sal tree..."
+    $SUDO_CMD mkdir -p $LSST_SDK_INSTALL/lib $LSST_SDK_INSTALL/include
+    $SUDO_CMD cp -f $LSST_SAL_PREFIX/lib/libserdes*.so* $LSST_SDK_INSTALL/lib/ 2>/dev/null || true
+    $SUDO_CMD cp -f $LSST_SAL_PREFIX/lib/libserdes*.a $LSST_SDK_INSTALL/lib/ 2>/dev/null || true
+    $SUDO_CMD cp -rf $LSST_SAL_PREFIX/include/libserdes/ $LSST_SDK_INSTALL/include/ 2>/dev/null || true
+}
+
+copy_dep_libs_to_ts_sal() {
+    echo "##### Copying Avro and librdkafka dependencies into ts_sal tree..."
+    $SUDO_CMD mkdir -p $LSST_SDK_INSTALL/lib
+    # Avro C & C++
+    $SUDO_CMD cp -f $LSST_SAL_PREFIX/lib/libavro*.so* $LSST_SDK_INSTALL/lib/ 2>/dev/null || true
+    $SUDO_CMD cp -f $LSST_SAL_PREFIX/lib/libavro*.a   $LSST_SDK_INSTALL/lib/ 2>/dev/null || true
+    $SUDO_CMD cp -f $LSST_SAL_PREFIX/lib/libavrocpp*.so* $LSST_SDK_INSTALL/lib/ 2>/dev/null || true
+    $SUDO_CMD cp -f $LSST_SAL_PREFIX/lib/libavrocpp*.a   $LSST_SDK_INSTALL/lib/ 2>/dev/null || true
+    # librdkafka C & C++
+    $SUDO_CMD cp -f $LSST_SAL_PREFIX/lib/librdkafka*.so* $LSST_SDK_INSTALL/lib/ 2>/dev/null || true
+    $SUDO_CMD cp -f $LSST_SAL_PREFIX/lib/librdkafka*.a   $LSST_SDK_INSTALL/lib/ 2>/dev/null || true
+    # Optional Boost bits used indirectly (best-effort)
+    $SUDO_CMD cp -f $LSST_SAL_PREFIX/lib/libboost_*.so* $LSST_SDK_INSTALL/lib/ 2>/dev/null || true
+}
+
+build_libserdes_cpp17() {
+    echo "##### Building libserdes (C and C++) with C++17..."
+    
+    TEMP_DIR=$(mktemp -d)
+    cd $TEMP_DIR
+    
+    # Prefer an existing extracted dir if present (user-provided tag)
+    if [ -d "/tmp/libserdes-7.9.3-rc250819123240" ]; then
+        echo "Using existing /tmp/libserdes-7.9.3-rc250819123240"
+        cd /tmp/libserdes-7.9.3-rc250819123240
+    else
+        echo "Cloning libserdes..."
+        git clone https://github.com/confluentinc/libserdes
+        cd libserdes
+    fi
+    
+    export LD_LIBRARY_PATH=$LSST_SAL_PREFIX/lib:$LD_LIBRARY_PATH
+    export CPPFLAGS="-I$LSST_SAL_PREFIX/include"
+    export CXX="g++ -std=c++17"
+    export CXXFLAGS="-std=c++17"
+    
+    ./configure --prefix=$LSST_SAL_PREFIX \
+                --includedir=$LSST_SAL_PREFIX/include \
+                --libdir=$LSST_SAL_PREFIX/lib \
+                --CXXFLAGS="-std=c++17"
+    
+    # Remove trailing C++11 forced by mklove and ensure final flag is C++17
+    if [ -f Makefile.config ]; then
+        sed -i 's/--std=c++11//g' Makefile.config || true
+        echo 'CXXFLAGS+= -std=c++17' >> Makefile.config
+    fi
+    
+    make clean
+    make -j$(nproc)
+    $SUDO_CMD make install
+    
+    after_libserdes_install_copy
+    copy_dep_libs_to_ts_sal
+    
+    cd /
+    rm -rf $TEMP_DIR
+}
+
+# Function to set up environment variables
+setup_environment() {
+    echo "##### Setting up environment variables..."
+    
+    # Core SAL environment (paths, compilers, Avro, etc.)
+    source "${SCRIPT_DIR}/salenv_paths.sh"
+    export SAL_CPPFLAGS=-m64
+    
+    if [ -f "$SAL_HOME/salenv.sh" ]; then
+        # shellcheck disable=SC1090
+        . "$SAL_HOME/salenv.sh"
+    fi
+
+    # Kafka env needed by salgenerator/SAL
+    if command -v ip >/dev/null 2>&1; then
+        export LSST_KAFKA_IP=$(ip route get 1 | awk '{print $7;exit}')
+    fi
+    [ -z "$LSST_KAFKA_IP" ] && export LSST_KAFKA_IP=127.0.0.1
+    export LSST_SCHEMA_REGISTRY_URL=${LSST_SCHEMA_REGISTRY_URL:-http://localhost:8081}
+    export LSST_KAFKA_SCHEMA_REGISTRY="$LSST_SCHEMA_REGISTRY_URL"
+    export LSST_KAFKA_PREFIX=${LSST_KAFKA_PREFIX:-sal}
+
+    source "${SCRIPT_DIR}/salenv_kafka.sh"
+}
+
+# Main execution
+main() {
+    echo "Starting improved SAL Stack-10 build environment setup..."
+    
+    if is_container; then
+        echo "Container environment detected"
+    fi
+    
+    if ! check_conda; then
+        echo "Error: Conda is required but not found"
+        exit 1
+    fi
+    
+    mkdir -p $HOME/external-packages
+    
+    install_system_deps
+    install_conda_packages
+    
+    build_avro_c
+    build_libserdes_cpp17
+    
+    setup_environment
+    
+    echo ""
+    echo "=========================================="
+    echo "SAL Stack-10 build environment setup complete!"
+    echo "=========================================="
+    echo ""
+    echo "Environment variables set:"
+    echo "  SAL_HOME: $SAL_HOME"
+    echo "  SAL_WORK_DIR: $SAL_WORK_DIR"
+    echo "  TS_SAL_DIR: $TS_SAL_DIR"
+    echo "  AVRO_HOME: $AVRO_HOME"
+    echo "  AVRO_RELEASE: $AVRO_RELEASE"
+    echo "  AVRO_INCL: $AVRO_INCL"
+    echo ""
+    echo "Libraries installed:"
+    echo "  - Avro (Python, C++, C)"
+    echo "  - librdkafka"
+    echo "  - libserdes (C and C++17)"
+    echo "  - Boost, fmt, snappy, jansson, etc."
+    echo ""
+    echo "To use this environment in future sessions, run:"
+    echo "  export PATH=/opt/lsst/software/stack/conda/bin:\$PATH"
+    echo "  source $SAL_HOME/salenv.sh"
+    echo "  export TS_SAL_DIR=$TS_SAL_DIR"
+    echo "  export AVRO_HOME=$AVRO_HOME"
+    echo "  export AVRO_INCL=$AVRO_INCL"
+    echo "  export SAL_WORK_DIR=$SAL_WORK_DIR"
+    echo "=========================================="
+}
+
+# Run main function
+main "$@"
