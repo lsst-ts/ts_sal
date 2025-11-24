@@ -8,7 +8,7 @@ BINARIES := $(patsubst %.cpp,%,$(TEST_SRCS))
 DEPS := $(patsubst %.cpp,%.cpp.d,$(TEST_SRCS))
 JUNIT_FILES := $(shell ls *.xml 2>/dev/null)
 
-CPP := g++ -std=c++14 -Wall -fmessage-length=0 -g
+CXX ?= g++ -std=c++14 -Wall -fmessage-length=0 -g
 
 CFLAGS := \
 	-I/usr/local/include \
@@ -44,12 +44,12 @@ clean:
 
 %.cpp.o: %.cpp.d
 	@echo '[CPP] $(patsubst %.d,%,$<)'
-	${co}$(CPP) $(CFLAGS) -c -fmessage-length=0 -o $@ $(patsubst %.d,%,$<)
+	${co}$(CXX) $(CFLAGS) -c -fmessage-length=0 -o $@ $(patsubst %.d,%,$<)
 
 %.cpp.d: %.cpp
 	@echo '[DPP] $<'
-	${co}$(CPP) $(CFLAGS) -M $< -MF $@ -MT '$(patsubst %.cpp,%.o,$<) $@'
+	${co}$(CXX) $(CFLAGS) -M $< -MF $@ -MT '$(patsubst %.cpp,%.o,$<) $@'
 
 ${BINARIES}: %: %.cpp.o
 	@echo '[TPP] $<'
-	${co}$(CPP) -o $@ $(LIBS_FLAGS) $(CFLAGS) $^ ${LIBS}
+	${co}$(CXX) -o $@ $(LIBS_FLAGS) $(CFLAGS) $^ ${LIBS}
