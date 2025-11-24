@@ -46,7 +46,7 @@ Changes for 9.0.0
 * First version for AlmaLinux 9 and java-17-zulu-openjdk
 * Seperate ts_sal_utils and ts_sal_utilsKafka RPMS
 
-==================
+=================
 Changes for 8.0.0
 =================
 
@@ -109,7 +109,7 @@ Changes for 7.0.0
 
 * Remove deprecated python (boost and pybind11) API generation
 
-* Rename SAL_actors.h to SAL_,CSC._actors.h and add to RPMs
+* Rename SAL_actors.h to SAL_<CSC>_actors.h and add to RPMs
 
 * Remove deprecated IDL_Type tag processing, default is no-limit for strings
 

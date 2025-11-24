@@ -2,8 +2,8 @@
 
 |image0|
 
-Middleware Overview
--------------------
+Middleware Overview (Legacy DDS)
+---------------------------------
 
 This document describes the middleware (software stack) used for
 subsystem communications. The publish-subscribe architecture is used as
@@ -421,9 +421,8 @@ This specification defines the message formats, interpretation, and
 usage scenarios that underlie all messages exchanged by applications
 that use the RTPS protocol.
 
-**********************************************
-***********TODO - Add Kafka instroduction here
-**********************************************
+.. note::
+   **TODO**: Add Kafka introduction here
 
 
 General policies

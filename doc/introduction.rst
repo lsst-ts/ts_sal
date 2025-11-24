@@ -2,8 +2,8 @@
 
 |image0|
 
-Middleware Overview
--------------------
+Middleware Overview (Kafka)
+----------------------------
 
 This document describes the middleware (software stack) used for
 subsystem communications. The publish-subscribe architecture is used as
@@ -218,10 +218,10 @@ Invocation with no arguments will result in display of the on-line help.
 
 
 
-**********************************************
-***********TODO - Add Kafka instroduction here
-**********************************************
- Kafka is a distributed system consisting of servers and clients that communicate via a high-performance TCP network protocol. It can be deployed on bare-metal hardware, virtual machines, and containers in on-premise as well as cloud environments.
+.. note::
+   **TODO**: Add Kafka introduction here
+
+Kafka is a distributed system consisting of servers and clients that communicate via a high-performance TCP network protocol. It can be deployed on bare-metal hardware, virtual machines, and containers in on-premise as well as cloud environments.
 
 Servers: Kafka is run as a cluster of one or more servers that can span multiple datacenters or cloud regions. Some of these servers form the storage layer, called the brokers. Other servers run Kafka Connect to continuously import and export data as event streams to integrate Kafka with your existing systems such as relational databases as well as other Kafka clusters. To let you implement mission-critical use cases, a Kafka cluster is highly scalable and fault-tolerant: if any of its servers fails, the other servers will take over their work to ensure continuous operations without any data loss.
 
@@ -298,7 +298,7 @@ Hiding the addresses of protected devices has become an increasingly
 important defense against network reconnaissance.
 
 Kafka namespace
-^^^^^^^^^^^
+^^^^^^^^^^^^^^^
 
 The namespace is the basic construct used to bind individual applications
 together for communication. A distributed application can elect to use a
@@ -527,5 +527,6 @@ bandwidth and latency requirements. All test results are archived to the
 facility database for future examination.
 
 .. |image0| image:: LSST_logo.gif
+.. |image1| image:: omg.png
 .. |image2| image:: statemachine.png
 
