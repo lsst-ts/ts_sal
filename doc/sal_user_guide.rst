@@ -410,9 +410,6 @@ will create and build a maven project and it in
 
     $SAL_WORK_DIR/maven/MTMount_[sal-version-number]
 
-.. code::
-
-
 salgenerator Options
 --------------------
 The salgenerator executes a variety of processes, depending upon the options selected.
