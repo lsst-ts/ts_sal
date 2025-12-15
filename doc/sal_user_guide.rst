@@ -8,7 +8,7 @@ Introduction
 This document briefly describes how to use the SAL SDK to generate application level code to utilize the supported services (Commanding, Telemetry and Events).
 
 The SAL SDK should be installed on a modern (x86_64) Linux computer.
-The current baseline recommend configuration is 64-bit AlmaLinux 8.x.
+The current baseline recommend configuration is 64-bit AlmaLinux 9.x.
 
 The following packages should also be installed prior to working with the SDK (use either the rpm or yum package managers for AlmaLinux, and apt-get, dpkg, or synaptic for Debian based systems.
 Installation of system packages must be done using sudo (eg sudo yum install, or sudo apt-get install).
@@ -325,7 +325,6 @@ It also produces .jar libraries to test publishing and subscribing to all define
 
 Simple example scripts to perform the major functions can be found later in this document.
 
-The "labview" keyword indicates that a LabVIEW compatible shared library and Monitor task should be built (the "sal cpp" step must previously have been run).
 
 The "maven" keyword indicates that a Maven project should be built for the subsystem.
 This will be placed in $SAL_WORK_DIR/maven/[subsystem]_[version], The "sal java" step must previously have been run).
@@ -417,10 +416,8 @@ The salgenerator executes a variety of processes, depending upon the options sel
 .. code::
 
     validate - check the XML files, generate validated IDL
-    labview - generate labVIEW interface
     sal [lang] - generate SAL C++, Java or wrappers
     lib - generate the SAL shared library for a subsystem
-    icd - generate ICD document
     maven - generate a maven project (per subsystem)
     verbose - be more verbose ;-)
 
@@ -439,8 +436,6 @@ The sample code provides a simple command line test for
     generating and logging for each defined Event type
 
 
-The procedure for generating test VI's for the LabVIEW interface is detailed in Appendix X.
-At present this is an interactive process, involving lots of LabVIEW dialogs.
 
 Testing
 =======
@@ -461,12 +456,9 @@ shoud produce
         salgenerator subsystem flag(s)
         where flag(s) may be
             validate - check the XML Telemetry/Command/LogEvent definitions
-            sal - generate SAL wrappers for cpp, java, isocpp
+            sal - generate SAL wrappers for cpp, java
             lib - generate shared library
-            labview - generate LabVIEW low-level interface
             maven - generate a maven repository
-            icd - generate ICD document
-            link - link a SAL program
             verbose - be more verbose ;-;
 
 Verify tha the network interface is configured and operating correctly.
@@ -628,7 +620,7 @@ and the following include paths will be required
 
     where -subsys- is the subsystem name e.g. hexapod
 
-The following libraries are required when linking an application to use the SAL and DDS middleware.
+The following libraries are required when linking an application to use the SAL and Kafka middleware.
 For an application that communicates with multiple subsystems, the SAL libraries for each must be included.
 
 .. code::
@@ -643,115 +635,4 @@ Appropriate linker path directives are
 
     -L$(LSST_SAL_PREFIX)/lib -L$(SAL_HOME)/lib
 
-LabVIEW test VI generation
-==========================
-If you have multiple LabVIEW versions installed, or if LabVIEW is installed in a non default location, you can use the environment variable LABVIEW_HOME to control where the SDK looks for the LabVIEW header files.
 
-.. code::
-
-    export LABVIEW_HOME=/opt/natinst
-
-would expect to find headers in ``/opt/natinst/LabVIEW_20[xx]_64``
-Run the salgenerator steps in order
-
-.. prompt:: bash
-
-    salgenerator [subsystem] validate
-    salgenerator [subsystem]  sal cpp
-    salgenerator [subsystem] labview
-
-The generation of the LabVIEW test VI's is an interactive process.
-The LabVIEW Shared library import is used to automatically generate VI's to interact with the Salgenerator produced SALLV_[subsystem].so library.
-
-.. note::
-    **It is vital to COMPLETELY DELETE the entire destination directory and it's contents so that wizard can create its output directory afresh.
-    For example if you choose to place the results in** ``/home/me/sal/test/tcs/labview/lib`` **, then you should run the following command BEFORE starting the LabVIEW tools.**
-
-    .. prompt:: bash
-
-        rm -rf /home/me/sal/test/tcs/labview/lib
-
-1. Start Labview and select :menuselection:`Tools --> Import --> Shared Library (.so)` option.
-
-    .. image:: /images/sal_user_guide/labview_test_vi_generation_1.png
-
-2. Choose either :guilabel:`New` or :guilabel:`Update` option and specify the path to the library and the click :guilabel:`Next`.
-   Proceed through the rest of the dialogs as illustrated below.
-   Generally selecting the default and clicking :guilabel:`Next`  is appropriate.
-
-   The only non-standard option is in the :guilabel:`Configure Include Paths` dialog where you must enter the
-
-   .. code::
-
-        BUILD_FOR_LV=1
-
-   Option in the Preprocessor options section.
-
-   .. image:: /images/sal_user_guide/labview_test_vi_generation_2.png
-
-   .. image:: /images/sal_user_guide/labview_test_vi_generation_3.png
-
-   .. image:: /images/sal_user_guide/labview_test_vi_generation_4.png
-
-   .. image:: /images/sal_user_guide/labview_test_vi_generation_5.png
-
-   .. image:: /images/sal_user_guide/labview_test_vi_generation_6.png
-
-   .. image:: /images/sal_user_guide/labview_test_vi_generation_7.png
-
-   .. image:: /images/sal_user_guide/labview_test_vi_generation_8.png
-
-   .. image:: /images/sal_user_guide/labview_test_vi_generation_9.png
-
-   .. image:: /images/sal_user_guide/labview_test_vi_generation_10.png
-
-   When the LabVIEW import library wizard has completed it is necessary to run another LSST provided VI to finish the generation process.
-
-   Use the LabVIEW :menuselection:`File --> Open` dialog to locate ts_SALLabVIEW/main.vi
-
-   .. image:: /images/sal_user_guide/labview_test_vi_generation_11.png
-
-   Click :guilabel:`OK` to run the main.vi VI.
-   It will open a mostly empty interface.
-
-   .. image:: /images/sal_user_guide/labview_test_vi_generation_12.png
-
-   Click the :guilabel:`Run` icon.
-
-   .. image:: /images/sal_user_guide/labview_test_vi_generation_13.png
-
-   Click :guilabel:`OK` and select the subsystem IDL file.
-   The correct file should be found in the [subsystem]/labview directory of the SAL_WORK_DIR tree.
-
-   .. image:: /images/sal_user_guide/labview_test_vi_generation_14.png
-
-   Click :guilabel:`OK` to select it.
-
-   .. image:: /images/sal_user_guide/labview_test_vi_generation_15.png
-
-   Click :guilabel:`OK`
-
-   Another file dialog then appears for you to select the .lvlib containing the VI's.
-   This should be located in the [subsystem]/labview/lib directory of the SAL_WORK_DIR tree.
-
-   .. image:: /images/sal_user_guide/labview_test_vi_generation_16.png
-
-   Click :guilabel:`OK`
-
-   There will then be an extensive period where multiple windows flash on the screen as each VI is individually processed.
-   Finally a library contents window will appear.
-
-   .. image:: /images/sal_user_guide/labview_test_vi_generation_17.png
-
-   Another extensive period will follow where each VI is processed again (you will see them being removed and re-added to the list one-by-one).
-   Finally the process completes and the main LabVIEW window will reappear.
-
-   Once the VI's has been built, you can manually test them by running them against either each other, or against the C++/Java test programs.
-
-   Regardless of which option you choose, the LabVIEW environment must be set up first by
-
-   1. Running the SALLV_[subsytem]_Monitor daemon in a terminal (this executable manages the shared memory used to mediate the transfer of data to and from LabVIEW.
-      The daemon will have been built in the [SAL_WORK_DIR]/[subsystem]/labview directory.
-   2. Run the [subsystem]_shm_connect VI and leave it open
-   3. Depending upon the required function, an initialization VI should be run i.e. for command receivers, run [subsystem]_shm_salProcessor_[name], for event receivers, run [subsystem]_shm_salEvent_[name], and for Telemetry receivers, run [subsystem]_shm_salTelemetrySub.
-   4. After an application has completed all it's SAL mediated communications, it is essential to call the [subsystem]_shm_release VI to clean it up.
