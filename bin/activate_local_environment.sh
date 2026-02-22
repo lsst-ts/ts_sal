@@ -14,6 +14,7 @@ LSST_TOPIC_SUBNAME="${LSST_TOPIC_SUBNAME:-test}"
 # Place dependencies under ts_sal/local (persistent on host volume)
 PERSIST_PREFIX="${CI_PERSIST_PREFIX:-${WORKSPACE}/local}"
 mkdir -p "${PERSIST_PREFIX}"/{bin,lib,include}
+
 echo "Workspace         : ${WORKSPACE}"
 echo "ts_xml directory  : ${TS_XML_DIR}"
 echo "simple_sal dir    : ${SIMPLE_SAL_DIR}"
@@ -31,6 +32,14 @@ export LSST_SAL_PREFIX="${PERSIST_PREFIX}"
 export TS_SAL_DIR="${WORKSPACE}"
 export TS_XML_DIR="${TS_XML_DIR}"
 export LSST_TOPIC_SUBNAME="${LSST_TOPIC_SUBNAME}"
+
+# Source setup functions (for ensure_local_conda_symlinks)
+source "$SCRIPT_DIR/setup_functions.sh"
+
+# Ensure all conda symlinks exist (headers + libraries)
+# These may have been lost if local/ was partially rebuilt
+ensure_local_conda_symlinks
+
 # Source the standard SAL environment scripts
 source "$SCRIPT_DIR/salenv_complete.sh"
 
@@ -44,4 +53,3 @@ echo "PATH includes:    $LSST_SAL_PREFIX/bin"
 echo "LD_LIBRARY_PATH:  $LSST_SAL_PREFIX/lib"
 echo ""
 echo "Ready to use SAL tools and libraries!"
-
