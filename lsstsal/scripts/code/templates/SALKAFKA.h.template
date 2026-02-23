@@ -220,6 +220,8 @@
       int cmdevtFlushMS;
 ///   Holds the private_identity of this SAL Object, set at creation
       char CSC_identity[128];
+///   Holds the target CSC name (subsystem) for this SAL Object, used in group.id construction
+      char target_csc_name[128];
     public:
 
 /** Constructor for the SAL_SALData object.

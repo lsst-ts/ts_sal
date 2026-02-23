@@ -7,12 +7,15 @@
 #include <time.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <string>
+#include <algorithm>
 #include "SAL_SALData.h"
 #include "SAL_SALData_actors.h"
 
 SAL_SALData::SAL_SALData()
 {
    strncpy(CSC_identity, "SALData", 128);
+   strncpy(target_csc_name, "SALData", 128);
    initSalEnvironment(0);
 }
 
@@ -25,6 +28,7 @@ SAL_SALData::SAL_SALData(int aKey, char *identity)
      sprintf(id,"%s",identity);
    }
    strncpy(CSC_identity, id, 128);
+   strncpy(target_csc_name, "SALData", 128);
    initSalEnvironment(aKey);
 }
 
@@ -33,6 +37,7 @@ SAL_SALData::SAL_SALData(int aKey)
    char *id = (char *)malloc(128);
    sprintf(id,"SALData:%d",aKey);
    strncpy(CSC_identity, id, 128);
+   strncpy(target_csc_name, "SALData", 128);
    initSalEnvironment(aKey);
 }
 
@@ -43,6 +48,7 @@ SAL_SALData::SAL_SALData(char *identity)
    } else {
      strncpy(CSC_identity, identity, 128);
    }
+   strncpy(target_csc_name, "SALData", 128);
    initSalEnvironment(0);
 }
 
@@ -146,9 +152,46 @@ void SAL_SALData::initSalEnvironment(int aKey)
     consumerConfiguration->set("sasl.password",securityPassword, errstr);   
   }
   consumerConfiguration->set("value.serializer", "io.confluent.kafka.serializers.KafkaAvroDeserializer", errstr);  // Serialize the Avro object
-  std::string ul = "_";
+  
+  // Build SALOBJ-compatible group.id from CSC_identity and target_csc_name.
+  //
+  // CSC_identity is set by the constructor:
+  //   SAL_X()          -> "X"         (default, same as target)
+  //   SAL_X(1)         -> "X:1"       (indexed, same CSC)
+  //   SAL_X(1,"MTPtg") -> "MTPtg"    (cross-CSC: MTPtg reading X)
+  //
+  // When identity matches the target CSC (default or indexed), the caller
+  // is reading its own topics, so we use user@hostname as the entity.
+  // When identity differs, it was explicitly set by a different CSC,
+  // so we use it directly as the owning CSC name.
+  
+  std::string identityStr = CSC_identity;
+  std::string targetCscStr = target_csc_name;
   std::string randomtag = randomString(15);
-  kafkaGroupId = CSC_identity + ul + randomtag;
+  
+  // Check if identity matches the target CSC (with or without :index suffix)
+  bool isSelfRelated = (identityStr == targetCscStr)
+      || (identityStr.rfind(targetCscStr + ":", 0) == 0);
+  
+  if (!isSelfRelated) {
+    // Cross-CSC: identity was set to a different CSC name
+    kafkaGroupId = identityStr + "-" + targetCscStr + "-" + randomtag;
+  } else {
+    // Self-related default: synthesize user@short-hostname
+    char hostname[256] = {0};
+    gethostname(hostname, sizeof(hostname) - 1);
+    const char* user = getenv("USER");
+    std::string entity = (user ? std::string(user) : std::string("saluser"));
+    entity += "@";
+    entity += hostname;
+    // Strip domain to match SALOBJ behavior
+    auto dotPos = entity.find('.');
+    if (dotPos != std::string::npos) {
+      entity.erase(dotPos);
+    }
+    kafkaGroupId = entity + "-" + targetCscStr + "-" + randomtag;
+  }
+  
   consumerConfiguration->set("group.id",kafkaGroupId, errstr);
   producerConfiguration->set("client.id",CSC_identity, errstr);
 
