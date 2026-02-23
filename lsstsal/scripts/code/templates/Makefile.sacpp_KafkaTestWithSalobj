@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------
 CC            = gcc
 CXX           = g++
-CPPFLAGS      = $(PICFLAGS) $(GENFLAGS) -fpermissive -g $(SAL_CPPFLAGS) -D_REENTRANT -Wall -Wno-switch -Wno-format -I"." -I"$(LSST_SAL_PREFIX)/include" -I"$(LSST_SAL_PREFIX)/include/boost" -I"$(LSST_SAL_PREFIX)/include/avro" -I../../../SALSubsys/cpp/src -I../../../SALSubsys/cpp -I"$(SAL_WORK_DIR)/include" -Wno-write-strings #-DSAL_SUBSYSTEM_ID_IS_KEYED
+CPPFLAGS      = $(PICFLAGS) $(GENFLAGS) -fpermissive -g $(SAL_CPPFLAGS) -D_REENTRANT -Wall -Wno-switch -Wno-format -I"." -I"$(LSST_SAL_PREFIX)/include" -I"$(CONDA_PREFIX)/include" -I"$(LSST_SAL_PREFIX)/include/boost" -I"$(CONDA_PREFIX)/include/boost" -I"$(LSST_SAL_PREFIX)/include/avro" -I"$(CONDA_PREFIX)/include/avro" -I../../../SALSubsys/cpp/src -I../../../SALSubsys/cpp -I"$(SAL_WORK_DIR)/include" -Wno-write-strings #-DSAL_SUBSYSTEM_ID_IS_KEYED
 LD            = $(CXX) $(CCFLAGS) $(CPPFLAGS)
 AR            = ar
 PICFLAGS      = -fPIC
@@ -12,7 +12,7 @@ SHLIBEXT      = .so
 OUTPUT_OPTION = -o "$@"
 COMPILE.c     = $(CC) $(CFLAGS) $(CPPFLAGS) -c
 COMPILE.cc    = $(CXX) $(CCFLAGS) $(CPPFLAGS) -c
-LDFLAGS       = -fPIC -L"." -Wl,-rpath,\$$ORIGIN -L"$(SAL_WORK_DIR)/lib"
+LDFLAGS       = -fPIC -L"." -L"$(LSST_SAL_PREFIX)/lib" -L"$(CONDA_PREFIX)/lib" -Wl,-rpath,\$$ORIGIN -L"$(SAL_WORK_DIR)/lib"
 CCC           = $(CXX)
 MAKEFILE      = Makefile.sacpp_TestWithSalobj
 DEPENDENCIES  = 
@@ -30,7 +30,7 @@ EXEEXT        =
 LIBPREFIX     = lib
 LIBSUFFIX     = 
 GENFLAGS      = -g
-LDLIBS        = -ldl -lrt -lpthread -L"/usr/lib64/boost$(BOOST_RELEASE)" -lboost_filesystem -lboost_iostreams -lboost_program_options -lboost_system $(LSST_SAL_PREFIX)/lib/libserdes++.a $(LSST_SAL_PREFIX)/lib/libserdes.a -L$(LSST_SAL_PREFIX)/lib -lcurl -ljansson -lrdkafka++ -lrdkafka -lavrocpp -lavro -lsasl2
+LDLIBS        = -ldl -lrt -lpthread -lboost_filesystem -lboost_iostreams -lboost_program_options -lboost_regex -lboost_system -lsnappy $(LSST_SAL_PREFIX)/lib/libserdes++.a $(LSST_SAL_PREFIX)/lib/libserdes.a -lcurl -ljansson -lrdkafka++ -lrdkafka -lavrocpp -lavro -lsasl2
 OBJS          =  .obj/sacpp_TestWithSalobj$(OBJEXT) .obj/SAL_Test$(OBJEXT)
 SRC           =  ../src/sacpp_TestWithSalobj.cpp ../src/SAL_Test.cpp
 OBJS2         =  .obj/sacpp_TestWithSalobjTarget$(OBJEXT) .obj/SAL_Test$(OBJEXT)

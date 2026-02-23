@@ -48,6 +48,15 @@ source "${SCRIPT_DIR}/setup_functions.sh"
 # Now run the setup steps, including build_avro_cpp for persistent avrogencpp
 install_system_deps || echo "Warning: System dependencies installation had errors, continuing anyway..." >&2
 install_conda_packages
+
+# Create all conda symlinks (headers + libraries) into local/
+# This is done by ensure_local_conda_symlinks which is called inside:
+#   - build_avro_c (after building libavro, creates lib symlinks)
+#   - build_libserdes_cpp17 (before configure, ensures lib symlinks)
+#   - setup_sal_environment (ensures header symlinks for salgeneratorKafka)
+# But we also call it here explicitly for safety:
+ensure_local_conda_symlinks
+
 build_avro_c
 build_avro_cpp              # Build avrogencpp into persistent local/bin
 build_libserdes_cpp17
@@ -112,4 +121,3 @@ echo ""
 
 # Return to original directory
 cd "$ORIG_DIR"
-

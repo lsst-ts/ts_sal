@@ -61,7 +61,69 @@ install_system_deps() {
 # Function to install conda packages
 install_conda_packages() {
     echo "##### Installing conda packages..."
-    conda install -y avro avrocpp libboost librdkafka fmt snappy jansson catch2 maven yaml-cpp spdlog gdb strace lsst-ts-xml
+    conda install -y avro avrocpp libboost librdkafka fmt snappy jansson catch2 maven yaml-cpp spdlog lsst-ts-xml
+    # Optional debug tools (may fail in some environments due to EUPS post-link scripts)
+    conda install -y gdb strace 2>/dev/null || echo "Note: gdb/strace install skipped (non-essential)"
+}
+
+# ============================================================================
+# ensure_local_conda_symlinks - Create all symlinks from conda into local/
+#
+# When LSST_SAL_PREFIX points to ts_sal/local/ (persistent dev workflow),
+# we need headers and libraries from conda to be findable there.
+# This function creates symlinks for everything SAL needs.
+#
+# Safe to call multiple times - it only creates missing symlinks.
+# Does nothing when LSST_SAL_PREFIX == CONDA_PREFIX (Jenkins workflow).
+# ============================================================================
+ensure_local_conda_symlinks() {
+    local PREFIX="${LSST_SAL_PREFIX:-${CONDA_PREFIX}}"
+    
+    # Skip if installing directly into conda (Jenkins workflow)
+    if [ "$PREFIX" = "$CONDA_PREFIX" ]; then
+        return 0
+    fi
+    
+    # Skip if CONDA_PREFIX is not set
+    if [ -z "$CONDA_PREFIX" ]; then
+        echo "WARNING: CONDA_PREFIX not set, cannot create symlinks"
+        return 1
+    fi
+    
+    mkdir -p "$PREFIX"/{lib,include}
+    
+    echo "##### Ensuring conda symlinks in $PREFIX ..."
+    
+    # --- Header directory symlinks ---
+    for header_dir in boost librdkafka; do
+        if [ -d "${CONDA_PREFIX}/include/${header_dir}" ] && [ ! -e "$PREFIX/include/${header_dir}" ]; then
+            echo "  Header symlink: ${header_dir}/ -> ${CONDA_PREFIX}/include/${header_dir}"
+            ln -sf "${CONDA_PREFIX}/include/${header_dir}" "$PREFIX/include/${header_dir}"
+        fi
+    done
+    
+    # --- Library symlinks (needed by libavro.so and SAL) ---
+    # libavro.so depends on: libjansson, libz, liblzma, libsnappy
+    # libsnappy depends on: libstdc++
+    # SAL links against: librdkafka
+    # Only symlink libraries with shallow dependency trees.
+    # Do NOT symlink librdkafka, libcurl, libsasl2 - these have deep dependency
+    # chains (openssl, nghttp2, libssh2, krb5...) that would require symlinking
+    # half of conda. The linker finds them via -L$CONDA_PREFIX/lib instead.
+    for lib in libjansson libz liblzma libsnappy libstdc++ liblz4; do
+        for suffix in .so .so.*; do
+            for f in "${CONDA_PREFIX}/lib/${lib}"${suffix}; do
+                if [ -f "$f" ] || [ -L "$f" ]; then
+                    local bname
+                    bname=$(basename "$f")
+                    if [ ! -e "$PREFIX/lib/$bname" ]; then
+                        echo "  Library symlink: $bname"
+                        ln -sf "$f" "$PREFIX/lib/$bname"
+                    fi
+                fi
+            done
+        done
+    done
 }
 
 # Function to build Avro C library
@@ -131,6 +193,9 @@ build_avro_c() {
         echo "ERROR: No libavro libraries found in $INSTALL_PREFIX/lib"
         return 1
     fi
+    
+    # Create conda symlinks (libavro.so needs libjansson, libz, etc.)
+    ensure_local_conda_symlinks
     
     popd >/dev/null || cd "$ORIG_DIR"
     rm -rf "$TEMP_DIR"
@@ -239,18 +304,17 @@ copy_dep_libs_to_ts_sal() {
         SUDO_CMD="sudo"
     fi
     
-    echo "##### Copying Avro and librdkafka dependencies into ts_sal tree..."
+    echo "##### Copying Avro dependencies into ts_sal tree..."
     $SUDO_CMD mkdir -p "$SDK_INSTALL/lib"
-    # Avro C & C++
+    # Avro C & C++ (from local build)
     $SUDO_CMD cp -f "$INSTALL_PREFIX/lib/libavro"*.so* "$SDK_INSTALL/lib/" 2>/dev/null || true
     $SUDO_CMD cp -f "$INSTALL_PREFIX/lib/libavro"*.a   "$SDK_INSTALL/lib/" 2>/dev/null || true
     $SUDO_CMD cp -f "$INSTALL_PREFIX/lib/libavrocpp"*.so* "$SDK_INSTALL/lib/" 2>/dev/null || true
     $SUDO_CMD cp -f "$INSTALL_PREFIX/lib/libavrocpp"*.a   "$SDK_INSTALL/lib/" 2>/dev/null || true
-    # librdkafka C & C++
-    $SUDO_CMD cp -f "$INSTALL_PREFIX/lib/librdkafka"*.so* "$SDK_INSTALL/lib/" 2>/dev/null || true
-    $SUDO_CMD cp -f "$INSTALL_PREFIX/lib/librdkafka"*.a   "$SDK_INSTALL/lib/" 2>/dev/null || true
-    # Optional Boost bits used indirectly (best-effort)
-    $SUDO_CMD cp -f "$INSTALL_PREFIX/lib/libboost_"*.so* "$SDK_INSTALL/lib/" 2>/dev/null || true
+    # NOTE: Do NOT copy librdkafka, libcurl, libsasl2 etc. from conda.
+    # These have deep dependency chains (openssl, nghttp2, libssh2, krb5, lz4...)
+    # and must be found by the linker in $CONDA_PREFIX/lib where all their
+    # dependencies also live. Copying them to local/lib breaks the dependency chain.
 }
 
 # Function to build libserdes (C and C++) with C++17
@@ -266,6 +330,9 @@ build_libserdes_cpp17() {
         SUDO_CMD="sudo"
     fi
     
+    # Ensure all conda symlinks exist (library deps needed for configure)
+    ensure_local_conda_symlinks
+    
     TEMP_DIR=$(mktemp -d)
     pushd "$TEMP_DIR" >/dev/null
     
@@ -279,25 +346,66 @@ build_libserdes_cpp17() {
         cd libserdes
     fi
     
-    export LD_LIBRARY_PATH="$INSTALL_PREFIX/lib:$LD_LIBRARY_PATH"
-    export CPPFLAGS="-I$INSTALL_PREFIX/include"
+    # Set up paths for both our local install AND conda dependencies
+    export LIBRARY_PATH="$INSTALL_PREFIX/lib:${CONDA_PREFIX}/lib:${LIBRARY_PATH:-}"
+    export LD_LIBRARY_PATH="$INSTALL_PREFIX/lib:${CONDA_PREFIX}/lib:${LD_LIBRARY_PATH:-}"
+    export CPPFLAGS="-I$INSTALL_PREFIX/include -I${CONDA_PREFIX}/include"
+    export LDFLAGS="-L$INSTALL_PREFIX/lib -L${CONDA_PREFIX}/lib -Wl,-rpath,$INSTALL_PREFIX/lib -Wl,-rpath,${CONDA_PREFIX}/lib"
     export CXX="g++ -std=c++17"
     export CXXFLAGS="-std=c++17"
+    
+    # Only set LIBS when installing to local/ (persistent dev workflow).
+    # In the Jenkins workflow (LSST_SAL_PREFIX == CONDA_PREFIX), libavro's
+    # dependencies are already in the same lib directory, so mklove finds them.
+    # In the local workflow, we need to explicitly link them for the configure check.
+    local EXTRA_LDFLAGS="-L$INSTALL_PREFIX/lib -L${CONDA_PREFIX}/lib"
+    if [ "$INSTALL_PREFIX" != "$CONDA_PREFIX" ]; then
+        export LIBS="-ljansson -lz -lsnappy"
+        EXTRA_LDFLAGS="$EXTRA_LDFLAGS -ljansson -lz -lsnappy"
+    else
+        unset LIBS 2>/dev/null || true
+    fi
+    
+    # Clean any previous build artifacts BEFORE configure
+    make clean 2>/dev/null || true
     
     ./configure --prefix="$INSTALL_PREFIX" \
                 --includedir="$INSTALL_PREFIX/include" \
                 --libdir="$INSTALL_PREFIX/lib" \
-                --CXXFLAGS="-std=c++17"
+                --CXXFLAGS="-std=c++17" \
+                --LDFLAGS="$EXTRA_LDFLAGS"
+    
+    # Verify configure succeeded by checking for config.h
+    if [ ! -f "config.h" ]; then
+        echo "ERROR: configure failed - config.h not generated"
+        echo "Check the configure output above for errors"
+        return 1
+    fi
     
     # Remove trailing C++11 forced by mklove and ensure final flag is C++17
     if [ -f Makefile.config ]; then
         sed -i 's/--std=c++11//g' Makefile.config || true
         echo 'CXXFLAGS+= -std=c++17' >> Makefile.config
+        if [ "$INSTALL_PREFIX" != "$CONDA_PREFIX" ]; then
+            echo "LDFLAGS+= -L${CONDA_PREFIX}/lib -Wl,-rpath,${CONDA_PREFIX}/lib" >> Makefile.config
+        fi
     fi
     
-    make clean
     make -j$(nproc)
     $SUDO_CMD make install
+    
+    # The C++ headers (serdescpp.h, serdescpp-avro.h) are NOT installed by
+    # 'make install' when avro_cpp is disabled during configure.
+    # Install them manually from the source tree - SAL needs them.
+    echo "Installing libserdes C++ headers..."
+    if [ -d "src-cpp" ]; then
+        for hdr in src-cpp/serdescpp.h src-cpp/serdescpp-avro.h; do
+            if [ -f "$hdr" ]; then
+                echo "  Installing: $(basename "$hdr")"
+                $SUDO_CMD cp "$hdr" "$INSTALL_PREFIX/include/libserdes/"
+            fi
+        done
+    fi
     
     after_libserdes_install_copy
     copy_dep_libs_to_ts_sal
@@ -340,5 +448,7 @@ setup_sal_environment() {
     else
         echo "WARNING: ${SCRIPT_DIR}/salenv_kafka.sh not found - Kafka environment may not be set correctly" >&2
     fi
+    
+    # Ensure conda symlinks exist (for salgeneratorKafka header resolution)
+    ensure_local_conda_symlinks
 }
-
