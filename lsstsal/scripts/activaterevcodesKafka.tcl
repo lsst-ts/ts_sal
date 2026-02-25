@@ -24,7 +24,10 @@ set SAL_WORK_DIR $env(SAL_WORK_DIR)
 #
 proc updateRevCodes { subsys } {
 global SAL_WORK_DIR REVCODE
-  set ljson [glob $SAL_WORK_DIR/avro-templates/[set subsys]/[set subsys]_*.json]
+  set ljson [glob -nocomplain $SAL_WORK_DIR/avro-templates/[set subsys]/[set subsys]_*.json]
+  if { [llength $ljson] == 0 } {
+    errorexit "No JSON files found in avro-templates/$subsys/ - cannot generate revcodes (ensure ts_xml is installed and get_component_info ran successfully)"
+  }
   set fmd5 [open $SAL_WORK_DIR/avro-templates/[set subsys]_revCodes.tcl w]
   foreach i [lsort $ljson] {
     set c [lindex [exec md5sum $i] 0]

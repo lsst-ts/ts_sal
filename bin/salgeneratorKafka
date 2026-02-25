@@ -195,6 +195,7 @@ if { $OPTIONS(validate) } {
   set all $TSUBSYSTEMS
   stdlog "Processing $all"
   foreach i $all {
+    exec mkdir -p $SAL_WORK_DIR/avro-templates/[set i]
     if { [file exists $env(TS_XML_DIR)/python/lsst/ts/xml/data/sal_interfaces/$i] } {
       set old ""
       catch {set old [glob $SAL_WORK_DIR/$d/[set i]_*.json]}
@@ -297,7 +298,7 @@ exec mkdir -p .salwork
 set TARGETS ""
 if { $OPTIONS(lib) == 0 || $OPTIONS(generate) == 1 } {
   set matches $TSUBSYSTEMS
-  foreach f [glob $SAL_WORK_DIR/avro-templates/[set matches]/[set matches]_*.json] {
+  foreach f [glob -nocomplain $SAL_WORK_DIR/avro-templates/[set matches]/[set matches]_*.json] {
     set TARGETS "$TARGETS [file tail $f]"
   }
   if { $TARGETS == "" } {

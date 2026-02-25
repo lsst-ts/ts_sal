@@ -17,10 +17,11 @@ CFLAGS := \
 	-I"$(SAL_WORK_DIR)/include" -Wno-write-strings \
 	-I"${CONDA_PREFIX}/include" -I"$(SAL_WORK_DIR)/Test/cpp/src" -I"$(SAL_WORK_DIR)/Script/cpp/src"
 
+SAL_LIB_PREFIX ?= $(if $(LSST_SAL_PREFIX),$(LSST_SAL_PREFIX),$(CONDA_PREFIX))
 LIBS := -L/usr/local/lib64 -lCatch2Main -lCatch2 -L${SAL_WORK_DIR}/lib -lSAL_Test -lSAL_Script \
-	-ldl -lrt -lpthread -L$(CONDA_PREFIX)/lib -L/usr/lib64/boost1.78 -lboost_filesystem -lboost_iostreams \
-	-lboost_program_options -lboost_system $(CONDA_PREFIX)/lib/libserdes++.a \
-	$(CONDA_PREFIX)/lib/libserdes.a -lcurl -ljansson \
+	-ldl -lrt -lpthread -L$(SAL_LIB_PREFIX)/lib -L/usr/lib64/boost1.78 -lboost_filesystem -lboost_iostreams \
+	-lboost_program_options -lboost_system $(SAL_LIB_PREFIX)/lib/libserdes++.a \
+	$(SAL_LIB_PREFIX)/lib/libserdes.a -lcurl -ljansson \
 	-lrdkafka++ -lrdkafka -lavrocpp -lavro -lsasl2
 
 ifneq ($(MAKECMDGOALS),clean)

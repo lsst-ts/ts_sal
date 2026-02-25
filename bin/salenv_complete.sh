@@ -27,8 +27,10 @@ source "${SCRIPT_DIR}/salenv_kafka.sh"
 
 echo ""
 echo "SAL environment configured:"
-echo "  Conda environment: $(conda info --envs | grep '*' | awk '{print $1}')"
-echo "  CONDA_PREFIX: $CONDA_PREFIX"
+if command -v conda >/dev/null 2>&1; then
+  echo "  Conda environment: $(conda info --envs 2>/dev/null | grep '*' | awk '{print $1}')"
+  echo "  CONDA_PREFIX: ${CONDA_PREFIX:-not set}"
+fi
 echo "  LD_LIBRARY_PATH: $LD_LIBRARY_PATH"
 echo ""
 echo "SAL Configuration:"
@@ -42,7 +44,7 @@ echo "  TS_XML_DIR: $TS_XML_DIR"
 echo ""
 echo "Kafka Configuration:"
 echo "  LSST_KAFKA_LOCAL_SCHEMAS: $LSST_KAFKA_LOCAL_SCHEMAS"
-echo "  LSST_KAFKA_BROKER_ADDR: $LSST_KAFKA_BROKER_ADDR"
+echo "  LSST_KAFKA_BROKER_ADDR: ${LSST_KAFKA_BROKER_ADDR:-not set}"
 echo "  LSST_SCHEMA_REGISTRY_URL: $LSST_SCHEMA_REGISTRY_URL"
 echo "  LSST_TOPIC_SUBNAME: $LSST_TOPIC_SUBNAME"
 echo ""
@@ -50,7 +52,7 @@ echo ""
 # Verify critical libraries are available
 echo "Verifying libraries..."
 echo "  LSST_SAL_PREFIX: ${LSST_SAL_PREFIX:-not set}"
-echo "  Checking in: ${LSST_SAL_PREFIX}/lib, ${CONDA_PREFIX}/lib, and LD_LIBRARY_PATH"
+echo "  Checking in: ${LSST_SAL_PREFIX}/lib and LD_LIBRARY_PATH"
 
 # Check libavro in multiple locations
 if ldd $(which python) 2>/dev/null | grep -q libavro; then

@@ -15,7 +15,15 @@ echo "##### Setting up SAL Stack-10 build environment"
 # Source version configuration
 source "${SCRIPT_DIR}/sal_versions.sh"
 
-export JAVA_HOME=$CONDA_PREFIX/lib/jvm
+if [ -n "${CONDA_PREFIX:-}" ]; then
+  export JAVA_HOME=$CONDA_PREFIX/lib/jvm
+elif [ -n "${JAVA_HOME:-}" ]; then
+  echo "Using pre-set JAVA_HOME: $JAVA_HOME"
+else
+  # Common system location on RHEL/Rocky
+  export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which javac 2>/dev/null || echo /usr/lib/jvm/java/bin/javac))))
+  echo "Auto-detected JAVA_HOME: $JAVA_HOME"
+fi
 
 # LSST_SDK_INSTALL: Use existing value if set, otherwise default to ts_sal location
 #                   Points to the ts_sal repository.
@@ -26,9 +34,9 @@ export LSST_SDK_INSTALL=${LSST_SDK_INSTALL:-/home/saluser/repos/ts_sal}
 #   1. Use LSST_SAL_PREFIX if already set
 #   2. Use CONDA_PREFIX if writable
 #   3. Fall back to LSST_SDK_INSTALL if CONDA_PREFIX is not writable
-if [ -n "$LSST_SAL_PREFIX" ]; then
+if [ -n "${LSST_SAL_PREFIX:-}" ]; then
     echo "Using pre-set LSST_SAL_PREFIX: $LSST_SAL_PREFIX"
-elif [ -w "$CONDA_PREFIX/lib" ] || [ "$(id -u)" -eq 0 ]; then
+elif [ -n "${CONDA_PREFIX:-}" ] && { [ -w "$CONDA_PREFIX/lib" ] || [ "$(id -u)" -eq 0 ]; }; then
     export LSST_SAL_PREFIX=$CONDA_PREFIX
     echo "Using CONDA_PREFIX as LSST_SAL_PREFIX: $LSST_SAL_PREFIX"
 else
@@ -49,8 +57,7 @@ main() {
     fi
     
     if ! check_conda; then
-        echo "Error: Conda is required but not found"
-        exit 1
+        echo "Note: Conda not found, using system packages"
     fi
     
     mkdir -p $HOME/external-packages
@@ -58,8 +65,27 @@ main() {
     install_system_deps || echo "Warning: System dependencies installation had errors, continuing anyway..." >&2
     install_conda_packages
     
-    build_avro_c
-    build_libserdes_cpp17
+    local PREFIX="${LSST_SAL_PREFIX:-${CONDA_PREFIX:-}}"
+    if [ -f "$PREFIX/lib/libavro.so" ] && [ -f "$PREFIX/lib/libavro.a" ]; then
+        echo "##### Skipping Avro C build (already installed at $PREFIX/lib)"
+    else
+        build_avro_c
+    fi
+    
+    if [ -f "$PREFIX/lib/libserdes.so.1" ] && [ -f "$PREFIX/lib/libserdes++.so.1" ]; then
+        echo "##### Skipping libserdes build (already installed at $PREFIX/lib)"
+    else
+        build_libserdes_cpp17
+    fi
+    
+    # Ensure Config.hh is findable from impl/json/JsonDom.hh (which uses
+    # a relative #include "Config.hh"). Config.hh lives in avro/ but
+    # impl/json/ is a sibling directory, so the compiler can't find it
+    # unless it's also in impl/json/ or the Makefile adds -I.../avro.
+    if [ -f "$PREFIX/include/avro/Config.hh" ] && [ ! -f "$PREFIX/include/impl/json/Config.hh" ]; then
+        mkdir -p "$PREFIX/include/impl/json"
+        cp "$PREFIX/include/avro/Config.hh" "$PREFIX/include/impl/json/Config.hh"
+    fi
     
     setup_sal_environment "${SCRIPT_DIR}"
     
