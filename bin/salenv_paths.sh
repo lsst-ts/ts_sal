@@ -49,6 +49,15 @@ export LIBRARY_PATH=${LSST_SAL_PREFIX}/lib${LIBRARY_PATH:+:$LIBRARY_PATH}
 export CPLUS_INCLUDE_PATH=${LSST_SAL_PREFIX}/include${CPLUS_INCLUDE_PATH:+:$CPLUS_INCLUDE_PATH}
 export LD_LIBRARY_PATH=${SAL_WORK_DIR}/lib:${LSST_SAL_PREFIX}/lib:${LSST_SDK_INSTALL}/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
 
+# On Rocky/RHEL systems Boost is installed into a versioned subdirectory
+# (/usr/lib64/boost1.78) rather than /usr/lib64.  Add it to both LIBRARY_PATH
+# (compile-time linker search) and LD_LIBRARY_PATH (runtime) when present and
+# not already covered by LSST_SAL_PREFIX (i.e. no conda).
+if [ -d "/usr/lib64/boost1.78" ] && [ -z "${CONDA_PREFIX:-}" ]; then
+    export LIBRARY_PATH="/usr/lib64/boost1.78${LIBRARY_PATH:+:$LIBRARY_PATH}"
+    export LD_LIBRARY_PATH="/usr/lib64/boost1.78${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+fi
+
 # Ensure SAL binaries and built tools are on PATH
 export PATH=${LSST_SAL_PREFIX}/bin:${TS_SAL_DIR}/bin:${PATH}
 
