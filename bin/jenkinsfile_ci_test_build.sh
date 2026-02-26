@@ -22,6 +22,10 @@ set -euo pipefail
 
 WORKSPACE="${WORKSPACE:-$(pwd)}"
 TS_XML_DIR="${TS_XML_DIR:-/home/saluser/repos/ts_xml}"
+# USER may be unset in minimal container images (e.g. robotsal); derive it
+# from the process credentials so that downstream tools and the shell prompt
+# do not trip on an unbound variable.
+export USER="${USER:-$(id -un)}"
 SIMPLE_SAL_DIR="${WORKSPACE}/simple_sal"
 SIMPLE_SAL_REPO="https://github.com/find-out-org-lsst-camera-simple-sal.git"
 SIMPLE_SAL_BRANCH="${SIMPLE_SAL_BRANCH:-develop}"
@@ -50,16 +54,22 @@ if [ -z "${RUBIN_EUPS_PATH+x}" ]; then
   export RUBIN_EUPS_PATH=""
 fi
 set +u
-# Source only the setup commands, not the interactive shell at the end
-source <(grep -v '/bin/bash' ~/.setup.sh)
+if [ -f ~/.setup.sh ]; then
+  source <(grep -v '/bin/bash' ~/.setup.sh)
+fi
 set -u
 echo "export HOME=\"${WORKSPACE}\""
 export HOME="${WORKSPACE}"
 
 # 2. Make the SAL scripts and build outputs writable
 echo "# In run 2"
-export LSST_SDK_INSTALL="${WORKSPACE}"       # salgenerator, etc.
-export LSST_SAL_PREFIX="${CONDA_PREFIX}"     # libs/headers into the conda env
+export LSST_SDK_INSTALL="${WORKSPACE}"
+# Use CONDA_PREFIX if available (salobj image), else fall back to LSST_SAL_PREFIX
+# which is already set in non-conda images (e.g. robotsal)
+if [ -n "${CONDA_PREFIX:-}" ]; then
+  export LSST_SAL_PREFIX="${CONDA_PREFIX}"
+fi
+export LSST_SAL_PREFIX="${LSST_SAL_PREFIX:?LSST_SAL_PREFIX must be set (via CONDA_PREFIX or environment)}"
 export TS_XML_DIR="${TS_XML_DIR}"
 export LSST_TOPIC_SUBNAME=${LSST_TOPIC_SUBNAME:-test}
 

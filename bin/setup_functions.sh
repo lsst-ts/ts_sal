@@ -58,8 +58,12 @@ install_system_deps() {
     return 0
 }
 
-# Function to install conda packages
+# Function to install conda packages (skipped if conda is not available)
 install_conda_packages() {
+    if ! command -v conda >/dev/null 2>&1; then
+        echo "##### Skipping conda packages (conda not available, using system packages)"
+        return 0
+    fi
     echo "##### Installing conda packages..."
     conda install -y avro avrocpp libboost librdkafka fmt snappy jansson catch2 maven yaml-cpp spdlog lsst-ts-xml
     # Optional debug tools (may fail in some environments due to EUPS post-link scripts)
@@ -77,17 +81,16 @@ install_conda_packages() {
 # Does nothing when LSST_SAL_PREFIX == CONDA_PREFIX (Jenkins workflow).
 # ============================================================================
 ensure_local_conda_symlinks() {
-    local PREFIX="${LSST_SAL_PREFIX:-${CONDA_PREFIX}}"
+    local PREFIX="${LSST_SAL_PREFIX:-${CONDA_PREFIX:-}}"
     
-    # Skip if installing directly into conda (Jenkins workflow)
-    if [ "$PREFIX" = "$CONDA_PREFIX" ]; then
+    # Skip if conda is not available
+    if [ -z "${CONDA_PREFIX:-}" ]; then
         return 0
     fi
     
-    # Skip if CONDA_PREFIX is not set
-    if [ -z "$CONDA_PREFIX" ]; then
-        echo "WARNING: CONDA_PREFIX not set, cannot create symlinks"
-        return 1
+    # Skip if installing directly into conda (Jenkins workflow)
+    if [ "$PREFIX" = "${CONDA_PREFIX:-}" ]; then
+        return 0
     fi
     
     mkdir -p "$PREFIX"/{lib,include}
@@ -133,7 +136,7 @@ build_avro_c() {
     local ORIG_DIR="$(pwd)"
     
     # Use LSST_SAL_PREFIX if set, otherwise fall back to CONDA_PREFIX
-    local INSTALL_PREFIX="${LSST_SAL_PREFIX:-${CONDA_PREFIX}}"
+    local INSTALL_PREFIX="${LSST_SAL_PREFIX:-${CONDA_PREFIX:-}}"
     local AVRO_RELEASE="${AVRO_RELEASE:-1.12.0}"
     
     # Check if we need sudo
@@ -152,6 +155,13 @@ build_avro_c() {
     # Copy C++ impl headers used by SAL wrappers
     $SUDO_CMD mkdir -p "$INSTALL_PREFIX/include"
     $SUDO_CMD cp -r ../../lang/c++/impl "$INSTALL_PREFIX/include/."
+    
+    # Config.hh is generated during C++ build and may already exist at
+    # $INSTALL_PREFIX/include/avro/Config.hh. impl/json/JsonDom.hh includes
+    # it with a relative path, so ensure it's findable from impl/json/.
+    if [ -f "$INSTALL_PREFIX/include/avro/Config.hh" ] && [ ! -f "$INSTALL_PREFIX/include/impl/json/Config.hh" ]; then
+        $SUDO_CMD cp "$INSTALL_PREFIX/include/avro/Config.hh" "$INSTALL_PREFIX/include/impl/json/Config.hh"
+    fi
     
     # Run Avro's build script (may output harmless errors at end)
     ./cmake_avrolib.sh || true
@@ -217,7 +227,7 @@ build_avro_cpp() {
     local ORIG_DIR="$(pwd)"
     
     # Use LSST_SAL_PREFIX if set, otherwise fall back to CONDA_PREFIX
-    local INSTALL_PREFIX="${LSST_SAL_PREFIX:-${CONDA_PREFIX}}"
+    local INSTALL_PREFIX="${LSST_SAL_PREFIX:-${CONDA_PREFIX:-}}"
     local AVRO_RELEASE="${AVRO_RELEASE:-1.12.0}"
     
     # Check if we need sudo
@@ -277,7 +287,7 @@ build_avro_cpp() {
 
 # Helper function to copy libserdes artifacts into ts_sal tree
 after_libserdes_install_copy() {
-    local INSTALL_PREFIX="${LSST_SAL_PREFIX:-${CONDA_PREFIX}}"
+    local INSTALL_PREFIX="${LSST_SAL_PREFIX:-${CONDA_PREFIX:-}}"
     local SDK_INSTALL="${LSST_SDK_INSTALL:-/home/saluser/repos/ts_sal}"
     
     # Check if we need sudo
@@ -295,7 +305,7 @@ after_libserdes_install_copy() {
 
 # Helper function to copy dependency libraries into ts_sal tree
 copy_dep_libs_to_ts_sal() {
-    local INSTALL_PREFIX="${LSST_SAL_PREFIX:-${CONDA_PREFIX}}"
+    local INSTALL_PREFIX="${LSST_SAL_PREFIX:-${CONDA_PREFIX:-}}"
     local SDK_INSTALL="${LSST_SDK_INSTALL:-/home/saluser/repos/ts_sal}"
     
     # Check if we need sudo
@@ -322,7 +332,7 @@ build_libserdes_cpp17() {
     echo "##### Building libserdes (C and C++) with C++17..."
     
     local ORIG_DIR="$(pwd)"
-    local INSTALL_PREFIX="${LSST_SAL_PREFIX:-${CONDA_PREFIX}}"
+    local INSTALL_PREFIX="${LSST_SAL_PREFIX:-${CONDA_PREFIX:-}}"
     
     # Check if we need sudo
     local SUDO_CMD=""
@@ -346,20 +356,20 @@ build_libserdes_cpp17() {
         cd libserdes
     fi
     
-    # Set up paths for both our local install AND conda dependencies
-    export LIBRARY_PATH="$INSTALL_PREFIX/lib:${CONDA_PREFIX}/lib:${LIBRARY_PATH:-}"
-    export LD_LIBRARY_PATH="$INSTALL_PREFIX/lib:${CONDA_PREFIX}/lib:${LD_LIBRARY_PATH:-}"
-    export CPPFLAGS="-I$INSTALL_PREFIX/include -I${CONDA_PREFIX}/include"
-    export LDFLAGS="-L$INSTALL_PREFIX/lib -L${CONDA_PREFIX}/lib -Wl,-rpath,$INSTALL_PREFIX/lib -Wl,-rpath,${CONDA_PREFIX}/lib"
+    # Set up paths for both our local install AND system/conda dependencies
+    local SYS_LIB="${CONDA_PREFIX:+${CONDA_PREFIX}/lib}"
+    export LIBRARY_PATH="$INSTALL_PREFIX/lib${SYS_LIB:+:$SYS_LIB}:${LIBRARY_PATH:-}"
+    export LD_LIBRARY_PATH="$INSTALL_PREFIX/lib${SYS_LIB:+:$SYS_LIB}:${LD_LIBRARY_PATH:-}"
+    local SYS_PREFIX="${CONDA_PREFIX:-$INSTALL_PREFIX}"
+    export CPPFLAGS="-I$INSTALL_PREFIX/include -I${SYS_PREFIX}/include"
+    export LDFLAGS="-L$INSTALL_PREFIX/lib -L${SYS_PREFIX}/lib -Wl,-rpath,$INSTALL_PREFIX/lib -Wl,-rpath,${SYS_PREFIX}/lib"
     export CXX="g++ -std=c++17"
     export CXXFLAGS="-std=c++17"
     
-    # Only set LIBS when installing to local/ (persistent dev workflow).
-    # In the Jenkins workflow (LSST_SAL_PREFIX == CONDA_PREFIX), libavro's
-    # dependencies are already in the same lib directory, so mklove finds them.
-    # In the local workflow, we need to explicitly link them for the configure check.
-    local EXTRA_LDFLAGS="-L$INSTALL_PREFIX/lib -L${CONDA_PREFIX}/lib"
-    if [ "$INSTALL_PREFIX" != "$CONDA_PREFIX" ]; then
+    # Only set LIBS when installing to a different prefix than where
+    # dependencies live. When they're in the same directory, mklove finds them.
+    local EXTRA_LDFLAGS="-L$INSTALL_PREFIX/lib -L${SYS_PREFIX}/lib"
+    if [ "$INSTALL_PREFIX" != "$SYS_PREFIX" ]; then
         export LIBS="-ljansson -lz -lsnappy"
         EXTRA_LDFLAGS="$EXTRA_LDFLAGS -ljansson -lz -lsnappy"
     else
@@ -386,8 +396,8 @@ build_libserdes_cpp17() {
     if [ -f Makefile.config ]; then
         sed -i 's/--std=c++11//g' Makefile.config || true
         echo 'CXXFLAGS+= -std=c++17' >> Makefile.config
-        if [ "$INSTALL_PREFIX" != "$CONDA_PREFIX" ]; then
-            echo "LDFLAGS+= -L${CONDA_PREFIX}/lib -Wl,-rpath,${CONDA_PREFIX}/lib" >> Makefile.config
+        if [ "$INSTALL_PREFIX" != "$SYS_PREFIX" ]; then
+            echo "LDFLAGS+= -L${SYS_PREFIX}/lib -Wl,-rpath,${SYS_PREFIX}/lib" >> Makefile.config
         fi
     fi
     
