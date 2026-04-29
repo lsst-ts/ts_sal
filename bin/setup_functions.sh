@@ -424,6 +424,183 @@ build_libserdes_cpp17() {
     rm -rf "$TEMP_DIR"
 }
 
+# Helper function to copy libschemaregistry artifacts into ts_sal tree
+# (mirrors after_libserdes_install_copy)
+after_libschemaregistry_install_copy() {
+    local INSTALL_PREFIX="${LSST_SAL_PREFIX:-${CONDA_PREFIX:-}}"
+    local SDK_INSTALL="${LSST_SDK_INSTALL:-/home/saluser/repos/ts_sal}"
+
+    local SUDO_CMD=""
+    if [ ! -w "$SDK_INSTALL/lib" ] && [ "$(id -u)" -ne 0 ] && command -v sudo >/dev/null 2>&1; then
+        SUDO_CMD="sudo"
+    fi
+
+    echo "##### Copying libschemaregistry artifacts into ts_sal tree..."
+    $SUDO_CMD mkdir -p "$SDK_INSTALL/lib" "$SDK_INSTALL/include"
+    # CMake's GNUInstallDirs picks lib/ or lib64/ depending on distro; we force
+    # lib/ via CMAKE_INSTALL_LIBDIR but probe both for robustness.
+    for libdir in lib lib64; do
+        $SUDO_CMD cp -f  "$INSTALL_PREFIX/$libdir/libschemaregistry"*.so* "$SDK_INSTALL/lib/" 2>/dev/null || true
+        $SUDO_CMD cp -f  "$INSTALL_PREFIX/$libdir/libschemaregistry"*.a   "$SDK_INSTALL/lib/" 2>/dev/null || true
+    done
+    $SUDO_CMD cp -rf "$INSTALL_PREFIX/include/schemaregistry/"            "$SDK_INSTALL/include/" 2>/dev/null || true
+}
+
+# Ensure a usable vcpkg checkout exists. Clones + bootstraps it on first use.
+# Sets and exports VCPKG_ROOT pointing at the resulting tree. Idempotent: a
+# second invocation with VCPKG_ROOT already populated is a no-op.
+ensure_vcpkg() {
+    local DEFAULT_VCPKG_ROOT="${VCPKG_ROOT:-/opt/vcpkg}"
+    local VCPKG_REPO_URL="https://github.com/microsoft/vcpkg.git"
+
+    if [ -x "$DEFAULT_VCPKG_ROOT/vcpkg" ]; then
+        export VCPKG_ROOT="$DEFAULT_VCPKG_ROOT"
+        echo "##### Using existing vcpkg at $VCPKG_ROOT"
+        return 0
+    fi
+
+    local SUDO_CMD=""
+    local PARENT_DIR
+    PARENT_DIR="$(dirname "$DEFAULT_VCPKG_ROOT")"
+    if [ ! -w "$PARENT_DIR" ] && [ "$(id -u)" -ne 0 ] && command -v sudo >/dev/null 2>&1; then
+        SUDO_CMD="sudo"
+    fi
+
+    echo "##### Bootstrapping vcpkg into $DEFAULT_VCPKG_ROOT ..."
+    $SUDO_CMD mkdir -p "$PARENT_DIR"
+
+    if [ ! -d "$DEFAULT_VCPKG_ROOT/.git" ]; then
+        $SUDO_CMD git clone "$VCPKG_REPO_URL" "$DEFAULT_VCPKG_ROOT"
+    fi
+
+    (cd "$DEFAULT_VCPKG_ROOT" && $SUDO_CMD ./bootstrap-vcpkg.sh -disableMetrics)
+
+    if [ ! -x "$DEFAULT_VCPKG_ROOT/vcpkg" ]; then
+        echo "ERROR: vcpkg bootstrap failed at $DEFAULT_VCPKG_ROOT" >&2
+        return 1
+    fi
+
+    export VCPKG_ROOT="$DEFAULT_VCPKG_ROOT"
+}
+
+# Function to build libschemaregistry (Avro support only) and install it
+# alongside libserdes. Opt-in via BUILD_LIBSCHEMAREGISTRY=1; not called by
+# default while the libserdes -> libschemaregistry migration (OSW-2238) is
+# in progress. The caller is expected to have ensured vcpkg.
+build_libschemaregistry() {
+    local LIBSR_TAG="${LIBSCHEMAREGISTRY_TAG:-0.1.3}"
+    echo "##### Building libschemaregistry (tag $LIBSR_TAG, Avro only) ..."
+
+    local ORIG_DIR="$(pwd)"
+    local INSTALL_PREFIX="${LSST_SAL_PREFIX:-${CONDA_PREFIX:-}}"
+
+    if [ -z "$INSTALL_PREFIX" ]; then
+        echo "ERROR: LSST_SAL_PREFIX/CONDA_PREFIX must be set" >&2
+        return 1
+    fi
+
+    if ! command -v cmake >/dev/null 2>&1; then
+        echo "ERROR: cmake not found (>= 3.22 required)" >&2
+        return 1
+    fi
+    if ! command -v ninja >/dev/null 2>&1; then
+        echo "ERROR: ninja not found (libschemaregistry uses Ninja by default)" >&2
+        return 1
+    fi
+    if ! command -v javac >/dev/null 2>&1 && [ -z "${JAVA_HOME:-}" ]; then
+        echo "WARNING: javac/JAVA_HOME not set; antlr in libschemaregistry's deps may fail"
+    fi
+
+    # Stop here if vcpkg could not be bootstrapped: the cmake call below uses
+    # $VCPKG_ROOT in the toolchain path, which would otherwise be empty.
+    if ! ensure_vcpkg; then
+        echo "ERROR: ensure_vcpkg failed; aborting libschemaregistry build" >&2
+        return 1
+    fi
+
+    # cmake --install runs chmod on each install destination directory, which
+    # requires ownership (not just write access). When ts_sal's prefix tree was
+    # first laid down by root (typical for /opt/lsst/tssw/...), saluser can
+    # write into lib/ and include/ but cannot chmod them, and the install
+    # aborts. Detect that case via -O (owner) and fall back to sudo when
+    # available. Do nothing when the dir doesn't exist yet (cmake will create
+    # it under our uid).
+    local SUDO_CMD=""
+    local _need_sudo=0
+    for _d in "$INSTALL_PREFIX/lib" "$INSTALL_PREFIX/include"; do
+        if [ -d "$_d" ] && [ ! -O "$_d" ]; then
+            _need_sudo=1
+        fi
+    done
+    if [ "$_need_sudo" -eq 1 ] && [ "$(id -u)" -ne 0 ] && command -v sudo >/dev/null 2>&1; then
+        SUDO_CMD="sudo"
+    fi
+
+    TEMP_DIR=$(mktemp -d)
+    pushd "$TEMP_DIR" >/dev/null
+
+    if [ -d "${LIBSCHEMAREGISTRY_SOURCE_DIR:-}" ]; then
+        echo "Using existing source at $LIBSCHEMAREGISTRY_SOURCE_DIR"
+        cd "$LIBSCHEMAREGISTRY_SOURCE_DIR"
+    else
+        local LIBSR_REPO_URL="${LIBSCHEMAREGISTRY_REPO_URL:-https://github.com/confluentinc/libschemaregistry.git}"
+        echo "Cloning libschemaregistry from $LIBSR_REPO_URL ..."
+        git clone --depth 1 --branch "$LIBSR_TAG" "$LIBSR_REPO_URL" libschemaregistry
+        cd libschemaregistry
+    fi
+
+    # Apply the vcpkg-Avro-only patch (trims cloud SDK deps + re-adds
+    # jsoncons to work around an upstream unconditional-include bug).
+    # See ts_sal/patches/libschemaregistry-vcpkg-avro-only.patch for
+    # full rationale. Idempotent: skipped if jsoncons is already
+    # present in vcpkg.json (e.g. when LIBSCHEMAREGISTRY_SOURCE_DIR
+    # points at an already-patched checkout).
+    local TS_SAL_DIR
+    TS_SAL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+    local PATCH_FILE="$TS_SAL_DIR/patches/libschemaregistry-vcpkg-avro-only.patch"
+    if [ -f "$PATCH_FILE" ]; then
+        if grep -q '"jsoncons"' vcpkg.json 2>/dev/null; then
+            echo "libschemaregistry vcpkg.json already patched; skipping"
+        else
+            echo "Applying $PATCH_FILE ..."
+            if ! git apply "$PATCH_FILE"; then
+                echo "ERROR: failed to apply $PATCH_FILE" >&2
+                return 1
+            fi
+        fi
+    else
+        echo "WARNING: $PATCH_FILE not found; build may fail with" >&2
+        echo "         missing jsoncons headers or oversized vcpkg deps" >&2
+    fi
+
+    cmake -S . -B build \
+        -DCMAKE_BUILD_TYPE=Release \
+        -G Ninja \
+        -DCMAKE_TOOLCHAIN_FILE="$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" \
+        -DCMAKE_INSTALL_PREFIX="$INSTALL_PREFIX" \
+        -DCMAKE_INSTALL_LIBDIR=lib \
+        -DSCHEMAREGISTRY_WITH_AVRO=ON \
+        -DSCHEMAREGISTRY_WITH_PROTOBUF=OFF \
+        -DSCHEMAREGISTRY_WITH_JSON=OFF \
+        -DSCHEMAREGISTRY_WITH_RULES=OFF \
+        -DSCHEMAREGISTRY_BUILD_TESTS=OFF \
+        -DSCHEMAREGISTRY_BUILD_EXAMPLES=OFF
+
+    cmake --build build -j"$(nproc)"
+
+    # Resolve cmake's absolute path: when SUDO_CMD is "sudo", sudoers' secure_path
+    # commonly drops the conda env's bin/ from PATH, so a bare `sudo cmake` fails
+    # with "command not found". An absolute path bypasses that.
+    local CMAKE_BIN
+    CMAKE_BIN="$(command -v cmake)"
+    $SUDO_CMD "$CMAKE_BIN" --install build
+
+    after_libschemaregistry_install_copy
+
+    popd >/dev/null || cd "$ORIG_DIR"
+    rm -rf "$TEMP_DIR"
+}
+
 # Function to set up SAL environment variables
 setup_sal_environment() {
     local SCRIPT_DIR="${1:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"

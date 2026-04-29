@@ -60,6 +60,14 @@ ensure_local_conda_symlinks
 build_avro_c
 build_avro_cpp              # Build avrogencpp into persistent local/bin
 build_libserdes_cpp17
+
+# libschemaregistry is the future replacement for libserdes (OSW-2238).
+# Disabled by default while the migration is in progress; opt in with
+# BUILD_LIBSCHEMAREGISTRY=1.
+if [ "${BUILD_LIBSCHEMAREGISTRY:-0}" = "1" ]; then
+    build_libschemaregistry
+fi
+
 setup_sal_environment "${SCRIPT_DIR}"
 
 ensure_catch2() {
