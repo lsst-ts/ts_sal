@@ -435,6 +435,51 @@ after_libschemaregistry_install_copy() {
         SUDO_CMD="sudo"
     fi
 
+    # cmake --install lands libschemaregistry + its headers in INSTALL_PREFIX
+    # (LSST_SAL_PREFIX). The generated makefiles reference that prefix for both
+    # includes (-I"$(LSST_SAL_PREFIX)/include") and libs
+    # (LIBSCHEMAREGISTRY_VCPKG_LIB ?= $(LSST_SAL_PREFIX)/lib), so INSTALL_PREFIX
+    # needs its own sudo decision (it is commonly root-owned, e.g.
+    # /opt/lsst/tssw/...), independent of the SDK_INSTALL copy below.
+    local PREFIX_SUDO=""
+    if [ -d "$INSTALL_PREFIX/lib" ] && [ ! -O "$INSTALL_PREFIX/lib" ] && [ "$(id -u)" -ne 0 ] && command -v sudo >/dev/null 2>&1; then
+        PREFIX_SUDO="sudo"
+    fi
+
+    # libschemaregistry is a static archive whose vcpkg-built transitive deps
+    # (abseil, cpr, curl, compression) are not installed by cmake --install.
+    # Its public headers also expose cpr/curl/nlohmann in their API. Copy both
+    # the static dep libs and the public-API dep headers into INSTALL_PREFIX so
+    # the generated makefiles link and compile with their defaults, no override.
+    #
+    # Deliberately NOT copied: vcpkg's static libssl.a/libcrypto.a. 
+    # The conda librdkafka.so references versioned OpenSSL symbols
+    # (...@OPENSSL_3.0.0); because of those versioned references we must link
+    # against the conda OpenSSL 3 shared libs, since the unversioned static
+    # archives cannot satisfy them.
+    # The generated makefiles therefore link -lssl/-lcrypto against the conda 
+    # shared OpenSSL instead; a static copy here would shadow it on the
+    # -L$(LSST_SAL_PREFIX)/lib search path and reintroduce the version mismatch.
+    local VCPKG_LIB VCPKG_INC
+    VCPKG_LIB="$(ls -d build/vcpkg_installed/*/lib 2>/dev/null | head -n1)"
+    VCPKG_INC="$(ls -d build/vcpkg_installed/*/include 2>/dev/null | head -n1)"
+    if [ -n "$VCPKG_LIB" ]; then
+        echo "##### Installing libschemaregistry vcpkg deps from $VCPKG_LIB ..."
+        $SUDO_CMD mkdir -p "$INSTALL_PREFIX/lib"
+        $PREFIX_SUDO cp -f "$VCPKG_LIB"/libabsl_*.a "$INSTALL_PREFIX/lib/" 2>/dev/null || true
+        local _a
+        for _a in cpr curl z bz2 lzma zstd; do
+            $PREFIX_SUDO cp -f "$VCPKG_LIB/lib$_a.a" "$INSTALL_PREFIX/lib/" 2>/dev/null || true
+        done
+    fi
+    if [ -n "$VCPKG_INC" ]; then
+        $PREFIX_SUDO mkdir -p "$INSTALL_PREFIX/include"
+        local _h
+        for _h in cpr curl nlohmann; do
+            $PREFIX_SUDO cp -rf "$VCPKG_INC/$_h" "$INSTALL_PREFIX/include/" 2>/dev/null || true
+        done
+    fi
+
     echo "##### Copying libschemaregistry artifacts into ts_sal tree..."
     $SUDO_CMD mkdir -p "$SDK_INSTALL/lib" "$SDK_INSTALL/include"
     # CMake's GNUInstallDirs picks lib/ or lib64/ depending on distro; we force

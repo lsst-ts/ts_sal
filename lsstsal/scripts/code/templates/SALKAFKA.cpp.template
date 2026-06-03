@@ -215,13 +215,16 @@ void SAL_SALData::initSalEnvironment(int aKey)
     readKafkaConfiguration(globalConfigFile, producerConfiguration);
   }
 
-  serdesConfiguration = Serdes::Conf::create();
-  serdesConfiguration->set("serializer.framing", "cp1", errstr);
-  serdesConfiguration->set("deserializer.framing", "cp1", errstr);
-  serdesConfiguration->set("schema.registry.url", schemaRegistry, errstr);
-  serdes = Serdes::Avro::create(serdesConfiguration, errstr);
-  if (serdes == NULL) {
-    throw std::runtime_error("ERROR Serdes::Avro::create: " + errstr);
+  // Confluent wire format v1 ("cp1") framing is implicit in
+  // libschemaregistry: SchemaId::idToBytes()/readFromBytes() write and
+  // read the 5-byte prefix. No explicit framing configuration needed.
+  auto schemaRegistryConfig =
+      std::make_shared<schemaregistry::rest::ClientConfiguration>(
+          std::vector<std::string>{schemaRegistry});
+  schemaRegistryClient =
+      schemaregistry::rest::SchemaRegistryClient::newClient(schemaRegistryConfig);
+  if (schemaRegistryClient == NULL) {
+    throw std::runtime_error("ERROR SchemaRegistryClient::newClient failed");
   }
 
   publisher = RdKafka::Producer::create(producerConfiguration, errstr); 
@@ -625,16 +628,24 @@ void SAL_SALData::checkSchema(int actorIdx)
   if (sal[actorIdx].topicConfiguration == NULL)  {
      throw std::runtime_error(string(errstr + sal[actorIdx].topicName));
   }
-  if (sal[actorIdx].avroSchema == NULL) {
+  if (!sal[actorIdx].hasSchema) {
       std::string adir = "/avro-templates/SALData/"; 
       std::string schema = localSchemaDir + adir + sal[actorIdx].topicName + ".json";
       std::ifstream ifs(schema);
       std::stringstream buffer;
       buffer << ifs.rdbuf();
       std::string svname = sal[actorIdx].avroName + "-value";
-      sal[actorIdx].avroSchema = Serdes::Schema::add(serdes, svname, buffer.str(), errstr);
-      if (sal[actorIdx].avroSchema == NULL) {
-          throw std::runtime_error(std::string("checkSchema ") + sal[actorIdx].avroName + " for schema file " + schema + " add failed : " + errstr);
+      try {
+          schemaregistry::rest::model::Schema avroSchemaModel;
+          avroSchemaModel.setSchemaType("AVRO");
+          avroSchemaModel.setSchema(buffer.str());
+          auto registeredSchema = schemaRegistryClient->registerSchema(
+              svname, avroSchemaModel, false);
+          sal[actorIdx].avroSchemaId = registeredSchema.getId().value();
+          std::istringstream schemaStream(buffer.str());
+          avro::compileJsonSchema(schemaStream, sal[actorIdx].avroSchema);
+      } catch (const std::exception &e) {
+          throw std::runtime_error(std::string("checkSchema ") + sal[actorIdx].avroName + " for schema file " + schema + " add failed : " + e.what());
       }
       sal[actorIdx].hasSchema = true;
   }
