@@ -528,10 +528,10 @@ ensure_vcpkg() {
     export VCPKG_ROOT="$DEFAULT_VCPKG_ROOT"
 }
 
-# Function to build libschemaregistry (Avro support only) and install it
-# alongside libserdes. Opt-in via BUILD_LIBSCHEMAREGISTRY=1; not called by
-# default while the libserdes -> libschemaregistry migration (OSW-2238) is
-# in progress. The caller is expected to have ensured vcpkg.
+# Function to build libschemaregistry (Avro support only). This is the
+# default schema/Avro serialization library (OSW-2238); the legacy libserdes
+# is built only opt-in via BUILD_LIBSERDES=1. The caller is expected to have
+# ensured vcpkg.
 build_libschemaregistry() {
     local LIBSR_TAG="${LIBSCHEMAREGISTRY_TAG:-0.1.3}"
     echo "##### Building libschemaregistry (tag $LIBSR_TAG, Avro only) ..."

@@ -72,20 +72,20 @@ main() {
         build_avro_c
     fi
     
-    if [ -f "$PREFIX/lib/libserdes.so.1" ] && [ -f "$PREFIX/lib/libserdes++.so.1" ]; then
-        echo "##### Skipping libserdes build (already installed at $PREFIX/lib)"
+    # libschemaregistry is the default schema/Avro serialization library
+    # (OSW-2238). libserdes is the legacy library, kept available opt-in via
+    # BUILD_LIBSERDES=1 for fallback/comparison during the migration.
+    if ls "$PREFIX/lib/libschemaregistry"* 1>/dev/null 2>&1; then
+        echo "##### Skipping libschemaregistry build (already installed at $PREFIX/lib)"
     else
-        build_libserdes_cpp17
+        build_libschemaregistry
     fi
 
-    # libschemaregistry is the future replacement for libserdes (OSW-2238).
-    # Disabled by default while the migration is in progress; opt in with
-    # BUILD_LIBSCHEMAREGISTRY=1.
-    if [ "${BUILD_LIBSCHEMAREGISTRY:-0}" = "1" ]; then
-        if ls "$PREFIX/lib/libschemaregistry"* 1>/dev/null 2>&1; then
-            echo "##### Skipping libschemaregistry build (already installed at $PREFIX/lib)"
+    if [ "${BUILD_LIBSERDES:-0}" = "1" ]; then
+        if [ -f "$PREFIX/lib/libserdes.so.1" ] && [ -f "$PREFIX/lib/libserdes++.so.1" ]; then
+            echo "##### Skipping libserdes build (already installed at $PREFIX/lib)"
         else
-            build_libschemaregistry
+            build_libserdes_cpp17
         fi
     fi
     
@@ -116,9 +116,9 @@ main() {
     echo "Libraries installed:"
     echo "  - Avro (Python, C++, C)"
     echo "  - librdkafka"
-    echo "  - libserdes (C and C++17)"
-    if [ "${BUILD_LIBSCHEMAREGISTRY:-0}" = "1" ]; then
-        echo "  - libschemaregistry (Avro, opt-in via BUILD_LIBSCHEMAREGISTRY=1)"
+    echo "  - libschemaregistry (Avro)"
+    if [ "${BUILD_LIBSERDES:-0}" = "1" ]; then
+        echo "  - libserdes (C and C++17, opt-in via BUILD_LIBSERDES=1)"
     fi
     echo "  - Boost, fmt, snappy, jansson, etc."
     echo ""
