@@ -3,7 +3,7 @@
 echo "Setting up SAL Kafka build environment"
 
 export MAVEN_RELEASE=3.9.9
-export AVRO_RELEASE=1.11.1
+export AVRO_RELEASE=1.12.0
 export BOOST_RELEASE=1.78
 export JDK_RELEASE=17
 export KAFKA_RELEASE=7.6
@@ -78,8 +78,9 @@ avro()
     cp lib* $LSST_SAL_PREFIX/lib/.
     cp avrogencpp $LSST_SAL_PREFIX/bin/.
     mkdir  -p $LSST_SAL_PREFIX/include/avro
-    cp -r ../api/* $LSST_SAL_PREFIX/include/avro/.
-    cp -r ../impl $LSST_SAL_PREFIX/include/.
+    # Avro 1.12.0 moved the C++ public headers from lang/c++/api/ to
+    # lang/c++/include/avro/.
+    cp -r ../include/avro/* $LSST_SAL_PREFIX/include/avro/.
 
     cd $HOME/external-packages/avro-src-${AVRO_RELEASE}/lang/c
     if [ -f /.dockerenv ]; then
@@ -115,10 +116,10 @@ avro()
     cd $HOME/external-packages/avro-src-${AVRO_RELEASE}/lang/java
     ./build.sh test || exit 3
     ./build.sh dist || exit 3
-    cp ./avro/target/avro-1.11.1.jar $LSST_SAL_PREFIX/lib/.
-    cp ./compiler/target/avro-compiler-1.11.1.jar $LSST_SAL_PREFIX/lib/.
-    cp ./maven-plugin/target/avro-maven-plugin-1.11.1.jar $LSST_SAL_PREFIX/lib/.
-    cp ./tools/target/avro-tools-1.11.1.jar $LSST_SAL_PREFIX/lib/.
+    cp ./avro/target/avro-${AVRO_RELEASE}.jar $LSST_SAL_PREFIX/lib/.
+    cp ./compiler/target/avro-compiler-${AVRO_RELEASE}.jar $LSST_SAL_PREFIX/lib/.
+    cp ./maven-plugin/target/avro-maven-plugin-${AVRO_RELEASE}.jar $LSST_SAL_PREFIX/lib/.
+    cp ./tools/target/avro-tools-${AVRO_RELEASE}.jar $LSST_SAL_PREFIX/lib/.
 }
 
 librdkafka()
