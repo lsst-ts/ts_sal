@@ -65,7 +65,9 @@ install_conda_packages() {
         return 0
     fi
     echo "##### Installing conda packages..."
-    conda install -y avro avrocpp libboost librdkafka fmt snappy jansson catch2 maven yaml-cpp spdlog lsst-ts-xml
+    # zip/unzip are vcpkg bootstrap prerequisites; provide them via conda so the
+    # libschemaregistry build needs no root/dnf.
+    conda install -y avro avrocpp libboost librdkafka fmt snappy jansson catch2 maven yaml-cpp spdlog lsst-ts-xml zip unzip
     # Optional debug tools (may fail in some environments due to EUPS post-link scripts)
     conda install -y gdb strace 2>/dev/null || echo "Note: gdb/strace install skipped (non-essential)"
 }
@@ -501,7 +503,18 @@ after_libschemaregistry_install_copy() {
 # Sets and exports VCPKG_ROOT pointing at the resulting tree. Idempotent: a
 # second invocation with VCPKG_ROOT already populated is a no-op.
 ensure_vcpkg() {
-    local DEFAULT_VCPKG_ROOT="${VCPKG_ROOT:-/opt/vcpkg}"
+    # Pick where vcpkg lives. Honor an explicit VCPKG_ROOT. Otherwise prefer
+    # /opt/vcpkg when it already exists or /opt is writable, falling back to a
+    # user-writable path under HOME so no root/sudo is required (CI images
+    # typically have neither, and /opt is not writable there).
+    local DEFAULT_VCPKG_ROOT
+    if [ -n "${VCPKG_ROOT:-}" ]; then
+        DEFAULT_VCPKG_ROOT="$VCPKG_ROOT"
+    elif [ -x /opt/vcpkg/vcpkg ] || [ -w /opt ]; then
+        DEFAULT_VCPKG_ROOT="/opt/vcpkg"
+    else
+        DEFAULT_VCPKG_ROOT="${XDG_CACHE_HOME:-$HOME/.cache}/vcpkg"
+    fi
     local VCPKG_REPO_URL="https://github.com/microsoft/vcpkg.git"
 
     if [ -x "$DEFAULT_VCPKG_ROOT/vcpkg" ]; then
@@ -510,15 +523,23 @@ ensure_vcpkg() {
         return 0
     fi
 
+    echo "##### Bootstrapping vcpkg into $DEFAULT_VCPKG_ROOT ..."
+
+    # Try to create the parent as the current user; only escalate to sudo when
+    # that genuinely fails (and sudo is available). This avoids a needless sudo
+    # when the parent simply does not exist yet.
     local SUDO_CMD=""
     local PARENT_DIR
     PARENT_DIR="$(dirname "$DEFAULT_VCPKG_ROOT")"
-    if [ ! -w "$PARENT_DIR" ] && [ "$(id -u)" -ne 0 ] && command -v sudo >/dev/null 2>&1; then
-        SUDO_CMD="sudo"
+    if ! mkdir -p "$PARENT_DIR" 2>/dev/null; then
+        if [ "$(id -u)" -ne 0 ] && command -v sudo >/dev/null 2>&1; then
+            SUDO_CMD="sudo"
+            $SUDO_CMD mkdir -p "$PARENT_DIR"
+        else
+            echo "ERROR: cannot create vcpkg parent dir $PARENT_DIR" >&2
+            return 1
+        fi
     fi
-
-    echo "##### Bootstrapping vcpkg into $DEFAULT_VCPKG_ROOT ..."
-    $SUDO_CMD mkdir -p "$PARENT_DIR"
 
     if [ ! -d "$DEFAULT_VCPKG_ROOT/.git" ]; then
         $SUDO_CMD git clone "$VCPKG_REPO_URL" "$DEFAULT_VCPKG_ROOT"
