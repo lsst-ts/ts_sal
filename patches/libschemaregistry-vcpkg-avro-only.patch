@@ -1,0 +1,61 @@
+Subject: [PATCH] vcpkg.json: trim to Avro-only deps + re-add jsoncons
+
+This patch is applied automatically to a fresh libschemaregistry checkout
+by ts_sal/bin/setup_functions.sh::build_libschemaregistry. It does two
+things, both required for ts_sal's libschemaregistry build to succeed:
+
+1. Trims cloud-vendor SDK dependencies (aws-sdk-cpp, azure-*,
+   google-cloud-cpp, libvault, protobuf) from the vcpkg manifest. These
+   are not needed for ts_sal's Avro-only build path
+   (-DSCHEMAREGISTRY_WITH_AVRO=ON, everything else OFF), and they pull
+   in very large transitive dependencies that complicate the build
+   inside the ts_sal container.
+
+2. Re-adds jsoncons to work around an upstream bug:
+   src/serdes/SerdeTypes.cpp unconditionally `#include`s
+   <jsoncons/json.hpp> even when configured with
+   -DSCHEMAREGISTRY_WITH_JSON=OFF. Without this dependency present,
+   the build fails with:
+       fatal error: jsoncons/json.hpp: No such file or directory
+
+Verified against libschemaregistry 0.1.3.
+
+TODO: file the unconditional jsoncons include as an upstream issue at
+https://github.com/confluentinc/libschemaregistry and link the issue
+URL here. When upstream releases a fix, drop point 2 above (and
+possibly retire this patch entirely if upstream also adds an
+"Avro-only profile" preset that does the trimming in point 1).
+---
+diff --git a/vcpkg.json b/vcpkg.json
+index 0b88aff..5e00312 100644
+--- a/vcpkg.json
++++ b/vcpkg.json
+@@ -4,28 +4,9 @@
+   "dependencies": [
+     "abseil",
+     "avro-cpp",
+-    {
+-      "name": "aws-sdk-cpp",
+-      "default-features": false,
+-      "features": [
+-        "kms",
+-        "identity-management"
+-      ]
+-    },
+-    "azure-identity-cpp",
+-    "azure-security-keyvault-keys-cpp",
+-    {
+-      "name": "google-cloud-cpp",
+-      "default-features": false,
+-      "features": [
+-        "kms"
+-      ]
+-    },
+     "jsoncons",
+-    "libvault",
+     "nlohmann-json",
+     "openssl",
+-    "protobuf",
+     "cpr"
+   ]
+ }

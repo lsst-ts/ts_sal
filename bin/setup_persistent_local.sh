@@ -35,7 +35,7 @@ echo "LSST_SAL_PREFIX:  $LSST_SAL_PREFIX"
 echo ""
 
 # Source reusable setup functions
-echo "Building dependencies (Avro C/C++, libserdes, librdkafka)..."
+echo "Building dependencies (Avro C/C++, libschemaregistry, librdkafka)..."
 echo "(This will install to $LSST_SAL_PREFIX)"
 echo ""
 echo "NOTE: For persistent local installation, we'll build Avro C++ from source"
@@ -52,14 +52,23 @@ install_conda_packages
 # Create all conda symlinks (headers + libraries) into local/
 # This is done by ensure_local_conda_symlinks which is called inside:
 #   - build_avro_c (after building libavro, creates lib symlinks)
-#   - build_libserdes_cpp17 (before configure, ensures lib symlinks)
+#   - build_libserdes_cpp17 (before configure; only when BUILD_LIBSERDES=1)
 #   - setup_sal_environment (ensures header symlinks for salgeneratorKafka)
 # But we also call it here explicitly for safety:
 ensure_local_conda_symlinks
 
 build_avro_c
 build_avro_cpp              # Build avrogencpp into persistent local/bin
-build_libserdes_cpp17
+
+# libschemaregistry is the default schema/Avro serialization library
+# (OSW-2238). libserdes is the legacy library, kept available opt-in via
+# BUILD_LIBSERDES=1 for fallback/comparison during the migration.
+build_libschemaregistry
+
+if [ "${BUILD_LIBSERDES:-0}" = "1" ]; then
+    build_libserdes_cpp17
+fi
+
 setup_sal_environment "${SCRIPT_DIR}"
 
 ensure_catch2() {

@@ -33,7 +33,18 @@ EXEEXT        =
 LIBPREFIX     = lib
 LIBSUFFIX     = 
 GENFLAGS      = -g
-LDLIBS        = -ldl -lrt -lpthread -lboost_filesystem -lboost_iostreams -lboost_program_options -lboost_regex -lboost_system -lsnappy $(LSST_SAL_PREFIX)/lib/libserdes++.a $(LSST_SAL_PREFIX)/lib/libserdes.a -lcurl -ljansson -lrdkafka++ -lrdkafka -lavrocpp -lavro -lsasl2
+# libschemaregistry replaces libserdes. Because libschemaregistry is a static
+# archive, its vcpkg-built transitive deps (abseil, cpr, curl, ssl, boost,
+# compression) must be linked explicitly. These archives reference each
+# other's symbols, so their order on the link line matters to the linker;
+# --start-group/--end-group makes the linker re-scan them until all those
+# cross-references resolve, so the order among them no longer matters.
+# LIBSCHEMAREGISTRY_VCPKG_LIB defaults to the SAL prefix; until the build
+# helper copies the vcpkg deps there, override it to the vcpkg_installed lib
+# dir.
+LIBSCHEMAREGISTRY_VCPKG_LIB ?= $(LSST_SAL_PREFIX)/lib
+LIBSCHEMAREGISTRY_LDLIBS = -Wl,--start-group $(LSST_SAL_PREFIX)/lib/libschemaregistry.a $(wildcard $(LIBSCHEMAREGISTRY_VCPKG_LIB)/libabsl_*.a) $(LIBSCHEMAREGISTRY_VCPKG_LIB)/libcpr.a $(LIBSCHEMAREGISTRY_VCPKG_LIB)/libcurl.a $(LIBSCHEMAREGISTRY_VCPKG_LIB)/libz.a $(LIBSCHEMAREGISTRY_VCPKG_LIB)/libbz2.a $(LIBSCHEMAREGISTRY_VCPKG_LIB)/liblzma.a $(LIBSCHEMAREGISTRY_VCPKG_LIB)/libzstd.a -Wl,--end-group
+LDLIBS        = -ldl -lrt -lpthread -lboost_filesystem -lboost_iostreams -lboost_program_options -lboost_regex -lboost_system -lsnappy $(LIBSCHEMAREGISTRY_LDLIBS) -lrdkafka++ -lrdkafka -lavrocpp -lsasl2 -lssl -lcrypto -llz4
 OBJS          =  .obj/SAL_SALSubsys$(OBJEXT) .obj/SALDataDataSubscriber$(OBJEXT)
 SRC           = ../src/SAL_SALSubsys.cpp ../src/SALDataDataSubscriber.cpp
 LINK.cc       = $(LD) $(LDFLAGS)
