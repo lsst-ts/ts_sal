@@ -67,7 +67,7 @@ if { [info exists env(LSST_KAFKA_SECURITY_PASSWORD)] } {
   set LSST_KAFKA_SECURITY_MECHANISM $env(LSST_KAFKA_SECURITY_MECHANISM)
   set LSST_KAFKA_SECURITY_USERNAME $env(LSST_KAFKA_SECURITY_USERNAME)
   set LSST_KAFKA_SECURITY_PASSWORD $env(LSST_KAFKA_SECURITY_PASSWORD)
-}  
+}
 set LSST_KAFKA_HOST $env(LSST_KAFKA_HOST)
 set LSST_KAFKA_BROKER_PORT $env(LSST_KAFKA_BROKER_PORT)
 set LSST_KAFKA_PREFIX $env(LSST_KAFKA_PREFIX)
@@ -191,6 +191,7 @@ if { $RELVERSION != "" } {
 if { $OPTIONS(validate) } {
   exec mkdir -p $SAL_WORK_DIR/avro-templates
   source $SAL_DIR/parseXMLKafka.tcl
+  source $SAL_DIR/parseAvro.tcl
   source $SAL_DIR/checkjson.tcl
   set all $TSUBSYSTEMS
   stdlog "Processing $all"
@@ -227,6 +228,14 @@ if { $OPTIONS(validate) } {
           stdlog "Imported $i $t interface definitions"
         }
       }
+    }
+    try {
+      set avscFiles [glob -type f $env(TS_XML_DIR)/python/lsst/ts/xml/data/interfaces/$i/*.avsc]
+    } on error err {
+      set avscFiles {}
+    }
+    foreach avscFile $avscFiles {
+      parseAvro $i $avscFile
     }
     parseXMLtoJson $SAL_WORK_DIR/[set i]_Generics.xml
     stdlog "Imported $i Generic interface definitions"
