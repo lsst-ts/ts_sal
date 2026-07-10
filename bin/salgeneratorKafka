@@ -232,6 +232,10 @@ if { $OPTIONS(validate) } {
     stdlog "Imported $i Generic interface definitions"
     updateRevCodes $i
     updateMetaData $i
+    set result none
+    puts stdout "python $SAL_DIR/avro_to_tcl_definitions.py $SAL_WORK_DIR/avro-templates $i"
+    catch { set result [exec python $SAL_DIR/avro_to_tcl_definitions.py $SAL_WORK_DIR/avro-templates $i] } bad
+    if { $result == "none" } {stdlog $bad} else {stdlog $result}
     stdlog "Completed $i validation\n\n"
   }
 }

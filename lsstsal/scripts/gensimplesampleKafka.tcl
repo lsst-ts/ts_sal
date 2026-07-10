@@ -166,6 +166,7 @@ global SAL_DIR SAL_WORK_DIR SYSDIC VPROPS EVENT_ENUM OPTIONS CMD_ALIASES METADAT
      set prev [glob $SAL_WORK_DIR/include/SAL_[set subsys]*]
      foreach f $prev {exec rm $f}
    }
+   if { $OPTIONS(cpp) } {
    stdlog "calling salavrogen $subsys cpp"
    salavrogen $subsys cpp
    stdlog "done salavrogen $subsys cpp"
@@ -267,6 +268,7 @@ global SAL_DIR SAL_WORK_DIR SYSDIC VPROPS EVENT_ENUM OPTIONS CMD_ALIASES METADAT
    puts $fhdr "#endif"
    close $fhdr
    close $fhlv
+   }
    updateRevCodes $subsys
 ##   activeRevCodes $subsys
    if { $OPTIONS(verbose) } {stdlog "###TRACE<<< makesalincl $subsys"}
@@ -748,12 +750,16 @@ global SAL_WORK_DIR OPTIONS ONEDONECPP ONEDONEJAVA SAL_DIR AVRO_RELEASE LSST_SAL
        cd $SAL_WORK_DIR/$base/$lang
        stdlog "Generating $lang type support for $base"
        if { $lang == "cpp" && $ONEDONECPP == 0} {
+          set flatdir $SAL_WORK_DIR/[set base]/cpp/flat
+          exec mkdir -p $flatdir
           set all [glob $SAL_WORK_DIR/avro-templates/[set base]/[set base]_*.json]
           foreach i $all {
             if { [lindex [split [file tail $i] ._] 2] != "enums" } {
              if { [file tail $i] != "[set base]_hash_table.json" } {
               puts stdout "Processing $i"
-              exec avrogencpp -i $i -o $SAL_WORK_DIR/[set base]/cpp/src/[file rootname [file tail $i]].hh -n $base
+              set flat $flatdir/[file tail $i]
+              exec python $SAL_DIR/flatten_avro_unions.py $i $flat
+              exec avrogencpp -i $flat -o $SAL_WORK_DIR/[set base]/cpp/src/[file rootname [file tail $i]].hh -n $base
              }
             }
           }
