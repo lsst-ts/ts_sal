@@ -50,7 +50,17 @@ global TRAILINGITEMS
         set topicDesc "No description given"
     }
 
-    lappend TLM_ALIASES($subsys) $topic
+    # The Avro definition takes authority over any XML definition of the
+    # same topic. Add the alias only once, and reset the parameter lists so
+    # the Avro fields replace (rather than concatenate onto) the XML ones.
+    if { [info exists TLM_ALIASES($subsys)] &&
+         [lsearch -exact $TLM_ALIASES($subsys) $topic] >= 0 } {
+        stdlog "parseAvro: Avro topic $fqdnTopic overrides its XML definition"
+    } else {
+        lappend TLM_ALIASES($subsys) $topic
+    }
+    set TLMS($subsys,$topic,param) ""
+    set TLMS($subsys,$topic,plist) ""
     set METADATA($fqdnTopic,description) \"$topicDesc\"
 
     foreach field $fields {
