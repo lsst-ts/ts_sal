@@ -9,13 +9,14 @@ def postResults() {
 
 properties(
     [
-    buildDiscarder
-        (logRotator (
+    buildDiscarder(
+        logRotator (
             artifactDaysToKeepStr: '',
             artifactNumToKeepStr: '',
             daysToKeepStr: '14',
             numToKeepStr: '10'
-        ) ),
+		)
+	),
     disableConcurrentBuilds()
     ]
 )
@@ -24,11 +25,10 @@ pipeline {
         docker {
             image 'lsstts/salobj:develop'
             alwaysPull true
-            args "--entrypoint='' --network=kafka"
+            args "--entrypoint=''"
         }
     }
     environment {
-        network_name = "kafka"
         container_name = "c_${BUILD_ID}_${JENKINS_NODE_COOKIE}"
         work_branches = "${GIT_BRANCH} ${CHANGE_BRANCH} develop"
         LSST_IO_CREDS = credentials("lsst-io")
@@ -58,22 +58,32 @@ pipeline {
                     sh """ cd ${env.WORKSPACE}
                     source ~/.setup.sh
                     export HOME=${env.WORKSPACE}
-                    ./bin/setupStackBuildEnvironment
+                    
+                    # Configure environment variables
                     export LSST_SDK_INSTALL=${env.WORKSPACE}
                     export LSST_SAL_PREFIX=\$CONDA_PREFIX
-                    source ./setupKafka.env
                     export TS_XML_DIR=/home/saluser/repos/ts_xml
+                    # TBD: Should the topic be test as apposed to sal
+                    # to avoid conflicts with production?
+                    #export LSST_TOPIC_SUBNAME=test
+                    export LSST_TOPIC_SUBNAME=sal
+
+                    # Run the new setup script (builds dependencies, libserdes, etc.)
+                    ./bin/setup_stack_build.sh
+                    
+                    # Source the complete SAL environment
+                    source ./bin/salenv_complete.sh
+                    
                     cd ${env.WORKSPACE}/test
-                    salgeneratorKafka validate Test
-                    salgeneratorKafka validate Script
-                    salgeneratorKafka sal cpp Test
-                    salgeneratorKafka sal cpp Script
-                    salgeneratorKafka sal java Test
-                    salgeneratorKafka sal java Script
-                    salgeneratorKafka lib Test
-                    salgeneratorKafka lib Script
-                    salgeneratorKafka maven Test
-                    salgeneratorKafka maven Script
+                    
+                    # Generate SAL runtime for Test and Script components
+                    for COMPONENT in Test Script; do
+                        salgeneratorKafka validate "\$COMPONENT"
+                        salgeneratorKafka sal cpp "\$COMPONENT"
+                        salgeneratorKafka sal java "\$COMPONENT"
+                        salgeneratorKafka lib "\$COMPONENT"
+                        salgeneratorKafka maven "\$COMPONENT"
+                    done
                     """
                 }
             }
@@ -83,12 +93,20 @@ pipeline {
                 script {
                     sh """source ~/.setup.sh
                     cd ${env.WORKSPACE}
+                    
                     export LSST_SDK_INSTALL=${env.WORKSPACE}
                     export LSST_SAL_PREFIX=\$CONDA_PREFIX
-                    source ./setupKafka.env
                     export TS_XML_DIR=/home/saluser/repos/ts_xml
-                    export BOOST_RELEASE=
+                    # TBD: Should the topic be test as apposed to sal
+                    # to avoid conflicts with production?
+                    #export LSST_TOPIC_SUBNAME=test
+                    export LSST_TOPIC_SUBNAME=sal
+                    
+                    # Source the complete SAL environment
+                    source ./bin/salenv_complete.sh
+
                     export LSST_KAFKA_PRODUCER_WAIT_ACKS=1
+                    
                     cd ${env.WORKSPACE}/cpp_tests
                     make junit
                     """
@@ -100,10 +118,18 @@ pipeline {
                 script {
                     sh """source ~/.setup.sh
                     cd ${env.WORKSPACE}
+                    
                     export LSST_SDK_INSTALL=${env.WORKSPACE}
                     export LSST_SAL_PREFIX=\$CONDA_PREFIX
-                    source ./setupKafka.env
                     export TS_XML_DIR=/home/saluser/repos/ts_xml
+                    # TBD: Should the topic be test as apposed to sal
+                    # to avoid conflicts with production?
+                    #export LSST_TOPIC_SUBNAME=test
+                    export LSST_TOPIC_SUBNAME=sal
+                    
+                    # Source the complete SAL environment
+                    source ./bin/salenv_complete.sh
+                    
                     cd ${env.WORKSPACE}/simple_sal
                     mvn --no-transfer-progress -B clean install
                     """
@@ -117,10 +143,26 @@ pipeline {
             // postResults()
             echo "Build documents"
             sh """ source ~/.setup.sh
+            cd ${env.WORKSPACE}/doc
+            sphinx-build -b html . _build/html
+            echo "Documentation built successfully in doc/_build/html"
             cd ${env.WORKSPACE}
-            setup -kr .
-            package-docs build
-            ltd upload --product ts-sal --git-ref ${GIT_BRANCH} --dir doc/_build/html || echo "Upload failed... ignoring."
+            
+            # Install uv if not present (for ltd-conveyor Python 3.11 compatibility)
+            if ! command -v uvx >/dev/null 2>&1; then
+                echo "Installing uv for documentation upload..."
+                pip install --quiet uv
+            fi
+            
+            # Upload documentation to LSST the Docs
+            # IMPORTANT: We use uvx with Python 3.11 because:
+            #   - TSSW Jenkins uses old ltd-conveyor version (0.8.x)
+            #   - ltd-conveyor 0.8.x has compatibility issues with Python 3.13
+            #   - Python 3.11 environment (before setuptools dropped pkg_resources) is more stable
+            #   - uvx creates isolated Python 3.11 environment just for this command
+            # Note: Credentials MUST be quoted to handle special characters in password
+            LTD_USERNAME="${LSST_IO_CREDS_USR}" LTD_PASSWORD="${LSST_IO_CREDS_PSW}" \
+              uvx --python 3.11 --from 'ltd-conveyor>0.8,<0.9' ltd upload --product ts-sal --git-ref ${GIT_BRANCH} --dir doc/_build/html || echo "Upload failed... ignoring."
             """
             }
         cleanup {

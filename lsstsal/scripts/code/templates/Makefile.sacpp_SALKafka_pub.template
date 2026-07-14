@@ -9,12 +9,12 @@ CXX           = g++
 LD            = $(CXX) $(CCFLAGS) $(CPPFLAGS)
 AR            = ar
 PICFLAGS      = -fPIC
-CPPFLAGS      = $(PICFLAGS) $(GENFLAGS) -fpermissive -g $(SAL_CPPFLAGS) -D_REENTRANT -Wall -Wno-switch -Wno-format -I"." -I"$(LSST_SAL_PREFIX)/include" -I"$(LSST_SAL_PREFIX)/include/boost" -I"$(LSST_SAL_PREFIX)/include/avro" -I../../../SALSubsys/cpp/src -I../../../SALSubsys/cpp -I"$(SAL_WORK_DIR)/include" -Wno-write-strings #-DSAL_SUBSYSTEM_ID_IS_KEYED
+CPPFLAGS      = $(PICFLAGS) $(GENFLAGS) -fpermissive -g $(SAL_CPPFLAGS) -D_REENTRANT -Wall -Wno-switch -Wno-format -I"." -I"$(LSST_SAL_PREFIX)/include" -I"$(CONDA_PREFIX)/include" -I"$(LSST_SAL_PREFIX)/include/boost" -I"$(CONDA_PREFIX)/include/boost" -I"$(LSST_SAL_PREFIX)/include/avro" -I"$(CONDA_PREFIX)/include/avro" -I../../../SALSubsys/cpp/src -I../../../SALSubsys/cpp -I"$(SAL_WORK_DIR)/include" -Wno-write-strings #-DSAL_SUBSYSTEM_ID_IS_KEYED
 OBJEXT        = .o
 OUTPUT_OPTION = -o "$@"
 COMPILE.c     = $(CC) $(CFLAGS) $(CPPFLAGS) -c
 COMPILE.cc    = $(CXX) $(CCFLAGS) $(CPPFLAGS) -c
-LDFLAGS       = -L"." -L"$(LSST_SAL_PREFIX)/lib" -L"$(SAL_WORK_DIR)/lib"
+LDFLAGS       = -L"." -L"$(LSST_SAL_PREFIX)/lib" -L"$(CONDA_PREFIX)/lib" -L"$(SAL_WORK_DIR)/lib"
 CCC           = $(CXX)
 MAKEFILE      = Makefile.sacpp_SALData_pub
 DEPENDENCIES  = 
@@ -33,7 +33,18 @@ EXEEXT        =
 LIBPREFIX     = lib
 LIBSUFFIX     = 
 GENFLAGS      = -g
-LDLIBS        = -ldl -lrt -lpthread -L"/usr/lib64/boost$(BOOST_RELEASE)" -lboost_filesystem -lboost_iostreams -lboost_program_options -lboost_system $(LSST_SAL_PREFIX)/lib/libserdes++.a $(LSST_SAL_PREFIX)/lib/libserdes.a -L$(LSST_SAL_PREFIX)/lib -lcurl -ljansson -lrdkafka++ -lrdkafka -lavrocpp -lavro -lsasl2
+# libschemaregistry replaces libserdes. Because libschemaregistry is a static
+# archive, its vcpkg-built transitive deps (abseil, cpr, curl, ssl, boost,
+# compression) must be linked explicitly. These archives reference each
+# other's symbols, so their order on the link line matters to the linker;
+# --start-group/--end-group makes the linker re-scan them until all those
+# cross-references resolve, so the order among them no longer matters.
+# LIBSCHEMAREGISTRY_VCPKG_LIB defaults to the SAL prefix; until the build
+# helper copies the vcpkg deps there, override it to the vcpkg_installed lib
+# dir.
+LIBSCHEMAREGISTRY_VCPKG_LIB ?= $(LSST_SAL_PREFIX)/lib
+LIBSCHEMAREGISTRY_LDLIBS = -Wl,--start-group $(LSST_SAL_PREFIX)/lib/libschemaregistry.a $(wildcard $(LIBSCHEMAREGISTRY_VCPKG_LIB)/libabsl_*.a) $(LIBSCHEMAREGISTRY_VCPKG_LIB)/libcpr.a $(LIBSCHEMAREGISTRY_VCPKG_LIB)/libcurl.a $(LIBSCHEMAREGISTRY_VCPKG_LIB)/libz.a $(LIBSCHEMAREGISTRY_VCPKG_LIB)/libbz2.a $(LIBSCHEMAREGISTRY_VCPKG_LIB)/liblzma.a $(LIBSCHEMAREGISTRY_VCPKG_LIB)/libzstd.a -Wl,--end-group
+LDLIBS        = -ldl -lrt -lpthread -lboost_filesystem -lboost_iostreams -lboost_program_options -lboost_regex -lboost_system -lsnappy $(LIBSCHEMAREGISTRY_LDLIBS) -lrdkafka++ -lrdkafka -lavrocpp -lsasl2 -lssl -lcrypto -llz4
 OBJS          = .obj/SAL_SALSubsys$(OBJEXT) .obj/SALDataDataPublisher$(OBJEXT)
 SRC           =  ../src/SAL_SALSubsys.cpp ../src/SALDataDataPublisher.cpp
 LINK.cc       = $(LD) $(LDFLAGS)

@@ -129,3 +129,13 @@ Then run the LabVIEW GUI and import the
 `$SAL_WORK_DIR/MTMount/labview/SALLV_<component_name>.so` shared library
 
 Then run the ts_SALLabVIEW VI to generate the .lvlib and VI's
+
+## Kafka Consumer Group Naming
+
+SAL Kafka C++ clients use SALOBJ-compatible consumer group naming, derived
+automatically from the `CSC_identity` and `target_csc_name` set at construction:
+
+- **Self-related topics** (identity matches target CSC): `<user@host>-<Target CSC>-<random>`
+  - `SAL_MTMount()` or `SAL_MTMount(1)` → `saluser@hostname-MTMount-abc123def456789`
+- **Cross-CSC consumption** (identity differs from target CSC): `<Owning CSC>-<Target CSC>-<random>`
+  - `SAL_MTMount(1, "MTPtg")` → `MTPtg-MTMount-abc123def456789`

@@ -170,6 +170,10 @@ proc getAlias { topic } {
 proc safeString { input } {
 #  set escquote [join [split $input "\""] {\"}]
   set safe [subst -nobackslashes -nocommands -novariables $input ]
+  # Escape the characters that trigger Tcl substitution so the string
+  # survives being embedded in a quoted value and later re-sourced (for
+  # example an Avro description such as "double in [0.0,1.0]").
+  set safe [string map [list \\ \\\\ \[ \\\[ \] \\\] \$ \\\$] $safe]
   return $safe
 }
 

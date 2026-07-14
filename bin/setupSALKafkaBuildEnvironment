@@ -3,7 +3,7 @@
 echo "Setting up SAL Kafka build environment"
 
 export MAVEN_RELEASE=3.9.9
-export AVRO_RELEASE=1.11.1
+export AVRO_RELEASE=1.12.0
 export BOOST_RELEASE=1.78
 export JDK_RELEASE=17
 export KAFKA_RELEASE=7.6
@@ -39,6 +39,9 @@ update_dependencies()
         ln -sf /usr/bin/python3.11 /etc/alternatives/python3 || exit 1
     fi
     dnf install -y ant cmake git boost${BOOST_RELEASE}-devel jansson-devel asciidoc curl libcurl-devel zlib-devel maven doxygen fmt fmt-devel snappy snappy-devel csnappy || exit 1
+    # libschemaregistry (OSW-2238) build prerequisites: ninja (its CMake
+    # generator), perl/tar/unzip/zip/curl/xz (vcpkg ports), java (antlr).
+    dnf install -y ninja-build pkgconfig perl tar unzip zip xz which || exit 1
     if [ -f /.dockerenv ]; then
         dnf install -y java-${JDK_RELEASE}-openjdk java-${JDK_RELEASE}-openjdk-devel java-${JDK_RELEASE}-openjdk-javadoc || exit 1
     fi
@@ -75,8 +78,9 @@ avro()
     cp lib* $LSST_SAL_PREFIX/lib/.
     cp avrogencpp $LSST_SAL_PREFIX/bin/.
     mkdir  -p $LSST_SAL_PREFIX/include/avro
-    cp -r ../api/* $LSST_SAL_PREFIX/include/avro/.
-    cp -r ../impl $LSST_SAL_PREFIX/include/.
+    # Avro 1.12.0 moved the C++ public headers from lang/c++/api/ to
+    # lang/c++/include/avro/.
+    cp -r ../include/avro/* $LSST_SAL_PREFIX/include/avro/.
 
     cd $HOME/external-packages/avro-src-${AVRO_RELEASE}/lang/c
     if [ -f /.dockerenv ]; then
@@ -112,10 +116,10 @@ avro()
     cd $HOME/external-packages/avro-src-${AVRO_RELEASE}/lang/java
     ./build.sh test || exit 3
     ./build.sh dist || exit 3
-    cp ./avro/target/avro-1.11.1.jar $LSST_SAL_PREFIX/lib/.
-    cp ./compiler/target/avro-compiler-1.11.1.jar $LSST_SAL_PREFIX/lib/.
-    cp ./maven-plugin/target/avro-maven-plugin-1.11.1.jar $LSST_SAL_PREFIX/lib/.
-    cp ./tools/target/avro-tools-1.11.1.jar $LSST_SAL_PREFIX/lib/.
+    cp ./avro/target/avro-${AVRO_RELEASE}.jar $LSST_SAL_PREFIX/lib/.
+    cp ./compiler/target/avro-compiler-${AVRO_RELEASE}.jar $LSST_SAL_PREFIX/lib/.
+    cp ./maven-plugin/target/avro-maven-plugin-${AVRO_RELEASE}.jar $LSST_SAL_PREFIX/lib/.
+    cp ./tools/target/avro-tools-${AVRO_RELEASE}.jar $LSST_SAL_PREFIX/lib/.
 }
 
 librdkafka()
@@ -163,6 +167,19 @@ libserdes()
     make install || exit 5
 }
 
+libschemaregistry()
+{
+    echo "Downloading and building libschemaregistry"
+    # The build logic (vcpkg bootstrap, avro-only patch, install + dependency
+    # copy into LSST_SAL_PREFIX) lives in setup_functions.sh so all entry
+    # points share one implementation. setup_functions.sh is bash, this
+    # script is sh, hence the delegation through bash -c. The path must be
+    # absolute: the build changes directories, which would break a relative
+    # $0 (e.g. when invoked as bin/setupSALKafkaBuildEnvironment).
+    SCRIPT_BIN_DIR="$(cd "$(dirname "$0")" && pwd)"
+    bash -c "source '$SCRIPT_BIN_DIR/setup_functions.sh' && build_libschemaregistry" || exit 7
+}
+
 m1m3_extras()
 {
     # Extras for M1M3
@@ -208,6 +225,9 @@ case $option in
     libserdes)
         libserdes
     ;;
+    libschemaregistry)
+        libschemaregistry
+    ;;
     m1m3)
         m1m3_extras
     ;;
@@ -216,7 +236,13 @@ case $option in
         maven
         avro
         librdkafka
-        libserdes
+        # libschemaregistry is the default schema/Avro serialization library
+        # (OSW-2238); the legacy libserdes is built only opt-in via
+        # BUILD_LIBSERDES=1 (or by passing the libserdes option explicitly).
+        libschemaregistry
+        if [ "${BUILD_LIBSERDES:-0}" = "1" ]; then
+            libserdes
+        fi
         m1m3_extras
     ;;
     *)

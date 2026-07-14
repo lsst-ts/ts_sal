@@ -1,0 +1,63 @@
+#!/bin/bash
+
+# Core SAL environment setup.
+# Source this to configure SAL paths, prefixes, and shared build variables.
+#
+# For detailed explanation of all environment variables, see:
+#   ts_sal/doc/sal_env_variables.rst
+
+# Determine repository root if LSST_SDK_INSTALL is unset.
+if [ -z "${LSST_SDK_INSTALL:-}" ]; then
+    _SALENV_PATHS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    export LSST_SDK_INSTALL="$(cd "${_SALENV_PATHS_DIR}/.." && pwd)"
+fi
+
+# Decide where libraries/headers are installed.
+# Prefers conda environment (isolated, clean) over ts_sal repo (pollutes source tree).
+if [ -z "${LSST_SAL_PREFIX:-}" ]; then
+    if [ -n "${CONDA_PREFIX:-}" ] && [ -w "${CONDA_PREFIX}/lib" ]; then
+        export LSST_SAL_PREFIX="$CONDA_PREFIX"
+    else
+        export LSST_SAL_PREFIX="$LSST_SDK_INSTALL"
+        echo "Note: CONDA_PREFIX not writable; using LSST_SDK_INSTALL for LSST_SAL_PREFIX"
+    fi
+fi
+
+export SAL_HOME=${SAL_HOME:-$LSST_SDK_INSTALL/lsstsal}
+
+if [ -z "${SAL_WORK_DIR:-}" ]; then
+    if [ -d "${LSST_SDK_INSTALL}/test" ]; then
+        export SAL_WORK_DIR="${LSST_SDK_INSTALL}/test"
+    else
+        export SAL_WORK_DIR="/tmp/sal_work"
+    fi
+fi
+mkdir -p "$SAL_WORK_DIR"
+
+export TS_SAL_DIR=${TS_SAL_DIR:-$LSST_SDK_INSTALL}
+export TS_XML_DIR=${TS_XML_DIR:-$LSST_SDK_INSTALL/../ts_xml}
+
+# Avro configuration (can be overridden by caller)
+export AVRO_RELEASE=${AVRO_RELEASE:-1.12.0}
+export AVRO_HOME=${AVRO_HOME:-$LSST_SAL_PREFIX/lib}
+export AVRO_INCL=${AVRO_INCL:-$LSST_SAL_PREFIX/include/avro}
+export LSST_TOPIC_SUBNAME=${LSST_TOPIC_SUBNAME:-sal}
+export AVRO_CLASSPATH=${AVRO_CLASSPATH:-lsst/$LSST_TOPIC_SUBNAME}
+
+# Shared compiler/library paths
+export LIBRARY_PATH=${LSST_SAL_PREFIX}/lib${LIBRARY_PATH:+:$LIBRARY_PATH}
+export CPLUS_INCLUDE_PATH=${LSST_SAL_PREFIX}/include${CPLUS_INCLUDE_PATH:+:$CPLUS_INCLUDE_PATH}
+export LD_LIBRARY_PATH=${SAL_WORK_DIR}/lib:${LSST_SAL_PREFIX}/lib:${LSST_SDK_INSTALL}/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
+
+# On Rocky/RHEL systems Boost is installed into a versioned subdirectory
+# (/usr/lib64/boost1.78) rather than /usr/lib64.  Add it to both LIBRARY_PATH
+# (compile-time linker search) and LD_LIBRARY_PATH (runtime) when present and
+# not already covered by LSST_SAL_PREFIX (i.e. no conda).
+if [ -d "/usr/lib64/boost1.78" ] && [ -z "${CONDA_PREFIX:-}" ]; then
+    export LIBRARY_PATH="/usr/lib64/boost1.78${LIBRARY_PATH:+:$LIBRARY_PATH}"
+    export LD_LIBRARY_PATH="/usr/lib64/boost1.78${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+fi
+
+# Ensure SAL binaries and built tools are on PATH
+export PATH=${LSST_SAL_PREFIX}/bin:${TS_SAL_DIR}/bin:${PATH}
+

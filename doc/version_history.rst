@@ -6,6 +6,34 @@
 Version History
 ###############
 ==================
+Changes for 11.0.0
+==================
+
+* Handle Avro telemetry topics in SAL code generation
+* Generate C++ source only when the cpp argument is given
+* Handle parsing of Avro schema and generated JSON
+* Fix CI for libschemaregistry build
+* Bump Avro from 1.11.1 to 1.12.0
+* Add libschemaregistry to setupSALKafkaBuildEnvironment
+* Build libschemaregistry by default, libserdes opt-in
+* Replace libserdes with libschemaregistry in Kafka codegen
+* Add build_libschemaregistry helper + vcpkg-Avro-only patch
+* Add libschemaregistry build prerequisites to Dockerfile
+* Add boost link path in non-conda envs; add LIBRARY_PATH to setupKafka.env
+* Support building ts_sal in non-conda environments (e.g. robotsal image)
+* Align SAL Kafka C++ consumer group.id naming with SALOBJ patterns
+* Add CONDA_PREFIX paths and conda symlink management for local SAL builds
+* Fixup apidoc for Kafka
+* Moved DDS code to deprecated subdirs
+* Refactor SAL build scripts and update Jenkinsfile
+* Fix C++ compiler variable usage in cpp_tests/Makefile
+* Fix getAvroNamespace to always use lsst.<subname>. format
+* Remove references to the kafka network
+* Remove reference to the MTEEC API
+* Use the simple-sal repo PAT in Jenkinsfile
+* Update jackson-dataformat-avro version to 2.14.1 in mavenizeKafka.tcl
+
+==================
 Changes for 10.1.0
 ==================
 
@@ -46,7 +74,7 @@ Changes for 9.0.0
 * First version for AlmaLinux 9 and java-17-zulu-openjdk
 * Seperate ts_sal_utils and ts_sal_utilsKafka RPMS
 
-==================
+=================
 Changes for 8.0.0
 =================
 
@@ -109,7 +137,7 @@ Changes for 7.0.0
 
 * Remove deprecated python (boost and pybind11) API generation
 
-* Rename SAL_actors.h to SAL_,CSC._actors.h and add to RPMs
+* Rename SAL_actors.h to SAL_<CSC>_actors.h and add to RPMs
 
 * Remove deprecated IDL_Type tag processing, default is no-limit for strings
 

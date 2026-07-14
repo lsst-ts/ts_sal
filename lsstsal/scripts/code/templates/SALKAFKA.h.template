@@ -38,9 +38,14 @@
   #include <avro/Specific.hh>
   #include <avro/Exception.hh>
   #include <avro/Compiler.hh>
-  #include "libserdes/serdescpp-avro.h"
   #include <avro/Schema.hh>
   #include <avro/ValidSchema.hh>
+  #include "schemaregistry/rest/ClientConfiguration.h"
+  #include "schemaregistry/rest/ISchemaRegistryClient.h"
+  #include "schemaregistry/rest/SchemaRegistryClient.h"
+  #include "schemaregistry/rest/model/Schema.h"
+  #include "schemaregistry/serdes/SerdeTypes.h"
+  #include "schemaregistry/serdes/Serde.h"
 
   using namespace std;
   using namespace avro;
@@ -92,10 +97,10 @@
     RdKafka::KafkaConsumer      *subscriber;
     std::string avroName;
     std::string avroName2;
-    Serdes::Schema 		*avroSchema;
-    Serdes::Schema 		*avroSchema2;
-///    avro::ValidSchema 		avroSchema;
-///    avro::ValidSchema 		avroSchema2;
+    avro::ValidSchema 		avroSchema;
+    avro::ValidSchema 		avroSchema2;
+    int32_t			avroSchemaId;
+    int32_t			avroSchemaId2;
     bool hasSchema;
 /// use flush call to sync with broker for commnds and events producer
     bool cmdevt;
@@ -170,9 +175,7 @@
       RdKafka::Producer *publisherCmdEvt;
       RdKafka::KafkaConsumer *subscriber;
       RdKafka::Headers *headers;
-      Serdes::Conf *serdesConfiguration;
-      Serdes::Avro *serdes;
-      Serdes::Schema *schema;
+      std::shared_ptr<schemaregistry::rest::ISchemaRegistryClient> schemaRegistryClient;
       std::string schema_name;
       std::string schema_def;
       std::string kafkaGroupId;
@@ -220,6 +223,8 @@
       int cmdevtFlushMS;
 ///   Holds the private_identity of this SAL Object, set at creation
       char CSC_identity[128];
+///   Holds the target CSC name (subsystem) for this SAL Object, used in group.id construction
+      char target_csc_name[128];
     public:
 
 /** Constructor for the SAL_SALData object.

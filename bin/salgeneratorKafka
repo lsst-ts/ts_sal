@@ -67,7 +67,7 @@ if { [info exists env(LSST_KAFKA_SECURITY_PASSWORD)] } {
   set LSST_KAFKA_SECURITY_MECHANISM $env(LSST_KAFKA_SECURITY_MECHANISM)
   set LSST_KAFKA_SECURITY_USERNAME $env(LSST_KAFKA_SECURITY_USERNAME)
   set LSST_KAFKA_SECURITY_PASSWORD $env(LSST_KAFKA_SECURITY_PASSWORD)
-}  
+}
 set LSST_KAFKA_HOST $env(LSST_KAFKA_HOST)
 set LSST_KAFKA_BROKER_PORT $env(LSST_KAFKA_BROKER_PORT)
 set LSST_KAFKA_PREFIX $env(LSST_KAFKA_PREFIX)
@@ -191,10 +191,12 @@ if { $RELVERSION != "" } {
 if { $OPTIONS(validate) } {
   exec mkdir -p $SAL_WORK_DIR/avro-templates
   source $SAL_DIR/parseXMLKafka.tcl
+  source $SAL_DIR/parseAvro.tcl
   source $SAL_DIR/checkjson.tcl
   set all $TSUBSYSTEMS
   stdlog "Processing $all"
   foreach i $all {
+    exec mkdir -p $SAL_WORK_DIR/avro-templates/[set i]
     if { [file exists $env(TS_XML_DIR)/python/lsst/ts/xml/data/sal_interfaces/$i] } {
       set old ""
       catch {set old [glob $SAL_WORK_DIR/$d/[set i]_*.json]}
@@ -226,6 +228,14 @@ if { $OPTIONS(validate) } {
           stdlog "Imported $i $t interface definitions"
         }
       }
+    }
+    try {
+      set avscFiles [glob -type f $env(TS_XML_DIR)/python/lsst/ts/xml/data/interfaces/$i/*.avsc]
+    } on error err {
+      set avscFiles {}
+    }
+    foreach avscFile $avscFiles {
+      parseAvro $i $avscFile
     }
     parseXMLtoJson $SAL_WORK_DIR/[set i]_Generics.xml
     stdlog "Imported $i Generic interface definitions"
@@ -297,7 +307,7 @@ exec mkdir -p .salwork
 set TARGETS ""
 if { $OPTIONS(lib) == 0 || $OPTIONS(generate) == 1 } {
   set matches $TSUBSYSTEMS
-  foreach f [glob $SAL_WORK_DIR/avro-templates/[set matches]/[set matches]_*.json] {
+  foreach f [glob -nocomplain $SAL_WORK_DIR/avro-templates/[set matches]/[set matches]_*.json] {
     set TARGETS "$TARGETS [file tail $f]"
   }
   if { $TARGETS == "" } {
