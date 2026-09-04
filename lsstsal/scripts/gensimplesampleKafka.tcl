@@ -338,11 +338,7 @@ global VPROPS TYPEFORMAT METADATA
            if (iverbose > 1) \{
              cout << \"Incoming array $VPROPS(topic) $VPROPS(name), size = \" << $VPROPS(dim) << endl;
            \}"
-      set idlim [expr $idx + $VPROPS(dim)]
-      set myidx 0
-      while { $idx < $idlim } {
-
-        if { $VPROPS(boolean) } {
+      if { $VPROPS(boolean) } {
 # std::vector<bool> elements are a list of single bits stored in bytes, and
 # C++ pointers/references addresses are only bytes. So operator[] cannot
 # return a bool& since it is a bit or sequence of bits in a byte.
@@ -352,40 +348,39 @@ global VPROPS TYPEFORMAT METADATA
 # stl_bvector.h).
 # So what we do instead is to put the bool we get as an argument in a temporary
 # int and then we use the bool operator= proxy to set the corresponding bit.
-           puts $fcod5 "    \{ int booleanValue = 0; sscanf(argv\[$idx\], \"%d\", &booleanValue); myData.$VPROPS(name)\[$myidx\] = (booleanValue != 0); \}"
-           puts $fcod10 "myData.$VPROPS(name)\[$myidx\] = int(sys.argv\[$idx\])"
-        } elseif { $VPROPS(int) }  {
-           if { $VPROPS(long) || $VPROPS(longlong) } {
-              if { $VPROPS(long) } {
-                 puts $fcod5 "    sscanf(argv\[$idx\], \"%d\", &myData.$VPROPS(name)\[$myidx\]);"
-              }
-              if { $VPROPS(longlong) } {
-                 puts $fcod5 "    sscanf(argv\[$idx\], \"%ld\", &myData.$VPROPS(name)\[$myidx\]);"
-              }
-              puts $fcod10 "myData.$VPROPS(name)\[$myidx\] = long(sys.argv\[$idx\])"
-           } else {
-              if { $VPROPS(short) } {
-                 puts $fcod5 "    sscanf(argv\[$idx\], \"%hd\", &myData.$VPROPS(name)\[$myidx\]);"
-              } else {
-                 if { $VPROPS(byte) } {
-                    puts $fcod5 "    sscanf(argv\[$idx\], \"%hhu\", &myData.$VPROPS(name)\[$myidx\]);"
-                 } else {
-                    puts $fcod5 "    sscanf(argv\[$idx\], \"%d\", &myData.$VPROPS(name)\[$myidx\]);"
-                 }
-              }
-              puts $fcod10 "myData.$VPROPS(name)\[$myidx\] = int(sys.argv\[$idx\])"
-           }
-        } else {
-           if { $VPROPS(double) } {
-              puts $fcod5 "    sscanf(argv\[$idx\], \"%lf\", &myData.$VPROPS(name)\[$myidx\]);"
-           } else {
-              puts $fcod5 "    sscanf(argv\[$idx\], \"%f\", &myData.$VPROPS(name)\[$myidx\]);"
-           }
-           puts $fcod10 "myData.$VPROPS(name)\[$myidx\] = float(sys.argv\[$idx\])"
-        }
-        incr idx 1
-        incr myidx 1
+         puts $fcod5 "    for (int i = 0; i < $VPROPS(dim); i++) \{
+      int booleanValue = 0;
+      sscanf(argv\[$idx + i\], \"%d\", &booleanValue);
+      myData.$VPROPS(name)\[i\] = (booleanValue != 0);
+    \}"
+         set pythonconverter int
+      } else {
+         if { $VPROPS(int) } {
+            if { $VPROPS(long) || $VPROPS(longlong) } {
+               set format "%d"
+               if { $VPROPS(longlong) } { set format "%ld" }
+               set pythonconverter long
+            } elseif { $VPROPS(short) } {
+               set format "%hd"
+               set pythonconverter int
+            } elseif { $VPROPS(byte) } {
+               set format "%hhu"
+               set pythonconverter int
+            } else {
+               set format "%d"
+               set pythonconverter int
+            }
+         } else {
+            set format "%f"
+            if { $VPROPS(double) } { set format "%lf" }
+            set pythonconverter float
+         }
+         puts $fcod5 "    for (int i = 0; i < $VPROPS(dim); i++) \{
+      sscanf(argv\[$idx + i\], \"$format\", &myData.$VPROPS(name)\[i\]);
+    \}"
       }
+      puts $fcod10 "for i in range(0,$VPROPS(dim)):
+  myData.$VPROPS(name)\[i\] = ${pythonconverter}(sys.argv\[$idx + i\])"
    } else {
       if { $VPROPS(string) } {
          puts $fcod1 "    data->$VPROPS(name)=Instance.$VPROPS(name);"
