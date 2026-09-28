@@ -149,8 +149,10 @@ global TYPESUBS VPROPS OPTIONS METADATA
      if { $type == "byte" } {set VPROPS(byte) 1; set VPROPS(lvres) 1  }
      if { $type == "long" } {set VPROPS(int) 1; set VPROPS(long); set VPROPS(lvres) 3  }
      if { $type == "long" } {set VPROPS(int) 1; set VPROPS(longlong) 1; set VPROPS(lvres) 4  }
-     if { $type == "boolean" } {set VPROPS(boolean) 1; set VPROPS(lvres) 5  }
-     if { $VPROPS(boolean) } {
+     if { $type == "boolean" || $type == "bool" } {set VPROPS(boolean) 1; set VPROPS(lvres) 5  }
+     if { [string match "std::vector<bool*" $type] } {set VPROPS(boolean) 1; set VPROPS(lvres) 5  }
+
+     if { $VPROPS(boolean) && $VPROPS(array) == 0 } {
        set res "  bool	$VPROPS(name)[set arrdim];"
      } else {
        set res "  $type	$VPROPS(name)[set arrdim];"
