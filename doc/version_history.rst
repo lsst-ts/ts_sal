@@ -6,6 +6,13 @@
 Version History
 ###############
 ==================
+Changes for 11.0.1
+==================
+
+* Fix scalar boolean and boolean array parsing in generated C++ test programs.
+* Use loops for array argument parsing to reduce generated C++ and Python code size.
+
+==================
 Changes for 11.0.0
 ==================
 
