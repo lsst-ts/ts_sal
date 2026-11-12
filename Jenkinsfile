@@ -30,7 +30,6 @@ pipeline {
     }
     environment {
         container_name = "c_${BUILD_ID}_${JENKINS_NODE_COOKIE}"
-        work_branches = "${GIT_BRANCH} ${CHANGE_BRANCH} develop"
         LSST_IO_CREDS = credentials("lsst-io")
         SQUASH_CREDS = credentials("squash")
     }
@@ -42,7 +41,7 @@ pipeline {
                     sh """
                     source ~/.setup.sh
                     cd /home/saluser/repos/ts_xml
-                    /home/saluser/.checkout_repo.sh ${WORK_BRANCHES}
+                    /home/saluser/.checkout_repo.sh develop
                     """
                 }
             }
